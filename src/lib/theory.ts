@@ -51,6 +51,7 @@ export const THEORIE_HOOFDSTUKKEN: Array<{ slug: string; code: string; title: st
   ...THEORY_OVERVIEW.filter((ch) => !(METHODE?.hoofdstukken ?? []).some((h) => h.slug === ch.slug)).map((ch) => ({
     slug: ch.slug,
     code: ch.slug.toUpperCase(),
-    title: ch.title.replace(/^H\d+\s*[—–-]\s*/, ''),
+    // "H2 — …" en "K.3 — …" worden beide tot de kale titel teruggebracht
+    title: ch.title.replace(/^[A-Z]\.?\d+(?:\.\d+)?\s*[—–-]\s*/, ''),
   })),
 ].sort((a, b) => Number(a.slug.replace(/\D/g, '')) - Number(b.slug.replace(/\D/g, '')))

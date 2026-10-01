@@ -16,5 +16,17 @@
     "feature1Body": "No long explanatory videos. You learn integration by working through problems and getting explanations for every mistake.",
     "topicsIntro": "All integration rules for high school calculus, in increasing difficulty:",
     "ctaBody": "Create a free account and practice your first fifty integrals today. No credit card. No limit."
+  },
+  "Theorie": {
+    "title": "Integration: every route on one page · __DOMAIN__",
+    "description": "Every integral form you meet in high school calculus, each with the step plan that goes with it. With examples, worked steps and the word problems.",
+    "h1": "Integration: every route on one page",
+    "intro": "A reference for the integrals you meet in high school calculus. For each form you see the formula, a worked example and, when you expand it, the steps. You can also <practiceLink>practise</practiceLink> right away.",
+    "stap0Title": "Step 0 · Look at the denominator",
+    "herkenSchil": "What you see",
+    "herkenRegel": "Route",
+    "regelsTitle": "Steps 1, 2 and 3 per route",
+    "herkenQuestion": "Which route do you take?",
+    "regelsInChapter": "Routes in this chapter"
   }
 }

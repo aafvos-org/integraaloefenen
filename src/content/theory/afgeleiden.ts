@@ -1026,14 +1026,23 @@ export type OverviewTable = {
   rows: string[][] // cellen mogen `$...$` bevatten voor LaTeX
 }
 
-/** Eén rij uit de herkentabel van stap 0. */
-export type HerkenRij = { schil: string; voorbeeld: string; regel: string }
+/** Eén rij uit de keuzehulp van stap 0. */
+export type HerkenRij = {
+  schil: string
+  voorbeeld: string
+  regel: string
+  /** Kop waaronder deze rij valt; rijen met dezelfde groep staan in één kader. */
+  groep?: string
+  /** `OverviewCard.id` waar deze rij naartoe springt (en die dan openklapt). */
+  kaart?: string
+}
 
 /** Het vaste stappenplan van een hoofdstuk: stap 0 (herkennen) + stap 1–3 per regel. */
 export type Stappenplan = {
   intro: string
   herken: HerkenRij[]
-  regels: Array<{ regel: string; formule: string; stap1: string; stap2: string; stap3: string }>
+  /** Weglaten als de stappen al in de kaarten zelf staan; scheelt een tweede tabel. */
+  regels?: Array<{ regel: string; formule: string; stap1: string; stap2: string; stap3: string }>
   slot?: string
 }
 
@@ -1043,6 +1052,13 @@ export type HerkenVraag = { problem: string; regel: string; waarom: string }
 export type OverviewCard = {
   id: string
   title: string
+  /** Kop waaronder deze kaart valt; opeenvolgende kaarten met dezelfde groep staan bij elkaar. */
+  groep?: string
+  /**
+   * De vorm die je in de opgave moet herkennen (LaTeX, inline). Blijft staan als
+   * de kaart dicht is, zodat je niet hoeft uit te klappen om te kiezen.
+   */
+  herkenpunt?: string
   /** topics_new.slug — koppelt de kaart aan een oefen-topic (knop "Oefen dit onderdeel") */
   topicSlug?: string
   formula?: string // hoofdformule (LaTeX, display mode)

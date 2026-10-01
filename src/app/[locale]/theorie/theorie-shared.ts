@@ -73,9 +73,9 @@ export function kaartLabels(t: T) {
   }
 }
 
-/** "H2 — De afgeleide functie" → "De afgeleide functie" */
+/** "H2 — De afgeleide functie" → "De afgeleide functie"; ook "K.3 — Cyclometrische functies" */
 export function stripChapterCode(title: string): string {
-  return title.replace(/^H\d+\s*[—–-]\s*/, '')
+  return title.replace(/^[A-Z]\.?\d+(?:\.\d+)?\s*[—–-]\s*/, '')
 }
 
 /** `?vb=2` → 2; alles anders → null */
