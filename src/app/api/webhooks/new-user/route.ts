@@ -3,8 +3,6 @@ import { Resend } from 'resend'
 import { SITE_CONFIG } from '@/config/site'
 import { createServiceRoleClient } from '@/lib/supabase/server'
 
-const resend = new Resend(process.env.RESEND_API_KEY)
-
 function escapeHtml(value: string): string {
   return value
     .replace(/&/g, '&amp;')
@@ -51,6 +49,8 @@ export async function POST(req: Request) {
       console.error('Kon gebruikersgegevens niet ophalen:', lookupErr)
     }
 
+    // Pas hier aanmaken: tijdens de build is RESEND_API_KEY er niet.
+    const resend = new Resend(process.env.RESEND_API_KEY)
     const { error } = await resend.emails.send({
       from: process.env.EMAIL_FROM ?? `no-reply@${SITE_CONFIG.domain}`,
       to: process.env.NOTIFY_EMAIL!,
