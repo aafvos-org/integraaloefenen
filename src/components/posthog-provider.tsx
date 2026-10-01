@@ -15,6 +15,13 @@ export function PostHogProvider({ children }: { children: React.ReactNode }) {
         capture_pageview: false,
         capture_pageleave: true,
         autocapture: true,
+        capture_exceptions: {
+          capture_unhandled_errors: true,
+          capture_unhandled_rejections: true,
+          // Console-fouten blijven uit: daar loggen we soms het ingetypte
+          // antwoord van de leerling in mee.
+          capture_console_errors: false,
+        },
         session_recording: {
           // Invoervelden blijven zichtbaar in de opnames — dat is juist het
           // punt: we willen zien waar leerlingen vastlopen in een som. Maar
