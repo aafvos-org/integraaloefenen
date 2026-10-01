@@ -9,9 +9,9 @@
 
 export type SiteId = 'afgeleiden' | 'integralen'
 
-const RAW_SITE = (process.env.NEXT_PUBLIC_SITE ?? 'afgeleiden') as string
-export const SITE: SiteId =
-  RAW_SITE === 'integralen' ? 'integralen' : 'afgeleiden'
+// Deze repo is integraaloefenen.nl. De site staat vast; de afgeleiden-tak
+// van de code wordt stap voor stap opgeruimd.
+export const SITE: SiteId = 'integralen'
 
 type SiteDef = {
   id: SiteId

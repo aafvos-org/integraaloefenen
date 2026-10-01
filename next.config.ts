@@ -5,7 +5,17 @@ import type { NextConfig } from 'next'
 
 const withNextIntl = createNextIntlPlugin('./src/i18n/request.ts')
 
+// Pagina's zonder taal in de URL sturen we naar de Nederlandse versie.
+// Stond eerst in vercel.json; Cloudflare leest dat bestand niet.
+const ZONDER_TAAL =
+  'dashboard|leerpad|oefenen|theorie|onboarding|inloggen|registreren|wachtwoord-vergeten|wachtwoord-opnieuw'
+
 const nextConfig: NextConfig = {
+  async redirects() {
+    return [
+      { source: `/:pad(${ZONDER_TAAL})/:rest*`, destination: '/nl/:pad/:rest*', permanent: false },
+    ]
+  },
   // Fix: multiple package-lock.json files on this machine confuse Next.js
   // file tracing. Pin the root explicitly so Vercel builds work correctly.
   outputFileTracingRoot: path.resolve(__dirname),
