@@ -3,23 +3,26 @@
 import { useMemo } from 'react'
 
 import { cn } from '@/components/ui'
+import { VraagForm, type VraagLabels } from '@/components/vraag-form'
 
 import { ChapterBlock, type ChapterData } from './topic-block'
-
-export type ActivityDay = { date: string; count: number }
 
 export function DashboardGrid({
   chapterData,
   streakDays = 0,
-  activity = [],
   totalAnswered = 0,
   totalCorrect = 0,
+  vraagLabels,
+  vraagTitel,
+  vraagIntro,
 }: {
   chapterData: ChapterData[]
   streakDays?: number
-  activity?: ActivityDay[]
   totalAnswered?: number
   totalCorrect?: number
+  vraagLabels: VraagLabels
+  vraagTitel: string
+  vraagIntro: string
 }) {
   const allClusters = useMemo(
     () => chapterData.flatMap((ch) => ch.topics.flatMap((t) => t.clusters)),
@@ -59,9 +62,13 @@ export function DashboardGrid({
           </div>
         </div>
 
-        {/* Right: activity */}
+        {/* Rechts: direct een vraag kunnen stellen */}
         <div className="space-y-3">
-          <ActivityCard activity={activity} />
+          <div className="rounded-2xl border border-accent/30 bg-accent-light/40 p-4">
+            <p className="font-serif text-base text-text">{vraagTitel}</p>
+            <p className="mt-0.5 text-xs text-text-muted">{vraagIntro}</p>
+            <VraagForm labels={vraagLabels} compact />
+          </div>
         </div>
       </div>
     </>
@@ -109,38 +116,6 @@ function KpiCard({
   )
 }
 
-function ActivityCard({ activity }: { activity: ActivityDay[] }) {
-  const max = Math.max(1, ...activity.map((a) => a.count))
-  const padded =
-    activity.length >= 14
-      ? activity.slice(-14)
-      : [...Array(14 - activity.length).fill({ date: '', count: 0 } as ActivityDay), ...activity]
-  return (
-    <div className="rounded-xl border border-border bg-surface p-4">
-      <div className="text-[11px] font-medium uppercase tracking-wider text-text-muted">
-        Afgelopen 14 dagen
-      </div>
-      <div className="mt-3 flex h-20 items-end gap-1">
-        {padded.map((d, i) => (
-          <div
-            key={i}
-            className="flex-1 rounded-sm"
-            style={{
-              height: `${(d.count / max) * 92 + 6}%`,
-              backgroundColor:
-                d.count === 0 ? 'var(--color-border)' : `rgba(45, 106, 79, ${0.25 + (d.count / max) * 0.65})`,
-            }}
-            title={d.date ? `${d.date}: ${d.count}` : undefined}
-          />
-        ))}
-      </div>
-      <div className="mt-2 flex justify-between text-[10px] text-text-muted">
-        <span>14 dgn geleden</span>
-        <span>vandaag</span>
-      </div>
-    </div>
-  )
-}
 
 function Ring({ pct, size = 92, stroke = 9 }: { pct: number; size?: number; stroke?: number }) {
   const r = (size - stroke) / 2

@@ -95,3 +95,9 @@ body {
   background: var(--color-accent-light);
   box-shadow: 0 0 0 3px var(--color-accent);
 }
+
+/* Gemarkeerde stukken formule (KaTeX \colorbox) in het methode-schema: zachte hoekjes */
+.methode-schema .katex span[style*="background-color"] {
+  border-radius: 0.375rem;
+  padding: 0.1em 0.3em;
+}

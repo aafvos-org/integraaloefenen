@@ -7,6 +7,8 @@
  *   - de overzichtspagina /theorie               (`app/theorie/page.tsx`)
  */
 
+export { METHODE } from './methode'
+
 export type ClusterTheory = {
   /** Hoofdregel als KaTeX-string. */
   rule: string
@@ -400,6 +402,281 @@ export const CLUSTER_THEORY: Record<string, ClusterTheory> = {
       ],
     },
   },
+  // ── H2 · nieuwe structuur (topics_new / topic_clusters_new) ───────────────
+  // Sleutel = `topicSlug/clusterSlug`. `intro` = stap 0 (herkennen), steps = stap 1–3.
+  'h2_termsgewijs/gehele_coefficienten': {
+    rule: "f(x) = ax^n \\implies f'(x) = n \\cdot ax^{n-1}",
+    intro: 'Stap 0: losse termen met $+$ en $-$ ertussen → somregel, elke term apart met de machtsregel.',
+    example: {
+      problem: 'f(x) = 2x^3 - 5x^2 + 8x - 4',
+      answer: "f'(x) = 6x^2 - 10x + 8",
+      steps: ['Termen: $2x^3$, $-5x^2$, $8x$, $-4$', 'Per term: $6x^2$, $-10x$, $8$, $0$', "Optellen: $f'(x) = 6x^2 - 10x + 8$"],
+    },
+  },
+  'h2_termsgewijs/breuken_decimalen': {
+    rule: "f(x) = ax^n \\implies f'(x) = n \\cdot ax^{n-1} \\quad (a \\text{ mag een breuk of decimaal zijn})",
+    intro: 'Stap 0: losse termen → somregel en machtsregel. De coëfficiënt blijft in dezelfde notatie als de opgave.',
+    example: {
+      problem: 'f(x) = 0{,}6x^3 - 1{,}3x^2 + 7',
+      answer: "f'(x) = 1{,}8x^2 - 2{,}6x",
+      steps: ['Termen: $0{,}6x^3$, $-1{,}3x^2$, $7$', 'Per term: $3 \\cdot 0{,}6x^2 = 1{,}8x^2$, $-2 \\cdot 1{,}3x = -2{,}6x$, $0$', "Optellen: $f'(x) = 1{,}8x^2 - 2{,}6x$"],
+    },
+  },
+  'h2_termsgewijs/andere_letters': {
+    rule: "h(t) = at^n \\implies h'(t) = n \\cdot at^{n-1}",
+    intro: 'Stap 0: losse termen → somregel en machtsregel. De variabele heet $t$, $q$ of $p$; de regels blijven hetzelfde.',
+    example: {
+      problem: 'h(t) = 2t^3 - 4t^2 + 3t - 2',
+      answer: "h'(t) = 6t^2 - 8t + 3",
+      steps: ['Termen: $2t^3$, $-4t^2$, $3t$, $-2$', 'Per term: $6t^2$, $-8t$, $3$, $0$', "Optellen: $h'(t) = 6t^2 - 8t + 3$"],
+    },
+  },
+  'h2_haakjes_eerst/twee_lineaire_factoren': {
+    rule: '(a + b)(c + d) = ac + ad + bc + bd',
+    intro: 'Stap 0: twee lineaire factoren → eerst uitwerken, dan de somregel.',
+    example: {
+      problem: 'f(x) = (3 - x)(5 + 2x)',
+      answer: "f'(x) = -4x + 1",
+      steps: ['Uitwerken: $15 + 6x - 5x - 2x^2$', 'Herleiden: $-2x^2 + x + 15$', "Termsgewijs: $f'(x) = -4x + 1$"],
+    },
+  },
+  'h2_haakjes_eerst/merkwaardig_product': {
+    rule: '(a + b)^2 = a^2 + 2ab + b^2 \\qquad (a - b)^2 = a^2 - 2ab + b^2',
+    intro: 'Stap 0: een kwadraat van een lineaire vorm → eerst uitwerken met het merkwaardig product, dan de somregel.',
+    example: {
+      problem: 'f(x) = (2x - 5)^2',
+      answer: "f'(x) = 8x - 20",
+      steps: ['Uitwerken: $(2x)^2 - 2 \\cdot 2x \\cdot 5 + 5^2$', 'Herleiden: $4x^2 - 20x + 25$', "Termsgewijs: $f'(x) = 8x - 20$"],
+    },
+  },
+  'h2_haakjes_eerst/constante_factor': {
+    rule: 'c \\cdot (a + b)^2 = c a^2 + 2cab + c b^2',
+    intro: 'Stap 0: haakjes met een getal ervoor → eerst uitwerken, het getal mee vermenigvuldigen; een min gaat over álle termen.',
+    example: {
+      problem: 'f(x) = 5(x - 3)^2 + 5(2x - 1)',
+      answer: "f'(x) = 10x - 20",
+      steps: ['Uitwerken: $5(x^2 - 6x + 9) + 10x - 5$', 'Herleiden: $5x^2 - 20x + 40$', "Termsgewijs: $f'(x) = 10x - 20$"],
+    },
+  },
+  'h2_haakjes_eerst/hogere_graad': {
+    rule: 'x \\cdot (ax + b)^2 \\to \\text{eerst het kwadraat, dan } x \\text{ erdoor}',
+    intro: 'Stap 0: $x$ of $x^2$ maal haakjes → eerst uitwerken tot een polynoom van hogere graad, dan de somregel.',
+    example: {
+      problem: 'f(x) = x(2x - 1)^2',
+      answer: "f'(x) = 12x^2 - 8x + 1",
+      steps: ['Uitwerken: $x(4x^2 - 4x + 1)$', 'Herleiden: $4x^3 - 4x^2 + x$', "Termsgewijs: $f'(x) = 12x^2 - 8x + 1$"],
+    },
+  },
+  'h2_productregel/twee_polynomen': {
+    rule: "f = g \\cdot h \\implies f' = g' \\cdot h + g \\cdot h'",
+    intro: 'Stap 0: twee factoren met een $\\cdot$ ertussen → productregel. Laat de haakjes in je antwoord staan.',
+    example: {
+      problem: 'f(x) = (x^2 - 4)(x^3 + 2x + 3)',
+      answer: "f'(x) = 2x(x^3 + 2x + 3) + (x^2 - 4)(3x^2 + 2)",
+      steps: ['$g(x) = x^2 - 4$, $h(x) = x^3 + 2x + 3$', "$g'(x) = 2x$, $h'(x) = 3x^2 + 2$", "$f'(x) = 2x(x^3 + 2x + 3) + (x^2 - 4)(3x^2 + 2)$"],
+    },
+  },
+  'h2_productregel/kwadraat_als_product': {
+    rule: "f = g \\cdot g \\implies f' = g' \\cdot g + g \\cdot g'",
+    intro: 'Stap 0: een kwadraat van een polynoom → schrijf als $g \\cdot g$ en gebruik de productregel.',
+    example: {
+      problem: 'f(x) = (3x^2 - 4)^2',
+      answer: "f'(x) = 6x(3x^2 - 4) + (3x^2 - 4) \\cdot 6x",
+      steps: ['$g(x) = 3x^2 - 4$, $h(x) = 3x^2 - 4$', "$g'(x) = 6x$, $h'(x) = 6x$", "$f'(x) = 6x(3x^2 - 4) + (3x^2 - 4) \\cdot 6x$"],
+    },
+  },
+  'h2_productregel/genest_in_som': {
+    rule: "f = g \\pm h,\\ h = \\text{product} \\implies f' = g' \\pm h'",
+    intro: 'Stap 0: een $+$ of $-$ tussen twee delen → somregel; het deel met het product krijgt in stap 2 de productregel (noem dat deel even $f$).',
+    example: {
+      problem: 'f(x) = x^2 - (x^3 - 2)(x + 5)',
+      answer: "f'(x) = 2x - 3x^2(x + 5) - (x^3 - 2)",
+      steps: ['$g(x) = x^2$, $h(x) = (x^3 - 2)(x + 5)$', "$g'(x) = 2x$; voor $h$: productregel, noem dit deel even $f$ met $g = x^3 - 2$, $h = x + 5$, $g' = 3x^2$, $h' = 1$, dus $h'(x) = 3x^2(x + 5) + (x^3 - 2)$", "$f'(x) = g'(x) - h'(x) = 2x - 3x^2(x + 5) - (x^3 - 2)$"],
+    },
+  },
+  'h2_productregel/drie_factoren': {
+    rule: "(pqr)' = p' q r + p q' r + p q r'",
+    intro: 'Stap 0: drie factoren achter elkaar → productregel voor drie factoren.',
+    example: {
+      problem: 'f(x) = x(x - 1)(x + 2)',
+      answer: "f'(x) = (x - 1)(x + 2) + x(x + 2) + x(x - 1)",
+      steps: ['$p = x$, $q = x - 1$, $r = x + 2$', "$p' = 1$, $q' = 1$, $r' = 1$", "$f'(x) = (x - 1)(x + 2) + x(x + 2) + x(x - 1)$"],
+    },
+  },
+  'h2_quotientregel/lineair_door_lineair': {
+    rule: "f = \\dfrac{g}{h} \\implies f' = \\dfrac{g' h - g h'}{h^2}",
+    intro: 'Stap 0: een breuk met $x$ in de noemer → quotiëntregel. $g$ is de teller, $h$ de noemer.',
+    example: {
+      problem: 'f(x) = \\dfrac{x - 2}{x + 5}',
+      answer: "f'(x) = \\dfrac{7}{(x + 5)^2}",
+      steps: ['$g(x) = x - 2$, $h(x) = x + 5$', "$g'(x) = 1$, $h'(x) = 1$", "$f'(x) = \\dfrac{1 \\cdot (x + 5) - (x - 2) \\cdot 1}{(x + 5)^2} = \\dfrac{7}{(x + 5)^2}$"],
+    },
+  },
+  'h2_quotientregel/polynoom_breuk': {
+    rule: "f = \\dfrac{g}{h} \\implies f' = \\dfrac{g' h - g h'}{h^2}",
+    intro: 'Stap 0: een breuk met $x$ in de noemer → quotiëntregel. Werk de teller uit, laat de noemer als kwadraat staan.',
+    example: {
+      problem: 'f(x) = \\dfrac{x^2}{x + 1}',
+      answer: "f'(x) = \\dfrac{x^2 + 2x}{(x + 1)^2}",
+      steps: ['$g(x) = x^2$, $h(x) = x + 1$', "$g'(x) = 2x$, $h'(x) = 1$", "$f'(x) = \\dfrac{2x(x + 1) - x^2}{(x + 1)^2} = \\dfrac{x^2 + 2x}{(x + 1)^2}$"],
+    },
+  },
+  'h2_quotientregel/som_met_breuk': {
+    rule: "f = g \\pm h,\\ h = \\text{breuk} \\implies f' = g' \\pm h'",
+    intro: 'Stap 0: een $+$ of $-$ tussen twee delen → somregel; de breuk krijgt in stap 2 de quotiëntregel (noem dat deel even $f$).',
+    example: {
+      problem: 'f(x) = x^2 - \\dfrac{3}{x + 1}',
+      answer: "f'(x) = 2x + \\dfrac{3}{(x + 1)^2}",
+      steps: ['$g(x) = x^2$, $h(x) = \\dfrac{3}{x + 1}$', "$g'(x) = 2x$; voor $h$: quotiëntregel, noem dit deel even $f$ met teller $3$ en noemer $x + 1$: $\\dfrac{0 \\cdot (x + 1) - 3 \\cdot 1}{(x + 1)^2} = \\dfrac{-3}{(x + 1)^2}$", "$f'(x) = 2x - \\dfrac{-3}{(x + 1)^2} = 2x + \\dfrac{3}{(x + 1)^2}$"],
+    },
+  },
+  'h2_gemengd/welke_regel': {
+    rule: '\\text{Stap 0: kijk naar de buitenste schil}',
+    intro: '$+$/$-$ tussen delen → somregel · $\\cdot$ tussen haakjes of een kwadraat van een polynoom → productregel · breukstreep met $x$ onder → quotiëntregel · lineaire haakjes → eerst uitwerken.',
+    example: {
+      problem: 'f(x) = x^2 + \\dfrac{1}{x - 2}',
+      answer: "f'(x) = 2x - \\dfrac{1}{(x - 2)^2}",
+      steps: ['Buitenste schil: een $+$ → somregel met $g = x^2$, $h = \\dfrac{1}{x - 2}$', "$g' = 2x$; $h$ is een breuk → quotiëntregel: $h' = \\dfrac{0 \\cdot (x - 2) - 1 \\cdot 1}{(x - 2)^2} = \\dfrac{-1}{(x - 2)^2}$", "$f'(x) = 2x - \\dfrac{1}{(x - 2)^2}$"],
+    },
+  },
+
+  // ── H6 · nieuwe structuur ─────────────────────────────────────────────────
+  'h6_machten/negatieve_macht': {
+    rule: "\\dfrac{a}{x^n} = ax^{-n} \\implies f'(x) = -n \\cdot ax^{-n-1}",
+    intro: 'Stap 0: een getal gedeeld door een macht van $x$ → herschrijf als negatieve macht, dan de machtsregel.',
+    example: {
+      problem: 'f(x) = \\dfrac{6}{x^3}',
+      answer: "f'(x) = -\\dfrac{18}{x^4}",
+      steps: ['Herschrijf: $f(x) = 6x^{-3}$', "Machtsregel: $[6x^{-3}]' = -18x^{-4}$", "Terugschrijven: $f'(x) = -\\dfrac{18}{x^4}$"],
+    },
+  },
+  'h6_machten/uitdelen': {
+    rule: '\\dfrac{a + b}{c} = \\dfrac{a}{c} + \\dfrac{b}{c}',
+    intro: 'Stap 0: een breuk met één term in de noemer → deel uit, dan termsgewijs. Geen quotiëntregel nodig.',
+    example: {
+      problem: 'f(x) = \\dfrac{2x - 1}{x^3}',
+      answer: "f'(x) = -\\dfrac{4}{x^3} + \\dfrac{3}{x^4}",
+      steps: ['Deel uit: $f(x) = 2x^{-2} - x^{-3}$', 'Per term: $-4x^{-3}$ en $3x^{-4}$', "Terugschrijven: $f'(x) = -\\dfrac{4}{x^3} + \\dfrac{3}{x^4}$"],
+    },
+  },
+  'h6_machten/wortelvorm': {
+    rule: "\\sqrt{x} = x^{1/2} \\implies [\\sqrt{x}]' = \\tfrac{1}{2}x^{-1/2} = \\dfrac{1}{2\\sqrt{x}}",
+    intro: 'Stap 0: een wortel van $x$ → herschrijf als macht $x^{1/2}$, dan de machtsregel.',
+    example: {
+      problem: 'f(x) = 3\\sqrt{x} + 5',
+      answer: "f'(x) = \\dfrac{3}{2\\sqrt{x}}",
+      steps: ['Herschrijf: $f(x) = 3x^{1/2} + 5$', "Per term: $1{,}5x^{-1/2}$ en $0$", "Terugschrijven: $f'(x) = \\dfrac{3}{2\\sqrt{x}}$"],
+    },
+  },
+  'h6_machten/nde_wortel': {
+    rule: '\\sqrt[n]{x^m} = x^{m/n}',
+    intro: 'Stap 0: een $n$-de machtswortel → herschrijf als macht $x^{m/n}$, dan de machtsregel; exponenten van $x$ tel je op.',
+    example: {
+      problem: 'f(x) = x \\cdot \\sqrt[3]{x}',
+      answer: "f'(x) = \\tfrac{4}{3}\\sqrt[3]{x}",
+      steps: ['Herschrijf: $f(x) = x \\cdot x^{1/3} = x^{4/3}$', "Machtsregel: $\\tfrac{4}{3}x^{1/3}$", "Terugschrijven: $f'(x) = \\tfrac{4}{3}\\sqrt[3]{x}$"],
+    },
+  },
+  'h6_machten/gemengd_macht_wortel': {
+    rule: 'x^a \\cdot x^b = x^{a+b} \\qquad \\dfrac{x^a}{x^b} = x^{a-b}',
+    intro: 'Stap 0: machten en wortels van $x$ door elkaar → schrijf alles als macht van $x$, dan de machtsregel.',
+    example: {
+      problem: 'f(x) = x \\cdot \\sqrt{x}',
+      answer: "f'(x) = 1{,}5\\sqrt{x}",
+      steps: ['Herschrijf: $f(x) = x^{3/2}$', "Machtsregel: $\\tfrac{3}{2}x^{1/2}$", "Terugschrijven: $f'(x) = 1{,}5\\sqrt{x}$"],
+    },
+  },
+  'h6_kettingregel/macht_lineair': {
+    rule: "[(ax + b)^n]' = n(ax + b)^{n-1} \\cdot a",
+    intro: 'Stap 0: haakjes tot een macht → kettingregel. Buitenkant $(\\ldots)^n$, kern $ax + b$.',
+    example: {
+      problem: 'f(x) = (4x + 3)^3',
+      answer: "f'(x) = 12(4x + 3)^2",
+      steps: ['Buitenkant $(\\ldots)^3$, kern $4x + 3$', "Buitenkant met kern erin: $3(4x + 3)^2$; kern: $4$", "Vermenigvuldig: $f'(x) = 12(4x + 3)^2$"],
+    },
+  },
+  'h6_kettingregel/macht_polynoom': {
+    rule: "[(\\text{kern})^n]' = n(\\text{kern})^{n-1} \\cdot \\text{kern}'",
+    intro: 'Stap 0: een polynoom tussen haakjes tot een macht → kettingregel. De afgeleide van de kern is nu zelf een polynoom.',
+    example: {
+      problem: 'f(x) = (x^2 + 1)^3',
+      answer: "f'(x) = 6x(x^2 + 1)^2",
+      steps: ['Buitenkant $(\\ldots)^3$, kern $x^2 + 1$', "Buitenkant met kern erin: $3(x^2 + 1)^2$; kern: $2x$", "Vermenigvuldig: $f'(x) = 6x(x^2 + 1)^2$"],
+    },
+  },
+  'h6_kettingregel/wortel_lineair': {
+    rule: "[\\sqrt{\\text{kern}}]' = \\dfrac{1}{2\\sqrt{\\text{kern}}} \\cdot \\text{kern}'",
+    intro: 'Stap 0: een wortel van een expressie → kettingregel. Buitenkant $\\sqrt{\\ldots}$, kern wat onder de wortel staat.',
+    example: {
+      problem: 'f(x) = \\sqrt{4x + 1}',
+      answer: "f'(x) = \\dfrac{2}{\\sqrt{4x + 1}}",
+      steps: ['Buitenkant $\\sqrt{\\ldots}$, kern $4x + 1$', "Buitenkant met kern erin: $\\dfrac{1}{2\\sqrt{4x + 1}}$; kern: $4$", "Vermenigvuldig: $f'(x) = \\dfrac{4}{2\\sqrt{4x + 1}} = \\dfrac{2}{\\sqrt{4x + 1}}$"],
+    },
+  },
+  'h6_kettingregel/wortel_polynoom': {
+    rule: "[\\sqrt{\\text{kern}}]' = \\dfrac{\\text{kern}'}{2\\sqrt{\\text{kern}}}",
+    intro: 'Stap 0: een wortel van een polynoom → kettingregel. De afgeleide van de kern komt in de teller.',
+    example: {
+      problem: 'f(x) = \\sqrt{x^2 + 1}',
+      answer: "f'(x) = \\dfrac{x}{\\sqrt{x^2 + 1}}",
+      steps: ['Buitenkant $\\sqrt{\\ldots}$, kern $x^2 + 1$', "Buitenkant met kern erin: $\\dfrac{1}{2\\sqrt{x^2 + 1}}$; kern: $2x$", "Vermenigvuldig: $f'(x) = \\dfrac{x}{\\sqrt{x^2 + 1}}$"],
+    },
+  },
+  'h6_kettingregel/negatieve_macht_expressie': {
+    rule: "\\dfrac{a}{(\\text{kern})^n} = a(\\text{kern})^{-n} \\implies f' = -n \\cdot a(\\text{kern})^{-n-1} \\cdot \\text{kern}'",
+    intro: 'Stap 0: een getal gedeeld door een expressie tot een macht → schrijf als $(\\ldots)^{-n}$ en gebruik de kettingregel.',
+    example: {
+      problem: 'f(x) = \\dfrac{1}{(2x + 1)^2}',
+      answer: "f'(x) = -\\dfrac{4}{(2x + 1)^3}",
+      steps: ['Schrijf als $(2x + 1)^{-2}$: buitenkant $(\\ldots)^{-2}$, kern $2x + 1$', "Buitenkant met kern erin: $-2(2x + 1)^{-3}$; kern: $2$", "Vermenigvuldig en schrijf terug: $f'(x) = -\\dfrac{4}{(2x + 1)^3}$"],
+    },
+  },
+  'h6_kettingregel/gebroken_macht_kern': {
+    rule: '(\\text{kern})\\sqrt{\\text{kern}} = (\\text{kern})^{3/2} \\qquad \\sqrt[3]{\\text{kern}} = (\\text{kern})^{1/3}',
+    intro: 'Stap 0: een expressie maal de wortel ervan, of een $n$-de machtswortel van een expressie → schrijf als gebroken macht en gebruik de kettingregel.',
+    example: {
+      problem: 'f(x) = (x^2 + 3)\\sqrt{x^2 + 3}',
+      answer: "f'(x) = 3x\\sqrt{x^2 + 3}",
+      steps: ['Schrijf als $(x^2 + 3)^{3/2}$: buitenkant $(\\ldots)^{3/2}$, kern $x^2 + 3$', "Buitenkant met kern erin: $1{,}5\\sqrt{x^2 + 3}$; kern: $2x$", "Vermenigvuldig: $f'(x) = 3x\\sqrt{x^2 + 3}$"],
+    },
+  },
+  'h6_kettingregel/ketting_in_som': {
+    rule: "f = g \\pm h \\implies f' = g' \\pm h' \\quad (\\text{kettingregel voor het deel dat hem nodig heeft})",
+    intro: 'Stap 0: een $+$ of $-$ tussen twee delen → somregel; het deel met de macht of wortel van een expressie krijgt in stap 2 de kettingregel.',
+    example: {
+      problem: 'f(x) = x^2 + (2x + 1)^4',
+      answer: "f'(x) = 2x + 8(2x + 1)^3",
+      steps: ['$g(x) = x^2$, $h(x) = (2x + 1)^4$', "$g'(x) = 2x$; voor $h$: buitenkant $(\\ldots)^4$, kern $2x + 1$, dus $h'(x) = 4(2x + 1)^3 \\cdot 2 = 8(2x + 1)^3$", "$f'(x) = 2x + 8(2x + 1)^3$"],
+    },
+  },
+  'h6_combinaties/ketting_plus_product': {
+    rule: "f = g \\cdot h \\implies f' = g' h + g h' \\quad (\\text{kettingregel voor } h')",
+    intro: 'Stap 0: twee factoren met een $\\cdot$ ertussen → productregel; de factor met de macht of wortel van een expressie krijgt in stap 2 de kettingregel. Laat haakjes en wortels staan.',
+    example: {
+      problem: 'f(x) = x(2x + 1)^3',
+      answer: "f'(x) = (2x + 1)^3 + 6x(2x + 1)^2",
+      steps: ['$g(x) = x$, $h(x) = (2x + 1)^3$', "$g'(x) = 1$; voor $h$: buitenkant $(\\ldots)^3$, kern $2x + 1$, dus $h'(x) = 3(2x + 1)^2 \\cdot 2 = 6(2x + 1)^2$", "$f'(x) = 1 \\cdot (2x + 1)^3 + x \\cdot 6(2x + 1)^2$"],
+    },
+  },
+  'h6_combinaties/ketting_plus_quotient': {
+    rule: "f = \\dfrac{g}{h} \\implies f' = \\dfrac{g' h - g h'}{h^2} \\quad (\\text{kettingregel voor } g' \\text{ of } h')",
+    intro: 'Stap 0: een breuk met $x$ in de noemer → quotiëntregel; het deel met de macht of wortel van een expressie krijgt in stap 2 de kettingregel. Antwoord: de ingevulde formule.',
+    example: {
+      problem: 'f(x) = \\dfrac{x}{\\sqrt{2x + 1}}',
+      answer: "f'(x) = \\dfrac{\\sqrt{2x + 1} - \\dfrac{x}{\\sqrt{2x + 1}}}{2x + 1}",
+      steps: ['$g(x) = x$ (teller), $h(x) = \\sqrt{2x + 1}$ (noemer)', "$g'(x) = 1$; voor $h$: buitenkant $\\sqrt{\\ldots}$, kern $2x + 1$, dus $h'(x) = \\dfrac{1}{2\\sqrt{2x + 1}} \\cdot 2 = \\dfrac{1}{\\sqrt{2x + 1}}$", "$f'(x) = \\dfrac{1 \\cdot \\sqrt{2x + 1} - x \\cdot \\dfrac{1}{\\sqrt{2x + 1}}}{(\\sqrt{2x + 1})^2}$"],
+    },
+  },
+  'h6_gemengd/welke_regel': {
+    rule: '\\text{Stap 0: herschrijven, uitdelen, kettingregel of een regel uit H2?}',
+    intro: 'Eén term in de noemer → uitdelen · alleen $x$ onder de wortel of in de macht → herschrijven · een expressie in de macht of wortel → kettingregel · anders: som-, product- of quotiëntregel uit H2.',
+    example: {
+      problem: 'f(x) = \\dfrac{x^2 + 4}{2x^3}',
+      answer: "f'(x) = -\\dfrac{1}{2x^2} - \\dfrac{6}{x^4}",
+      steps: ['Buitenste schil: één term in de noemer → uitdelen: $f(x) = \\tfrac{1}{2}x^{-1} + 2x^{-3}$', "Per term: $-\\tfrac{1}{2}x^{-2}$ en $-6x^{-4}$", "Terugschrijven: $f'(x) = -\\dfrac{1}{2x^2} - \\dfrac{6}{x^4}$"],
+    },
+  },
+
 }
 
 /**
@@ -736,18 +1013,46 @@ export const TOPIC_INTROS_EN: Record<string, string> = {
 // THEORY_OVERVIEW — gegroepeerd per hoofdstuk, getoond bovenaan de theorie-pagina
 // =============================================================================
 
-export type OverviewExample = { problem: string; answer: string; steps?: string[] }
+export type OverviewExample = {
+  problem: string
+  answer: string
+  steps?: string[]
+  /** true = stappen zijn het vaste stappenplan en worden genummerd vanaf stap 0 */
+  stappenplan?: boolean
+}
 
 export type OverviewTable = {
   headers: string[]
   rows: string[][] // cellen mogen `$...$` bevatten voor LaTeX
 }
 
+/** Eén rij uit de herkentabel van stap 0. */
+export type HerkenRij = { schil: string; voorbeeld: string; regel: string }
+
+/** Het vaste stappenplan van een hoofdstuk: stap 0 (herkennen) + stap 1–3 per regel. */
+export type Stappenplan = {
+  intro: string
+  herken: HerkenRij[]
+  regels: Array<{ regel: string; formule: string; stap1: string; stap2: string; stap3: string }>
+  slot?: string
+}
+
+/** Zelftest-item: welke regel pak je bij deze functie? */
+export type HerkenVraag = { problem: string; regel: string; waarom: string }
+
 export type OverviewCard = {
   id: string
   title: string
+  /** topics_new.slug — koppelt de kaart aan een oefen-topic (knop "Oefen dit onderdeel") */
+  topicSlug?: string
   formula?: string // hoofdformule (LaTeX, display mode)
+  /** Afspraak over de vorm van het antwoord, één zin; mag `$...$` bevatten */
+  answerNote?: string
   examples?: OverviewExample[] // problem → answer
+  /** Zelftest: functies met verborgen regelkeuze */
+  herken?: HerkenVraag[]
+  /** Uitlegvideo's (slug uit lib/videos.ts) */
+  videos?: Array<{ slug: string; label: string }>
   table?: OverviewTable
   notes?: string[] // kleine bullets onderaan; mogen `$...$` bevatten
 }
@@ -755,92 +1060,13 @@ export type OverviewCard = {
 export type OverviewChapter = {
   slug: string
   title: string
+  /** Eén zin onder de hoofdstuktitel */
+  intro?: string
+  stappenplan?: Stappenplan
   cards: OverviewCard[]
 }
 
 export const THEORY_OVERVIEW: OverviewChapter[] = [
-  {
-    slug: 'h2',
-    title: 'H2 — De afgeleide functie',
-    cards: [
-      {
-        id: 'machtsregel',
-        title: 'Machtsregel',
-        formula: "f(x) = ax^n \\implies f'(x) = n \\cdot ax^{n-1}",
-        examples: [
-          { problem: 'f(x) = 3x^4', answer: "f'(x) = 12x^3", steps: ['$n = 4$, $a = 3$', "$f'(x) = 4 \\cdot 3 \\cdot x^{4-1} = 12x^3$"] },
-          { problem: 'f(x) = 7', answer: "f'(x) = 0", steps: ['Constante: $n = 0$', "$f'(x) = 0$"] },
-        ],
-      },
-      {
-        id: 'somregel',
-        title: 'Somregel',
-        formula: "f(x) = g(x) + h(x) \\implies f'(x) = g'(x) + h'(x)",
-        examples: [
-          {
-            problem: 'f(x) = x^3 + 5x^2',
-            answer: "f'(x) = 3x^2 + 10x",
-            steps: [
-              'Differentieer elke term apart: $(x^3)\' = 3x^2$ en $(5x^2)\' = 10x$',
-              "Tel op: $f'(x) = 3x^2 + 10x$",
-            ],
-          },
-        ],
-      },
-      {
-        id: 'productregel',
-        title: 'Productregel',
-        formula:
-          "f(x) = g(x) \\cdot h(x) \\implies f'(x) = g'(x)h(x) + g(x)h'(x)",
-        examples: [
-          {
-            problem: 'f(x) = (x^2-4)(x^3+2x)',
-            answer: "f'(x) = 2x(x^3+2x) + (x^2-4)(3x^2+2)",
-            steps: ["$g = x^2-4,\\ g' = 2x$", "$h = x^3+2x,\\ h' = 3x^2+2$", "$f'(x) = 2x(x^3+2x) + (x^2-4)(3x^2+2)$"],
-          },
-        ],
-      },
-      {
-        id: 'quotientregel',
-        title: 'Quotiëntregel',
-        formula:
-          "f(x) = \\dfrac{g(x)}{h(x)} \\implies f'(x) = \\dfrac{g'(x)h(x) - g(x)h'(x)}{\\bigl(h(x)\\bigr)^2}",
-        examples: [
-          {
-            problem: 'f(x) = \\dfrac{x-2}{x+5}',
-            answer: "f'(x) = \\dfrac{7}{(x+5)^2}",
-            steps: ["$t = x-2,\\ t' = 1$", "$n = x+5,\\ n' = 1$", "$f'(x) = \\dfrac{1\\cdot(x+5)-(x-2)\\cdot 1}{(x+5)^2} = \\dfrac{7}{(x+5)^2}$"],
-          },
-        ],
-      },
-    ],
-  },
-  {
-    slug: 'h6',
-    title: 'H6 — Differentiaalrekening',
-    cards: [
-      {
-        id: 'machten_herschrijven',
-        title: 'Machtsfuncties herschrijven',
-        formula: "f(x) = \\dfrac{1}{x^n} = x^{-n} \\implies f'(x) = -nx^{-n-1}",
-        examples: [
-          { problem: 'f(x) = \\sqrt{x} = x^{1/2}', answer: "f'(x) = \\tfrac{1}{2}x^{-1/2}", steps: ["Herschrijf: $f(x) = x^{1/2}$", "$n = \\tfrac{1}{2}$: $f'(x) = \\tfrac{1}{2}x^{\\frac{1}{2}-1} = \\tfrac{1}{2}x^{-1/2}$"] },
-          { problem: 'f(x) = \\sqrt[n]{x} = x^{1/n}', answer: "f'(x) = \\tfrac{1}{n}x^{\\tfrac{1}{n}-1}" },
-        ],
-      },
-      {
-        id: 'kettingregel',
-        title: 'De kettingregel',
-        formula: "f\\bigl(g(x)\\bigr)' = f'\\bigl(g(x)\\bigr) \\cdot g'(x)",
-        examples: [
-          { problem: '(4x+3)^3', answer: "12(4x+3)^2" },
-          { problem: '(x^2+1)^3', answer: "6x(x^2+1)^2" },
-          { problem: '\\sqrt{3x+1}', answer: "\\dfrac{3}{2\\sqrt{3x+1}}" },
-          { problem: '\\sqrt{x^2+1}', answer: "\\dfrac{x}{\\sqrt{x^2+1}}" },
-        ],
-      },
-    ],
-  },
   {
     slug: 'h7',
     title: 'H7 — Goniometrische functies',

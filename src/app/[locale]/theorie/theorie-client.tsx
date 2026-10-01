@@ -5,11 +5,13 @@ import { useRef, useState } from 'react'
 import { Link } from '@/i18n/navigation'
 import { Math as TeX, RichMath } from '@/components/math'
 import { cn } from '@/components/ui'
-import type { OverviewCard } from '@/lib/theory'
+import type { OverviewCard, Stappenplan } from '@/lib/theory'
 
 export type TheorieChapter = {
   slug: string
   title: string
+  intro?: string
+  stappenplan?: Stappenplan
   /** Vooraf op de server geformatteerd, bv. "Oefen De afgeleide functie →" */
   practiceLabel: string
   cards: OverviewCard[]
@@ -22,6 +24,19 @@ type Labels = {
   expandSidebar: string
   exampleLabel: string
   detailsLabel: string
+  /** "Stap {n}" */
+  stepLabel: string
+  practiceTopicLabel: string
+  stappenplanTitle: string
+  stap0Title: string
+  herkenSchil: string
+  herkenVoorbeeld: string
+  herkenRegel: string
+  regelsTitle: string
+  answerNoteLabel: string
+  herkenQuestion: string
+  revealLabel: string
+  videoLabel: string
 }
 
 /** "H2 — De afgeleide functie" → { code: "H2", short: "De afgeleide functie" } */
@@ -33,13 +48,24 @@ function splitTitle(title: string): { code: string | null; short: string } {
 export function TheorieClient({
   chapters,
   labels,
+  sidebar = true,
 }: {
   chapters: TheorieChapter[]
   labels: Labels
+  /** false = zonder eigen zijbalk en scrollcontainer (wordt dan in TheorieLayout getoond) */
+  sidebar?: boolean
 }) {
   const [sidebarOpen, setSidebarOpen] = useState(true)
   const [activeSlug, setActiveSlug] = useState<string | null>(chapters[0]?.slug ?? null)
-  const [openCards, setOpenCards] = useState<Set<string>>(new Set())
+  // Kaarten die aan een oefen-topic hangen staan standaard open: dat is de kern van de pagina.
+  const [openCards, setOpenCards] = useState<Set<string>>(
+    () =>
+      new Set(
+        chapters.flatMap((ch) =>
+          ch.cards.filter((c) => c.topicSlug).map((c) => `${ch.slug}/${c.id}`),
+        ),
+      ),
+  )
   const mainScrollRef = useRef<HTMLDivElement | null>(null)
 
   function toggleCard(key: string) {
@@ -70,8 +96,9 @@ export function TheorieClient({
   }
 
   return (
-    <div className="flex min-h-[calc(100vh-3.5rem)] flex-col lg:h-[calc(100vh-3.5rem)] lg:flex-row lg:overflow-hidden">
+    <div className={sidebar ? 'flex min-h-[calc(100vh-3.5rem)] flex-col lg:h-[calc(100vh-3.5rem)] lg:flex-row lg:overflow-hidden' : undefined}>
       {/* ── Sidebar ─────────────────────────────────────────────────── */}
+      {sidebar && (
       <aside
         className={cn(
           'nice-scrollbar border-b border-border bg-surface lg:h-full lg:border-b-0 lg:border-r',
@@ -140,8 +167,20 @@ export function TheorieClient({
                     </span>
                   </button>
 
-                  {active && ch.cards.length > 0 && (
+                  {active && (ch.stappenplan || ch.cards.length > 0) && (
                     <ul className="mb-1 mt-0.5">
+                      {ch.stappenplan && (
+                        <li>
+                          <button
+                            type="button"
+                            onClick={() => scrollToId(`stappenplan-${ch.slug}`)}
+                            className="flex w-full items-center gap-2 rounded-md py-1.5 pl-7 pr-3 text-xs font-medium text-accent hover:text-text"
+                          >
+                            <span className="size-1.5 shrink-0 rounded-full bg-accent" />
+                            <span className="truncate text-left">{labels.stappenplanTitle}</span>
+                          </button>
+                        </li>
+                      )}
                       {ch.cards.map((card) => (
                         <li key={card.id}>
                           <button
@@ -162,12 +201,13 @@ export function TheorieClient({
           </ul>
         )}
       </aside>
+      )}
 
       {/* ── Content ─────────────────────────────────────────────────── */}
       <div
         ref={mainScrollRef}
         onScroll={handleMainScroll}
-        className="nice-scrollbar flex-1 lg:h-full lg:overflow-y-auto"
+        className={sidebar ? 'nice-scrollbar flex-1 lg:h-full lg:overflow-y-auto' : undefined}
       >
         <div className="mx-auto max-w-5xl px-4 py-8">
           <h1 className="sr-only">{labels.h1}</h1>
@@ -198,6 +238,16 @@ export function TheorieClient({
                   </Link>
                 </div>
 
+                {ch.intro && (
+                  <p className="mt-3 max-w-3xl text-sm leading-relaxed text-text-muted">
+                    <RichMath source={ch.intro} />
+                  </p>
+                )}
+
+                {ch.stappenplan && (
+                  <StappenplanKaart chapterSlug={ch.slug} plan={ch.stappenplan} labels={labels} />
+                )}
+
                 <div className="mt-5 grid gap-4 md:grid-cols-2">
                   {ch.cards.map((card) => (
                     <TheoryCard
@@ -206,8 +256,7 @@ export function TheorieClient({
                       card={card}
                       open={openCards.has(`${ch.slug}/${card.id}`)}
                       onToggle={() => toggleCard(`${ch.slug}/${card.id}`)}
-                      exampleLabel={labels.exampleLabel}
-                      detailsLabel={labels.detailsLabel}
+                      labels={labels}
                     />
                   ))}
                 </div>
@@ -220,34 +269,142 @@ export function TheorieClient({
   )
 }
 
+/* ── Het stappenplan van een hoofdstuk ──────────────────────────────────── */
+
+function StappenplanKaart({
+  chapterSlug,
+  plan,
+  labels,
+}: {
+  chapterSlug: string
+  plan: Stappenplan
+  labels: Labels
+}) {
+  return (
+    <article
+      id={`stappenplan-${chapterSlug}`}
+      className="mt-6 scroll-mt-4 rounded-xl border border-accent/40 bg-accent-light/40"
+    >
+      <div className="px-5 py-4">
+        <h3 className="font-serif text-lg text-text">{labels.stappenplanTitle}</h3>
+        <p className="mt-1 text-sm leading-relaxed text-text-muted">
+          <RichMath source={plan.intro} />
+        </p>
+      </div>
+
+      <div className="space-y-4 px-5 pb-5">
+        {/* Stap 0 · herkentabel */}
+        <div>
+          <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-accent">
+            {labels.stap0Title}
+          </p>
+          <div className="overflow-x-auto rounded-lg border border-border bg-surface">
+            <table className="w-full text-sm">
+              <thead className="bg-surface-2">
+                <tr>
+                  <th className="px-3 py-2 text-left font-medium text-text-muted">{labels.herkenSchil}</th>
+                  <th className="px-3 py-2 text-left font-medium text-text-muted">{labels.herkenVoorbeeld}</th>
+                  <th className="px-3 py-2 text-left font-medium text-text-muted">{labels.herkenRegel}</th>
+                </tr>
+              </thead>
+              <tbody>
+                {plan.herken.map((row, i) => (
+                  <tr key={i} className={i > 0 ? 'border-t border-border' : ''}>
+                    <td className="px-3 py-2 align-middle text-text">
+                      <RichMath source={row.schil} />
+                    </td>
+                    <td className="whitespace-nowrap px-3 py-2 align-middle text-text">
+                      <TeX tex={row.voorbeeld} />
+                    </td>
+                    <td className="px-3 py-2 align-middle font-medium text-accent">
+                      <RichMath source={row.regel} />
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        {/* Stap 1–3 per regel */}
+        <div>
+          <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-accent">
+            {labels.regelsTitle}
+          </p>
+          <div className="overflow-x-auto rounded-lg border border-border bg-surface">
+            <table className="w-full text-sm">
+              <thead className="bg-surface-2">
+                <tr>
+                  <th className="px-3 py-2 text-left font-medium text-text-muted">{labels.herkenRegel}</th>
+                  {[1, 2, 3].map((n) => (
+                    <th key={n} className="px-3 py-2 text-left font-medium text-text-muted">
+                      {labels.stepLabel.replace('{n}', String(n))}
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {plan.regels.map((row, i) => (
+                  <tr key={i} className={i > 0 ? 'border-t border-border' : ''}>
+                    <td className="px-3 py-2 align-top">
+                      <p className="font-medium text-text">{row.regel}</p>
+                      <p className="mt-1 whitespace-nowrap text-[0.85em] text-text-muted">
+                        <TeX tex={row.formule} />
+                      </p>
+                    </td>
+                    <td className="px-3 py-2 align-top text-text"><RichMath source={row.stap1} /></td>
+                    <td className="px-3 py-2 align-top text-text"><RichMath source={row.stap2} /></td>
+                    <td className="px-3 py-2 align-top text-text"><RichMath source={row.stap3} /></td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        {plan.slot && (
+          <p className="text-xs leading-relaxed text-text-muted">
+            <RichMath source={plan.slot} />
+          </p>
+        )}
+      </div>
+    </article>
+  )
+}
+
+/* ── Eén theoriekaart ───────────────────────────────────────────────────── */
+
 function TheoryCard({
   chapterSlug,
   card,
   open,
   onToggle,
-  exampleLabel,
-  detailsLabel,
+  labels,
 }: {
   chapterSlug: string
   card: OverviewCard
   open: boolean
   onToggle: () => void
-  exampleLabel: string
-  detailsLabel: string
+  labels: Labels
 }) {
-  const expandable = (card.examples?.length ?? 0) > 0 || (card.notes?.length ?? 0) > 0
+  const expandable =
+    (card.examples?.length ?? 0) > 0 || (card.notes?.length ?? 0) > 0 || (card.herken?.length ?? 0) > 0
+  const [revealed, setRevealed] = useState<Set<number>>(new Set())
 
   return (
     <article
       id={`kaart-${chapterSlug}-${card.id}`}
-      className="flex scroll-mt-4 flex-col rounded-xl border border-border bg-surface"
+      className={cn(
+        'flex scroll-mt-4 flex-col rounded-xl border border-border bg-surface',
+        card.topicSlug && 'md:col-span-2',
+      )}
     >
       {expandable ? (
         <button
           type="button"
           onClick={onToggle}
           aria-expanded={open}
-          aria-label={`${card.title} — ${detailsLabel}`}
+          aria-label={`${card.title} — ${labels.detailsLabel}`}
           className="group flex w-full items-center justify-between gap-3 rounded-t-xl px-5 py-4 text-left"
         >
           <h3 className="font-serif text-lg text-text">{card.title}</h3>
@@ -277,6 +434,13 @@ function TheoryCard({
           <div className="flex flex-1 items-center justify-center overflow-x-auto rounded-lg bg-accent-light/60 px-4 py-4 text-[0.9em]">
             <TeX tex={card.formula} displayMode />
           </div>
+        )}
+
+        {card.answerNote && (
+          <p className="text-sm leading-relaxed text-text-muted">
+            <span className="font-medium text-text">{labels.answerNoteLabel}: </span>
+            <RichMath source={card.answerNote} />
+          </p>
         )}
 
         {card.table && (
@@ -317,9 +481,9 @@ function TheoryCard({
                 {card.examples && card.examples.length > 0 && (
                   <div>
                     <p className="mb-2 text-xs font-medium uppercase tracking-wider text-text-muted">
-                      {exampleLabel}
+                      {labels.exampleLabel}
                     </p>
-                    <ul className="space-y-2">
+                    <ul className={cn('gap-2', card.examples.length > 1 ? 'grid md:grid-cols-2' : 'space-y-2')}>
                       {card.examples.map((ex, i) => (
                         <li
                           key={i}
@@ -327,11 +491,18 @@ function TheoryCard({
                         >
                           <TeX tex={`${ex.problem} \\implies ${ex.answer}`} />
                           {ex.steps && ex.steps.length > 0 && (
-                            <ol className="mt-2 space-y-1 border-t border-border pt-2">
+                            <ol className="mt-2 space-y-1.5 border-t border-border pt-2">
                               {ex.steps.map((s, si) => (
                                 <li key={si} className="flex items-start gap-2">
-                                  <span className="min-w-[1.1rem] shrink-0 font-semibold tabular-nums text-accent">
-                                    {si + 1}.
+                                  <span
+                                    className={cn(
+                                      'shrink-0 font-semibold tabular-nums text-accent',
+                                      ex.stappenplan ? 'min-w-[3.4rem] text-xs leading-5' : 'min-w-[1.1rem]',
+                                    )}
+                                  >
+                                    {ex.stappenplan
+                                      ? labels.stepLabel.replace('{n}', String(si))
+                                      : `${si + 1}.`}
                                   </span>
                                   <span className="min-w-0">
                                     <RichMath source={s} />
@@ -342,6 +513,52 @@ function TheoryCard({
                           )}
                         </li>
                       ))}
+                    </ul>
+                  </div>
+                )}
+
+                {card.herken && card.herken.length > 0 && (
+                  <div>
+                    <p className="mb-2 text-xs font-medium uppercase tracking-wider text-text-muted">
+                      {labels.herkenQuestion}
+                    </p>
+                    <ul className="grid gap-2 md:grid-cols-2">
+                      {card.herken.map((item, i) => {
+                        const shown = revealed.has(i)
+                        return (
+                          <li
+                            key={i}
+                            className="flex flex-col gap-2 rounded-lg border border-border bg-surface-2/60 px-3 py-2.5 text-sm"
+                          >
+                            <div className="overflow-x-auto">
+                              <TeX tex={item.problem} />
+                            </div>
+                            {shown ? (
+                              <p className="text-text">
+                                <span className="font-medium text-accent">{item.regel}</span>
+                                {' — '}
+                                <span className="text-text-muted">
+                                  <RichMath source={item.waarom} />
+                                </span>
+                              </p>
+                            ) : (
+                              <button
+                                type="button"
+                                onClick={() =>
+                                  setRevealed((prev) => {
+                                    const next = new Set(prev)
+                                    next.add(i)
+                                    return next
+                                  })
+                                }
+                                className="self-start rounded-full border border-border px-2.5 py-0.5 text-xs text-text-muted transition hover:border-accent hover:text-accent"
+                              >
+                                {labels.revealLabel}
+                              </button>
+                            )}
+                          </li>
+                        )
+                      })}
                     </ul>
                   </div>
                 )}
@@ -357,6 +574,31 @@ function TheoryCard({
                 )}
               </div>
             </div>
+          </div>
+        )}
+
+        {(card.topicSlug || (card.videos && card.videos.length > 0)) && (
+          <div className="mt-1 flex flex-wrap items-center gap-x-4 gap-y-1 border-t border-border pt-3 text-sm">
+            {card.topicSlug && (
+              <Link
+                href={
+                  `/oefenen?chapter=${encodeURIComponent(chapterSlug)}&topic=${encodeURIComponent(card.topicSlug)}` as '/oefenen'
+                }
+                className="font-medium text-accent underline-offset-2 hover:underline"
+              >
+                {labels.practiceTopicLabel}
+              </Link>
+            )}
+            {card.videos?.map((v) => (
+              <Link
+                key={v.slug}
+                href={`/uitleg-videos?video=${encodeURIComponent(v.slug)}` as '/uitleg-videos'}
+                className="text-text-muted underline-offset-2 hover:text-accent hover:underline"
+              >
+                <span aria-hidden>▶ </span>
+                {labels.videoLabel}: {v.label}
+              </Link>
+            ))}
           </div>
         )}
       </div>

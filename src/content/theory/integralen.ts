@@ -24,3 +24,8 @@ export const TOPIC_INTROS: Record<string, string> = {}
 export const TOPIC_INTROS_EN: Record<string, string> = {}
 
 export const THEORY_OVERVIEW: OverviewChapter[] = []
+
+import type { Methode } from './methode'
+
+/** Geen methode-pagina voor integralen (nog). */
+export const METHODE: Methode | null = null

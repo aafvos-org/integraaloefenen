@@ -2,6 +2,11 @@ import { getTranslations, getLocale } from 'next-intl/server'
 import { redirect } from 'next/navigation'
 
 import { SITE } from '@/config/site'
+import {
+  getChapters,
+  getCurrentProfile,
+  getCurrentUser,
+} from '@/lib/supabase/request-cache'
 import { createClient } from '@/lib/supabase/server'
 
 import { DashboardGrid } from './dashboard-grid'
@@ -20,62 +25,57 @@ export async function generateMetadata({
 export default async function DashboardPage() {
   const supabase = await createClient()
   const locale = await getLocale()
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
+  const user = await getCurrentUser()
   if (!user) redirect(`/${locale}/inloggen`)
-
-  const t = await getTranslations('Dashboard')
-
-  const { data: profile } = await supabase
-    .from('profiles')
-    .select('display_name')
-    .eq('id', user.id)
-    .maybeSingle()
-
-  const firstName =
-    profile?.display_name?.trim().split(/\s+/)[0]?.trim() || null
-
-  // New tables
-  const { data: chapters } = await supabase
-    .from('chapters')
-    .select('id, slug, title, order_index')
-    .eq('site', SITE)
-    .order('order_index')
-
-  const { data: topics } = await supabase
-    .from('topics_new')
-    .select('id, title, slug, chapter_id, order_index')
-    .eq('site', SITE)
-    .order('order_index')
-
-  const { data: clusters } = await supabase
-    .from('topic_clusters_new')
-    .select('id, title, slug, topic_id, order_index')
-    .eq('site', SITE)
-    .order('order_index')
-
-  const { data: progressRows } = await supabase
-    .from('user_progress_new')
-    .select('cluster_id, status, total_answered, total_correct, is_skipped')
-    .eq('user_id', user.id)
-
-  const progressByCluster = new Map(
-    (progressRows ?? []).map((p) => [p.cluster_id, p]),
-  )
 
   // Activity: last 14 days via user_sessions_new + session_answers_new
   const since14 = new Date()
   since14.setDate(since14.getDate() - 13)
   since14.setHours(0, 0, 0, 0)
 
-  const { data: recentSessions } = await supabase
-    .from('user_sessions_new')
-    .select('id')
-    .eq('user_id', user.id)
-    .gte('started_at', since14.toISOString())
+  // Deze zeven ophaalacties hangen niet van elkaar af. Ze stonden achter elkaar
+  // en kostten samen ruim een seconde aan wachttijd; parallel is dat de duur
+  // van de traagste.
+  const [t, tv, profile, chapters, topicsRes, clustersRes, progressRes, sessionsRes] =
+    await Promise.all([
+      getTranslations('Dashboard'),
+      getTranslations('UitlegVideos'),
+      getCurrentProfile(),
+      getChapters(),
+      supabase
+        .from('topics_new')
+        .select('id, title, slug, chapter_id, order_index')
+        .eq('site', SITE)
+        .order('order_index'),
+      supabase
+        .from('topic_clusters_new')
+        .select('id, title, slug, topic_id, order_index')
+        .eq('site', SITE)
+        .order('order_index'),
+      supabase
+        .from('user_progress_new')
+        .select('cluster_id, status, total_answered, total_correct, is_skipped')
+        .eq('user_id', user.id),
+      supabase
+        .from('user_sessions_new')
+        .select('id')
+        .eq('user_id', user.id)
+        .gte('started_at', since14.toISOString()),
+    ])
 
-  const sessionIds = (recentSessions ?? []).map((s) => s.id)
+  const topics = topicsRes.data
+  const clusters = clustersRes.data
+  const progressRows = progressRes.data
+
+  const firstName =
+    profile?.display_name?.trim().split(/\s+/)[0]?.trim() || null
+
+  const progressByCluster = new Map(
+    (progressRows ?? []).map((p) => [p.cluster_id, p]),
+  )
+
+  // Deze moet wél wachten: de antwoorden worden opgezocht per sessie-id.
+  const sessionIds = (sessionsRes.data ?? []).map((s) => s.id)
 
   const { data: answersRows } = sessionIds.length > 0
     ? await supabase
@@ -102,8 +102,6 @@ export default async function DashboardPage() {
     totalAnswered++
     if (row.is_correct) totalCorrect++
   }
-
-  const activity = Array.from(bucket.entries()).map(([date, count]) => ({ date, count }))
 
   let streakDays = 0
   const todayKey = dayKey(new Date())
@@ -154,8 +152,9 @@ export default async function DashboardPage() {
     })
   }
 
-  // Group topics by chapter
-  const chapterData: ChapterData[] = (chapters ?? [])
+  // Group topics by chapter. Kopie vóór het sorteren: de hoofdstukkenlijst is
+  // nu per request gedeeld met de header, en `sort` wijzigt de lijst zelf.
+  const chapterData: ChapterData[] = [...(chapters ?? [])]
     .sort((a, b) => a.order_index - b.order_index)
     .map((chapter) => ({
       id: chapter.id,
@@ -181,9 +180,20 @@ export default async function DashboardPage() {
       <DashboardGrid
         chapterData={chapterData}
         streakDays={streakDays}
-        activity={activity}
         totalAnswered={totalAnswered}
         totalCorrect={totalCorrect}
+        vraagTitel={tv('askTitle')}
+        vraagIntro={tv('askIntro')}
+        vraagLabels={{
+          askPlaceholder: tv('askPlaceholder'),
+          askSend: tv('askSend'),
+          askThanks: tv('askThanks'),
+          askPhoto: tv('askPhoto'),
+          askPhotoHint: tv('askPhotoHint'),
+          askPhotoRemove: tv('askPhotoRemove'),
+          askPhotoBusy: tv('askPhotoBusy'),
+          askPhotoTooBig: tv('askPhotoTooBig'),
+        }}
       />
     </div>
   )

@@ -6,7 +6,7 @@ import {
   getCurrentProfile,
   getCurrentUser,
 } from '@/lib/supabase/request-cache'
-import { THEORY_OVERVIEW } from '@/lib/theory'
+import { THEORIE_HOOFDSTUKKEN } from '@/lib/theory'
 import { MobileNav } from './mobile-nav'
 import { NavDropdown } from './nav-dropdown'
 import { UserMenu } from './user-menu'
@@ -87,10 +87,10 @@ export async function SiteHeader({ locale }: { locale: string }) {
     label: stripChapterCode(ch.title),
   }))
 
-  const theorieItems = THEORY_OVERVIEW.map((ch) => ({
-    href: `/${locale}/theorie#hoofdstuk-${ch.slug}`,
-    code: ch.slug.toUpperCase(),
-    label: stripChapterCode(ch.title),
+  const theorieItems = THEORIE_HOOFDSTUKKEN.map((ch) => ({
+    href: `/${locale}/theorie/${ch.slug}`,
+    code: ch.code,
+    label: ch.title,
   }))
 
   const theorieDropdown = (
