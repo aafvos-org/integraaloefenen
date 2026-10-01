@@ -5,5 +5,17 @@
     "feature1Body": "Geen lange uitlegvideo's. Je leert integralen door ze gewoon te maken en uitleg te krijgen bij elke fout.",
     "topicsIntro": "Alle integratieregels die je op het VWO bij wiskunde B tegenkomt, in oplopende moeilijkheid:",
     "ctaBody": "Maak een gratis account en oefen vandaag nog je eerste vijftig integralen. Geen creditcard. Geen limiet."
+  },
+  "Theorie": {
+    "title": "Integreren: alle routes op één pagina · __DOMAIN__",
+    "description": "Alle integraalvormen die je bij wiskunde B VWO tegenkomt, met per vorm het stappenplan dat erbij hoort. Met voorbeelden, uitgewerkte stappen en de verhaaltjessommen.",
+    "h1": "Integreren: alle routes op één pagina",
+    "intro": "Een naslagwerk voor de integralen die je bij wiskunde B tegenkomt. Per vorm zie je de formule, een uitgewerkt voorbeeld en, als je het uitklapt, de stappen. Je kunt ook direct <practiceLink>oefenen</practiceLink>.",
+    "stap0Title": "Stap 0 · Kijk naar de noemer",
+    "herkenSchil": "Wat je ziet",
+    "herkenRegel": "Route",
+    "regelsTitle": "Stap 1, 2 en 3 per route",
+    "herkenQuestion": "Welke route pak je?",
+    "regelsInChapter": "Routes in dit hoofdstuk"
   }
 }

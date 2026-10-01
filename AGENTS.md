@@ -21,5 +21,20 @@ Deze repo is de live site integraaloefenen.nl, voor vwo-leerlingen. Hij draait o
 
 ## Inhoud
 - Alle tekst op de site in het Nederlands.
-- Letters f, g en h voor functies, nooit u of v.
+- Letters f, g en h voor functies, nooit u of v. Dat geldt ook voor substitutie
+  en partieel integreren: schrijf $\int g' / (g^2+1)\,dx$ en $\int g \cdot h'\,dx$.
+
+## De driedeling van een opgave
+Elke vraag over integralen of afgeleides valt uiteen in drie delen. Deel 1 en 3
+ontbreken soms, deel 2 zit er altijd in. Houd deze indeling aan in theorie,
+uitleg, stappenplannen en nieuwe content, en benoem welk deel je behandelt.
+
+1. Herken het verhaaltje en pas de goede formule toe — vertaal de tekst naar een
+   integraal, bijvoorbeeld "het vlakdeel tussen de grafiek, de x-as en de lijnen
+   x = a en x = p" wordt de integraal van f van a tot p.
+2. Bereken de goede integraal — welke standaardvorm hoort bij deze vorm?
+3. Gebruik de goede oplossingsmethode op de uitkomst — vergelijking oplossen,
+   p bepalen, afronden.
+
+Bij een kale "bereken exact"-opgave speelt alleen deel 2.
 - `middleware.ts` blijft `middleware.ts`: de edge-runtime is nodig voor Cloudflare. Niet omzetten naar `proxy.ts`.

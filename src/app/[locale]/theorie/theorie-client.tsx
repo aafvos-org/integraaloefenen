@@ -39,9 +39,9 @@ type Labels = {
   videoLabel: string
 }
 
-/** "H2 — De afgeleide functie" → { code: "H2", short: "De afgeleide functie" } */
+/** "H2 — De afgeleide functie" → { code: "H2", short: "De afgeleide functie" }; ook "K.3 — …" */
 function splitTitle(title: string): { code: string | null; short: string } {
-  const m = title.match(/^(H\d+)\s*[—–-]\s*(.+)$/)
+  const m = title.match(/^([A-Z]\.?\d+(?:\.\d+)?)\s*[—–-]\s*(.+)$/)
   return m ? { code: m[1]!, short: m[2]! } : { code: null, short: title }
 }
 
