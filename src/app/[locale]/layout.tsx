@@ -16,22 +16,15 @@ export async function generateMetadata({
   const isNl = locale === 'nl'
   const domain = domainForLocale(locale)
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? `https://${domain}`
-
-  // TODO: subject-specific marketing copy. Move to per-site messages files
-  // when integralen-content is authored.
-  const SITE_DESCRIPTION = isNl
-    ? 'Differentiëren oefenen voor wiskunde B VWO — gratis en adaptief. Oefen de afgeleide met de machtsregel, productregel, quotiëntregel, kettingregel, goniometrie, e-macht en ln. Ideaal voor het eindexamen.'
-    : 'Practise derivatives and differentiation rules — free and adaptive. Power rule, product rule, quotient rule, chain rule, trigonometry, exponentials and logarithms. Perfect for exam preparation.'
+  const t = await getTranslations({ locale, namespace: 'Metadata' })
 
   return {
     metadataBase: new URL(siteUrl),
     title: {
-      default: isNl
-        ? `Differentiëren oefenen — afgeleide wiskunde B VWO | ${domain}`
-        : `Practise derivatives — differentiation rules | ${domain}`,
+      default: t('title'),
       template: `%s · ${domain}`,
     },
-    description: SITE_DESCRIPTION,
+    description: t('description'),
     applicationName: domain,
     authors: [{ name: domain }],
     alternates: {
@@ -43,10 +36,8 @@ export async function generateMetadata({
       locale: isNl ? 'nl_NL' : 'en_US',
       url: siteUrl,
       siteName: domain,
-      title: isNl
-        ? 'Afgeleide oefenen — wiskunde B VWO'
-        : 'Practise derivatives — calculus',
-      description: SITE_DESCRIPTION,
+      title: t('ogTitle'),
+      description: t('description'),
     },
     robots: {
       index: true,

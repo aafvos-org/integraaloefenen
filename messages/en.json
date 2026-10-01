@@ -1,4 +1,9 @@
 {
+  "Metadata": {
+    "title": "Practise derivatives — differentiation rules | __DOMAIN__",
+    "description": "Practise derivatives and differentiation rules — free and adaptive. Power rule, product rule, quotient rule, chain rule, trigonometry, exponentials and logarithms. Perfect for exam preparation.",
+    "ogTitle": "Practise derivatives — calculus"
+  },
   "Header": {
     "brand": "__BRAND__",
     "brandSuffix": ".nl",
@@ -77,7 +82,7 @@
     "faq7A": "The exercises were originally written in Dutch, but the theory and all interface text are available in English. The mathematical content is of course universal."
   },
   "HoeHetWerkt": {
-    "title": "How it works · __DOMAIN__",
+    "title": "How it works",
     "description": "The difference between the learning path and free practice, how the site adapts, and how to set your preferences on the first visit.",
     "eyebrow": "The idea behind this site",
     "h1": "Two ways to practise derivatives",
@@ -116,7 +121,7 @@
     "ctaBack": "← Back to home"
   },
   "Theorie": {
-    "title": "Differentiation: all rules on one page · __DOMAIN__",
+    "title": "Differentiation: all rules on one page",
     "description": "All differentiation rules for high school calculus on one page: power rule, sum rule, product rule, quotient rule, chain rule, exponential, trigonometry and ln. With examples and steps.",
     "eyebrow": "Theory",
     "h1": "Differentiation: all rules on one page",
@@ -168,7 +173,7 @@
     "toonGenest": "Hoe kom ik aan deze afgeleide?"
   },
   "Login": {
-    "title": "Log in · __DOMAIN__",
+    "title": "Log in",
     "h1": "Log in",
     "subtitle": "Welcome back. Log in to continue practising.",
     "emailLabel": "Email address",
@@ -188,7 +193,7 @@
     "confirmedNotice": "Your account is confirmed! You can now log in."
   },
   "Register": {
-    "title": "Sign up · __DOMAIN__",
+    "title": "Sign up",
     "h1": "Create account",
     "subtitle": "Free, and you can start practising right away.",
     "usernameLabel": "Username (optional)",
@@ -206,7 +211,7 @@
     "hidePassword": "Hide"
   },
   "ForgotPassword": {
-    "title": "Forgot password · __DOMAIN__",
+    "title": "Forgot password",
     "h1": "Forgot your password",
     "subtitle": "Enter your email address. If an account exists, you'll receive a link to reset your password.",
     "emailLabel": "Email address",
@@ -216,7 +221,7 @@
     "backToLogin": "← Back to login"
   },
   "NewPassword": {
-    "title": "New password · __DOMAIN__",
+    "title": "New password",
     "h1": "Set new password",
     "passwordLabel": "New password",
     "passwordHint": "At least 8 characters.",
@@ -226,7 +231,7 @@
     "submitPending": "Saving…"
   },
   "Onboarding": {
-    "title": "Welcome · __DOMAIN__",
+    "title": "Welcome",
     "step1Eyebrow": "Step 1 of 4",
     "step1H1": "What level are you at?",
     "step1Intro": "This helps us tailor the content to your level.",
@@ -271,7 +276,7 @@
     "pending": "Loading…"
   },
   "OnboardingPad": {
-    "title": "Build learning path · __DOMAIN__",
+    "title": "Build learning path",
     "eyebrow": "Build your learning path",
     "h1": "What do you already know, what do you want to practise?",
     "intro": "Tick which topics you already know well and which you want to practise. We'll build your learning path based on that.",
@@ -285,7 +290,7 @@
     "skipHint": "the default learning path stays as it is"
   },
   "OnboardingToets": {
-    "title": "Short test · __DOMAIN__",
+    "title": "Short test",
     "eyebrow": "Short test",
     "h1": "This is how we estimate your starting point",
     "intro": "One question per main topic. Based on your answers we'll set up your learning path.",
@@ -308,7 +313,7 @@
     "submitPending": "Saving…"
   },
   "Dashboard": {
-    "title": "Dashboard · __DOMAIN__",
+    "title": "Dashboard",
     "greetingWithName": "Hi {name}",
     "progressTitle": "Your progress",
     "progressSubtitle": "Here you can see how far you are on the learning path.",
@@ -355,7 +360,7 @@
     "cancel": "Cancel"
   },
   "Leerpad": {
-    "title": "Learning path · __DOMAIN__",
+    "title": "Learning path",
     "hi": "Hi {name}",
     "completeEyebrow": "🎉 Done",
     "completeH1": "You've mastered everything",
@@ -440,7 +445,7 @@
     "hasVideo": "Uitlegvideo"
   },
   "FreeExercise": {
-    "title": "Practice · __DOMAIN__",
+    "title": "Practice",
     "h1": "Practice",
     "topicLabel": "Topic",
     "chapterLabel": "Chapter",
@@ -467,7 +472,7 @@
     "expandSidebar": "Expand sidebar"
   },
   "ZelfToets": {
-    "title": "Self-test · __DOMAIN__",
+    "title": "Self-test",
     "runnerTitle": "Self-test in progress",
     "resultsTitle": "Self-test results",
     "eyebrow": "Self-test",
@@ -533,7 +538,7 @@
     "runnerNotFound": "This test session no longer exists."
   },
   "Settings": {
-    "title": "Settings · __DOMAIN__",
+    "title": "Settings",
     "h1": "Settings",
     "accountH2": "Account",
     "emailLabel": "Email address",
@@ -550,7 +555,7 @@
     "noUsername": "Not set yet"
   },
   "Feedback": {
-    "title": "Feedback · __DOMAIN__",
+    "title": "Feedback",
     "h1": "Send feedback",
     "intro": "Missing something, found a mistake, or have an idea? Let us know. All feedback is welcome.",
     "placeholder": "Tell us what’s on your mind…",
