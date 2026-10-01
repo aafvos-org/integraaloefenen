@@ -1,9 +1,16 @@
 'use client'
 
-import { useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 import { Link, useRouter } from '@/i18n/navigation'
 import { Card, cn } from '@/components/ui'
+import {
+  captureOefenEvent,
+  type OefenContext,
+  type OefenEventNaam,
+  type OefenEventProps,
+} from '@/lib/analytics/oefenen'
+import { huidigeSessieIdAction } from '@/lib/practice/chapter-actions'
 import type {
   ChapterInfo,
   ClusterInfo,
@@ -183,6 +190,122 @@ export function OefenenClient({
         : null,
     [topicClusters, selectedClusterSlug],
   )
+
+  // ── Oefengedrag loggen ────────────────────────────────────────────
+  const [sessieId, setSessieId] = useState<string | null>(null)
+
+  const vraagCluster = useMemo(
+    () =>
+      question?.cluster_id
+        ? (allClusters.find((c) => c.id === question.cluster_id) ?? null)
+        : null,
+    [allClusters, question],
+  )
+  const vraagTopic = useMemo(
+    () => (vraagCluster ? (allTopics.find((t) => t.id === vraagCluster.topic_id) ?? null) : null),
+    [allTopics, vraagCluster],
+  )
+  const vraagChapter = useMemo(
+    () => (vraagTopic ? (chapters.find((c) => c.id === vraagTopic.chapter_id) ?? null) : null),
+    [chapters, vraagTopic],
+  )
+
+  const oefenContext: OefenContext = useMemo(
+    () => ({
+      onderwerp: vraagTopic?.slug ?? selectedTopic?.slug ?? null,
+      hoofdstuk: vraagChapter?.slug ?? selectedChapter?.slug ?? null,
+      vraag_id: question?.id ?? null,
+      sessie_id: sessieId,
+    }),
+    [vraagTopic, vraagChapter, selectedTopic, selectedChapter, question, sessieId],
+  )
+  const contextRef = useRef(oefenContext)
+  useEffect(() => {
+    contextRef.current = oefenContext
+  }, [oefenContext])
+
+  const track = useCallback((naam: OefenEventNaam, extra?: OefenEventProps) => {
+    captureOefenEvent(naam, contextRef.current, extra)
+  }, [])
+
+  const sessieRef = useRef({
+    gestart: false,
+    afgerond: false,
+    getoond: new Set<string>(),
+    goed: new Set<string>(),
+    antwoorden: 0,
+  })
+
+  // Een sessie ontstaat server-side pas bij het eerste antwoord; tot die tijd
+  // kan er al wel een lopende sessie van vandaag zijn om bij aan te sluiten.
+  const sessieClusterId = vraagCluster?.id ?? selectedCluster?.id ?? null
+  useEffect(() => {
+    if (!sessieClusterId) return
+    let geannuleerd = false
+    huidigeSessieIdAction(sessieClusterId).then(
+      (id) => {
+        if (!geannuleerd && id) setSessieId(id)
+      },
+      () => {},
+    )
+    return () => {
+      geannuleerd = true
+    }
+  }, [sessieClusterId])
+
+  const vorigeVraagRef = useRef<{
+    id: string
+    beantwoord: boolean
+    context: OefenContext
+  } | null>(null)
+  const questionId = question?.id ?? null
+  useEffect(() => {
+    const vorige = vorigeVraagRef.current
+    if (vorige && vorige.id !== questionId) {
+      if (!vorige.beantwoord) {
+        captureOefenEvent('vraag_overgeslagen', {
+          ...vorige.context,
+          sessie_id: contextRef.current.sessie_id ?? vorige.context.sessie_id,
+        })
+      }
+      vorigeVraagRef.current = null
+    }
+    if (!questionId) return
+
+    const sessie = sessieRef.current
+    // Na een afronding (tab weg, bfcache) telt een volgende vraag als nieuwe sessie.
+    if (!sessie.gestart || sessie.afgerond) {
+      sessie.gestart = true
+      sessie.afgerond = false
+      track('sessie_gestart')
+    }
+    sessie.getoond.add(questionId)
+    track('vraag_getoond')
+    vorigeVraagRef.current = {
+      id: questionId,
+      beantwoord: false,
+      context: contextRef.current,
+    }
+  }, [questionId, track])
+
+  const rondSessieAf = useCallback(() => {
+    const sessie = sessieRef.current
+    if (!sessie.gestart || sessie.afgerond) return
+    sessie.afgerond = true
+    captureOefenEvent('sessie_afgerond', contextRef.current, {
+      aantal_vragen: sessie.getoond.size,
+      aantal_antwoorden: sessie.antwoorden,
+      aantal_goed: sessie.goed.size,
+    })
+  }, [])
+
+  useEffect(() => {
+    window.addEventListener('pagehide', rondSessieAf)
+    return () => {
+      window.removeEventListener('pagehide', rondSessieAf)
+      rondSessieAf()
+    }
+  }, [rondSessieAf])
 
   const catQS = activeCategory ? `category=${encodeURIComponent(activeCategory)}&` : ''
   const baseHref = `/oefenen?${catQS}chapter=${encodeURIComponent(selectedChapter?.slug ?? '')}${
@@ -575,7 +698,15 @@ export function OefenenClient({
                         .find((t) => t.questionId === question.id)?.ordinal ??
                       (currentIdx >= 0 ? (tiles[currentIdx]?.ordinal ?? undefined) : undefined)
                     }
-                    onAnswered={(questionId, isCorrect) => {
+                    track={track}
+                    onAnswered={(questionId, isCorrect, sessionId) => {
+                      setSessieId(sessionId)
+                      const sessie = sessieRef.current
+                      sessie.antwoorden += 1
+                      if (isCorrect) sessie.goed.add(questionId)
+                      if (vorigeVraagRef.current?.id === questionId) {
+                        vorigeVraagRef.current.beantwoord = true
+                      }
                       setTiles((prev) =>
                         prev.map((t) =>
                           t.questionId === questionId ? { ...t, lastCorrect: isCorrect } : t,

@@ -10,9 +10,10 @@ const MASTERY_THRESHOLD = 3
 type DB = Awaited<ReturnType<typeof createClient>>
 
 export type StudyResult =
-  | { kind: 'correct'; streak: number; mastered: boolean }
+  | { kind: 'correct'; sessionId: string; streak: number; mastered: boolean }
   | {
       kind: 'incorrect'
+      sessionId: string
       answerId: string
       correctAnswer: string
       latexCorrectAnswer: string | null
@@ -76,6 +77,7 @@ export async function submitStudyAnswerAction(
     )
     return {
       kind: 'correct',
+      sessionId,
       streak: progress.correct_streak,
       mastered: progress.status === 'mastered',
     }
@@ -114,6 +116,7 @@ export async function submitStudyAnswerAction(
     )
     return {
       kind: 'correct',
+      sessionId,
       streak: progress.correct_streak,
       mastered: progress.status === 'mastered',
     }
@@ -121,6 +124,7 @@ export async function submitStudyAnswerAction(
 
   return {
     kind: 'incorrect',
+    sessionId,
     answerId: answerRow.id,
     correctAnswer: question.answer,
     latexCorrectAnswer: question.latex_answer ?? null,
@@ -198,21 +202,48 @@ export async function flagQuestionNewAction(
   return { ok: true }
 }
 
+/**
+ * Id van de lopende oefensessie voor dit cluster, of null als er nog geen is.
+ * Leest alleen: een sessie ontstaat pas bij het eerste antwoord.
+ */
+export async function huidigeSessieIdAction(clusterId: string): Promise<string | null> {
+  const supabase = await createClient()
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+  if (!user) return null
+
+  const { data } = await supabase
+    .from('user_sessions_new')
+    .select('id')
+    .eq('user_id', user.id)
+    .eq('cluster_id', clusterId)
+    .is('ended_at', null)
+    .gte('started_at', sessionWindowStart())
+    .order('started_at', { ascending: false })
+    .limit(1)
+    .maybeSingle()
+
+  return data?.id ?? null
+}
+
+function sessionWindowStart(): string {
+  return new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString()
+}
+
 async function getOrCreateSession(
   db: DB,
   userId: string,
   topicId: string,
   clusterId: string,
 ): Promise<string> {
-  const since = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString()
-
   const { data: existing } = await db
     .from('user_sessions_new')
     .select('id')
     .eq('user_id', userId)
     .eq('cluster_id', clusterId)
     .is('ended_at', null)
-    .gte('started_at', since)
+    .gte('started_at', sessionWindowStart())
     .order('started_at', { ascending: false })
     .limit(1)
     .maybeSingle()
