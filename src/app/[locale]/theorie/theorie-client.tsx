@@ -1,6 +1,6 @@
 'use client'
 
-import { useRef, useState } from 'react'
+import { Fragment, useRef, useState } from 'react'
 
 import { Link } from '@/i18n/navigation'
 import { Math as TeX, RichMath } from '@/components/math'
@@ -45,6 +45,11 @@ function splitTitle(title: string): { code: string | null; short: string } {
   return m ? { code: m[1]!, short: m[2]! } : { code: null, short: title }
 }
 
+/** Titels mogen `$...$` bevatten; voor aria-labels en de zijbalk willen we platte tekst. */
+function zonderMath(s: string): string {
+  return s.replaceAll('$', '')
+}
+
 export function TheorieClient({
   chapters,
   labels,
@@ -79,6 +84,12 @@ export function TheorieClient({
 
   function scrollToId(id: string) {
     document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  }
+
+  /** Keuzehulp: klap de gekozen kaart open en spring ernaartoe. */
+  function kiesKaart(chapterSlug: string, cardId: string) {
+    setOpenCards((prev) => new Set(prev).add(`${chapterSlug}/${cardId}`))
+    requestAnimationFrame(() => scrollToId(`kaart-${chapterSlug}-${cardId}`))
   }
 
   // Scroll-spy: markeer het hoofdstuk dat in beeld is
@@ -189,7 +200,7 @@ export function TheorieClient({
                             className="flex w-full items-center gap-2 rounded-md py-1.5 pl-7 pr-3 text-xs text-text-muted hover:text-text"
                           >
                             <span className="size-1.5 shrink-0 rounded-full bg-border" />
-                            <span className="truncate text-left">{card.title}</span>
+                            <span className="truncate text-left">{zonderMath(card.title)}</span>
                           </button>
                         </li>
                       ))}
@@ -245,20 +256,34 @@ export function TheorieClient({
                 )}
 
                 {ch.stappenplan && (
-                  <StappenplanKaart chapterSlug={ch.slug} plan={ch.stappenplan} labels={labels} />
+                  <StappenplanKaart
+                    chapterSlug={ch.slug}
+                    plan={ch.stappenplan}
+                    labels={labels}
+                    onKies={(cardId) => kiesKaart(ch.slug, cardId)}
+                  />
                 )}
 
                 <div className="mt-5 grid gap-4 md:grid-cols-2">
-                  {ch.cards.map((card) => (
-                    <TheoryCard
-                      key={card.id}
-                      chapterSlug={ch.slug}
-                      card={card}
-                      open={openCards.has(`${ch.slug}/${card.id}`)}
-                      onToggle={() => toggleCard(`${ch.slug}/${card.id}`)}
-                      labels={labels}
-                    />
-                  ))}
+                  {ch.cards.map((card, i) => {
+                    const nieuweGroep = card.groep && card.groep !== ch.cards[i - 1]?.groep
+                    return (
+                      <Fragment key={card.id}>
+                        {nieuweGroep && (
+                          <h3 className="mt-4 text-xs font-semibold uppercase tracking-wider text-text-muted first:mt-0 md:col-span-2">
+                            {card.groep}
+                          </h3>
+                        )}
+                        <TheoryCard
+                          chapterSlug={ch.slug}
+                          card={card}
+                          open={openCards.has(`${ch.slug}/${card.id}`)}
+                          onToggle={() => toggleCard(`${ch.slug}/${card.id}`)}
+                          labels={labels}
+                        />
+                      </Fragment>
+                    )
+                  })}
                 </div>
               </section>
             )
@@ -275,92 +300,120 @@ function StappenplanKaart({
   chapterSlug,
   plan,
   labels,
+  onKies,
 }: {
   chapterSlug: string
   plan: Stappenplan
   labels: Labels
+  onKies: (cardId: string) => void
 }) {
+  // Rijen onder hun groepskop bundelen: één kader per antwoord op stap 0,
+  // zodat de leerling na één vraag nog maar een paar keuzes overhoudt.
+  const groepen: Array<{ naam?: string; rijen: typeof plan.herken }> = []
+  for (const rij of plan.herken) {
+    const laatste = groepen[groepen.length - 1]
+    if (laatste && laatste.naam === rij.groep) laatste.rijen.push(rij)
+    else groepen.push({ naam: rij.groep, rijen: [rij] })
+  }
+
   return (
     <article
       id={`stappenplan-${chapterSlug}`}
       className="mt-6 scroll-mt-4 rounded-xl border border-accent/40 bg-accent-light/40"
     >
-      <div className="px-5 py-4">
-        <h3 className="font-serif text-lg text-text">{labels.stappenplanTitle}</h3>
+      <div className="px-4 py-4 sm:px-5">
+        <h3 className="font-serif text-lg text-text">{labels.stap0Title}</h3>
         <p className="mt-1 text-sm leading-relaxed text-text-muted">
           <RichMath source={plan.intro} />
         </p>
       </div>
 
-      <div className="space-y-4 px-5 pb-5">
-        {/* Stap 0 · herkentabel */}
-        <div>
-          <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-accent">
-            {labels.stap0Title}
-          </p>
-          <div className="overflow-x-auto rounded-lg border border-border bg-surface">
-            <table className="w-full text-sm">
-              <thead className="bg-surface-2">
-                <tr>
-                  <th className="px-3 py-2 text-left font-medium text-text-muted">{labels.herkenSchil}</th>
-                  <th className="px-3 py-2 text-left font-medium text-text-muted">{labels.herkenVoorbeeld}</th>
-                  <th className="px-3 py-2 text-left font-medium text-text-muted">{labels.herkenRegel}</th>
-                </tr>
-              </thead>
-              <tbody>
-                {plan.herken.map((row, i) => (
-                  <tr key={i} className={i > 0 ? 'border-t border-border' : ''}>
-                    <td className="px-3 py-2 align-middle text-text">
-                      <RichMath source={row.schil} />
-                    </td>
-                    <td className="whitespace-nowrap px-3 py-2 align-middle text-text">
-                      <TeX tex={row.voorbeeld} />
-                    </td>
-                    <td className="px-3 py-2 align-middle font-medium text-accent">
+      <div className="space-y-3 px-4 pb-5 sm:px-5">
+        {/* Stap 0 · de keuzehulp: aantikbare vormen in plaats van een tabel */}
+        {groepen.map((groep, gi) => (
+          <div key={gi} className="rounded-lg border border-border bg-surface p-3">
+            {groep.naam && (
+              <p className="mb-2 text-sm font-semibold leading-snug text-text">
+                <RichMath source={groep.naam} />
+              </p>
+            )}
+            <ul className="grid gap-2 md:grid-cols-2">
+              {groep.rijen.map((row, i) => {
+                const inhoud = (
+                  <>
+                    <span className="min-w-0">
+                      <span className="block min-w-0 overflow-x-auto text-text">
+                        <TeX tex={row.voorbeeld} />
+                      </span>
+                      <span className="mt-0.5 block text-xs leading-snug text-text-muted">
+                        <RichMath source={row.schil} />
+                      </span>
+                    </span>
+                    <span className="shrink-0 text-sm font-medium text-accent">
                       <RichMath source={row.regel} />
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+                      {row.kaart && <span aria-hidden> →</span>}
+                    </span>
+                  </>
+                )
+                const vorm =
+                  'flex min-h-11 w-full min-w-0 items-center justify-between gap-3 rounded-lg border border-border bg-surface-2/60 px-3 py-2 text-left'
+                return (
+                  <li key={i} className="min-w-0">
+                    {row.kaart ? (
+                      <button
+                        type="button"
+                        onClick={() => onKies(row.kaart!)}
+                        className={cn(vorm, 'transition hover:border-accent hover:bg-accent-light/60')}
+                      >
+                        {inhoud}
+                      </button>
+                    ) : (
+                      <div className={vorm}>{inhoud}</div>
+                    )}
+                  </li>
+                )
+              })}
+            </ul>
           </div>
-        </div>
+        ))}
 
-        {/* Stap 1–3 per regel */}
-        <div>
-          <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-accent">
-            {labels.regelsTitle}
-          </p>
-          <div className="overflow-x-auto rounded-lg border border-border bg-surface">
-            <table className="w-full text-sm">
-              <thead className="bg-surface-2">
-                <tr>
-                  <th className="px-3 py-2 text-left font-medium text-text-muted">{labels.herkenRegel}</th>
-                  {[1, 2, 3].map((n) => (
-                    <th key={n} className="px-3 py-2 text-left font-medium text-text-muted">
-                      {labels.stepLabel.replace('{n}', String(n))}
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {plan.regels.map((row, i) => (
-                  <tr key={i} className={i > 0 ? 'border-t border-border' : ''}>
-                    <td className="px-3 py-2 align-top">
-                      <p className="font-medium text-text">{row.regel}</p>
-                      <p className="mt-1 whitespace-nowrap text-[0.85em] text-text-muted">
-                        <TeX tex={row.formule} />
-                      </p>
-                    </td>
-                    <td className="px-3 py-2 align-top text-text"><RichMath source={row.stap1} /></td>
-                    <td className="px-3 py-2 align-top text-text"><RichMath source={row.stap2} /></td>
-                    <td className="px-3 py-2 align-top text-text"><RichMath source={row.stap3} /></td>
+        {/* Stap 1–3 per regel — alleen als ze niet al in de kaarten zelf staan */}
+        {plan.regels && plan.regels.length > 0 && (
+          <div>
+            <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-accent">
+              {labels.regelsTitle}
+            </p>
+            <div className="overflow-x-auto rounded-lg border border-border bg-surface">
+              <table className="w-full text-sm">
+                <thead className="bg-surface-2">
+                  <tr>
+                    <th className="px-3 py-2 text-left font-medium text-text-muted">{labels.herkenRegel}</th>
+                    {[1, 2, 3].map((n) => (
+                      <th key={n} className="px-3 py-2 text-left font-medium text-text-muted">
+                        {labels.stepLabel.replace('{n}', String(n))}
+                      </th>
+                    ))}
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {plan.regels.map((row, i) => (
+                    <tr key={i} className={i > 0 ? 'border-t border-border' : ''}>
+                      <td className="px-3 py-2 align-top">
+                        <p className="font-medium text-text">{row.regel}</p>
+                        <p className="mt-1 whitespace-nowrap text-[0.85em] text-text-muted">
+                          <TeX tex={row.formule} />
+                        </p>
+                      </td>
+                      <td className="px-3 py-2 align-top text-text"><RichMath source={row.stap1} /></td>
+                      <td className="px-3 py-2 align-top text-text"><RichMath source={row.stap2} /></td>
+                      <td className="px-3 py-2 align-top text-text"><RichMath source={row.stap3} /></td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
-        </div>
+        )}
 
         {plan.slot && (
           <p className="text-xs leading-relaxed text-text-muted">
@@ -387,15 +440,22 @@ function TheoryCard({
   onToggle: () => void
   labels: Labels
 }) {
+  // Alles wat uitwerking is zit in het uitklapdeel: formule, antwoordvorm en
+  // tabel horen daar ook bij. Dicht toont een kaart alleen waaraan je hem herkent.
   const expandable =
-    (card.examples?.length ?? 0) > 0 || (card.notes?.length ?? 0) > 0 || (card.herken?.length ?? 0) > 0
+    (card.examples?.length ?? 0) > 0 ||
+    (card.notes?.length ?? 0) > 0 ||
+    (card.herken?.length ?? 0) > 0 ||
+    Boolean(card.formula) ||
+    Boolean(card.answerNote) ||
+    Boolean(card.table)
   const [revealed, setRevealed] = useState<Set<number>>(new Set())
 
   return (
     <article
       id={`kaart-${chapterSlug}-${card.id}`}
       className={cn(
-        'flex scroll-mt-4 flex-col rounded-xl border border-border bg-surface',
+        'flex min-w-0 scroll-mt-4 flex-col rounded-xl border border-border bg-surface',
         card.topicSlug && 'md:col-span-2',
       )}
     >
@@ -404,11 +464,20 @@ function TheoryCard({
           type="button"
           onClick={onToggle}
           aria-expanded={open}
-          aria-label={`${card.title} — ${labels.detailsLabel}`}
-          className="group flex w-full items-center justify-between gap-3 rounded-t-xl px-5 py-4 text-left"
+          aria-label={`${zonderMath(card.title)} — ${labels.detailsLabel}`}
+          className="group flex w-full min-w-0 items-center justify-between gap-3 rounded-t-xl px-4 py-4 text-left sm:px-5"
         >
-          <h3 className="font-serif text-lg text-text">{card.title}</h3>
-          <span className="flex size-6 items-center justify-center rounded-full bg-accent-light text-accent transition group-hover:bg-accent group-hover:text-white">
+          <span className="min-w-0">
+            <h3 className="font-serif text-lg leading-snug text-text">
+              <RichMath source={card.title} />
+            </h3>
+            {card.herkenpunt && (
+              <span className="mt-1 block min-w-0 overflow-x-auto text-text-muted">
+                <TeX tex={card.herkenpunt} />
+              </span>
+            )}
+          </span>
+          <span className="flex size-6 shrink-0 items-center justify-center rounded-full bg-accent-light text-accent transition group-hover:bg-accent group-hover:text-white">
             <svg
               viewBox="0 0 24 24"
               className={`size-3.5 transition-transform ${open ? 'rotate-180' : ''}`}
@@ -424,52 +493,14 @@ function TheoryCard({
           </span>
         </button>
       ) : (
-        <div className="px-5 py-4">
-          <h3 className="font-serif text-lg text-text">{card.title}</h3>
+        <div className="px-4 py-4 sm:px-5">
+          <h3 className="font-serif text-lg leading-snug text-text">
+            <RichMath source={card.title} />
+          </h3>
         </div>
       )}
 
-      <div className="flex flex-1 flex-col gap-3 px-5 pb-5">
-        {card.formula && (
-          <div className="flex flex-1 items-center justify-center overflow-x-auto rounded-lg bg-accent-light/60 px-4 py-4 text-[0.9em]">
-            <TeX tex={card.formula} displayMode />
-          </div>
-        )}
-
-        {card.answerNote && (
-          <p className="text-sm leading-relaxed text-text-muted">
-            <span className="font-medium text-text">{labels.answerNoteLabel}: </span>
-            <RichMath source={card.answerNote} />
-          </p>
-        )}
-
-        {card.table && (
-          <div className="overflow-x-auto rounded-lg border border-border">
-            <table className="w-full text-sm">
-              <thead className="bg-surface-2">
-                <tr>
-                  {card.table.headers.map((h, i) => (
-                    <th key={i} className="px-3 py-2 text-left font-medium text-text-muted">
-                      {h}
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {card.table.rows.map((row, ri) => (
-                  <tr key={ri} className={ri > 0 ? 'border-t border-border' : ''}>
-                    {row.map((cell, ci) => (
-                      <td key={ci} className="px-3 py-2 align-middle text-text">
-                        <RichMath source={cell} />
-                      </td>
-                    ))}
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        )}
-
+      <div className="flex min-w-0 flex-1 flex-col gap-3 px-4 pb-5 sm:px-5">
         {expandable && (
           <div
             className={`grid transition-[grid-template-rows] duration-300 ease-out motion-reduce:transition-none ${
@@ -478,6 +509,46 @@ function TheoryCard({
           >
             <div className="min-h-0 overflow-hidden">
               <div className="space-y-3 pt-1">
+                {card.formula && (
+                  <div className="flex min-w-0 items-center justify-center overflow-x-auto rounded-lg bg-accent-light/60 px-4 py-4 text-[0.9em]">
+                    <TeX tex={card.formula} displayMode />
+                  </div>
+                )}
+
+                {card.answerNote && (
+                  <p className="text-sm leading-relaxed text-text-muted">
+                    <span className="font-medium text-text">{labels.answerNoteLabel}: </span>
+                    <RichMath source={card.answerNote} />
+                  </p>
+                )}
+
+                {card.table && (
+                  <div className="overflow-x-auto rounded-lg border border-border">
+                    <table className="w-full text-sm">
+                      <thead className="bg-surface-2">
+                        <tr>
+                          {card.table.headers.map((h, i) => (
+                            <th key={i} className="px-3 py-2 text-left font-medium text-text-muted">
+                              <RichMath source={h} />
+                            </th>
+                          ))}
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {card.table.rows.map((row, ri) => (
+                          <tr key={ri} className={ri > 0 ? 'border-t border-border' : ''}>
+                            {row.map((cell, ci) => (
+                              <td key={ci} className="px-3 py-2 align-middle text-text">
+                                <RichMath source={cell} />
+                              </td>
+                            ))}
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                )}
+
                 {card.examples && card.examples.length > 0 && (
                   <div>
                     <p className="mb-2 text-xs font-medium uppercase tracking-wider text-text-muted">
@@ -487,7 +558,7 @@ function TheoryCard({
                       {card.examples.map((ex, i) => (
                         <li
                           key={i}
-                          className="overflow-x-auto rounded-lg border border-border bg-surface-2/60 px-3 py-2.5 text-sm"
+                          className="min-w-0 overflow-x-auto rounded-lg border border-border bg-surface-2/60 px-3 py-2.5 text-sm"
                         >
                           <TeX tex={`${ex.problem} \\implies ${ex.answer}`} />
                           {ex.steps && ex.steps.length > 0 && (
@@ -528,7 +599,7 @@ function TheoryCard({
                         return (
                           <li
                             key={i}
-                            className="flex flex-col gap-2 rounded-lg border border-border bg-surface-2/60 px-3 py-2.5 text-sm"
+                            className="flex min-w-0 flex-col gap-2 rounded-lg border border-border bg-surface-2/60 px-3 py-2.5 text-sm"
                           >
                             <div className="overflow-x-auto">
                               <TeX tex={item.problem} />
@@ -551,7 +622,7 @@ function TheoryCard({
                                     return next
                                   })
                                 }
-                                className="self-start rounded-full border border-border px-2.5 py-0.5 text-xs text-text-muted transition hover:border-accent hover:text-accent"
+                                className="flex min-h-11 items-center self-start rounded-full border border-border px-3 text-xs text-text-muted transition hover:border-accent hover:text-accent"
                               >
                                 {labels.revealLabel}
                               </button>
