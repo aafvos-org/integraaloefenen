@@ -62,3 +62,6 @@ next-env.d.ts
 /.wrangler/
 .dev.vars*
 !.dev.vars.example
+
+# Paperclip-werkmappen van agents
+.paperclip/
