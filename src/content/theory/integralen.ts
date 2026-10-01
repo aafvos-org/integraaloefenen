@@ -11,6 +11,12 @@
  *
  * Behoudt dezelfde shape als `afgeleiden.ts` zodat de loader en consumers
  * niets hoeven aan te passen.
+ *
+ * Volgorde volgt de leerlijn van de leerling: opgave → welke vorm is dit?
+ * (de keuzehulp van stap 0) → één route → stappen → terug naar de opgave.
+ * De driedeling staat als groepskop boven de kaarten, niet als hoofdstuk.
+ * De stappen per route staan alleen in de kaarten zelf; `stappenplan.regels`
+ * is bewust leeg gelaten omdat die tabel ze verdubbelde.
  */
 
 import type {
@@ -35,185 +41,75 @@ export const THEORY_OVERVIEW: OverviewChapter[] = [
   {
     slug: 'k3',
     title: 'K.3 — Cyclometrische functies',
-    intro:
-      'Elke opgave uit deze paragraaf valt uiteen in drie delen. Deel 1: vertaal het verhaaltje naar een integraal. Deel 2: bereken die integraal — dat is altijd één van de zeven routes hieronder. Deel 3: doe met de uitkomst wat er gevraagd wordt. Bij een kale "bereken exact"-opgave bestaat alleen deel 2.',
+    intro: 'Elke integraal hier wordt $\\arctan$ of $\\arcsin$. De noemer zegt welke van de twee.',
     stappenplan: {
-      intro:
-        'Alle integralen van K.3 komen uit op $\\arctan$ of $\\arcsin$. De enige echte keuze is stap 0: kijk naar de noemer. Staat daar $\\ldots^2+1$, dan wordt het $\\arctan$; staat er $\\sqrt{1-\\ldots^2}$, dan wordt het $\\arcsin$. De rest van het werk is die noemer in precies die vorm duwen.',
+      intro: 'Tik de vorm aan die bij jouw integraal past; je springt dan naar de stappen.',
       herken: [
         {
-          schil: 'Noemer is precies $x^2+1$',
+          groep: 'Noemer $\\ldots^2+1$ → het wordt $\\arctan$',
+          schil: 'Precies $x^2+1$.',
           voorbeeld: '\\int \\frac{4}{x^2+1}\\,dx',
-          regel: 'Route 1 · standaardvorm arctan',
+          regel: 'Route 1',
+          kaart: 'k3_route1',
         },
         {
-          schil: 'Noemer $px^2+q$, geen losse $x$-term',
+          groep: 'Noemer $\\ldots^2+1$ → het wordt $\\arctan$',
+          schil: 'Geen losse $x$-term.',
           voorbeeld: '\\int \\frac{2}{4x^2+9}\\,dx',
-          regel: 'Route 2 · noemer naar $(bx)^2+1$',
+          regel: 'Route 2',
+          kaart: 'k3_route2',
         },
         {
-          schil: 'Noemer $x^2+px+q$, wél een losse $x$-term',
+          groep: 'Noemer $\\ldots^2+1$ → het wordt $\\arctan$',
+          schil: 'Wél een losse $x$-term.',
           voorbeeld: '\\int \\frac{5}{x^2-6x+18}\\,dx',
-          regel: 'Route 3 · kwadraatafsplitsen',
+          regel: 'Route 3',
+          kaart: 'k3_route3',
         },
         {
-          schil: 'Teller is de afgeleide van wat gekwadrateerd in de noemer staat',
+          groep: 'Noemer $\\ldots^2+1$ → het wordt $\\arctan$',
+          schil: 'De teller is de afgeleide van het gekwadrateerde.',
           voorbeeld: '\\int \\frac{e^x}{e^{2x}+1}\\,dx',
-          regel: 'Route 4 · substitutie naar $\\arctan(g)$',
+          regel: 'Route 4',
+          kaart: 'k3_route4',
         },
         {
-          schil: 'Noemer is $\\sqrt{1-(bx)^2}$ of $\\sqrt{c^2-x^2}$',
+          groep: 'Wortel $\\sqrt{1-\\ldots^2}$ → het wordt $\\arcsin$',
+          schil: 'De teller is een getal.',
           voorbeeld: '\\int \\frac{1}{\\sqrt{9-x^2}}\\,dx',
-          regel: 'Route 5 · standaardvorm arcsin',
+          regel: 'Route 5',
+          kaart: 'k3_route5',
         },
         {
-          schil: 'Teller is de afgeleide van wat gekwadrateerd ónder de wortel staat',
+          groep: 'Wortel $\\sqrt{1-\\ldots^2}$ → het wordt $\\arcsin$',
+          schil: 'De teller is de afgeleide van het gekwadrateerde.',
           voorbeeld: '\\int \\frac{x}{\\sqrt{1-x^4}}\\,dx',
-          regel: 'Route 6 · substitutie naar $\\arcsin(g)$',
+          regel: 'Route 6',
+          kaart: 'k3_route6',
         },
         {
-          schil: '$\\arctan$ of $\\arcsin$ staat er kaal, zonder breuk eromheen',
+          groep: '$\\arctan$ of $\\arcsin$ staat zelf in de opgave',
+          schil: 'In de teller, met zijn afgeleide eronder.',
+          voorbeeld: '\\int \\frac{\\arctan(x)}{x^2+1}\\,dx',
+          regel: 'Route 4b',
+          kaart: 'k3_route4b',
+        },
+        {
+          groep: '$\\arctan$ of $\\arcsin$ staat zelf in de opgave',
+          schil: 'Kaal, zonder breuk eromheen.',
           voorbeeld: '\\int \\arctan(x)\\,dx',
-          regel: 'Route 7 · partieel integreren',
+          regel: 'Route 7',
+          kaart: 'k3_route7',
         },
       ],
-      regels: [
-        {
-          regel: 'Route 1 · standaardvorm arctan',
-          formule: '\\int \\frac{a}{x^2+1}\\,dx = a\\arctan(x)+c',
-          stap1: 'Haal de constante $a$ voor het integraalteken.',
-          stap2: 'Primitieve is $a\\arctan(x)$.',
-          stap3: 'Grenzen invullen met de exacte waarden van $\\arctan$.',
-        },
-        {
-          regel: 'Route 2 · noemer naar $(bx)^2+1$',
-          formule: '\\int \\frac{a}{(bx)^2+1}\\,dx = \\frac{a}{b}\\arctan(bx)+c',
-          stap1: 'Deel teller én noemer door de losse term $q$, zodat de noemer op $+1$ eindigt.',
-          stap2: 'Lees $b$ af uit $(bx)^2$: uit $\\tfrac{p}{q}x^2$ volgt $b=\\sqrt{p/q}$.',
-          stap3: 'Primitieve is $\\dfrac{a}{qb}\\arctan(bx)$ — de $\\tfrac1b$ komt van de kettingregel.',
-        },
-        {
-          regel: 'Route 3 · kwadraatafsplitsen',
-          formule: 'x^2+px+q = \\left(x+\\tfrac12 p\\right)^2 + r,\\quad r = q-\\tfrac14p^2',
-          stap1: 'Splits het kwadraat af; staat er een getal vóór $x^2$, haal dat eerst buiten haakjes.',
-          stap2: 'Nu staat er route 2, met $x+\\tfrac12p$ op de plaats van $x$.',
-          stap3: 'Primitieve is $\\dfrac{a}{\\sqrt r}\\arctan\\!\\left(\\dfrac{x+\\frac12p}{\\sqrt r}\\right)$; grenzen vul je gewoon in $x$ in.',
-        },
-        {
-          regel: 'Route 4 · substitutie naar arctan',
-          formule: '\\int \\frac{g\'(x)}{\\bigl(g(x)\\bigr)^2+1}\\,dx = \\arctan\\bigl(g(x)\\bigr)+c',
-          stap1: 'Kies $g$: dat wat gekwadrateerd in de noemer staat, want $x^4=(x^2)^2$ en $e^{2x}=(e^x)^2$.',
-          stap2: 'Controleer of de teller op een constante na gelijk is aan $g\'(x)$.',
-          stap3: 'Primitieve is $\\arctan\\bigl(g(x)\\bigr)$, zo nodig maal die constante; grenzen blijven in $x$.',
-        },
-        {
-          regel: 'Route 5 · standaardvorm arcsin',
-          formule: '\\int \\frac{a}{\\sqrt{1-(bx)^2}}\\,dx = \\frac{a}{b}\\arcsin(bx)+c',
-          stap1: 'Zorg dat er $1-\\ldots^2$ onder de wortel staat: $\\sqrt{c^2-x^2}=c\\sqrt{1-\\left(\\tfrac xc\\right)^2}$.',
-          stap2: 'Lees $b$ af uit $(bx)^2$.',
-          stap3: 'Primitieve is $\\dfrac ab\\arcsin(bx)$; grenzen invullen met de exacte waarden van $\\arcsin$.',
-        },
-        {
-          regel: 'Route 6 · substitutie naar arcsin',
-          formule: '\\int \\frac{g\'(x)}{\\sqrt{1-\\bigl(g(x)\\bigr)^2}}\\,dx = \\arcsin\\bigl(g(x)\\bigr)+c',
-          stap1: 'Kies $g$: dat wat gekwadrateerd onder de wortel staat.',
-          stap2: 'Controleer of de teller op een constante na gelijk is aan $g\'(x)$.',
-          stap3: 'Primitieve is $\\arcsin\\bigl(g(x)\\bigr)$, zo nodig maal die constante.',
-        },
-        {
-          regel: 'Route 7 · partieel integreren',
-          formule: '\\int g \\cdot h\'\\,dx = g\\cdot h - \\int g\'\\cdot h\\,dx',
-          stap1: 'Neem $g=\\arctan(x)$ of $g=\\arcsin(x)$ en $h\'=1$, dus $h=x$.',
-          stap2: 'Vul in: er blijft $\\displaystyle\\int \\frac{x}{x^2+1}\\,dx$ of $\\displaystyle\\int \\frac{x}{\\sqrt{1-x^2}}\\,dx$ over.',
-          stap3: 'Die laatste integraal los je op met de standaardvorm „afgeleide gedeeld door functie” of met een substitutie.',
-        },
-      ],
-      slot:
-        'Let op: ook $\\arctan(x)$ zelf kan de binnenfunctie zijn. In $\\displaystyle\\int \\frac{\\arctan(x)}{x^2+1}\\,dx$ is de teller $\\arctan(x)$ en de rest precies zijn afgeleide — dat is route 4 met $g=\\arctan(x)$ en geeft $\\tfrac12\\arctan^2(x)+c$.',
     },
     cards: [
-      {
-        id: 'k3_standaardintegralen',
-        title: 'De twee standaardintegralen',
-        formula:
-          '\\begin{gathered} \\int \\frac{1}{x^2+1}\\,dx = \\arctan(x)+c \\\\ \\int \\frac{1}{\\sqrt{1-x^2}}\\,dx = \\arcsin(x)+c \\end{gathered}',
-        answerNote:
-          'Een onbepaalde integraal eindigt altijd op $+c$; een bepaalde integraal geef je exact, dus als veelvoud van $\\pi$ (of $\\pi^2$, $\\pi^3$).',
-        table: {
-          headers: ['Vorm', 'Primitieve', 'Waar je hem ziet'],
-          rows: [
-            ['$\\displaystyle\\int \\frac{a}{x^2+1}\\,dx$', '$a\\arctan(x)+c$', 'Route 1'],
-            ['$\\displaystyle\\int \\frac{a}{(bx)^2+1}\\,dx$', '$\\dfrac ab\\arctan(bx)+c$', 'Route 2 en 3'],
-            ['$\\displaystyle\\int \\frac{g\'}{g^2+1}\\,dx$', '$\\arctan(g)+c$', 'Route 4'],
-            ['$\\displaystyle\\int \\frac{a}{\\sqrt{1-(bx)^2}}\\,dx$', '$\\dfrac ab\\arcsin(bx)+c$', 'Route 5'],
-            ['$\\displaystyle\\int \\frac{g\'}{\\sqrt{1-g^2}}\\,dx$', '$\\arcsin(g)+c$', 'Route 6'],
-          ],
-        },
-        notes: [
-          'Andersom: $g(x)=\\arctan(x)$ geeft $g\'(x)=\\dfrac{1}{x^2+1}$ en $g(x)=\\arcsin(x)$ geeft $g\'(x)=\\dfrac{1}{\\sqrt{1-x^2}}$.',
-          'Domein en bereik: $\\arctan$ heeft $D=\\mathbb{R}$ en $B=\\left\\langle-\\tfrac12\\pi,\\tfrac12\\pi\\right\\rangle$; $\\arcsin$ heeft $D=[-1,1]$ en $B=\\left[-\\tfrac12\\pi,\\tfrac12\\pi\\right]$.',
-          'Daarom heeft $\\arctan(x)=\\tfrac23\\pi$ geen oplossing: $\\tfrac23\\pi$ ligt buiten het bereik.',
-        ],
-      },
-      {
-        id: 'k3_tabel_arctan',
-        title: 'Exacte waarden van arctan',
-        table: {
-          headers: ['$x$', '$-\\sqrt3$', '$-1$', '$-\\tfrac13\\sqrt3$', '$0$', '$\\tfrac13\\sqrt3$', '$1$', '$\\sqrt3$'],
-          rows: [
-            [
-              '$\\arctan(x)$',
-              '$-\\tfrac13\\pi$',
-              '$-\\tfrac14\\pi$',
-              '$-\\tfrac16\\pi$',
-              '$0$',
-              '$\\tfrac16\\pi$',
-              '$\\tfrac14\\pi$',
-              '$\\tfrac13\\pi$',
-            ],
-          ],
-        },
-        notes: [
-          '$\\arctan$ is oneven: $\\arctan(-x)=-\\arctan(x)$. Je hoeft dus maar de helft te onthouden.',
-          'Deze tabel ken je uit je hoofd — zonder hem kun je geen enkele opgave van K.3 exact afmaken.',
-        ],
-      },
-      {
-        id: 'k3_tabel_arcsin',
-        title: 'Exacte waarden van arcsin',
-        table: {
-          headers: [
-            '$x$',
-            '$-1$',
-            '$-\\tfrac12\\sqrt3$',
-            '$-\\tfrac12\\sqrt2$',
-            '$-\\tfrac12$',
-            '$0$',
-            '$\\tfrac12$',
-            '$\\tfrac12\\sqrt2$',
-            '$\\tfrac12\\sqrt3$',
-            '$1$',
-          ],
-          rows: [
-            [
-              '$\\arcsin(x)$',
-              '$-\\tfrac12\\pi$',
-              '$-\\tfrac13\\pi$',
-              '$-\\tfrac14\\pi$',
-              '$-\\tfrac16\\pi$',
-              '$0$',
-              '$\\tfrac16\\pi$',
-              '$\\tfrac14\\pi$',
-              '$\\tfrac13\\pi$',
-              '$\\tfrac12\\pi$',
-            ],
-          ],
-        },
-        notes: ['Ook $\\arcsin$ is oneven: $\\arcsin(-x)=-\\arcsin(x)$.'],
-      },
+      // ── Deel 2 · de routes, in de volgorde van de keuzehulp ──────────────
       {
         id: 'k3_route1',
-        title: 'Route 1 · Kale standaardvorm',
+        groep: 'Deel 2 · Bereken de integraal',
+        title: 'Route 1 · De noemer is precies $x^2+1$',
+        herkenpunt: '\\int \\frac{a}{x^2+1}\\,dx',
         formula: '\\int \\frac{a}{x^2+1}\\,dx = a\\arctan(x)+c',
         examples: [
           {
@@ -232,7 +128,9 @@ export const THEORY_OVERVIEW: OverviewChapter[] = [
       },
       {
         id: 'k3_route2',
-        title: 'Route 2 · Noemer $px^2+q$ naar $(bx)^2+1$',
+        groep: 'Deel 2 · Bereken de integraal',
+        title: 'Route 2 · Noemer $px^2+q$, geen losse $x$-term',
+        herkenpunt: '\\int \\frac{a}{px^2+q}\\,dx',
         formula:
           '\\begin{gathered} \\int \\frac{a}{(bx)^2+1}\\,dx = \\frac ab\\arctan(bx)+c \\\\ \\frac{a}{px^2+q} = \\frac{a/q}{\\frac pq x^2+1},\\qquad b=\\sqrt{\\tfrac pq} \\end{gathered}',
         examples: [
@@ -271,7 +169,9 @@ export const THEORY_OVERVIEW: OverviewChapter[] = [
       },
       {
         id: 'k3_route3',
-        title: 'Route 3 · Kwadraatafsplitsen',
+        groep: 'Deel 2 · Bereken de integraal',
+        title: 'Route 3 · Noemer $x^2+px+q$, wél een losse $x$-term',
+        herkenpunt: '\\int \\frac{a}{x^2+px+q}\\,dx',
         formula:
           '\\begin{gathered} x^2+px+q=\\left(x+\\tfrac12p\\right)^2+r,\\quad r=q-\\tfrac14p^2 \\\\ \\int \\frac{a}{\\left(x+s\\right)^2+r}\\,dx=\\frac{a}{\\sqrt r}\\arctan\\!\\left(\\frac{x+s}{\\sqrt r}\\right)+c \\end{gathered}',
         examples: [
@@ -309,7 +209,9 @@ export const THEORY_OVERVIEW: OverviewChapter[] = [
       },
       {
         id: 'k3_route4',
-        title: 'Route 4 · Substitutie naar arctan',
+        groep: 'Deel 2 · Bereken de integraal',
+        title: 'Route 4 · De teller is de afgeleide van het gekwadrateerde',
+        herkenpunt: '\\int \\frac{g\'}{g^2+1}\\,dx',
         formula: '\\int \\frac{g\'(x)}{\\bigl(g(x)\\bigr)^2+1}\\,dx = \\arctan\\bigl(g(x)\\bigr)+c',
         examples: [
           {
@@ -356,7 +258,9 @@ export const THEORY_OVERVIEW: OverviewChapter[] = [
       },
       {
         id: 'k3_route4b',
-        title: 'Route 4b · arctan of arcsin zélf als binnenfunctie',
+        groep: 'Deel 2 · Bereken de integraal',
+        title: 'Route 4b · In de teller staat $\\arctan$ of $\\arcsin$ zelf',
+        herkenpunt: '\\int \\frac{\\arctan^n(x)}{x^2+1}\\,dx',
         formula:
           '\\begin{gathered} \\int \\frac{\\arctan^n(x)}{x^2+1}\\,dx = \\frac{\\arctan^{\\,n+1}(x)}{n+1}+c \\\\ \\int \\frac{\\arcsin^n(x)}{\\sqrt{1-x^2}}\\,dx = \\frac{\\arcsin^{\\,n+1}(x)}{n+1}+c \\end{gathered}',
         examples: [
@@ -393,7 +297,9 @@ export const THEORY_OVERVIEW: OverviewChapter[] = [
       },
       {
         id: 'k3_route5',
-        title: 'Route 5 · Standaardvorm arcsin',
+        groep: 'Deel 2 · Bereken de integraal',
+        title: 'Route 5 · Onder de wortel staat $1-\\ldots^2$, teller is een getal',
+        herkenpunt: '\\int \\frac{a}{\\sqrt{1-(bx)^2}}\\,dx',
         formula:
           '\\begin{gathered} \\int \\frac{a}{\\sqrt{1-(bx)^2}}\\,dx = \\frac ab\\arcsin(bx)+c \\\\ \\sqrt{c^2-x^2}=c\\sqrt{1-\\left(\\tfrac xc\\right)^2} \\end{gathered}',
         examples: [
@@ -427,7 +333,9 @@ export const THEORY_OVERVIEW: OverviewChapter[] = [
       },
       {
         id: 'k3_route6',
-        title: 'Route 6 · Substitutie naar arcsin',
+        groep: 'Deel 2 · Bereken de integraal',
+        title: 'Route 6 · De teller is de afgeleide van wat onder de wortel staat',
+        herkenpunt: '\\int \\frac{g\'}{\\sqrt{1-g^2}}\\,dx',
         formula: '\\int \\frac{g\'(x)}{\\sqrt{1-\\bigl(g(x)\\bigr)^2}}\\,dx = \\arcsin\\bigl(g(x)\\bigr)+c',
         examples: [
           {
@@ -471,7 +379,9 @@ export const THEORY_OVERVIEW: OverviewChapter[] = [
       },
       {
         id: 'k3_route7',
-        title: 'Route 7 · Partieel integreren',
+        groep: 'Deel 2 · Bereken de integraal',
+        title: 'Route 7 · $\\arctan$ of $\\arcsin$ staat er kaal',
+        herkenpunt: '\\int \\arctan(x)\\,dx',
         formula: '\\int g\\cdot h\'\\,dx = g\\cdot h-\\int g\'\\cdot h\\,dx',
         examples: [
           {
@@ -497,9 +407,13 @@ export const THEORY_OVERVIEW: OverviewChapter[] = [
           'Staat $\\arctan$ of $\\arcsin$ er kaal, zonder breuk? Dan is het altijd partieel integreren met $h\'=1$.',
         ],
       },
+
+      // ── Deel 1 en 3 · het verhaaltje en wat je met de uitkomst doet ──────
       {
         id: 'k3_verhaaltjes',
-        title: 'Deel 1 en 3 · Opgaven met een verhaaltje',
+        groep: 'Deel 1 en 3 · Van verhaaltje naar antwoord',
+        title: 'Er staat een verhaaltje in plaats van een kale integraal',
+        herkenpunt: 'O(V)=\\int_{a}^{b} f(x)\\,dx',
         formula: 'O(V)=\\int_{a}^{b} f(x)\\,dx',
         answerNote:
           'Bij een vraag naar $p$ geef je een exact antwoord; vaak staat daar $\\tan$ of $\\sin$ in, bijvoorbeeld $p=4+\\tan(1)$.',
@@ -548,9 +462,69 @@ export const THEORY_OVERVIEW: OverviewChapter[] = [
           'Deel 3 is de omgekeerde weg: uit $\\arctan(\\ldots)=k$ volgt $\\ldots=\\tan(k)$, en uit $\\arcsin(\\ldots)=k$ volgt $\\ldots=\\sin(k)$.',
         ],
       },
+
+      // ── Naslag · opzoeken als je vastloopt ───────────────────────────────
+      {
+        id: 'k3_standaardintegralen',
+        groep: 'Naslag',
+        title: 'De twee standaardintegralen waar alles op terugkomt',
+        formula:
+          '\\begin{gathered} \\int \\frac{1}{x^2+1}\\,dx = \\arctan(x)+c \\\\ \\int \\frac{1}{\\sqrt{1-x^2}}\\,dx = \\arcsin(x)+c \\end{gathered}',
+        answerNote:
+          'Een onbepaalde integraal eindigt altijd op $+c$; een bepaalde integraal geef je exact, dus als veelvoud van $\\pi$ (of $\\pi^2$, $\\pi^3$).',
+        notes: [
+          'Andersom: $g(x)=\\arctan(x)$ geeft $g\'(x)=\\dfrac{1}{x^2+1}$ en $g(x)=\\arcsin(x)$ geeft $g\'(x)=\\dfrac{1}{\\sqrt{1-x^2}}$.',
+          'Domein en bereik: $\\arctan$ heeft $D=\\mathbb{R}$ en $B=\\left\\langle-\\tfrac12\\pi,\\tfrac12\\pi\\right\\rangle$; $\\arcsin$ heeft $D=[-1,1]$ en $B=\\left[-\\tfrac12\\pi,\\tfrac12\\pi\\right]$.',
+          'Daarom heeft $\\arctan(x)=\\tfrac23\\pi$ geen oplossing: $\\tfrac23\\pi$ ligt buiten het bereik.',
+        ],
+      },
+      {
+        id: 'k3_tabel_arctan',
+        groep: 'Naslag',
+        title: 'Exacte waarden van $\\arctan$',
+        table: {
+          headers: ['$x$', '$\\arctan(x)$'],
+          rows: [
+            ['$-\\sqrt3$', '$-\\tfrac13\\pi$'],
+            ['$-1$', '$-\\tfrac14\\pi$'],
+            ['$-\\tfrac13\\sqrt3$', '$-\\tfrac16\\pi$'],
+            ['$0$', '$0$'],
+            ['$\\tfrac13\\sqrt3$', '$\\tfrac16\\pi$'],
+            ['$1$', '$\\tfrac14\\pi$'],
+            ['$\\sqrt3$', '$\\tfrac13\\pi$'],
+          ],
+        },
+        notes: [
+          '$\\arctan$ is oneven: $\\arctan(-x)=-\\arctan(x)$. Je hoeft dus maar de helft te onthouden.',
+          'Deze tabel ken je uit je hoofd — zonder hem kun je geen enkele opgave van K.3 exact afmaken.',
+        ],
+      },
+      {
+        id: 'k3_tabel_arcsin',
+        groep: 'Naslag',
+        title: 'Exacte waarden van $\\arcsin$',
+        table: {
+          headers: ['$x$', '$\\arcsin(x)$'],
+          rows: [
+            ['$-1$', '$-\\tfrac12\\pi$'],
+            ['$-\\tfrac12\\sqrt3$', '$-\\tfrac13\\pi$'],
+            ['$-\\tfrac12\\sqrt2$', '$-\\tfrac14\\pi$'],
+            ['$-\\tfrac12$', '$-\\tfrac16\\pi$'],
+            ['$0$', '$0$'],
+            ['$\\tfrac12$', '$\\tfrac16\\pi$'],
+            ['$\\tfrac12\\sqrt2$', '$\\tfrac14\\pi$'],
+            ['$\\tfrac12\\sqrt3$', '$\\tfrac13\\pi$'],
+            ['$1$', '$\\tfrac12\\pi$'],
+          ],
+        },
+        notes: ['Ook $\\arcsin$ is oneven: $\\arcsin(-x)=-\\arcsin(x)$.'],
+      },
+
+      // ── Test jezelf ──────────────────────────────────────────────────────
       {
         id: 'k3_zelftest',
-        title: 'Zelftest · Welke route pak je?',
+        groep: 'Test jezelf',
+        title: 'Welke route pak je bij deze zes?',
         herken: [
           {
             problem: '\\int \\frac{3}{x^2+3}\\,dx',
