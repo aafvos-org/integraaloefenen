@@ -1,4 +1,9 @@
 {
+  "Metadata": {
+    "title": "Differentiëren oefenen — afgeleide wiskunde B VWO | __DOMAIN__",
+    "description": "Differentiëren oefenen voor wiskunde B VWO — gratis en adaptief. Oefen de afgeleide met de machtsregel, productregel, quotiëntregel, kettingregel, goniometrie, e-macht en ln. Ideaal voor het eindexamen.",
+    "ogTitle": "Afgeleide oefenen — wiskunde B VWO"
+  },
   "Header": {
     "brand": "__BRAND__",
     "brandSuffix": ".nl",
@@ -77,7 +82,7 @@
     "faq7A": "Zeker. Afgeleiden zijn de basis voor grote onderdelen van het VWO wiskunde B examen (extremen, raaklijnen, dynamische modellen). Door hier vlot in te worden maak je op het examen sneller en met minder fouten de andere onderdelen."
   },
   "HoeHetWerkt": {
-    "title": "Hoe het werkt · __DOMAIN__",
+    "title": "Hoe het werkt",
     "description": "Het verschil tussen het leerpad en vrij oefenen, hoe de site zich aanpast, en hoe je bij de start je voorkeuren kiest.",
     "eyebrow": "Het idee achter deze site",
     "h1": "Twee manieren om afgeleiden te oefenen",
@@ -116,7 +121,7 @@
     "ctaBack": "← Terug naar home"
   },
   "Theorie": {
-    "title": "Differentiëren: alle regels op één pagina · __DOMAIN__",
+    "title": "Differentiëren: alle regels op één pagina",
     "description": "Alle differentieerregels voor wiskunde B VWO op één pagina: machtsregel, somregel, productregel, quotiëntregel, kettingregel, e-macht, goniometrie en ln. Met voorbeelden en stappen.",
     "eyebrow": "Theorie",
     "h1": "Differentiëren: alle regels op één pagina",
@@ -168,7 +173,7 @@
     "toonGenest": "Hoe kom ik aan deze afgeleide?"
   },
   "Login": {
-    "title": "Inloggen · __DOMAIN__",
+    "title": "Inloggen",
     "h1": "Inloggen",
     "subtitle": "Welkom terug. Log in om verder te oefenen.",
     "emailLabel": "E-mailadres",
@@ -188,7 +193,7 @@
     "confirmedNotice": "Je account is bevestigd! Je kunt nu inloggen."
   },
   "Register": {
-    "title": "Registreren · __DOMAIN__",
+    "title": "Registreren",
     "h1": "Account aanmaken",
     "subtitle": "Gratis, in het Nederlands, en je kunt gelijk oefenen.",
     "usernameLabel": "Gebruikersnaam (optioneel)",
@@ -206,7 +211,7 @@
     "hidePassword": "Verberg"
   },
   "ForgotPassword": {
-    "title": "Wachtwoord vergeten · __DOMAIN__",
+    "title": "Wachtwoord vergeten",
     "h1": "Wachtwoord vergeten",
     "subtitle": "Vul je e-mailadres in. Als er een account bij hoort, ontvang je een link om je wachtwoord te resetten.",
     "emailLabel": "E-mailadres",
@@ -216,7 +221,7 @@
     "backToLogin": "← Terug naar inloggen"
   },
   "NewPassword": {
-    "title": "Nieuw wachtwoord · __DOMAIN__",
+    "title": "Nieuw wachtwoord",
     "h1": "Nieuw wachtwoord instellen",
     "passwordLabel": "Nieuw wachtwoord",
     "passwordHint": "Minstens 8 tekens.",
@@ -226,7 +231,7 @@
     "submitPending": "Bezig…"
   },
   "Onboarding": {
-    "title": "Welkom · __DOMAIN__",
+    "title": "Welkom",
     "step1Eyebrow": "Stap 1 van 4",
     "step1H1": "Welke klas zit je in?",
     "step1Intro": "Zo kunnen we de stof afstemmen op je leerjaar.",
@@ -271,7 +276,7 @@
     "pending": "Bezig…"
   },
   "OnboardingPad": {
-    "title": "Leerpad samenstellen · __DOMAIN__",
+    "title": "Leerpad samenstellen",
     "eyebrow": "Leerpad samenstellen",
     "h1": "Wat beheers je al, wat wil je oefenen?",
     "intro": "Vink aan welke onderwerpen je al goed kent en welke je wilt oefenen. Wij stellen op basis daarvan je leerpad samen.",
@@ -285,7 +290,7 @@
     "skipHint": "dan blijft het standaardleerpad zoals het is"
   },
   "OnboardingToets": {
-    "title": "Korte toets · __DOMAIN__",
+    "title": "Korte toets",
     "eyebrow": "Korte toets",
     "h1": "Zo schatten we je startpunt in",
     "intro": "Voor elk hoofdonderwerp één opgave. Op basis van je antwoorden stellen we je leerpad in.",
@@ -308,7 +313,7 @@
     "submitPending": "Opslaan…"
   },
   "Dashboard": {
-    "title": "Dashboard · __DOMAIN__",
+    "title": "Dashboard",
     "greetingWithName": "Hoi {name}",
     "progressTitle": "Jouw voortgang",
     "progressSubtitle": "Hier zie je hoe ver je bent op het leerpad.",
@@ -355,7 +360,7 @@
     "cancel": "Annuleren"
   },
   "Leerpad": {
-    "title": "Leerpad · __DOMAIN__",
+    "title": "Leerpad",
     "hi": "Hoi {name}",
     "completeEyebrow": "🎉 Klaar",
     "completeH1": "Je hebt alles gemasterd",
@@ -440,7 +445,7 @@
     "hasVideo": "Uitlegvideo"
   },
   "FreeExercise": {
-    "title": "Oefenen · __DOMAIN__",
+    "title": "Oefenen",
     "h1": "Oefenen",
     "topicLabel": "Onderwerp",
     "chapterLabel": "Hoofdstuk",
@@ -467,7 +472,7 @@
     "expandSidebar": "Zijbalk uitklappen"
   },
   "ZelfToets": {
-    "title": "Zelf-toets · __DOMAIN__",
+    "title": "Zelf-toets",
     "runnerTitle": "Zelf-toets bezig",
     "resultsTitle": "Zelf-toets resultaat",
     "eyebrow": "Zelf-toets",
@@ -533,7 +538,7 @@
     "runnerNotFound": "Deze toets-sessie bestaat niet meer."
   },
   "Settings": {
-    "title": "Instellingen · __DOMAIN__",
+    "title": "Instellingen",
     "h1": "Instellingen",
     "accountH2": "Account",
     "emailLabel": "E-mailadres",
@@ -550,7 +555,7 @@
     "noUsername": "Nog niet ingesteld"
   },
   "Feedback": {
-    "title": "Feedback · __DOMAIN__",
+    "title": "Feedback",
     "h1": "Feedback sturen",
     "intro": "Mis je iets, klopt er iets niet, of heb je een idee? Laat het weten. Alle feedback is welkom.",
     "placeholder": "Vertel wat je kwijt wilt…",
