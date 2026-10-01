@@ -1,3 +1,4 @@
+import { SITE } from '@/config/site'
 import { createServiceRoleClient } from '@/lib/supabase/server'
 
 export const dynamic = 'force-dynamic'
@@ -114,41 +115,90 @@ export async function GET(req: Request) {
 
   const admin = createServiceRoleClient()
 
-  let sessieQuery = admin
-    .from('user_sessions_new')
-    .select('id, user_id, topic_id, started_at, ended_at')
-    .order('started_at', { ascending: false })
-    .limit(limiet)
-  if (sinds !== null) sessieQuery = sessieQuery.gte('started_at', sinds)
-
-  const { data: sessieRijen, error: sessieFout } = await sessieQuery
-  if (sessieFout) {
-    console.error('Sessies ophalen mislukt:', sessieFout)
-    return Response.json({ error: 'Ophalen mislukt.' }, { status: 500 })
-  }
-  if (!sessieRijen || sessieRijen.length === 0) {
-    return Response.json({ sessies: [] })
-  }
-
-  const topicIds = [
-    ...new Set(
-      sessieRijen
-        .map((rij) => rij.topic_id)
-        .filter((id): id is string => id !== null),
-    ),
-  ]
-
-  const { data: topicRijen, error: topicFout } = topicIds.length
-    ? await admin
-        .from('topics_new')
-        .select('id, title, chapter_id')
-        .in('id', topicIds)
-    : { data: [], error: null }
+  const { data: topicRijen, error: topicFout } = await admin
+    .from('topics_new')
+    .select('id, title, chapter_id')
+    .eq('site', SITE)
   if (topicFout) {
     console.error('Onderwerpen ophalen mislukt:', topicFout)
     return Response.json({ error: 'Ophalen mislukt.' }, { status: 500 })
   }
   const topics = new Map((topicRijen ?? []).map((rij) => [rij.id, rij]))
+
+  const sessieVelden = 'id, user_id, topic_id, started_at, ended_at'
+
+  let oefenQuery = admin
+    .from('user_sessions_new')
+    .select(sessieVelden)
+    .in('topic_id', [...topics.keys()])
+    .order('started_at', { ascending: false })
+    .limit(limiet)
+  if (sinds !== null) oefenQuery = oefenQuery.gte('started_at', sinds)
+
+  // Zelf samengestelde toetsen hebben geen onderwerp; welke site het is blijkt
+  // pas uit de vragen die erin zitten.
+  let toetsQuery = admin
+    .from('user_sessions_new')
+    .select(sessieVelden)
+    .is('topic_id', null)
+    .order('started_at', { ascending: false })
+    .limit(limiet)
+  if (sinds !== null) toetsQuery = toetsQuery.gte('started_at', sinds)
+
+  const [oefenResultaat, toetsResultaat] = await Promise.all([
+    oefenQuery,
+    toetsQuery,
+  ])
+  if (oefenResultaat.error || toetsResultaat.error) {
+    console.error(
+      'Sessies ophalen mislukt:',
+      oefenResultaat.error ?? toetsResultaat.error,
+    )
+    return Response.json({ error: 'Ophalen mislukt.' }, { status: 500 })
+  }
+
+  const toetsSessies = toetsResultaat.data ?? []
+  const toetsVanDezeSite = new Set<string>()
+  if (toetsSessies.length) {
+    const { data: toetsVragen, error: toetsVraagFout } = await admin
+      .from('custom_test_questions')
+      .select('session_id, question_id')
+      .in(
+        'session_id',
+        toetsSessies.map((rij) => rij.id),
+      )
+    if (toetsVraagFout) {
+      console.error('Toetsvragen ophalen mislukt:', toetsVraagFout)
+      return Response.json({ error: 'Ophalen mislukt.' }, { status: 500 })
+    }
+    const vraagIds = [...new Set((toetsVragen ?? []).map((r) => r.question_id))]
+    const { data: siteVragen, error: siteVraagFout } = vraagIds.length
+      ? await admin
+          .from('questions_new')
+          .select('id')
+          .eq('site', SITE)
+          .in('id', vraagIds)
+      : { data: [], error: null }
+    if (siteVraagFout) {
+      console.error('Vragen ophalen mislukt:', siteVraagFout)
+      return Response.json({ error: 'Ophalen mislukt.' }, { status: 500 })
+    }
+    const siteVraagIds = new Set((siteVragen ?? []).map((r) => r.id))
+    for (const rij of toetsVragen ?? []) {
+      if (siteVraagIds.has(rij.question_id)) toetsVanDezeSite.add(rij.session_id)
+    }
+  }
+
+  const sessieRijen = [
+    ...(oefenResultaat.data ?? []),
+    ...toetsSessies.filter((rij) => toetsVanDezeSite.has(rij.id)),
+  ]
+    .sort((a, b) => Date.parse(b.started_at) - Date.parse(a.started_at))
+    .slice(0, limiet)
+
+  if (sessieRijen.length === 0) {
+    return Response.json({ sessies: [] })
+  }
 
   const chapterIds = [
     ...new Set((topicRijen ?? []).map((rij) => rij.chapter_id)),
