@@ -1,5 +1,6 @@
 'use server'
 
+import type { OefenFoutSoort } from '@/lib/analytics/oefenen'
 import { checkWrongAnswerNew } from '@/lib/ai/check-answer-new'
 import { createClient, createServiceRoleClient } from '@/lib/supabase/server'
 
@@ -19,7 +20,7 @@ export type StudyResult =
       latexCorrectAnswer: string | null
       errorExplanation: string | null
     }
-  | { kind: 'error'; message: string }
+  | { kind: 'error'; soort: OefenFoutSoort; message: string }
 
 export async function submitStudyAnswerAction(
   questionId: string,
@@ -30,14 +31,16 @@ export async function submitStudyAnswerAction(
   const {
     data: { user },
   } = await supabase.auth.getUser()
-  if (!user) return { kind: 'error', message: 'Niet ingelogd.' }
+  if (!user) return { kind: 'error', soort: 'niet_ingelogd', message: 'Niet ingelogd.' }
 
   const { data: question } = await supabase
     .from('questions_new')
     .select('id, topic_id, cluster_id, answer, latex_answer, answer_alternatives')
     .eq('id', questionId)
     .maybeSingle()
-  if (!question) return { kind: 'error', message: 'Vraag niet gevonden.' }
+  if (!question) {
+    return { kind: 'error', soort: 'vraag_niet_gevonden', message: 'Vraag niet gevonden.' }
+  }
 
   const alts: string[] = question.answer_alternatives ?? []
   const isCorrect = answersMatch(userAnswer, question.answer, alts)
@@ -64,6 +67,7 @@ export async function submitStudyAnswerAction(
   if (answerError || !answerRow) {
     return {
       kind: 'error',
+      soort: 'opslaan_mislukt',
       message: answerError?.message ?? 'Kon antwoord niet opslaan.',
     }
   }

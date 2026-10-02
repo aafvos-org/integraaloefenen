@@ -6,6 +6,7 @@ import { Link, useRouter } from '@/i18n/navigation'
 import { Card, cn } from '@/components/ui'
 import {
   captureOefenEvent,
+  oefenFoutProps,
   type OefenContext,
   type OefenEventNaam,
   type OefenEventProps,
@@ -68,6 +69,8 @@ type Props = {
   initialTiles: NewExerciseTile[]
   allTiles: NewExerciseTile[]
   question: Question | null
+  /** Er stond een opgave in de url, maar die kwam niet terug uit de databank. */
+  vraagNietGevonden: boolean
   labels: Labels
 }
 
@@ -99,6 +102,7 @@ export function OefenenClient({
   initialTiles,
   allTiles,
   question,
+  vraagNietGevonden,
   labels,
 }: Props) {
   const router = useRouter()
@@ -246,12 +250,16 @@ export function OefenenClient({
       (id) => {
         if (!geannuleerd && id) setSessieId(id)
       },
-      () => {},
+      () => {
+        if (!geannuleerd) {
+          track('fout_opgetreden', oefenFoutProps('sessie_ophalen', 'serveractie_mislukt'))
+        }
+      },
     )
     return () => {
       geannuleerd = true
     }
-  }, [sessieClusterId])
+  }, [sessieClusterId, track])
 
   const vorigeVraagRef = useRef<{
     id: string
@@ -298,6 +306,11 @@ export function OefenenClient({
       aantal_goed: sessie.goed.size,
     })
   }, [])
+
+  useEffect(() => {
+    if (!vraagNietGevonden) return
+    track('fout_opgetreden', oefenFoutProps('vraag_laden', 'vraag_niet_gevonden'))
+  }, [vraagNietGevonden, track])
 
   useEffect(() => {
     window.addEventListener('pagehide', rondSessieAf)

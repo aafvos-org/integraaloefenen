@@ -14,7 +14,11 @@ import {
   type StudyResult,
 } from '@/lib/practice/chapter-actions'
 import { insertAtCursor, toLatexPreview } from '@/lib/practice/input'
-import type { OefenEventNaam, OefenEventProps } from '@/lib/analytics/oefenen'
+import {
+  oefenFoutProps,
+  type OefenEventNaam,
+  type OefenEventProps,
+} from '@/lib/analytics/oefenen'
 import type { UitlegVideo } from '@/lib/videos'
 
 import { MathKeyboard } from '@/components/math-keyboard'
@@ -162,9 +166,18 @@ export function StudyCard({
     const poging = ++attemptsRef.current
     const seconden = Math.round((Date.now() - shownAtRef.current) / 1000)
     startTransition(async () => {
-      const result: StudyResult = await submitStudyAnswerAction(question.id, submitted)
+      let result: StudyResult
+      try {
+        result = await submitStudyAnswerAction(question.id, submitted)
+      } catch {
+        setSubmitting(false)
+        track?.('fout_opgetreden', oefenFoutProps('nakijken', 'serveractie_mislukt'))
+        setState({ phase: 'input', error: t('genericError') })
+        return
+      }
       setSubmitting(false)
       if (result.kind === 'error') {
+        track?.('fout_opgetreden', oefenFoutProps('nakijken', result.soort))
         setState({ phase: 'input', error: result.message })
         return
       }
