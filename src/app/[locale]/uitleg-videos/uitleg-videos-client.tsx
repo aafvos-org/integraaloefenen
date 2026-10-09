@@ -63,6 +63,9 @@ type Labels = {
   groupGeneral: string
   groupWalkthrough: string
   chapterOther: string
+  emptyTitle: string
+  emptyBody: string
+  emptyPractice: string
   askNoAccount: string
   askLogin: string
   askRegister: string
@@ -208,7 +211,11 @@ export function UitlegVideosClient({
       <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div>
           <h1 className="font-serif text-3xl text-text sm:text-4xl">{labels.h1}</h1>
-          <p className="mt-2 max-w-2xl text-text-muted">{labels.intro}</p>
+          {/* Zonder video's belooft de intro iets wat er niet staat: dan vertelt
+              het blok hieronder wat er wél is. */}
+          {videos.length > 0 && (
+            <p className="mt-2 max-w-2xl text-text-muted">{labels.intro}</p>
+          )}
         </div>
         {/* Snelkoppeling naar het formulier; zonder video's staat dat er direct onder */}
         {videos.length > 0 && (
@@ -234,6 +241,20 @@ export function UitlegVideosClient({
           </div>
         )}
       </div>
+
+      {/* Lege toestand: er staat nog geen enkele video klaar */}
+      {videos.length === 0 && (
+        <section className="mt-6 rounded-2xl border border-border bg-surface-2 p-5 sm:p-7">
+          <h2 className="font-serif text-2xl text-text">{labels.emptyTitle}</h2>
+          <p className="mt-2 max-w-2xl text-text-muted">{labels.emptyBody}</p>
+          <Link
+            href={oefenHref as '/oefenen'}
+            className="mt-5 inline-block rounded-lg bg-accent px-5 py-3 font-medium text-white shadow-sm transition hover:bg-accent/90"
+          >
+            {labels.emptyPractice}
+          </Link>
+        </section>
+      )}
 
       {videos.length > 0 && (
         <div className="mt-8 grid gap-6 lg:grid-cols-[280px_minmax(0,1fr)]">

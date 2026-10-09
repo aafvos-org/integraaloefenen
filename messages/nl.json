@@ -574,6 +574,9 @@
     "askPhotoTooBig": "Deze foto's zijn samen te groot. Kies er minder of maak een nieuwe foto.",
     "groupGeneral": "Algemene uitleg",
     "groupWalkthrough": "Vraaguitwerkingen",
-    "chapterOther": "Overig"
+    "chapterOther": "Overig",
+    "emptyTitle": "De eerste video's komen eraan",
+    "emptyBody": "Hier komen korte video's over integreren en primitiveren, met oefenvragen eronder om meteen mee te doen. Die worden nu gemaakt. Wil jij iets uitgelegd zien? Stel je vraag hieronder: grote kans dat hij de eerste video wordt.",
+    "emptyPractice": "Ga oefenen"
   }
 }
