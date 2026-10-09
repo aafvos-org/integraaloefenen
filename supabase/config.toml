@@ -163,6 +163,7 @@ site_url = "https://www.integraaloefenen.nl"
 additional_redirect_urls = [
   "https://integraaloefenen.nl/**",
   "https://www.integraaloefenen.nl/**",
+  "https://integraaloefenen.alhvos.workers.dev/**",
   "http://localhost:3000/**",
   "http://127.0.0.1:3000/**",
 ]
