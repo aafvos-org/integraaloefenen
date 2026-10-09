@@ -4,12 +4,6 @@
     "description": "Integreren oefenen voor wiskunde B VWO — gratis en adaptief. Oefen primitiveren met de machtsregel, somregel, substitutiemethode, e-macht, goniometrie en ln. Ideaal voor het eindexamen.",
     "ogTitle": "Integralen oefenen — wiskunde B VWO"
   },
-  "Theorie": {
-    "title": "Integreren: alle regels op één pagina",
-    "description": "Alle integratieregels voor wiskunde B VWO op één pagina: machtsregel, somregel, substitutiemethode, e-macht, goniometrie en ln. Met voorbeelden en stappen.",
-    "h1": "Integreren: alle regels op één pagina",
-    "intro": "Een naslagwerk voor alle integratieregels die je bij wiskunde B tegenkomt. Per onderwerp zie je de formule, een uitgewerkt voorbeeld en, als je het uitklapt, uitleg en stappen. Je kunt ook direct <practiceLink>oefenen</practiceLink>."
-  },
   "Home": {
     "h1Start": "Integraal oefenen voor",
     "lead": "Adaptieve oefeningen voor integreren op het VWO. Je begint meteen, krijgt directe feedback en bij elke fout legt de site precies uit waar het misging — met een passende volgvraag.",
@@ -67,6 +61,14 @@
     "herkenRegel": "Route",
     "regelsTitle": "Stap 1, 2 en 3 per route",
     "herkenQuestion": "Welke route pak je?",
-    "regelsInChapter": "Routes in dit hoofdstuk"
+    "regelsInChapter": "Routes in dit hoofdstuk",
+    "methodeTitle": "Eén stappenplan voor elke integraal",
+    "methodeIntro": "Elke integraal bereken je met hetzelfde stappenplan. Stap 0 is de enige echte beslissing: kijk naar de vorm onder het integraalteken en kies de route. Daarna zijn stap 1, 2 en 3 altijd hetzelfde. Klik op een route om te zien wat je in elke stap doet; bij de hoofdstukken links zie je de methode toegepast op voorbeelden.",
+    "schemaStap2": "Stap 2 · Bereken de primitieven",
+    "schemaGeneric2": "Bereken hun primitieven. Vraagt een deel een andere route? Dan noem je dat deel even f en begin je ervoor opnieuw bij stap 1.",
+    "toonGenest": "Hoe kom ik aan deze primitieve?"
+  },
+  "Dashboard": {
+    "overviewSubtitle": "Dit is alles wat je moet kunnen voor integreren. Vink aan wat je al beheerst. Het percentage toont hoe vaak je vragen correct beantwoordde."
   }
 }
