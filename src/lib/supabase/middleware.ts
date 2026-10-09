@@ -63,43 +63,14 @@ export async function updateSession(request: NextRequest) {
     }
   }
 
-  const protectedPaths = ['/leerpad', '/oefenen', '/dashboard', '/onboarding']
-  if (!user && protectedPaths.some((p) => path.startsWith(p))) {
-    const url = request.nextUrl.clone()
-    url.pathname = '/inloggen'
-    return NextResponse.redirect(url)
-  }
-
-  // Voor ingelogde users die hun onboarding nog niet hebben afgerond:
-  // forceer naar /onboarding voor ze ergens anders heen kunnen.
-  if (user) {
-    const onboardingExempt = [
-      '/onboarding',
-      '/uitloggen',
-      '/inloggen',
-      '/registreren',
-      '/auth',
-      '/api',
-      '/admin', // admins hoeven geen onboarding
-    ]
-    const needsCheck =
-      protectedPaths.some((p) => path.startsWith(p)) &&
-      !onboardingExempt.some((p) => path.startsWith(p))
-
-    if (needsCheck) {
-      const { data: profile } = await supabase
-        .from('profiles')
-        .select('onboarded_at, role')
-        .eq('id', user.id)
-        .maybeSingle()
-
-      if (profile?.role !== 'admin' && !profile?.onboarded_at) {
-        const url = request.nextUrl.clone()
-        url.pathname = '/onboarding'
-        return NextResponse.redirect(url)
-      }
-    }
-  }
-
+  // Verder schermt de middleware niets af. De pagina's achter een inlog doen
+  // dat zelf, met `if (!user) redirect(`/${locale}/inloggen`)` bovenaan de
+  // server component (zie bijvoorbeeld src/app/[locale]/oefenen/page.tsx).
+  // Daar weet de pagina ook welke taal in de URL staat; hier zou je die er
+  // eerst af moeten pellen. Zet nieuwe beschermde pagina's dus niet in een
+  // lijstje hier, maar begin de pagina met diezelfde regel.
+  //
+  // /admin hierboven blijft wel staan: dat pad ligt buiten de taalmappen, dus
+  // die vergelijking klopt wel.
   return supabaseResponse
 }
