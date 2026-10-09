@@ -9,14 +9,16 @@
  *
  * Bijvoorbeeld:
  *   npx tsx --env-file=.env.local scripts/mail-vraag-beantwoord.ts \
- *     leerling@example.com quotientregel "de quotiëntregel"
+ *     leerling@example.com substitutie "integreren met substitutie"
+ *
+ * De slug is die van een video uit src/lib/videos.ts.
  */
 import { Resend } from 'resend'
 
-const BRAND = 'AfgeleideOefenen'
-const DOMEIN = 'afgeleideoefenen.nl'
-const SITE_URL = `https://www.${DOMEIN}`
-const EMAIL_FROM = process.env.EMAIL_FROM ?? `no-reply@${DOMEIN}`
+import { SITE_CONFIG } from '@/config/site'
+
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? `https://www.${SITE_CONFIG.domain}`
+const EMAIL_FROM = process.env.EMAIL_FROM ?? `no-reply@${SITE_CONFIG.domain}`
 /** Antwoorden komen bij Aaf zelf binnen, niet bij het no-reply-adres. */
 const REPLY_TO = 'aaf@example.com'
 
@@ -30,7 +32,7 @@ function html(videoUrl: string, onderwerp: string): string {
         <tr>
           <td align="center" style="padding: 0 0 20px;">
             <span style="font-family: Georgia, 'Times New Roman', serif; font-size: 20px; color: #1a1a18;">
-              ${BRAND}<span style="color: #2d6a4f;">.nl</span>
+              ${SITE_CONFIG.brand}<span style="color: #2d6a4f;">.nl</span>
             </span>
           </td>
         </tr>
@@ -91,7 +93,7 @@ function html(videoUrl: string, onderwerp: string): string {
         <tr>
           <td align="center" style="font-family: 'DM Sans', Arial, sans-serif; font-size: 12px; line-height: 1.6; color: #a8a599; padding: 20px 16px 0;">
             Je krijgt deze e-mail omdat je een vraag hebt ingestuurd op
-            ${DOMEIN}.
+            ${SITE_CONFIG.domain}.
           </td>
         </tr>
 
@@ -125,7 +127,8 @@ async function main() {
   const videoUrl = `${SITE_URL}/nl/uitleg-videos?video=${encodeURIComponent(slug)}`
   const resend = new Resend(process.env.RESEND_API_KEY)
   const { data, error } = await resend.emails.send({
-    from: `${BRAND} <${EMAIL_FROM}>`,
+    // EMAIL_FROM mag al een naam bevatten ("IntegraalOefenen <no-reply@…>"); dan niet nog eens inpakken.
+    from: EMAIL_FROM.includes('<') ? EMAIL_FROM : `${SITE_CONFIG.brand} <${EMAIL_FROM}>`,
     to: adres,
     replyTo: REPLY_TO,
     subject: 'Je vraag is beantwoord — er staat een video voor je klaar',
