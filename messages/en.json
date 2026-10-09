@@ -607,7 +607,7 @@
     "questionTile": "Vraag {n}",
     "previousQuestion": "Vorige",
     "askCta": "Stel je vraag",
-    "askNoAccount": "Dit kan nog niet: je hebt een account nodig om een vraag in te sturen.",
+    "askNoAccount": "Log in to send your question. No account yet? You can create one for free.",
     "askLogin": "Inloggen",
     "askRegister": "Account maken",
     "askPhoto": "Foto van de opgave toevoegen",
