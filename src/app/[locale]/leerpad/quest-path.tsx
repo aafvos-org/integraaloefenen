@@ -423,10 +423,6 @@ function CheckIcon() {
   )
 }
 
-function romanize(n: number) {
-  return ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII'][n - 1] ?? String(n)
-}
-
 function shade(hex: string, amt: number) {
   const n = parseInt(hex.slice(1), 16)
   let r = (n >> 16) + amt

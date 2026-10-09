@@ -5,9 +5,8 @@ import { useEffect, useRef, useState, useTransition } from 'react'
 import { useTranslations } from 'next-intl'
 
 import { Math as TeX, RichMath } from '@/components/math'
-import { Button, cn, ErrorBanner } from '@/components/ui'
+import { Button, ErrorBanner } from '@/components/ui'
 import {
-  flagQuestionNewAction,
   resolveWithStepsNewAction,
   submitStudyAnswerAction,
   type StudyResult,
@@ -33,7 +32,6 @@ type State =
       answerId: string
       correctAnswer: string
       latexCorrectAnswer: string | null
-      errorExplanation: string | null
       studentAnswer: string
       extraSteps: Array<{ id: string; step_order: number; step_description: string }>
       resolved: boolean
@@ -143,7 +141,6 @@ export function PracticeCard({
         answerId: result.answerId,
         correctAnswer: result.correctAnswer,
         latexCorrectAnswer: result.latexCorrectAnswer,
-        errorExplanation: result.errorExplanation,
         studentAnswer: answer,
         extraSteps: [],
         resolved: false,
@@ -254,7 +251,6 @@ export function PracticeCard({
           streak={state.streak}
           mastered={state.mastered}
           onNext={next}
-          onRetry={retry}
           pending={pending}
         />
       )}
@@ -264,7 +260,6 @@ export function PracticeCard({
           answerId={state.answerId}
           correctAnswer={state.correctAnswer}
           latexCorrectAnswer={state.latexCorrectAnswer}
-          errorExplanation={state.errorExplanation}
           studentAnswer={state.studentAnswer}
           steps={steps.length > 0 ? steps : state.extraSteps}
           resolved={state.resolved}
@@ -282,13 +277,11 @@ function CorrectFeedback({
   streak,
   mastered,
   onNext,
-  onRetry,
   pending,
 }: {
   streak: number
   mastered: boolean
   onNext: () => void
-  onRetry: () => void
   pending: boolean
 }) {
   const t = useTranslations('PracticeCard')
@@ -315,7 +308,6 @@ function WrongFeedback({
   answerId,
   correctAnswer,
   latexCorrectAnswer,
-  errorExplanation,
   studentAnswer,
   steps,
   resolved,
@@ -327,7 +319,6 @@ function WrongFeedback({
   answerId: string
   correctAnswer: string
   latexCorrectAnswer: string | null
-  errorExplanation: string | null
   studentAnswer: string
   steps: Step[]
   resolved: boolean

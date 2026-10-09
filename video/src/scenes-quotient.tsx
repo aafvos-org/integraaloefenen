@@ -8,7 +8,6 @@ import {
   FnX,
   Noemer,
   NoemerKwadraat,
-  Opgave,
   Teller,
 } from './quotient-helpers'
 import { Fn, RegelKaart, sceneTitelStijl } from './scenes-regels'
