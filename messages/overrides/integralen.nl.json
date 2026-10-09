@@ -14,8 +14,59 @@
     "h1Start": "Integraal oefenen voor",
     "lead": "Adaptieve oefeningen voor integreren op het VWO. Je begint meteen, krijgt directe feedback en bij elke fout legt de site precies uit waar het misging — met een passende volgvraag.",
     "feature1Body": "Geen lange uitlegvideo's. Je leert integralen door ze gewoon te maken en uitleg te krijgen bij elke fout.",
+    "feature3Body": "Notatie en leerlijn volgen je methode op school. Van machtsregel tot partieel integreren.",
     "topicsIntro": "Alle integratieregels die je op het VWO bij wiskunde B tegenkomt, in oplopende moeilijkheid:",
-    "ctaBody": "Maak een gratis account en oefen vandaag nog je eerste vijftig integralen. Geen creditcard. Geen limiet."
+    "ctaBody": "Maak een gratis account en oefen vandaag nog je eerste vijftig integralen. Geen creditcard. Geen limiet.",
+    "how1Body": "Bijvoorbeeld: bereken de integraal van 3x² + 2x − 5. Je typt je antwoord in met een wiskunde-toetsenbord.",
+    "topic1Title": "Machtsregel",
+    "topic1Body": "De basis. Van xⁿ terug naar xⁿ⁺¹ gedeeld door n + 1, ook bij negatieve en gebroken exponenten.",
+    "topic2Title": "Som- en verschilregel",
+    "topic2Body": "Integreren van polynomen. Elke term apart; een constante factor mag naar voren.",
+    "topic3Title": "Standaardintegralen",
+    "topic3Body": "sin, cos, de e-macht en 1/x. Paraat hebben is het halve werk.",
+    "topic4Title": "Substitutiemethode",
+    "topic4Body": "Voor vormen waarin je naast de binnenfunctie g ook zijn afgeleide g′ terugziet.",
+    "topic5Title": "Partieel integreren",
+    "topic5Body": "Voor producten als x · sin(x). Je ruilt de integraal in voor een makkelijkere.",
+    "topic6Title": "Oppervlakte en inhoud",
+    "topic6Body": "Van verhaaltje naar integraal: het vlakdeel tussen twee grafieken, of een omwentelingslichaam.",
+    "faq2A": "Voor leerlingen in VWO 4, 5 en 6 die wiskunde B volgen en willen oefenen met integreren en primitiveren. De site is ook bruikbaar voor VWO wiskunde D en voor studenten die hun integralen willen ophalen.",
+    "faq3A": "Alle integratieregels uit de VWO-bovenbouw: machtsregel, somregel, verschilregel, constante-factor-regel, substitutiemethode en partieel integreren. Plus de standaardintegralen van sinus, cosinus, de e-macht, 1/x, arctan en arcsin.",
+    "faq6A": "Ja. Notatie, volgorde van onderwerpen en moeilijkheidsopbouw volgen Getal & Ruimte. Gebruik je een andere methode (bijvoorbeeld Moderne Wiskunde of Wageningse Methode)? Ook dan werkt de site prima, want integreren is integreren.",
+    "faq7A": "Zeker. Integralen zijn de basis voor grote onderdelen van het VWO wiskunde B examen (oppervlakte van vlakdelen, inhoud van omwentelingslichamen, gemiddelde waarden). Door hier vlot in te worden maak je op het examen sneller en met minder fouten de andere onderdelen."
+  },
+  "HomeDemo": {
+    "easyQuestion": "Bereken $\\int (6x + 5)\\,dx$",
+    "easyPlaceholder": "Bijv. 3x^2 + 5x + c",
+    "easyStep1": "Machtsregel: $\\int 6x\\,dx = 6 \\cdot \\tfrac12 x^2 = 3x^2$",
+    "easyStep2": "Machtsregel: $\\int 5\\,dx = 5x$",
+    "easyStep3": "Somregel: samen is dat $3x^2 + 5x + c$",
+    "mediumQuestion": "Bereken $\\int \\cos(3x)\\,dx$",
+    "mediumPlaceholder": "Bijv. 1/3*sin(3x) + c",
+    "mediumStep1": "Standaardvorm: $\\int \\cos(g)\\,dx$ met $g(x) = 3x$",
+    "mediumStep2": "$g$ is lineair en $g'(x) = 3$, dus deel je het resultaat door 3",
+    "mediumStep3": "Dat geeft $\\int \\cos(3x)\\,dx = \\tfrac13 \\sin(3x) + c$",
+    "hardQuestion": "Bereken $\\int x \\cdot e^x\\,dx$",
+    "hardPlaceholder": "Bijv. (x-1)*e^x + c",
+    "hardStep1": "Partieel integreren: $\\int g \\cdot h'\\,dx = g \\cdot h - \\int g' \\cdot h\\,dx$",
+    "hardStep2": "Kies $g(x) = x$, dus $g'(x) = 1$, en $h'(x) = e^x$, dus $h(x) = e^x$",
+    "hardStep3": "$\\int x \\cdot e^x\\,dx = x e^x - \\int e^x\\,dx = (x - 1)e^x + c$",
+    "stepsTitle": "Deel 2 · zo bereken je deze integraal",
+    "hint": "Tip: typ ^ voor een macht, * voor keer. De + c mag je weglaten."
+  },
+  "HoeHetWerkt": {
+    "h1": "Twee manieren om integralen te oefenen",
+    "intro": "__DOMAIN__ is opgezet voor één doel: je sneller en sterker in integreren krijgen, op jouw niveau. Daarom bestaat de site uit twee duidelijke onderdelen, plus bij de start een korte keuze wat bij je past.",
+    "card1Body1": "Je volgt de leerlijn (volgens Getal & Ruimte): van machtsregel naar somregel, standaardintegralen, substitutie en partieel integreren.",
+    "card2Body": "Hier kies je <strong>per keer zelf een onderwerp</strong> (machtsregel, substitutie, enz.). Dezelfde soort vragen als in het leerpad, maar zonder dat de site jou door een vaste volgorde duwt. Handig voor herhaling, examenstrepen of alleen maar één hoofdstuk te pakken."
+  },
+  "Onboarding": {
+    "vwo4Hint": "Net begonnen met integreren",
+    "vwo5Hint": "Volle bak integralen",
+    "card1Body": "Je volgt de rode draad (Getal & Ruimte): machtsregel, somregel, standaardintegralen, substitutie en partieel integreren. Het pad past zich automatisch aan op je antwoorden: waar je fout gaat krijg je gerichte uitleg en opvolgvragen; wat je beheerst, komt minder vaak terug."
+  },
+  "UitlegVideos": {
+    "askPlaceholder": "Bijv. wanneer gebruik ik partieel integreren?"
   },
   "Theorie": {
     "title": "Integreren: alle routes op één pagina · __DOMAIN__",

@@ -14,8 +14,58 @@
     "h1Start": "Practice integrals for",
     "lead": "Adaptive exercises for integration. Start immediately, get instant feedback, and for every mistake the site explains exactly what went wrong — with a follow-up question tailored to that mistake.",
     "feature1Body": "No long explanatory videos. You learn integration by working through problems and getting explanations for every mistake.",
+    "feature3Body": "Notation and learning progression follow a logical order. From the power rule to integration by parts.",
     "topicsIntro": "All integration rules for high school calculus, in increasing difficulty:",
-    "ctaBody": "Create a free account and practice your first fifty integrals today. No credit card. No limit."
+    "ctaBody": "Create a free account and practice your first fifty integrals today. No credit card. No limit.",
+    "how1Body": "For example: compute the integral of 3x² + 2x − 5. You type your answer using a math keyboard.",
+    "topic1Title": "Power rule",
+    "topic1Body": "The foundation. From xⁿ back to xⁿ⁺¹ divided by n + 1, including negative and fractional exponents.",
+    "topic2Title": "Sum and difference rule",
+    "topic2Body": "Integrating polynomials. Each term separately; a constant factor can come out front.",
+    "topic3Title": "Standard integrals",
+    "topic3Body": "sin, cos, the exponential and 1/x. Knowing these by heart is half the battle.",
+    "topic4Title": "Substitution",
+    "topic4Body": "For forms where you see both the inner function g and its derivative g′.",
+    "topic5Title": "Integration by parts",
+    "topic5Body": "For products like x · sin(x). You trade the integral for an easier one.",
+    "topic6Title": "Area and volume",
+    "topic6Body": "From word problem to integral: the region between two graphs, or a solid of revolution.",
+    "faq2A": "For students who need to practise integration. The site covers the power rule, sum rule, standard integrals (sin, cos, exponential, 1/x), substitution and integration by parts.",
+    "faq3A": "All integration rules for high school calculus: power rule, sum and difference rule, constant factor rule, substitution, and integration by parts. Plus the standard integrals of sine, cosine, exponential and 1/x, arctan and arcsin.",
+    "faq6A": "Absolutely. Integrals are the foundation for large parts of the calculus exam (areas between graphs, volumes of solids of revolution, average values). By becoming fluent here you'll work through the other parts of the exam faster and with fewer mistakes."
+  },
+  "HomeDemo": {
+    "easyQuestion": "Compute $\\int (6x + 5)\\,dx$",
+    "easyPlaceholder": "E.g. 3x^2 + 5x + c",
+    "easyStep1": "Power rule: $\\int 6x\\,dx = 6 \\cdot \\tfrac12 x^2 = 3x^2$",
+    "easyStep2": "Power rule: $\\int 5\\,dx = 5x$",
+    "easyStep3": "Sum rule: together that is $3x^2 + 5x + c$",
+    "mediumQuestion": "Compute $\\int \\cos(3x)\\,dx$",
+    "mediumPlaceholder": "E.g. 1/3*sin(3x) + c",
+    "mediumStep1": "Standard form: $\\int \\cos(g)\\,dx$ with $g(x) = 3x$",
+    "mediumStep2": "$g$ is linear and $g'(x) = 3$, so divide the result by 3",
+    "mediumStep3": "That gives $\\int \\cos(3x)\\,dx = \\tfrac13 \\sin(3x) + c$",
+    "hardQuestion": "Compute $\\int x \\cdot e^x\\,dx$",
+    "hardPlaceholder": "E.g. (x-1)*e^x + c",
+    "hardStep1": "Integration by parts: $\\int g \\cdot h'\\,dx = g \\cdot h - \\int g' \\cdot h\\,dx$",
+    "hardStep2": "Take $g(x) = x$, so $g'(x) = 1$, and $h'(x) = e^x$, so $h(x) = e^x$",
+    "hardStep3": "$\\int x \\cdot e^x\\,dx = x e^x - \\int e^x\\,dx = (x - 1)e^x + c$",
+    "stepsTitle": "Part 2 · how to compute this integral",
+    "hint": "Tip: type ^ for a power, * for multiply. You may leave out the + c."
+  },
+  "HoeHetWerkt": {
+    "h1": "Two ways to practise integrals",
+    "intro": "This site has one goal: to get you faster and stronger at integration, at your own level. That's why the site has two clear components, plus a short choice at the start about what suits you.",
+    "card1Body1": "You follow the curriculum: from the power rule to sum rule, standard integrals, substitution, and integration by parts.",
+    "card2Body": "Here you <strong>choose a topic yourself each time</strong> (power rule, substitution, etc.). The same kind of questions as in the learning path, but without the site pushing you through a fixed order. Handy for revision, exam cramming, or just tackling one chapter."
+  },
+  "Onboarding": {
+    "vwo4Hint": "Just started with integration",
+    "vwo5Hint": "Full integration curriculum",
+    "card1Body": "You follow the thread: power rule, sum rule, standard integrals, substitution, integration by parts. The path automatically adapts to your answers: where you go wrong you get focused explanation and follow-up questions; what you master comes back less often."
+  },
+  "UitlegVideos": {
+    "askPlaceholder": "Bijv. wanneer gebruik ik partieel integreren?"
   },
   "Theorie": {
     "title": "Integration: every route on one page · __DOMAIN__",

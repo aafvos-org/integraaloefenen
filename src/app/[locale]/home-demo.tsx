@@ -22,29 +22,38 @@ type QuestionConfig = {
   correctLatex: string
 }
 
+// De integreerconstante mag een leerling weglaten: elk antwoord staat er met
+// en zonder `+c` in. `normalize` haalt hoofdletters en keer-tekens er al af.
 const QUESTIONS: Record<Difficulty, QuestionConfig> = {
   easy: {
     difficulty: 1,
-    accepted: ['6x+5', '5+6x'],
-    correctLatex: '6x + 5',
+    accepted: withOptionalConstant(['3x^2+5x', '5x+3x^2']),
+    correctLatex: '3x^2 + 5x + c',
   },
   medium: {
     difficulty: 2,
-    accepted: ['3cos(3x)', '3cos3x'],
-    correctLatex: '3\\cos(3x)',
+    accepted: withOptionalConstant([
+      '1/3sin(3x)',
+      '(1/3)sin(3x)',
+      'sin(3x)/3',
+    ]),
+    correctLatex: '\\tfrac{1}{3}\\sin(3x) + c',
   },
   hard: {
     difficulty: 3,
-    accepted: [
-      '2xe^x+x^2e^x',
-      'x^2e^x+2xe^x',
-      '(x^2+2x)e^x',
-      '(2x+x^2)e^x',
-      'x(x+2)e^x',
-      '(x+2)xe^x',
-    ],
-    correctLatex: '(x^2 + 2x)e^x',
+    accepted: withOptionalConstant([
+      'xe^x-e^x',
+      '-e^x+xe^x',
+      '(x-1)e^x',
+      'e^x(x-1)',
+    ]),
+    correctLatex: '(x - 1)e^x + c',
   },
+}
+
+/** Geeft elk antwoord terug in twee vormen: kaal en met `+c` erachter. */
+function withOptionalConstant(answers: string[]): string[] {
+  return answers.flatMap((a) => [a, `${a}+c`])
 }
 
 function normalize(s: string): string {
