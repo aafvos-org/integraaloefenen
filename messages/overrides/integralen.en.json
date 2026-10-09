@@ -32,7 +32,7 @@
     "topic6Body": "From word problem to integral: the region between two graphs, or a solid of revolution.",
     "faq2A": "For students who need to practise integration. The site covers the power rule, sum rule, standard integrals (sin, cos, exponential, 1/x), substitution and integration by parts.",
     "faq3A": "All integration rules for high school calculus: power rule, sum and difference rule, constant factor rule, substitution, and integration by parts. Plus the standard integrals of sine, cosine, exponential and 1/x, arctan and arcsin.",
-    "faq6A": "Absolutely. Integrals are the foundation for large parts of the calculus exam (areas between graphs, volumes of solids of revolution, average values). By becoming fluent here you'll work through the other parts of the exam faster and with fewer mistakes."
+    "faq5A": "Absolutely. Integrals are the foundation for large parts of the calculus exam (areas between graphs, volumes of solids of revolution, average values). By becoming fluent here you'll work through the other parts of the exam faster and with fewer mistakes."
   },
   "HomeDemo": {
     "easyQuestion": "Compute $\\int (6x + 5)\\,dx$",
@@ -52,17 +52,6 @@
     "hardStep3": "$\\int x \\cdot e^x\\,dx = x e^x - \\int e^x\\,dx = (x - 1)e^x + c$",
     "stepsTitle": "Part 2 · how to compute this integral",
     "hint": "Tip: type ^ for a power, * for multiply. You may leave out the + c."
-  },
-  "HoeHetWerkt": {
-    "h1": "Two ways to practise integrals",
-    "intro": "This site has one goal: to get you faster and stronger at integration, at your own level. That's why the site has two clear components, plus a short choice at the start about what suits you.",
-    "card1Body1": "You follow the curriculum: from the power rule to sum rule, standard integrals, substitution, and integration by parts.",
-    "card2Body": "Here you <strong>choose a topic yourself each time</strong> (power rule, substitution, etc.). The same kind of questions as in the learning path, but without the site pushing you through a fixed order. Handy for revision, exam cramming, or just tackling one chapter."
-  },
-  "Onboarding": {
-    "vwo4Hint": "Just started with integration",
-    "vwo5Hint": "Full integration curriculum",
-    "card1Body": "You follow the thread: power rule, sum rule, standard integrals, substitution, integration by parts. The path automatically adapts to your answers: where you go wrong you get focused explanation and follow-up questions; what you master comes back less often."
   },
   "UitlegVideos": {
     "askPlaceholder": "Bijv. wanneer gebruik ik partieel integreren?"

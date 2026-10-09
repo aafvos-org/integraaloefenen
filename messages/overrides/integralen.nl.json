@@ -32,8 +32,8 @@
     "topic6Body": "Van verhaaltje naar integraal: het vlakdeel tussen twee grafieken, of een omwentelingslichaam.",
     "faq2A": "Voor leerlingen in VWO 4, 5 en 6 die wiskunde B volgen en willen oefenen met integreren en primitiveren. De site is ook bruikbaar voor VWO wiskunde D en voor studenten die hun integralen willen ophalen.",
     "faq3A": "Alle integratieregels uit de VWO-bovenbouw: machtsregel, somregel, verschilregel, constante-factor-regel, substitutiemethode en partieel integreren. Plus de standaardintegralen van sinus, cosinus, de e-macht, 1/x, arctan en arcsin.",
-    "faq6A": "Ja. Notatie, volgorde van onderwerpen en moeilijkheidsopbouw volgen Getal & Ruimte. Gebruik je een andere methode (bijvoorbeeld Moderne Wiskunde of Wageningse Methode)? Ook dan werkt de site prima, want integreren is integreren.",
-    "faq7A": "Zeker. Integralen zijn de basis voor grote onderdelen van het VWO wiskunde B examen (oppervlakte van vlakdelen, inhoud van omwentelingslichamen, gemiddelde waarden). Door hier vlot in te worden maak je op het examen sneller en met minder fouten de andere onderdelen."
+    "faq5A": "Ja. Notatie, volgorde van onderwerpen en moeilijkheidsopbouw volgen Getal & Ruimte. Gebruik je een andere methode (bijvoorbeeld Moderne Wiskunde of Wageningse Methode)? Ook dan werkt de site prima, want integreren is integreren.",
+    "faq6A": "Zeker. Integralen zijn de basis voor grote onderdelen van het VWO wiskunde B examen (oppervlakte van vlakdelen, inhoud van omwentelingslichamen, gemiddelde waarden). Door hier vlot in te worden maak je op het examen sneller en met minder fouten de andere onderdelen."
   },
   "HomeDemo": {
     "easyQuestion": "Bereken $\\int (6x + 5)\\,dx$",
@@ -53,17 +53,6 @@
     "hardStep3": "$\\int x \\cdot e^x\\,dx = x e^x - \\int e^x\\,dx = (x - 1)e^x + c$",
     "stepsTitle": "Deel 2 · zo bereken je deze integraal",
     "hint": "Tip: typ ^ voor een macht, * voor keer. De + c mag je weglaten."
-  },
-  "HoeHetWerkt": {
-    "h1": "Twee manieren om integralen te oefenen",
-    "intro": "__DOMAIN__ is opgezet voor één doel: je sneller en sterker in integreren krijgen, op jouw niveau. Daarom bestaat de site uit twee duidelijke onderdelen, plus bij de start een korte keuze wat bij je past.",
-    "card1Body1": "Je volgt de leerlijn (volgens Getal & Ruimte): van machtsregel naar somregel, standaardintegralen, substitutie en partieel integreren.",
-    "card2Body": "Hier kies je <strong>per keer zelf een onderwerp</strong> (machtsregel, substitutie, enz.). Dezelfde soort vragen als in het leerpad, maar zonder dat de site jou door een vaste volgorde duwt. Handig voor herhaling, examenstrepen of alleen maar één hoofdstuk te pakken."
-  },
-  "Onboarding": {
-    "vwo4Hint": "Net begonnen met integreren",
-    "vwo5Hint": "Volle bak integralen",
-    "card1Body": "Je volgt de rode draad (Getal & Ruimte): machtsregel, somregel, standaardintegralen, substitutie en partieel integreren. Het pad past zich automatisch aan op je antwoorden: waar je fout gaat krijg je gerichte uitleg en opvolgvragen; wat je beheerst, komt minder vaak terug."
   },
   "UitlegVideos": {
     "askPlaceholder": "Bijv. wanneer gebruik ik partieel integreren?"

@@ -30,7 +30,6 @@ export default async function HomePage() {
     { question: t('faq4Q'), answer: t('faq4A') },
     { question: t('faq5Q'), answer: t('faq5A') },
     { question: t('faq6Q'), answer: t('faq6A') },
-    { question: t('faq7Q'), answer: t('faq7A') },
   ]
 
   const structuredData = {
@@ -75,12 +74,6 @@ export default async function HomePage() {
           </p>
           <p className="mx-auto mt-4 max-w-xl text-sm leading-relaxed text-text-muted">
             {t.rich('subLead', {
-              leerpad: (chunks) => (
-                <span className="text-text">{chunks}</span>
-              ),
-              vrijOefenen: (chunks) => (
-                <span className="text-text">{chunks}</span>
-              ),
               howItWorks: () => (
                 <Link
                   href="/hoe-het-werkt"
