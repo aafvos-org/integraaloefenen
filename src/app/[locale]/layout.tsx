@@ -4,7 +4,7 @@ import { getMessages, getTranslations } from 'next-intl/server'
 import { notFound } from 'next/navigation'
 
 import { SiteHeader } from '@/components/site-header'
-import { domainForLocale } from '@/config/site'
+import { SITE_CONFIG } from '@/config/site'
 import { routing } from '@/i18n/routing'
 
 export async function generateMetadata({
@@ -13,8 +13,7 @@ export async function generateMetadata({
   params: Promise<{ locale: string }>
 }): Promise<Metadata> {
   const { locale } = await params
-  const isNl = locale === 'nl'
-  const domain = domainForLocale(locale)
+  const domain = SITE_CONFIG.domain
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? `https://${domain}`
   const t = await getTranslations({ locale, namespace: 'Metadata' })
 
@@ -29,11 +28,10 @@ export async function generateMetadata({
     authors: [{ name: domain }],
     alternates: {
       canonical: `/${locale}`,
-      languages: { nl: '/nl', en: '/en' },
     },
     openGraph: {
       type: 'website',
-      locale: isNl ? 'nl_NL' : 'en_US',
+      locale: 'nl_NL',
       url: siteUrl,
       siteName: domain,
       title: t('ogTitle'),

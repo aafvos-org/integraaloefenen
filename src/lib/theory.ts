@@ -36,10 +36,8 @@ export type {
 } from '@/content/theory/methode'
 
 export const CLUSTER_THEORY = SOURCE.CLUSTER_THEORY
-export const CLUSTER_THEORY_EN = SOURCE.CLUSTER_THEORY_EN
 export const TOPIC_FORMULA = SOURCE.TOPIC_FORMULA
 export const TOPIC_INTROS = SOURCE.TOPIC_INTROS
-export const TOPIC_INTROS_EN = SOURCE.TOPIC_INTROS_EN
 export const THEORY_OVERVIEW = SOURCE.THEORY_OVERVIEW
 
 /** De methode (stappenplan + voorbeelden + hoofdstukken); null voor sites zonder methode-pagina. */
