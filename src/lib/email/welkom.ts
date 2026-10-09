@@ -135,7 +135,8 @@ export async function stuurWelkomstmail(userId: string): Promise<WelkomResultaat
     const resend = new Resend(process.env.RESEND_API_KEY)
     const { error: mailError } = await resend.emails.send({
       // Merknaam als afzender, geen persoonsnaam: dit is een no-reply-bericht.
-      from: `${SITE_CONFIG.brand} <${EMAIL_FROM}>`,
+      // EMAIL_FROM mag al een naam bevatten ("IntegraalOefenen <no-reply@…>"); dan niet nog eens inpakken.
+      from: EMAIL_FROM.includes('<') ? EMAIL_FROM : `${SITE_CONFIG.brand} <${EMAIL_FROM}>`,
       to: user.email,
       subject: `Welkom bij ${SITE_CONFIG.brand}!`,
       html: html(videosUrl),
