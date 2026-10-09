@@ -14,6 +14,10 @@ const nextConfig: NextConfig = {
   async redirects() {
     return [
       { source: `/:pad(${ZONDER_TAAL})/:rest*`, destination: '/nl/:pad/:rest*', permanent: false },
+      // De site is alleen Nederlands. Oude Engelse links gaan permanent naar
+      // dezelfde pagina onder /nl/. Dit hoort hier en niet in de middleware:
+      // van de twee middleware-bestanden draait alleen src/middleware.ts.
+      { source: '/en/:rest*', destination: '/nl/:rest*', permanent: true },
     ]
   },
   // Fix: multiple package-lock.json files on this machine confuse Next.js
