@@ -65,7 +65,9 @@ fi
 echo "1/4 Dump van OUD (alleen lezen)…"
 supabase db dump --db-url "$OUD_URL" --role-only -f "$TMP/roles.sql"
 supabase db dump --db-url "$OUD_URL" -f "$TMP/schema.sql"
-supabase db dump --db-url "$OUD_URL" --data-only --use-copy -f "$TMP/data.sql"
+# Alleen accounts (auth) en app-data (public); Storage gebruikt de app niet en
+# de interne Storage-tabellen mag de postgres-rol niet vullen.
+supabase db dump --db-url "$OUD_URL" --data-only --use-copy --schema auth,public -f "$TMP/data.sql"
 
 echo "2/4 Terugzetten in NIEUW…"
 psql_nieuw --single-transaction \
