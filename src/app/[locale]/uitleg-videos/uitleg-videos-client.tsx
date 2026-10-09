@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { useEffect, useMemo, useRef, useState, useTransition } from 'react'
+import { useMemo, useRef, useState, useTransition } from 'react'
 
 import { Math as TeX, RichMath } from '@/components/math'
 import { MathKeyboard } from '@/components/math-keyboard'
@@ -405,9 +405,13 @@ function OefenKaart({
     setAnswers((prev) => ({ ...prev, [vraag.id]: value }))
   }
 
-  useEffect(() => {
+  // Blader je naar een andere vraag, dan hoort de foutmelding van de vorige
+  // vraag te verdwijnen.
+  const [handledIndex, setHandledIndex] = useState(index)
+  if (handledIndex !== index) {
+    setHandledIndex(index)
     setError(null)
-  }, [index])
+  }
 
   function handleInsert(text: string) {
     const el = inputRef.current

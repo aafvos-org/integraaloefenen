@@ -12,6 +12,9 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Gegenereerde Cloudflare/OpenNext-uitvoer: geen broncode, nooit linten.
+    ".open-next/**",
+    ".wrangler/**",
   ]),
 ]);
 

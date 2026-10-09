@@ -1,0 +1,31 @@
+name: Controle
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+concurrency:
+  group: controle-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  lint-en-types:
+    name: Lint en types
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Pakketten installeren
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Types controleren
+        run: npx tsc --noEmit

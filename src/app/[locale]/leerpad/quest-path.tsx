@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 import type { CSSProperties } from 'react'
 
 import { Link } from '@/i18n/navigation'
@@ -40,9 +40,13 @@ export function QuestPath({
   const [loadingId, setLoadingId] = useState<string | null>(null)
   const [drawerOpen, setDrawerOpen] = useState(false)
 
-  useEffect(() => {
+  // Zodra de navigatie rond is (de cluster in de URL verandert) is er niets
+  // meer aan het laden.
+  const [handledCluster, setHandledCluster] = useState(clusterParam)
+  if (handledCluster !== clusterParam) {
+    setHandledCluster(clusterParam)
     setLoadingId(null)
-  }, [clusterParam])
+  }
 
   const nodes = useMemo(() => {
     const out: Array<{

@@ -132,8 +132,8 @@ function Presenter() {
         </div>
       </div>
       <p style={{ color: '#7a7870', fontSize: 13, margin: '0 4px' }}>
-        Geluid staat uit — jij praat. Neem per scène audio op (bijv. Spraakmemo's) terwijl je
-        doorklikt; ←/→ werken ook.
+        Geluid staat uit — jij praat. Neem per scène audio op (bijv. Spraakmemo&rsquo;s) terwijl
+        je doorklikt; ←/→ werken ook.
       </p>
     </div>
   )

@@ -1,6 +1,6 @@
 'use client'
 
-import { useActionState, useEffect, useState } from 'react'
+import { useActionState, useState } from 'react'
 import { useFormStatus } from 'react-dom'
 import { useTranslations } from 'next-intl'
 
@@ -58,12 +58,18 @@ export function UsernameForm({ initialUsername }: { initialUsername: string }) {
   const [editing, setEditing] = useState(initialUsername === '')
   const [savedName, setSavedName] = useState(initialUsername)
 
-  useEffect(() => {
+  // Elke verzending geeft een nieuw state-object terug. Is dat gelukt, dan
+  // nemen we de nieuwe naam over en klappen we het formulier dicht. Dit staat
+  // bewust in de render en niet in een effect: zo komt er geen extra render
+  // overheen waarin nog de oude naam staat.
+  const [handledState, setHandledState] = useState(state)
+  if (handledState !== state) {
+    setHandledState(state)
     if (state.success && state.username) {
       setSavedName(state.username)
       setEditing(false)
     }
-  }, [state])
+  }
 
   if (!editing) {
     return (

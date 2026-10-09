@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useMemo, useState, useTransition } from 'react'
+import { useMemo, useState, useTransition } from 'react'
 import { useTranslations } from 'next-intl'
 
 import { useRouter } from '@/i18n/navigation'
@@ -119,18 +119,24 @@ export function ConfigForm({
 
   const availableInScope = sourceCounts[source]
 
-  // Gekozen bron heeft geen vragen meer in deze selectie: val terug op 'alle vragen'
-  useEffect(() => {
-    if (selectedClusters.size === 0) return
-    if (source === 'all' || sourceCounts[source] > 0) return
-    if (sourceCounts.all > 0) setSource('all')
-  }, [selectedClusters, source, sourceCounts])
+  // Gekozen bron heeft geen vragen meer in deze selectie: val terug op 'alle vragen'.
+  // Dit staat in de render en niet in een effect, zodat de leerling nooit een
+  // tussenstand ziet met een bron die nul vragen heeft.
+  if (
+    selectedClusters.size > 0 &&
+    source !== 'all' &&
+    sourceCounts[source] === 0 &&
+    sourceCounts.all > 0
+  ) {
+    setSource('all')
+  }
 
-  useEffect(() => {
-    if (countTouched) return
-    if (availableInScope <= 0) return
-    setCountInput(String(Math.min(10, availableInScope)))
-  }, [availableInScope, countTouched])
+  // Zolang de leerling het aantal niet zelf heeft aangepast, volgt het aantal
+  // de selectie: maximaal 10, en nooit meer dan er beschikbaar is.
+  if (!countTouched && availableInScope > 0) {
+    const suggestie = String(Math.min(10, availableInScope))
+    if (suggestie !== countInput) setCountInput(suggestie)
+  }
 
   function toggleCluster(id: string) {
     setSelectedClusters((prev) => {
