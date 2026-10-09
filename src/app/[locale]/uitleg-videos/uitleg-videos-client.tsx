@@ -210,86 +210,91 @@ export function UitlegVideosClient({
           <h1 className="font-serif text-3xl text-text sm:text-4xl">{labels.h1}</h1>
           <p className="mt-2 max-w-2xl text-text-muted">{labels.intro}</p>
         </div>
-        <div className="shrink-0 rounded-2xl border border-border bg-surface-2 p-4 sm:max-w-64">
-          <p className="font-serif text-base text-text">{labels.askTitle}</p>
-          <p className="mt-1 text-sm text-text-muted">{labels.askIntro}</p>
-          <button
-            type="button"
-            onClick={naarVraagFormulier}
-            className="mt-3 rounded-lg bg-accent px-4 py-2 text-sm font-medium text-white transition hover:bg-accent/90"
-          >
-            {labels.askCta}
-          </button>
-          {toonAccountMelding ? (
-            <div role="status" className="mt-3">
-              <AccountNodigMelding
-                loginHref={loginHref}
-                registerHref={registerHref}
-                labels={labels}
-              />
-            </div>
-          ) : null}
-        </div>
-      </div>
-
-      <div className="mt-8 grid gap-6 lg:grid-cols-[280px_minmax(0,1fr)]">
-        {/* Speler (rechts op desktop, bovenaan op mobiel) */}
-        <div className="lg:order-2">
-          {active ? (
-            <video
-              key={active.src}
-              src={active.src}
-              controls
-              preload="metadata"
-              className="aspect-video w-full rounded-2xl border border-border bg-surface-2 shadow-sm"
-            />
-          ) : null}
-          {active ? (
-            <div className="mt-3">
-              <h2 className="font-serif text-xl text-text">{active.title}</h2>
-              <p className="mt-1 text-sm text-text-muted">{active.description}</p>
-            </div>
-          ) : null}
-        </div>
-
-        {/* Playlist (links op desktop) */}
-        <aside className="lg:order-1">
-          <p className="text-xs font-semibold uppercase tracking-wide text-text-muted">
-            {labels.playlistTitle}
-          </p>
-
-          {algemeen.length > 0 && (
-            <div className="mt-3">
-              <p className="text-xs font-semibold uppercase tracking-wide text-text-muted">
-                {labels.groupGeneral}
-              </p>
-              <ul className="mt-2 space-y-2">
-                {algemeen.map((v) => (
-                  <VideoLink key={v.slug} video={v} isActive={v.slug === activeSlug} />
-                ))}
-              </ul>
-            </div>
-          )}
-
-          {perHoofdstuk.length > 0 && (
-            <div className="mt-5">
-              <p className="text-xs font-semibold uppercase tracking-wide text-text-muted">
-                {labels.groupWalkthrough}
-              </p>
-              <div className="mt-2 space-y-1.5">
-                {perHoofdstuk.map(({ chapter, items }) => (
-                  <Hoofdstukgroep
-                    key={chapter || 'overig'}
-                    titel={chapter || labels.chapterOther}
-                    items={items}
-                    activeSlug={activeSlug}
-                  />
-                ))}
+        {/* Snelkoppeling naar het formulier; zonder video's staat dat er direct onder */}
+        {videos.length > 0 && (
+          <div className="shrink-0 rounded-2xl border border-border bg-surface-2 p-4 sm:max-w-64">
+            <p className="font-serif text-base text-text">{labels.askTitle}</p>
+            <p className="mt-1 text-sm text-text-muted">{labels.askIntro}</p>
+            <button
+              type="button"
+              onClick={naarVraagFormulier}
+              className="mt-3 rounded-lg bg-accent px-4 py-2 text-sm font-medium text-white transition hover:bg-accent/90"
+            >
+              {labels.askCta}
+            </button>
+            {toonAccountMelding ? (
+              <div role="status" className="mt-3">
+                <AccountNodigMelding
+                  loginHref={loginHref}
+                  registerHref={registerHref}
+                  labels={labels}
+                />
               </div>
-            </div>
-          )}
-        </aside>
+            ) : null}
+          </div>
+        )}
       </div>
+
+      {videos.length > 0 && (
+        <div className="mt-8 grid gap-6 lg:grid-cols-[280px_minmax(0,1fr)]">
+          {/* Speler (rechts op desktop, bovenaan op mobiel) */}
+          <div className="lg:order-2">
+            {active ? (
+              <video
+                key={active.src}
+                src={active.src}
+                controls
+                preload="metadata"
+                className="aspect-video w-full rounded-2xl border border-border bg-surface-2 shadow-sm"
+              />
+            ) : null}
+            {active ? (
+              <div className="mt-3">
+                <h2 className="font-serif text-xl text-text">{active.title}</h2>
+                <p className="mt-1 text-sm text-text-muted">{active.description}</p>
+              </div>
+            ) : null}
+          </div>
+
+          {/* Playlist (links op desktop) */}
+          <aside className="lg:order-1">
+            <p className="text-xs font-semibold uppercase tracking-wide text-text-muted">
+              {labels.playlistTitle}
+            </p>
+
+            {algemeen.length > 0 && (
+              <div className="mt-3">
+                <p className="text-xs font-semibold uppercase tracking-wide text-text-muted">
+                  {labels.groupGeneral}
+                </p>
+                <ul className="mt-2 space-y-2">
+                  {algemeen.map((v) => (
+                    <VideoLink key={v.slug} video={v} isActive={v.slug === activeSlug} />
+                  ))}
+                </ul>
+              </div>
+            )}
+
+            {perHoofdstuk.length > 0 && (
+              <div className="mt-5">
+                <p className="text-xs font-semibold uppercase tracking-wide text-text-muted">
+                  {labels.groupWalkthrough}
+                </p>
+                <div className="mt-2 space-y-1.5">
+                  {perHoofdstuk.map(({ chapter, items }) => (
+                    <Hoofdstukgroep
+                      key={chapter || 'overig'}
+                      titel={chapter || labels.chapterOther}
+                      items={items}
+                      activeSlug={activeSlug}
+                    />
+                  ))}
+                </div>
+              </div>
+            )}
+          </aside>
+        </div>
+      )}
 
       {/* Oefenen */}
       {active?.hasPractice ? (
@@ -344,15 +349,18 @@ function AccountNodigMelding({
   labels: Labels
 }) {
   return (
-    <div className="rounded-xl border border-accent-2/40 bg-accent-2-light px-4 py-3">
-      <p className="text-sm text-accent-2">{labels.askNoAccount}</p>
-      <p className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-sm">
-        <Link href={loginHref as '/inloggen'} className="text-accent underline underline-offset-2">
+    <div className="rounded-xl border border-border bg-surface px-4 py-3">
+      <p className="text-sm text-text">{labels.askNoAccount}</p>
+      <p className="mt-3 flex flex-wrap gap-2 text-sm">
+        <Link
+          href={loginHref as '/inloggen'}
+          className="rounded-lg bg-accent px-4 py-2 font-medium text-white transition hover:bg-accent/90"
+        >
           {labels.askLogin}
         </Link>
         <Link
           href={registerHref as '/registreren'}
-          className="text-accent underline underline-offset-2"
+          className="rounded-lg border border-border px-4 py-2 font-medium text-text transition hover:bg-surface-2"
         >
           {labels.askRegister}
         </Link>
