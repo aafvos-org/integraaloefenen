@@ -45,9 +45,24 @@ function splitTitle(title: string): { code: string | null; short: string } {
   return m ? { code: m[1]!, short: m[2]! } : { code: null, short: title }
 }
 
-/** Titels mogen `$...$` bevatten; voor aria-labels en de zijbalk willen we platte tekst. */
-function zonderMath(s: string): string {
-  return s.replaceAll('$', '')
+/**
+ * Titels mogen `$...$` bevatten. Voor een aria-label willen we platte tekst:
+ * alleen de `$` weghalen laat de LaTeX-commando's zelf staan ("\arctan"), dus
+ * maken we er leesbare tekens van.
+ */
+function platteTekst(s: string): string {
+  return s
+    .replace(/\\sqrt\s*\{([^{}]*)\}/g, '√($1)')
+    .replace(/\\ldots/g, '…')
+    .replace(/\\pi\b/g, 'π')
+    .replace(/\\cdot\b/g, '·')
+    // alle overige commando's: \arctan → arctan
+    .replace(/\\([a-zA-Z]+)/g, '$1')
+    .replace(/\^2/g, '²')
+    .replace(/\^3/g, '³')
+    .replace(/[${}]/g, '')
+    .replace(/\s+/g, ' ')
+    .trim()
 }
 
 export function TheorieClient({
@@ -197,10 +212,13 @@ export function TheorieClient({
                           <button
                             type="button"
                             onClick={() => scrollToId(`kaart-${ch.slug}-${card.id}`)}
+                            aria-label={platteTekst(card.title)}
                             className="flex w-full items-center gap-2 rounded-md py-1.5 pl-7 pr-3 text-xs text-text-muted hover:text-text"
                           >
                             <span className="size-1.5 shrink-0 rounded-full bg-border" />
-                            <span className="truncate text-left">{zonderMath(card.title)}</span>
+                            <span className="truncate text-left">
+                              <RichMath source={card.title} />
+                            </span>
                           </button>
                         </li>
                       ))}
@@ -266,12 +284,13 @@ export function TheorieClient({
 
                 <div className="mt-5 grid gap-4 md:grid-cols-2">
                   {ch.cards.map((card, i) => {
-                    const nieuweGroep = card.groep && card.groep !== ch.cards[i - 1]?.groep
+                    const groepskop =
+                      card.groep && card.groep !== ch.cards[i - 1]?.groep ? card.groep : null
                     return (
                       <Fragment key={card.id}>
-                        {nieuweGroep && (
+                        {groepskop && (
                           <h3 className="mt-4 text-xs font-semibold uppercase tracking-wider text-text-muted first:mt-0 md:col-span-2">
-                            {card.groep}
+                            <RichMath source={groepskop} />
                           </h3>
                         )}
                         <TheoryCard
@@ -464,7 +483,7 @@ function TheoryCard({
           type="button"
           onClick={onToggle}
           aria-expanded={open}
-          aria-label={`${zonderMath(card.title)} — ${labels.detailsLabel}`}
+          aria-label={`${platteTekst(card.title)} — ${labels.detailsLabel}`}
           className="group flex w-full min-w-0 items-center justify-between gap-3 rounded-t-xl px-4 py-4 text-left sm:px-5"
         >
           <span className="min-w-0">
