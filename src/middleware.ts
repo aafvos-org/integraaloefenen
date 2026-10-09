@@ -1,12 +1,11 @@
 import { NextResponse, type NextRequest } from 'next/server'
 
+import { ZONDER_TAAL } from '@/i18n/paths'
 import { routing } from '@/i18n/routing'
 import { updateSession } from '@/lib/supabase/middleware'
 
 // Deze pagina's hangen niet onder een taal in de URL. Een oude link als
 // /nl/admin sturen we door naar /admin, anders krijgt de bezoeker een 404.
-const ZONDER_TAAL = ['admin', 'api', 'auth', 'uitloggen']
-
 const MET_TAAL_ERVOOR = new RegExp(
   `^/(?:${routing.locales.join('|')})/(${ZONDER_TAAL.join('|')})(/.*)?$`,
 )

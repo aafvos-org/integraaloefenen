@@ -3,17 +3,18 @@ import path from 'node:path'
 import createNextIntlPlugin from 'next-intl/plugin'
 import type { NextConfig } from 'next'
 
+import { MET_TAAL } from './src/i18n/paths'
+
 const withNextIntl = createNextIntlPlugin('./src/i18n/request.ts')
 
-// Pagina's zonder taal in de URL sturen we naar de Nederlandse versie.
+// Links zonder taal vooraan sturen we naar de Nederlandse versie.
 // Stond eerst in vercel.json; Cloudflare leest dat bestand niet.
-const ZONDER_TAAL =
-  'dashboard|leerpad|oefenen|theorie|onboarding|inloggen|registreren|wachtwoord-vergeten|wachtwoord-opnieuw'
+const PADEN = MET_TAAL.join('|')
 
 const nextConfig: NextConfig = {
   async redirects() {
     return [
-      { source: `/:pad(${ZONDER_TAAL})/:rest*`, destination: '/nl/:pad/:rest*', permanent: false },
+      { source: `/:pad(${PADEN})/:rest*`, destination: '/nl/:pad/:rest*', permanent: false },
       // De site is alleen Nederlands. Oude Engelse links gaan permanent naar
       // dezelfde pagina onder /nl/. Dit hoort hier en niet in de middleware,
       // want deze doorverwijzing hoeft niet eerst Supabase te raadplegen.
