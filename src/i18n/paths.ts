@@ -27,3 +27,16 @@ export const MET_TAAL = [
 // stuurt de middleware terug naar /admin. Deze paden mogen nooit in MET_TAAL
 // staan: dan sturen de twee regels elkaar heen en weer.
 export const ZONDER_TAAL = ['admin', 'api', 'auth', 'uitloggen'] as const
+
+// OPENBAAR is wat een leerling zonder inloggen kan lezen, en dus het enige wat
+// een zoekmachine in de index hoort te zetten. sitemap.ts loopt deze lijst af.
+export const OPENBAAR = ['hoe-het-werkt', 'theorie', 'uitleg-videos'] as const
+
+/**
+ * De rest van MET_TAAL: persoonlijke pagina's en in-/uitlogformulieren. Die
+ * horen niet in de index, dus zet robots.ts ze op slot. Afgeleid van MET_TAAL,
+ * zodat een nieuwe pagina standaard dicht staat en niet per ongeluk open.
+ */
+export const AFGESCHERMD: readonly string[] = MET_TAAL.filter(
+  (pad) => !(OPENBAAR as readonly string[]).includes(pad),
+)

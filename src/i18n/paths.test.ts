@@ -3,7 +3,7 @@ import { join } from 'node:path'
 
 import { describe, expect, it } from 'vitest'
 
-import { MET_TAAL, ZONDER_TAAL } from './paths'
+import { AFGESCHERMD, MET_TAAL, OPENBAAR, ZONDER_TAAL } from './paths'
 
 // =====================================================================
 // De lijst met paden tegen de mappen op schijf
@@ -41,5 +41,16 @@ describe('ZONDER_TAAL', () => {
   it('overlapt niet met MET_TAAL', () => {
     const metTaal = new Set<string>(MET_TAAL)
     expect(ZONDER_TAAL.filter((pad) => metTaal.has(pad))).toEqual([])
+  })
+})
+
+describe('OPENBAAR en AFGESCHERMD', () => {
+  it('noemt alleen pagina’s die echt bestaan', () => {
+    const metTaal = new Set<string>(MET_TAAL)
+    expect(OPENBAAR.filter((pad) => !metTaal.has(pad))).toEqual([])
+  })
+
+  it('verdeelt MET_TAAL zonder iets over te slaan of dubbel te doen', () => {
+    expect([...OPENBAAR, ...AFGESCHERMD].sort()).toEqual([...MET_TAAL].sort())
   })
 })
