@@ -164,6 +164,13 @@ additional_redirect_urls = [
   "https://integraaloefenen.nl/**",
   "https://www.integraaloefenen.nl/**",
   "https://integraaloefenen.alhvos.workers.dev/**",
+  # Voorbeeldversies van Workers Builds: elke pull request krijgt een adres als
+  # https://<tak-of-versie>-integraaloefenen.alhvos.workers.dev. De ster dekt
+  # alleen dat ene stukje vooraan (punt en schuine streep tellen als grens),
+  # dus hij blijft binnen de worker `integraaloefenen` op workers.dev-account
+  # alhvos. Zonder deze regel komt wie op een voorbeeldversie zijn wachtwoord
+  # vergeet of zich registreert, via de mail op de echte site terecht.
+  "https://*-integraaloefenen.alhvos.workers.dev/**",
   "http://localhost:3000/**",
   "http://127.0.0.1:3000/**",
 ]
