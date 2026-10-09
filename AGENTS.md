@@ -14,8 +14,50 @@ Deze repo is de live site integraaloefenen.nl, voor vwo-leerlingen. Hij draait o
 
 ## Werkwijze
 - Werk nooit direct op `main`. Altijd een eigen tak en een pull request met `gh pr create`. Merge niet zelf.
-- Draai voor elke pull request `npx tsc --noEmit` en `npx opennextjs-cloudflare build`. Beide moeten slagen.
+- Draai voor elke pull request `npm run lint`, `npx tsc --noEmit`, `npm test` en `npx opennextjs-cloudflare build`. Alle vier moeten slagen. Raak je iets aan dat een leerling ziet, draai dan ook `npm run test:e2e`.
 - Houd elke pull request klein en bij één onderwerp. Zet in de beschrijving wat je hebt veranderd en hoe je het hebt gecontroleerd.
+
+## Zelf controleren
+
+### `npm test` — de rekenregels
+Vitest, zonder browser en zonder database. Draait in een paar seconden:
+
+    npm test            # één keer
+    npm run test:watch  # blijft meekijken terwijl je typt
+
+De tests staan naast de code die ze controleren (`src/**/*.test.ts`): het
+nakijken van antwoorden, de voortgangsregel en de grens van de neppe
+AI-controle.
+
+### `npm run test:e2e` — de weg van een leerling
+Playwright klikt in een echte browser door de site: inloggen → oefenen →
+antwoord nakijken → voortgang op het dashboard. Dit draait **alleen** tegen een
+lokale Supabase, nooit tegen de echte database of de voorbeeldversie.
+
+Eén keer klaarzetten:
+
+    npx playwright install chromium
+    npx supabase start     # Docker moet draaien
+    npx supabase db reset  # zet de testleerling en het testhoofdstuk klaar
+
+Daarna:
+
+    npm run test:e2e                      # alles
+    npm run test:e2e -- --project=computer # alleen computerformaat
+    npm run test:e2e -- --headed           # meekijken in de browser
+
+Gebruik altijd `npm run test:e2e` en niet `npx playwright test`: het scriptje
+`scripts/e2e.mjs` zoekt de sleutels van de lokale Supabase op, controleert dat
+die écht lokaal is, en zet `AI_CHECK_MODE=stub` zodat er geen Gemini aan te pas
+komt. Die schakelaar werkt nooit in productie (zie `src/lib/ai/stub.ts`).
+
+De testleerling en de opgaven staan in `supabase/seed.sql`. Dat bestand draait
+alleen lokaal; de oefenstof zelf komt uit `supabase/migrations/`.
+
+Draait er al een andere Supabase op je computer (bijvoorbeeld die van
+afgeleideoefenen), dan zijn de poorten bezet. Zet die eerst stil, of geef deze
+tijdelijk andere poorten in `supabase/config.toml` — en draai die wijziging
+terug voordat je commit.
 
 ## Wat je niet zelf doet
 - Wijzigingen aan de database (`supabase/migrations/`, `supabase/sql/`, `supabase/config.toml`) eerst in de taak vragen. Integraaloefenen.nl heeft een eigen Supabase-project (IntegraalOefenen, `oyevapifmenqjuklprws`); de database wordt niet meer gedeeld met afgeleideoefenen.nl.
