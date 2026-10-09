@@ -14,7 +14,8 @@
 #   5. Gooit de dumpbestanden weg (die bevatten persoonsgegevens).
 #
 # Gebruik (vanuit de root van de repo, Docker moet draaien):
-#   bash scripts/verhuis-naar-eigen-supabase.sh [pad/naar/.env.local]
+#   bash scripts/verhuis-naar-eigen-supabase.sh [--ja] [pad/naar/.env.local]
+#   --ja  sla de bevestigingsvraag over (voor niet-interactief draaien)
 #
 # Nodig in .env.local:
 #   SUPABASE_PROD_DB_PASSWORD       wachtwoord van de database van OUD
@@ -25,6 +26,8 @@
 # =============================================================================
 set -euo pipefail
 
+JA=0
+if [[ "${1:-}" == "--ja" ]]; then JA=1; shift; fi
 ENV_FILE="${1:-.env.local}"
 OUD_REF="dccjsuyuolxwqqcjxtqe"
 NIEUW_REF="oyevapifmenqjuklprws"
@@ -54,8 +57,10 @@ if [[ "$AANTAL" != "0" ]]; then
   exit 1
 fi
 
-read -r -p "OUD alleen lezen, NIEUW vullen. Doorgaan? [j/N] " ok
-[[ "$ok" == "j" ]] || { echo "Gestopt."; exit 0; }
+if [[ "$JA" != "1" ]]; then
+  read -r -p "OUD alleen lezen, NIEUW vullen. Doorgaan? [j/N] " ok
+  [[ "$ok" == "j" ]] || { echo "Gestopt."; exit 0; }
+fi
 
 echo "1/4 Dump van OUD (alleen lezen)…"
 supabase db dump --db-url "$OUD_URL" --role-only -f "$TMP/roles.sql"

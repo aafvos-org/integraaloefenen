@@ -248,6 +248,17 @@ content_path = "./supabase/email-templates/confirm-signup.html"
 subject = "Nieuw wachtwoord voor IntegraalOefenen"
 content_path = "./supabase/email-templates/reset-password-nl.html"
 
+# Afzender via Resend. De sleutel staat alleen in .env.local (RESEND_API_KEY_INTEGRAAL),
+# met alleen verzendrechten voor het domein integraaloefenen.nl.
+[auth.email.smtp]
+enabled = true
+host = "smtp.resend.com"
+port = 465
+user = "resend"
+pass = "env(RESEND_API_KEY_INTEGRAAL)"
+admin_email = "no-reply@integraaloefenen.nl"
+sender_name = "IntegraalOefenen"
+
 # [auth.email.smtp]
 # enabled = true
 # host = "smtp.sendgrid.net"
