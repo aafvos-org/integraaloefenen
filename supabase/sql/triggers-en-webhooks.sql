@@ -38,7 +38,7 @@ begin
     return;
   end if;
   perform net.http_post(
-    url := 'https://integraaloefenen.nl' || pad,
+    url := 'https://www.integraaloefenen.nl' || pad,  -- het kale domein stuurt door (307) naar www
     body := payload,
     headers := jsonb_build_object('Content-Type', 'application/json', 'x-webhook-secret', geheim)
   );
