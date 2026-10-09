@@ -3,9 +3,20 @@ import { Link } from '@/i18n/navigation'
 import { redirect } from 'next/navigation'
 
 import { SITE_CONFIG } from '@/config/site'
+import { eigenAdres } from '@/lib/seo'
 import { createClient } from '@/lib/supabase/server'
 
 import { HomeDemo } from './home-demo'
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>
+}) {
+  const { locale } = await params
+  // Titel en omschrijving komen uit de layout; alleen het eigen adres staat hier.
+  return { alternates: eigenAdres(locale) }
+}
 
 export default async function HomePage() {
   const supabase = await createClient()

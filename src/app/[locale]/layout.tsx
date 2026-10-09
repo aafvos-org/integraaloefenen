@@ -26,9 +26,9 @@ export async function generateMetadata({
     description: t('description'),
     applicationName: domain,
     authors: [{ name: domain }],
-    alternates: {
-      canonical: `/${locale}`,
-    },
+    // Geen canonical hier: een layout weet niet op welke pagina hij staat, dus
+    // zou elke pagina de startpagina als eigen adres opgeven. Elke openbare
+    // pagina zet hem zelf, met eigenAdres() uit src/lib/seo.ts.
     openGraph: {
       type: 'website',
       locale: 'nl_NL',

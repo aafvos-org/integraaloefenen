@@ -3,6 +3,7 @@ import { getTranslations } from 'next-intl/server'
 
 import { Link } from '@/i18n/navigation'
 import { RichMath } from '@/components/math'
+import { eigenAdres } from '@/lib/seo'
 import { METHODE, THEORY_OVERVIEW } from '@/lib/theory'
 
 import { MethodeSchema } from '../methode-schema'
@@ -21,6 +22,7 @@ export async function generateMetadata({ params }: { params: Params }) {
   return {
     title: naam ? `${naam} · ${t('methodeTab')}` : t('title'),
     description: t('description'),
+    alternates: eigenAdres(locale, `/theorie/${hoofdstuk}`),
   }
 }
 

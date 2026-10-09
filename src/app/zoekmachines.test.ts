@@ -1,3 +1,6 @@
+import { readFileSync } from 'node:fs'
+import { join } from 'node:path'
+
 import { describe, expect, it } from 'vitest'
 
 import { AFGESCHERMD, OPENBAAR, ZONDER_TAAL } from '@/i18n/paths'
@@ -79,5 +82,52 @@ describe('sitemap.xml', () => {
   it('heeft geen dubbele adressen', () => {
     const paden = inSitemap()
     expect(new Set(paden).size).toBe(paden.length)
+  })
+})
+
+// =====================================================================
+// Elke openbare pagina noemt zijn eigen adres
+//
+// De canonical stond in src/app/[locale]/layout.tsx. Een layout weet niet op
+// welke pagina hij staat, dus riep elke pagina dat ze de startpagina was en
+// bleef de rest uit de index. Nu zet elke openbare pagina hem zelf, met
+// eigenAdres() uit src/lib/seo.ts.
+//
+// Deze test leest de broncode: hij ziet dat de regel er staat, niet wat de
+// pagina uiteindelijk naar de browser stuurt. Dat is genoeg om te merken dat
+// een nieuwe openbare pagina hem vergeet.
+// =====================================================================
+
+/** De broncode van een pagina onder src/app/[locale]/. */
+function broncode(...pad: string[]): string {
+  return readFileSync(
+    join(process.cwd(), 'src', 'app', '[locale]', ...pad, 'page.tsx'),
+    'utf8',
+  )
+}
+
+describe('canonical', () => {
+  it('staat niet in de layout, want die kent het pad niet', () => {
+    const layout = readFileSync(
+      join(process.cwd(), 'src', 'app', '[locale]', 'layout.tsx'),
+      'utf8',
+    )
+    expect(layout).not.toMatch(/canonical:/)
+  })
+
+  it('staat op de startpagina', () => {
+    expect(broncode()).toContain('eigenAdres(locale)')
+  })
+
+  it('staat op elke openbare pagina, met het eigen pad', () => {
+    for (const pad of OPENBAAR) {
+      expect(broncode(pad)).toContain(`eigenAdres(locale, '/${pad}')`)
+    }
+  })
+
+  it('staat op een theorie-hoofdstuk, met het hoofdstuk erin', () => {
+    expect(broncode('theorie', '[hoofdstuk]')).toContain(
+      'eigenAdres(locale, `/theorie/${hoofdstuk}`)',
+    )
   })
 })
