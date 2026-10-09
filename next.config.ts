@@ -15,8 +15,8 @@ const nextConfig: NextConfig = {
     return [
       { source: `/:pad(${ZONDER_TAAL})/:rest*`, destination: '/nl/:pad/:rest*', permanent: false },
       // De site is alleen Nederlands. Oude Engelse links gaan permanent naar
-      // dezelfde pagina onder /nl/. Dit hoort hier en niet in de middleware:
-      // van de twee middleware-bestanden draait alleen src/middleware.ts.
+      // dezelfde pagina onder /nl/. Dit hoort hier en niet in de middleware,
+      // want deze doorverwijzing hoeft niet eerst Supabase te raadplegen.
       { source: '/en/:rest*', destination: '/nl/:rest*', permanent: true },
     ]
   },
