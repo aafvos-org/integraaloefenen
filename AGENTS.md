@@ -18,7 +18,7 @@ Deze repo is de live site integraaloefenen.nl, voor vwo-leerlingen. Hij draait o
 - Houd elke pull request klein en bij één onderwerp. Zet in de beschrijving wat je hebt veranderd en hoe je het hebt gecontroleerd.
 
 ## Wat je niet zelf doet
-- Geen bestanden in `supabase/migrations/` toevoegen of aanpassen. De database wordt gedeeld met afgeleideoefenen.nl; vraag het eerst in de taak.
+- Wijzigingen aan de database (`supabase/migrations/`, `supabase/sql/`, `supabase/config.toml`) eerst in de taak vragen. Integraaloefenen.nl heeft een eigen Supabase-project (IntegraalOefenen, `oyevapifmenqjuklprws`); de database wordt niet meer gedeeld met afgeleideoefenen.nl.
 - Niet deployen met `wrangler` of `opennextjs-cloudflare deploy`. Live zetten gebeurt alleen via een merge naar `main`.
 - Geen geheimen in code, configuratie of pull requests. `.env*` en `.dev.vars` blijven buiten git.
 - Geen nieuwe npm-pakketten zonder het eerst in de taak te vragen.
