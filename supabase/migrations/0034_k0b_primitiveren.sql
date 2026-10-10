@@ -312,8 +312,8 @@ BEGIN
   SELECT count(*) INTO n FROM public.question_steps_new s
   JOIN public.questions_new vr ON vr.id = s.question_id
   JOIN public.topics_new t ON t.id = vr.topic_id
-  WHERE t.chapter_id = (SELECT id FROM public.chapters WHERE slug = 'k' AND site = 'integralen');
-  IF n <> 176 THEN RAISE EXCEPTION 'Hoofdstuk K hoort 176 stappen te hebben, gevonden %', n; END IF;
+  WHERE t.site = 'integralen' AND t.slug IN ('k0b_standaardprimitieven', 'k0b_lineaire_kern', 'k0b_bepaalde_integralen');
+  IF n <> 176 THEN RAISE EXCEPTION 'Deze topics horen samen 176 stappen te hebben, gevonden %', n; END IF;
 END $do$;
 
 COMMIT;

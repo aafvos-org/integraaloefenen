@@ -15,8 +15,14 @@ hetzelfde stappenplan.** Stap 0 is de typekeuze; stappen 2–3 zijn de enige
 echte herkenningsbeslissingen; de rest is systematisch invullen. Zo hoeft de
 leerling alleen dit plan te leren en kan het altijd toepassen.
 
-> **Status:** specificatie (fase 1 wipe-plan). Nog geen DB-wipe, nog geen
-> `scripts/k1-content.ts`. Canonieke stapnummers hieronder zijn bevroren.
+> **Status:** oude specificatie (fase 1 wipe-plan), op twee punten ingehaald.
+> Er komt geen DB-wipe: de content van hoofdstuk K wordt per theorieblok
+> toegevoegd. En het stappenplan van stap 0 t/m 7 hieronder is vervangen door
+> het vaste plan van vier stappen (`step_order` 0 t/m 3) dat de hele site
+> gebruikt. Wat er nu echt staat voor Theorie A:
+> [`k1a-primitiveren-en-de-kettingregel.md`](k1a-primitiveren-en-de-kettingregel.md).
+> De herkenregels en de clusterindeling hieronder blijven bruikbaar als
+> achtergrond voor Theorie B en verder.
 
 ---
 

@@ -731,11 +731,15 @@ export function generateAdditiveMigration(c: AdditiveChapter): string {
     w(`  SELECT count(*) INTO n FROM public.questions_new WHERE cluster_id = ${clusterRef(cl.topic, cl.slug)};`)
     w(`  IF n <> ${aantal} THEN RAISE EXCEPTION 'Cluster ${cl.slug} hoort ${aantal} vragen te hebben, gevonden %', n; END IF;`)
   }
+  // Tellen per topic van déze migratie, niet per hoofdstuk: in hetzelfde
+  // hoofdstuk staan ook de topics van eerdere migraties, en die moeten niet
+  // meetellen — anders klopt het getal niet meer zodra er een blok bij komt.
+  const eigenTopics = c.topics.map((t) => `'${t.slug}'`).join(', ')
   w(`  SELECT count(*) INTO n FROM public.question_steps_new s`)
   w(`  JOIN public.questions_new vr ON vr.id = s.question_id`)
   w(`  JOIN public.topics_new t ON t.id = vr.topic_id`)
-  w(`  WHERE t.chapter_id = ${chapterRef};`)
-  w(`  IF n <> ${c.questions.length * 4} THEN RAISE EXCEPTION 'Hoofdstuk ${c.chapterSlug.toUpperCase()} hoort ${c.questions.length * 4} stappen te hebben, gevonden %', n; END IF;`)
+  w(`  WHERE t.site = ${site} AND t.slug IN (${eigenTopics});`)
+  w(`  IF n <> ${c.questions.length * 4} THEN RAISE EXCEPTION 'Deze topics horen samen ${c.questions.length * 4} stappen te hebben, gevonden %', n; END IF;`)
   w(`END $do$;`)
   w()
   w(`COMMIT;`)
