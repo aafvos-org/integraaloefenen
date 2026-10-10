@@ -1,7 +1,6 @@
 'use server'
 
-import { headers } from 'next/headers'
-
+import { requestOrigin } from '@/lib/request-origin'
 import { createClient } from '@/lib/supabase/server'
 
 export type ForgotState = { sent: boolean; error: string | null }
@@ -13,13 +12,9 @@ export async function forgotPasswordAction(
   const email = (formData.get('email') ?? '').toString().trim()
   if (!email) return { sent: false, error: 'Vul je e-mailadres in.' }
 
-  // Use the actual request origin so we don't depend on NEXT_PUBLIC_SITE_URL.
-  const headersList = await headers()
-  const origin =
-    headersList.get('origin') ??
-    headersList.get('x-forwarded-host') ??
-    process.env.NEXT_PUBLIC_SITE_URL ??
-    'http://localhost:3000'
+  // Het adres van het huidige verzoek, zodat de link in de mail terugwijst
+  // naar waar de leerling vandaan kwam (bv. een voorbeeldversie).
+  const origin = await requestOrigin()
 
   const supabase = await createClient()
   const { error } = await supabase.auth.resetPasswordForEmail(email, {

@@ -1,10 +1,10 @@
 'use server'
 
-import { headers } from 'next/headers'
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 import { getLocale } from 'next-intl/server'
 
+import { requestOrigin } from '@/lib/request-origin'
 import { createClient } from '@/lib/supabase/server'
 
 export type SignupState = {
@@ -50,7 +50,7 @@ export async function signupAction(
   }
 
   const supabase = await createClient()
-  const origin = (await headers()).get('origin') ?? ''
+  const origin = await requestOrigin()
   const locale = await getLocale()
 
   const { data, error } = await supabase.auth.signUp({
