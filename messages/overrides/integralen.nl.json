@@ -60,12 +60,6 @@
     "herkenSchil": "Wat je ziet",
     "herkenRegel": "Route",
     "regelsTitle": "Stap 1, 2 en 3 per route",
-    "herkenQuestion": "Welke route pak je?",
-    "regelsInChapter": "Routes in dit hoofdstuk",
-    "methodeTitle": "Eén stappenplan voor elke integraal",
-    "methodeIntro": "Elke integraal bereken je met hetzelfde stappenplan. Stap 0 is de enige echte beslissing: kijk naar de vorm onder het integraalteken en kies de route. Daarna zijn stap 1, 2 en 3 altijd hetzelfde. Klik op een route om te zien wat je in elke stap doet; bij de hoofdstukken links zie je de methode toegepast op voorbeelden.",
-    "schemaStap2": "Stap 2 · Bereken de primitieven",
-    "schemaGeneric2": "Bereken hun primitieven. Vraagt een deel een andere route? Dan noem je dat deel even f en begin je ervoor opnieuw bij stap 1.",
-    "toonGenest": "Hoe kom ik aan deze primitieve?"
+    "herkenQuestion": "Welke route pak je?"
   }
 }

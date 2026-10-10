@@ -19,11 +19,7 @@
  * is bewust leeg gelaten omdat die tabel ze verdubbelde.
  */
 
-import type {
-  ClusterTheory,
-  Methode,
-  OverviewChapter,
-} from './types'
+import type { ClusterTheory, OverviewChapter } from './types'
 
 export type { ClusterTheory, OverviewChapter }
 
@@ -561,6 +557,3 @@ export const THEORY_OVERVIEW: OverviewChapter[] = [
     ],
   },
 ]
-
-/** Geen methode-pagina voor integralen (nog). */
-export const METHODE: Methode | null = null

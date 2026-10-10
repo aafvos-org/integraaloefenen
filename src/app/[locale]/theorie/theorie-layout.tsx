@@ -6,13 +6,10 @@ import { Link } from '@/i18n/navigation'
 import { cn } from '@/components/ui'
 
 export type TheorieNavItem = {
-  /** null = de methode-pagina (/theorie) */
-  slug: string | null
-  /** Hoofdstukcode, bv. "H2"; leeg voor de methode */
-  code: string | null
+  slug: string
+  /** Hoofdstukcode, bv. "K3" */
+  code: string
   label: string
-  /** Onderdelen die onder het actieve item getoond worden */
-  sub?: string[]
 }
 
 type Labels = { chapterLabel: string; collapseSidebar: string; expandSidebar: string }
@@ -28,7 +25,7 @@ export function TheorieLayout({
   children,
 }: {
   items: TheorieNavItem[]
-  active: string | null
+  active: string
   labels: Labels
   children: ReactNode
 }) {
@@ -77,11 +74,10 @@ export function TheorieLayout({
           <ul className="mt-3 space-y-0.5">
             {items.map((it) => {
               const isActive = it.slug === active
-              const href = it.slug ? `/theorie/${it.slug}` : '/theorie'
               return (
-                <li key={it.slug ?? 'methode'}>
+                <li key={it.slug}>
                   <Link
-                    href={href as '/theorie'}
+                    href={`/theorie/${it.slug}` as '/theorie'}
                     aria-current={isActive ? 'page' : undefined}
                     className={
                       isActive
@@ -90,26 +86,11 @@ export function TheorieLayout({
                     }
                   >
                     <span className="min-w-0 break-words text-left">
-                      {it.code && (
-                        <>
-                          <span className="font-mono font-semibold">{it.code}</span>
-                          {' – '}
-                        </>
-                      )}
+                      <span className="font-mono font-semibold">{it.code}</span>
+                      {' – '}
                       {it.label}
                     </span>
                   </Link>
-
-                  {isActive && it.sub && it.sub.length > 0 && (
-                    <ul className="mb-1 mt-0.5">
-                      {it.sub.map((s) => (
-                        <li key={s} className="flex items-start gap-2 py-1.5 pl-7 pr-3 text-xs text-text-muted">
-                          <span className="mt-[0.3125rem] size-1.5 shrink-0 rounded-full bg-border" />
-                          <span className="min-w-0 break-words">{s}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  )}
                 </li>
               )
             })}
