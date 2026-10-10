@@ -2,11 +2,14 @@ import { describe, expect, it } from 'vitest'
 
 import {
   aggregateAnswers,
+  buildUserRows,
   countMasteredClusters,
   fetchAllAuthUsers,
   fetchAllRows,
+  formatMoment,
   PAGE_SIZE,
   type AnswerRow,
+  type ProfileRow,
 } from './stats'
 
 // =====================================================================
@@ -173,6 +176,80 @@ describe('fetchAllAuthUsers', () => {
 
     expect(all).toHaveLength(450)
     expect(gevraagd).toEqual([1, 2, 3])
+  })
+})
+
+describe('buildUserRows', () => {
+  function profiel(id: string, createdAt: string | null): ProfileRow {
+    return { id, username: id, role: 'student', created_at: createdAt }
+  }
+
+  it('toont de laatste keer inloggen, ook als er nog geen antwoord is', () => {
+    const rows = buildUserRows(
+      [profiel('nieuwkomer', '2026-10-09T08:00:00.000Z')],
+      [
+        {
+          id: 'nieuwkomer',
+          email: 'leerling@example.com',
+          created_at: '2026-10-09T08:00:00.000Z',
+          last_sign_in_at: '2026-10-09T19:30:00.000Z',
+          email_confirmed_at: '2026-10-09T08:05:00.000Z',
+        },
+      ],
+    )
+
+    expect(rows[0].lastSignInAt).toBe('2026-10-09T19:30:00.000Z')
+    expect(rows[0].email).toBe('leerling@example.com')
+    expect(rows[0].confirmed).toBe(true)
+  })
+
+  it('zet de nieuwste aanmelding bovenaan', () => {
+    const rows = buildUserRows(
+      [
+        profiel('oud', '2026-01-01T00:00:00.000Z'),
+        profiel('nieuw', '2026-10-01T00:00:00.000Z'),
+        profiel('midden', '2026-05-01T00:00:00.000Z'),
+      ],
+      [
+        { id: 'oud', created_at: '2026-01-01T00:00:00.000Z' },
+        { id: 'nieuw', created_at: '2026-10-01T00:00:00.000Z' },
+        { id: 'midden', created_at: '2026-05-01T00:00:00.000Z' },
+      ],
+    )
+
+    expect(rows.map((r) => r.id)).toEqual(['nieuw', 'midden', 'oud'])
+  })
+
+  it('noemt een account zonder bevestiging onbevestigd en zet een profiel zonder account onderaan', () => {
+    const rows = buildUserRows(
+      [profiel('zonder-account', null), profiel('onbevestigd', '2026-02-02T00:00:00.000Z')],
+      [{ id: 'onbevestigd', created_at: '2026-02-02T00:00:00.000Z' }],
+    )
+
+    expect(rows.map((r) => r.id)).toEqual(['onbevestigd', 'zonder-account'])
+    expect(rows[0].confirmed).toBe(false)
+    expect(rows[0].lastSignInAt).toBeNull()
+    expect(rows[1].email).toBeNull()
+    expect(rows[1].signedUpAt).toBeNull()
+  })
+
+  it('valt terug op het tijdstip van het profiel als Auth het account niet kent', () => {
+    const rows = buildUserRows([profiel('wees', '2026-03-03T00:00:00.000Z')], [])
+
+    expect(rows[0].signedUpAt).toBe('2026-03-03T00:00:00.000Z')
+  })
+})
+
+describe('formatMoment', () => {
+  it('schrijft het tijdstip in Nederlandse tijd, ook in de zomer', () => {
+    expect(formatMoment('2026-01-02T10:00:00.000Z')).toBe('02-01-2026 11:00')
+    expect(formatMoment('2026-07-02T10:00:00.000Z')).toBe('02-07-2026 12:00')
+  })
+
+  it('geeft niets terug bij een leeg of onleesbaar tijdstip', () => {
+    expect(formatMoment(null)).toBeNull()
+    expect(formatMoment(undefined)).toBeNull()
+    expect(formatMoment('geen datum')).toBeNull()
   })
 })
 

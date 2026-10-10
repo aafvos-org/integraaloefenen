@@ -102,6 +102,90 @@ export function aggregateAnswers(
   return byUser
 }
 
+/** Wat we van een account bij Supabase Auth gebruiken. */
+export type AuthAccount = {
+  id: string
+  email?: string | null
+  created_at?: string | null
+  last_sign_in_at?: string | null
+  email_confirmed_at?: string | null
+}
+
+/** Een rij uit `profiles`. */
+export type ProfileRow = {
+  id: string
+  username: string | null
+  role: string
+  created_at: string | null
+}
+
+/** Eén regel in de tabel: het profiel plus wat Auth erover weet. */
+export type AdminUserRow = ProfileRow & {
+  email: string | null
+  /** Wanneer het account is aangemaakt. */
+  signedUpAt: string | null
+  lastSignInAt: string | null
+  /** Of het e-mailadres bevestigd is. */
+  confirmed: boolean
+}
+
+/**
+ * Legt de profielen naast de accounts van Auth en zet ze op volgorde van
+ * aanmelden, nieuwste bovenaan. Accounts zonder aanmeldtijd komen onderaan.
+ *
+ * Een profiel wordt door een trigger aangemaakt bij het account, maar de
+ * tijdstippen hoeven niet op de milliseconde gelijk te zijn. We tonen en
+ * sorteren daarom op het tijdstip van het account, en vallen terug op dat
+ * van het profiel als Auth het account niet (meer) kent.
+ */
+export function buildUserRows(
+  profiles: Iterable<ProfileRow>,
+  accounts: Iterable<AuthAccount>,
+): AdminUserRow[] {
+  const byId = new Map<string, AuthAccount>()
+  for (const account of accounts) byId.set(account.id, account)
+
+  const rows: AdminUserRow[] = []
+  for (const profile of profiles) {
+    const account = byId.get(profile.id)
+    rows.push({
+      ...profile,
+      email: account?.email ?? null,
+      signedUpAt: account?.created_at ?? profile.created_at ?? null,
+      lastSignInAt: account?.last_sign_in_at ?? null,
+      confirmed: Boolean(account?.email_confirmed_at),
+    })
+  }
+
+  return rows.sort((a, b) => {
+    if (a.signedUpAt === b.signedUpAt) return a.id < b.id ? -1 : 1
+    if (!a.signedUpAt) return 1
+    if (!b.signedUpAt) return -1
+    return a.signedUpAt < b.signedUpAt ? 1 : -1
+  })
+}
+
+/**
+ * Een tijdstip als `02-10-2026 14:35`, altijd in Nederlandse tijd: de site
+ * draait op Cloudflare en die klok staat op UTC.
+ */
+export function formatMoment(iso: string | null | undefined): string | null {
+  if (!iso) return null
+  const moment = new Date(iso)
+  if (Number.isNaN(moment.getTime())) return null
+
+  return moment
+    .toLocaleString('nl-NL', {
+      timeZone: 'Europe/Amsterdam',
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+    })
+    .replace(',', '')
+}
+
 /** Per gebruiker het aantal clusters met status `mastered`. */
 export function countMasteredClusters(
   rows: Iterable<{ user_id: string; status: string }>,

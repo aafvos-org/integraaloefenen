@@ -4,10 +4,14 @@ import { Badge, Card } from '@/components/ui'
 import { setUserRole } from './actions'
 import {
   aggregateAnswers,
+  buildUserRows,
   countMasteredClusters,
   fetchAllAuthUsers,
   fetchAllRows,
+  formatMoment,
   type AnswerRow,
+  type AuthAccount,
+  type ProfileRow,
 } from './stats'
 
 export default async function UsersPage() {
@@ -16,12 +20,12 @@ export default async function UsersPage() {
   // Alles per pagina ophalen: één query geeft hoogstens 1000 rijen terug,
   // en bij meer antwoorden viel een deel stilletjes weg.
   const [authUsers, profiles, progressRows, answerRows] = await Promise.all([
-    fetchAllAuthUsers(async (page, perPage) => {
+    fetchAllAuthUsers<AuthAccount>(async (page, perPage) => {
       const { data, error } = await admin.auth.admin.listUsers({ page, perPage })
       if (error) throw error
       return data.users
     }, 200),
-    fetchAllRows(async (from, to) => {
+    fetchAllRows<ProfileRow>(async (from, to) => {
       const { data, error } = await admin
         .from('profiles')
         .select('id, username, role, created_at')
@@ -52,7 +56,7 @@ export default async function UsersPage() {
     }),
   ])
 
-  const emailById = new Map(authUsers.map((u) => [u.id, u.email ?? '—']))
+  const users = buildUserRows(profiles, authUsers)
   const masteredByUser = countMasteredClusters(progressRows)
   const answersByUser = aggregateAnswers(answerRows)
 
@@ -61,26 +65,29 @@ export default async function UsersPage() {
       <div>
         <h2 className="font-serif text-xl text-text">Gebruikers</h2>
         <p className="text-sm text-text-muted">
-          {profiles.length} accounts. Klik op een rol om iemand admin te
-          maken of terug te zetten naar student.
+          {users.length} accounts, nieuwste bovenaan. Klik op een rol om
+          iemand admin te maken of terug te zetten naar student.
         </p>
       </div>
 
-      <Card className="p-0 overflow-hidden">
+      <Card className="p-0 overflow-x-auto">
         <table className="w-full text-sm">
           <thead className="bg-surface-2 text-left text-xs uppercase tracking-wider text-text-muted">
             <tr>
               <th className="px-4 py-2 font-medium">Gebruikersnaam</th>
               <th className="px-4 py-2 font-medium">E-mail</th>
+              <th className="px-4 py-2 font-medium">Bevestigd</th>
               <th className="px-4 py-2 font-medium">Rol</th>
               <th className="px-4 py-2 font-medium">Gemasterde clusters</th>
               <th className="px-4 py-2 font-medium">Antwoorden</th>
               <th className="px-4 py-2 font-medium">% correct</th>
-              <th className="px-4 py-2 font-medium">Laatste activiteit</th>
+              <th className="px-4 py-2 font-medium">Aangemeld</th>
+              <th className="px-4 py-2 font-medium">Laatst ingelogd</th>
+              <th className="px-4 py-2 font-medium">Laatste antwoord</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-border">
-            {profiles.map((p) => {
+            {users.map((p) => {
               const stats = answersByUser.get(p.id)
               const mastered = masteredByUser.get(p.id) ?? 0
               const pct =
@@ -94,7 +101,14 @@ export default async function UsersPage() {
                     {p.username ?? <span className="text-text-muted">—</span>}
                   </td>
                   <td className="px-4 py-2 text-text-muted">
-                    {emailById.get(p.id) ?? '—'}
+                    {p.email ?? '—'}
+                  </td>
+                  <td className="px-4 py-2">
+                    {p.confirmed ? (
+                      <Badge tone="accent">ja</Badge>
+                    ) : (
+                      <Badge tone="warn">nee</Badge>
+                    )}
                   </td>
                   <td className="px-4 py-2">
                     <form action={setRole} className="flex items-center gap-2">
@@ -129,18 +143,22 @@ export default async function UsersPage() {
                       `${pct}%`
                     )}
                   </td>
-                  <td className="px-4 py-2 text-xs text-text-muted">
-                    {stats?.lastAnsweredAt
-                      ? new Date(stats.lastAnsweredAt).toLocaleString('nl-NL')
-                      : '—'}
+                  <td className="whitespace-nowrap px-4 py-2 text-xs text-text-muted">
+                    {formatMoment(p.signedUpAt) ?? '—'}
+                  </td>
+                  <td className="whitespace-nowrap px-4 py-2 text-xs text-text-muted">
+                    {formatMoment(p.lastSignInAt) ?? '—'}
+                  </td>
+                  <td className="whitespace-nowrap px-4 py-2 text-xs text-text-muted">
+                    {formatMoment(stats?.lastAnsweredAt) ?? '—'}
                   </td>
                 </tr>
               )
             })}
-            {profiles.length === 0 && (
+            {users.length === 0 && (
               <tr>
                 <td
-                  colSpan={7}
+                  colSpan={10}
                   className="px-4 py-10 text-center text-text-muted"
                 >
                   Nog geen gebruikers.
