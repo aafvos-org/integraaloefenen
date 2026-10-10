@@ -74,12 +74,9 @@ values (
 )
 on conflict (provider_id, provider) do nothing;
 
--- De onboarding is al gedaan (anders stuurt de middleware elke pagina door
--- naar /onboarding) en de rondleiding is al gezien, zodat die geen knoppen
--- afdekt in de tests.
+-- De rondleiding is al gezien, zodat die geen knoppen afdekt in de tests.
 update public.profiles
    set display_name = 'Test Leerling',
-       onboarded_at = now(),
        tour_seen_at = now()
  where id = 'e2e00000-0000-4000-8000-000000000001';
 

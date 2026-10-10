@@ -3,8 +3,7 @@
  *
  * Sleutel = `topicSlug/clusterSlug` zoals in de database.
  * Wordt gebruikt door:
- *   - de inline „Uitleg"-hint op de oefenkaart  (`leerpad/cluster-rule.tsx`)
- *   - de overzichtspagina /theorie               (`app/theorie/page.tsx`)
+ *   - de overzichtspagina /theorie (`app/theorie/page.tsx`)
  */
 
 export { METHODE } from './methode'
