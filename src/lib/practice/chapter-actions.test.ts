@@ -16,7 +16,12 @@ type ProgressRow = {
   mastered_at: string | null
 }
 
-type AnswerRow = { id: string; user_answer: string; is_correct: boolean }
+type AnswerRow = {
+  id: string
+  user_answer: string
+  is_correct: boolean
+  time_spent_sec: number | null
+}
 
 type QueryResult = { data: unknown; error: null }
 
@@ -64,6 +69,8 @@ function from(table: string) {
           id: `a${answers.length + 1}`,
           user_answer: String(values.user_answer),
           is_correct: values.is_correct === true,
+          time_spent_sec:
+            typeof values.time_spent_sec === 'number' ? values.time_spent_sec : null,
         }
         answers.push(row)
         return { data: { id: row.id }, error: null }
@@ -201,6 +208,18 @@ describe('submitStudyAnswerAction', () => {
     expect(progress.total_answered).toBe(3)
     expect(progress.total_correct).toBe(3)
     expect(progress.status).toBe('mastered')
+  })
+
+  it('slaat de meegegeven seconden op bij het antwoord', async () => {
+    await submitStudyAnswerAction('q1', '1/3x^3 + c', 12)
+
+    expect(answers[0].time_spent_sec).toBe(12)
+  })
+
+  it('laat de tijd leeg als de kaart geen seconden meegeeft', async () => {
+    await submitStudyAnswerAction('q1', '1/3x^3 + c')
+
+    expect(answers[0].time_spent_sec).toBeNull()
   })
 
   it('pakt beheerst niet af bij een misser tijdens het herhalen', async () => {

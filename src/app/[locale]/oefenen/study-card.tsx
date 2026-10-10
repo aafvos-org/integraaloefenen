@@ -163,7 +163,7 @@ export function StudyCard({
     startTransition(async () => {
       let result: StudyResult
       try {
-        result = await submitStudyAnswerAction(question.id, submitted)
+        result = await submitStudyAnswerAction(question.id, submitted, seconden)
       } catch {
         setSubmitting(false)
         track?.('fout_opgetreden', oefenFoutProps('nakijken', 'serveractie_mislukt'))

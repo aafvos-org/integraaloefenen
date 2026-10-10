@@ -11,6 +11,7 @@ import {
   removeEmptyCustomTests,
   type QuestionSource,
 } from '@/lib/practice/custom-test'
+import { timeSpentSecVoorOpslag } from '@/lib/practice/time-spent'
 import { createClient, createServiceRoleClient } from '@/lib/supabase/server'
 
 const MAX_QUESTIONS = 50
@@ -147,7 +148,7 @@ export async function submitCustomTestAnswerAction(
       question_id: question.id,
       user_answer: userAnswer,
       is_correct: isCorrect,
-      time_spent_sec: timeSpentSec ?? null,
+      time_spent_sec: timeSpentSecVoorOpslag(timeSpentSec),
     })
     .select('id')
     .single()

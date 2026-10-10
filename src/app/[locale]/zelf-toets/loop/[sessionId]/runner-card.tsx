@@ -1,7 +1,7 @@
 'use client'
 
 import { useRouter } from 'next/navigation'
-import { useRef, useState, useTransition } from 'react'
+import { useEffect, useRef, useState, useTransition } from 'react'
 import { useTranslations } from 'next-intl'
 
 import { Math as TeX, RichMath } from '@/components/math'
@@ -52,10 +52,17 @@ export function TestRunnerCard({
   const [answer, setAnswer] = useState('')
   const [state, setState] = useState<State>({ phase: 'input', error: null })
   const inputRef = useRef<HTMLInputElement | null>(null)
+  // Moment waarop deze vraag in beeld kwam; het verschil met het indienen gaat
+  // als tijd per antwoord mee naar de database.
+  const shownAtRef = useRef(0)
 
   // Bij een nieuwe vraag begint de kaart leeg. Dat regelt de `key` op deze
   // component in page.tsx: React maakt hem dan opnieuw aan, dus antwoord,
   // fase en verzendstatus starten vanzelf weer op nul.
+
+  useEffect(() => {
+    shownAtRef.current = Date.now()
+  }, [])
 
   function next() {
     startTransition(() => {
@@ -103,11 +110,13 @@ export function TestRunnerCard({
     if (!answer.trim() || state.phase !== 'input') return
 
     setSubmitting(true)
+    const seconden = Math.round((Date.now() - shownAtRef.current) / 1000)
     startTransition(async () => {
       const result: CustomTestAnswerResult = await submitCustomTestAnswerAction(
         sessionId,
         question.id,
         answer,
+        seconden,
       )
       setSubmitting(false)
       if (result.kind === 'error') {

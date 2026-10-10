@@ -6,6 +6,7 @@ import { createClient, createServiceRoleClient } from '@/lib/supabase/server'
 
 import { answersMatch } from './engine'
 import { progressAfterCorrect, progressAfterIncorrect } from './progress'
+import { timeSpentSecVoorOpslag } from './time-spent'
 
 type DB = Awaited<ReturnType<typeof createClient>>
 
@@ -81,7 +82,7 @@ export async function submitStudyAnswerAction(
       question_id: question.id,
       user_answer: userAnswer,
       is_correct: isCorrect,
-      time_spent_sec: timeSpentSec ?? null,
+      time_spent_sec: timeSpentSecVoorOpslag(timeSpentSec),
     })
     .select('id')
     .single()
