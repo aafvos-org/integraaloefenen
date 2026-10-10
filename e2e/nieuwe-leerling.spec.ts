@@ -1,0 +1,227 @@
+import { expect, test, type Page } from '@playwright/test'
+
+import {
+  TESTLEERLING,
+  foutmelding,
+  geefAntwoord,
+  kiesOpgave,
+  logIn,
+  logUit,
+  rondleidingWegklikken,
+} from './leerling'
+import { linkUitMail, wachtOpMail } from './postbus'
+
+/**
+ * De weg van een nieuwe leerling, van het registratieformulier tot zijn eerste
+ * nagekeken antwoord. Hier ging het in de praktijk mis: iemand registreerde
+ * zich en bevestigde zijn mail nooit. De andere e2e-tests slaan dit stuk over
+ * — die loggen in met het vaste account uit `supabase/seed.sql`.
+ *
+ * De mail gaat niet de deur uit: een lokale Supabase levert hem af in de
+ * testpostbus (Mailpit), en daar haalt `e2e/postbus.ts` hem op.
+ */
+
+const WACHTWOORD = 'oefenen123'
+
+/**
+ * Elk account een eigen adres, met de tijd erin. Twee runs achter elkaar
+ * mogen elkaar niet bijten, en twee tests mogen elkaars mail niet pakken.
+ * `.test.local` bestaat niet echt, dus hier kan nooit per ongeluk iemand
+ * post van krijgen.
+ */
+function nieuwAdres(wat: string): string {
+  return `${wat}-${Date.now()}-${Math.round(Math.random() * 1e6)}@test.local`
+}
+
+/** Het registratieformulier invullen en versturen, zoals een leerling. */
+async function registreer(
+  page: Page,
+  { email, wachtwoord = WACHTWOORD }: { email: string; wachtwoord?: string },
+) {
+  await page.goto('/nl/registreren')
+  await page.locator('input[name="username"]').fill('Nieuwe Leerling')
+  await page.locator('input[name="email"]').fill(email)
+  await page.locator('input[name="password"]').fill(wachtwoord)
+  await page.locator('input[name="passwordConfirm"]').fill(wachtwoord)
+  await page.getByRole('button', { name: 'Account aanmaken' }).click()
+}
+
+test('een nieuwe leerling registreert zich, bevestigt zijn mail en maakt zijn eerste opgave @telefoon', async ({
+  page,
+}) => {
+  const email = nieuwAdres('nieuw')
+
+  await test.step('1. het registratieformulier invullen en versturen', async () => {
+    await registreer(page, { email })
+  })
+
+  await test.step('2. de site zegt dat de bevestigingsmail onderweg is', async () => {
+    await expect(page.getByRole('status')).toContainText(
+      'Klik op de link in de bevestigingsmail',
+    )
+    await expect(page.getByRole('link', { name: 'Naar inlogpagina' })).toBeVisible()
+  })
+
+  const mail = await test.step('3. de mail komt aan, in het Nederlands, van IntegraalOefenen', async () => {
+    const mail = await wachtOpMail(email)
+
+    expect(mail.onderwerp).toBe('Bevestig je account bij IntegraalOefenen')
+    expect(mail.afzender).toEqual({
+      naam: 'IntegraalOefenen',
+      adres: 'no-reply@integraaloefenen.nl',
+    })
+    expect(mail.html).toContain('IntegraalOefenen')
+    expect(mail.html).toContain('Bevestig je e-mailadres')
+    expect(mail.html).toContain('Account bevestigen')
+
+    return mail
+  })
+
+  await test.step('4. de link in de mail brengt hem ingelogd op de oefenpagina', async () => {
+    await page.goto(linkUitMail(mail))
+
+    // /nl/oefenen zit achter de inlog (src/i18n/paths.ts): kom je daar uit,
+    // dan ben je ingelogd. Een mislukte bevestiging eindigt op /nl/inloggen.
+    await expect(page).toHaveURL(/\/nl\/oefenen/)
+    await expect(foutmelding(page)).toBeHidden()
+  })
+
+  await test.step('5. de rondleiding van Aaf begroet hem', async () => {
+    const breed = (page.viewportSize()?.width ?? 0) >= 900
+    if (breed) {
+      await expect(page.getByText('Hoi! Ik ben Aaf.')).toBeVisible()
+      await page.getByRole('button', { name: 'Ja, graag!' }).click()
+      await expect(page.getByText('Bij Theorie vind je per hoofdstuk')).toBeVisible()
+    }
+    await rondleidingWegklikken(page)
+  })
+
+  await test.step('6. uitloggen en opnieuw inloggen met het nieuwe account', async () => {
+    await logUit(page)
+    await logIn(page, { email, wachtwoord: WACHTWOORD })
+  })
+
+  await test.step('7. zijn eerste opgave openen en nakijken', async () => {
+    await kiesOpgave(page, 1)
+    await expect(page.getByText('Bepaal de primitieve van:')).toBeVisible()
+
+    // Opgave 1: f(x) = x^2  →  F(x) = 1/3x^3 + c
+    await geefAntwoord(page, '1/3x^3 + c')
+
+    await expect(page.getByText('Goed!', { exact: true })).toBeVisible()
+    // Vers account, dus de reeks begint echt bij één.
+    await expect(page.getByText('Streak: 1/3')).toBeVisible()
+  })
+})
+
+test('inloggen vóór het bevestigen zegt wat eraan schort', async ({ page }) => {
+  const email = nieuwAdres('onbevestigd')
+  await registreer(page, { email })
+  await expect(page.getByRole('status')).toBeVisible()
+
+  await page.goto('/nl/inloggen')
+  await page.locator('input[name="email"]').fill(email)
+  await page.locator('input[name="password"]').fill(WACHTWOORD)
+  await page.getByRole('button', { name: 'Inloggen' }).click()
+
+  await expect(foutmelding(page)).toHaveText(
+    'Je hebt je e-mailadres nog niet bevestigd. Check je inbox.',
+  )
+  // En hij kan de mail opnieuw laten sturen, voor als hij hem kwijt is.
+  await expect(
+    page.getByRole('button', { name: 'Stuur bevestigingsmail opnieuw' }),
+  ).toBeVisible()
+  await expect(page).toHaveURL(/\/nl\/inloggen/)
+})
+
+test('een te kort wachtwoord komt er niet doorheen', async ({ page }) => {
+  await page.goto('/nl/registreren')
+  await page.locator('input[name="email"]').fill(nieuwAdres('kort'))
+  const wachtwoord = page.locator('input[name="password"]')
+  const herhaal = page.locator('input[name="passwordConfirm"]')
+  await wachtwoord.fill('kort123')
+  await herhaal.fill('kort123')
+
+  // Eerst de browser zelf: die laat het formulier niet eens vertrekken.
+  await page.getByRole('button', { name: 'Account aanmaken' }).click()
+  await expect(wachtwoord).toHaveJSProperty('validity.valid', false)
+  await expect(page.getByText('Minstens 8 tekens.')).toBeVisible()
+
+  // En daarachter de site zelf, voor een browser die de eis niet kent: haal
+  // de eis uit het formulier en stuur hem alsnog op.
+  for (const veld of [wachtwoord, herhaal]) {
+    await veld.evaluate((el) => el.removeAttribute('minlength'))
+  }
+  await page.getByRole('button', { name: 'Account aanmaken' }).click()
+
+  await expect(foutmelding(page)).toHaveText(
+    'Je wachtwoord moet minstens 8 tekens lang zijn.',
+  )
+})
+
+test('registreren met een adres dat al bestaat zegt dat in het Nederlands', async ({
+  page,
+}) => {
+  await registreer(page, { email: TESTLEERLING.email })
+
+  // Geen Engelse foutmelding van Supabase en geen foutpagina, maar één zin
+  // waar een leerling iets mee kan.
+  await expect(foutmelding(page)).toHaveText(
+    'Er bestaat al een account met dit e-mailadres.',
+  )
+  // Hij blijft op het formulier staan, met zijn adres er nog in.
+  await expect(page.locator('input[name="email"]')).toHaveValue(
+    TESTLEERLING.email,
+  )
+
+  // En het bestaande account is ongemoeid: het oude wachtwoord werkt nog.
+  await logIn(page)
+})
+
+test('wachtwoord vergeten: mail, link, nieuw wachtwoord, inloggen', async ({
+  page,
+}) => {
+  const email = nieuwAdres('vergeten')
+  const nieuwWachtwoord = 'nieuwgeheim123'
+
+  await test.step('eerst een account dat bestaat en bevestigd is', async () => {
+    await registreer(page, { email })
+    const welkom = await wachtOpMail(email)
+    await page.goto(linkUitMail(welkom))
+    await expect(page).toHaveURL(/\/nl\/oefenen/)
+    await rondleidingWegklikken(page)
+    await logUit(page)
+  })
+
+  await test.step('een resetlink aanvragen', async () => {
+    await page.goto('/nl/wachtwoord-vergeten')
+    await page.locator('input[name="email"]').fill(email)
+    await page.getByRole('button', { name: 'Stuur reset-link' }).click()
+
+    await expect(
+      page.getByText('ontvang je zo een resetlink', { exact: false }),
+    ).toBeVisible()
+  })
+
+  await test.step('de mail komt aan en de link opent het formulier', async () => {
+    const mail = await wachtOpMail(email)
+    expect(mail.onderwerp).toBe('Nieuw wachtwoord voor IntegraalOefenen')
+    expect(mail.afzender.naam).toBe('IntegraalOefenen')
+
+    await page.goto(linkUitMail(mail))
+    await expect(page).toHaveURL(/\/nl\/wachtwoord-opnieuw/)
+    await expect(
+      page.getByRole('heading', { name: 'Nieuw wachtwoord instellen' }),
+    ).toBeVisible()
+  })
+
+  await test.step('een nieuw wachtwoord zetten en ermee inloggen', async () => {
+    await page.locator('input[name="password"]').fill(nieuwWachtwoord)
+    await page.getByRole('button', { name: 'Wachtwoord opslaan' }).click()
+    await expect(page).toHaveURL(/\/nl\/dashboard/)
+
+    await rondleidingWegklikken(page)
+    await logUit(page)
+    await logIn(page, { email, wachtwoord: nieuwWachtwoord })
+  })
+})

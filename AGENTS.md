@@ -30,9 +30,15 @@ nakijken van antwoorden, de voortgangsregel, de grens van de neppe AI-controle
 en het narekenen van de primitieven in `content/`.
 
 ### `npm run test:e2e` — de weg van een leerling
-Playwright klikt in een echte browser door de site: inloggen → oefenen →
-antwoord nakijken → voortgang op het dashboard. Dit draait **alleen** tegen een
-lokale Supabase, nooit tegen de echte database of de voorbeeldversie.
+Playwright klikt in een echte browser door de site: registreren →
+bevestigingsmail → inloggen → oefenen → antwoord nakijken → voortgang op het
+dashboard, plus wachtwoord vergeten. Dit draait **alleen** tegen een lokale
+Supabase, nooit tegen de echte database of de voorbeeldversie.
+
+De mail gaat niet de deur uit: een lokale Supabase levert hem af in de
+testpostbus (Mailpit, http://127.0.0.1:54324) en `e2e/postbus.ts` haalt hem
+daar via de HTTP-API op. Daarom staat `[auth.email.smtp]` in
+`supabase/config.toml` uit en `[local_smtp]` aan — ook in de controle.
 
 Eén keer klaarzetten:
 

@@ -106,6 +106,32 @@ Groeten van Aaf`
 }
 
 /**
+ * De welkomstmail zoals hij in de inbox van een leerling terechtkomt.
+ *
+ * Apart van het versturen, zodat `welkom.test.ts` de inhoud kan nakijken
+ * zonder Resend. Lokaal en in de e2e-controle komt deze mail er niet: hij gaat
+ * niet via Supabase maar via Resend, en daar is in een test geen sleutel voor.
+ */
+export function welkomstmail(): {
+  van: string
+  onderwerp: string
+  html: string
+  tekst: string
+} {
+  const videosUrl = `${SITE_URL}/nl/uitleg-videos`
+  return {
+    // Merknaam als afzender, geen persoonsnaam: dit is een no-reply-bericht.
+    // EMAIL_FROM mag al een naam bevatten ("IntegraalOefenen <no-reply@…>"); dan niet nog eens inpakken.
+    van: EMAIL_FROM.includes('<')
+      ? EMAIL_FROM
+      : `${SITE_CONFIG.brand} <${EMAIL_FROM}>`,
+    onderwerp: `Welkom bij ${SITE_CONFIG.brand}!`,
+    html: html(videosUrl),
+    tekst: tekst(videosUrl),
+  }
+}
+
+/**
  * Stuurt de welkomstmail, maar alleen als het adres bevestigd is en er nog geen
  * welkomstmail uit is. De vlag staat in `user_metadata.welcome_sent_at` en niet
  * in een eigen kolom, zodat hier geen migratie voor nodig is.
@@ -131,16 +157,14 @@ export async function stuurWelkomstmail(userId: string): Promise<WelkomResultaat
       user_metadata: { ...user.user_metadata, welcome_sent_at: nu },
     })
 
-    const videosUrl = `${SITE_URL}/nl/uitleg-videos`
+    const mail = welkomstmail()
     const resend = new Resend(process.env.RESEND_API_KEY)
     const { error: mailError } = await resend.emails.send({
-      // Merknaam als afzender, geen persoonsnaam: dit is een no-reply-bericht.
-      // EMAIL_FROM mag al een naam bevatten ("IntegraalOefenen <no-reply@…>"); dan niet nog eens inpakken.
-      from: EMAIL_FROM.includes('<') ? EMAIL_FROM : `${SITE_CONFIG.brand} <${EMAIL_FROM}>`,
+      from: mail.van,
       to: user.email,
-      subject: `Welkom bij ${SITE_CONFIG.brand}!`,
-      html: html(videosUrl),
-      text: tekst(videosUrl),
+      subject: mail.onderwerp,
+      html: mail.html,
+      text: mail.tekst,
     })
 
     if (mailError) {

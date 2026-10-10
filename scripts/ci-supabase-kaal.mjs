@@ -9,9 +9,10 @@
  * halve minuut aan downloads voor containers die daarna stilstaan. Staat een
  * onderdeel in de config uit, dan wordt er niets opgehaald.
  *
- * De test heeft alleen de database, inloggen (auth) en de data-API nodig.
- * De eigen SMTP-afzender gaat hier ook uit: die wijst naar Resend en haalt
- * zijn wachtwoord uit een omgevingsvariabele die in de controle niet bestaat.
+ * De test heeft de database, inloggen (auth), de data-API en de testpostbus
+ * nodig. Die laatste (Mailpit, [local_smtp]) blijft dus staan: de weg van een
+ * nieuwe leerling loopt door de bevestigingsmail heen, en zonder postbus is
+ * die mail nergens op te halen.
  */
 import { readFileSync, writeFileSync } from 'node:fs'
 
@@ -30,8 +31,6 @@ const UIT = new Set([
   'realtime',
   'analytics', // logflare en vector
   'edge_runtime',
-  'local_smtp', // de testmailbox
-  'auth.email.smtp', // de echte afzender via Resend
 ])
 
 const pad = 'supabase/config.toml'

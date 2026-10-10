@@ -100,8 +100,11 @@ api_url = "http://127.0.0.1"
 # OpenAI API Key to use for Supabase AI in the Supabase Studio.
 openai_api_key = "env(OPENAI_API_KEY)"
 
-# Email testing server. Emails sent with the local dev setup are not actually sent - rather, they
-# are monitored, and you can view the emails that would have been sent from the web interface.
+# De testpostbus (Mailpit). Mails die een lokale Supabase verstuurt gaan
+# hierheen en de deur niet uit. Je leest ze in de browser op
+# http://127.0.0.1:54324, en de e2e-tests halen ze op via de HTTP-API daarvan
+# (zie e2e/postbus.ts). Deze postbus draait ook in de automatische controle,
+# want de weg van een nieuwe leerling loopt door de bevestigingsmail heen.
 [local_smtp]
 enabled = true
 # Port to use for the email testing server web interface.
@@ -109,8 +112,10 @@ port = 54324
 # Uncomment to expose additional ports for testing user applications that send emails.
 # smtp_port = 54325
 # pop3_port = 54326
-# admin_email = "admin@email.com"
-# sender_name = "Admin"
+# Afzender en merknaam zoals in productie, zodat je lokaal ziet wat een
+# leerling ziet — en de test het kan nakijken.
+admin_email = "no-reply@integraaloefenen.nl"
+sender_name = "IntegraalOefenen"
 
 [storage]
 enabled = true
@@ -173,6 +178,10 @@ additional_redirect_urls = [
   "https://*-integraaloefenen.alhvos.workers.dev/**",
   "http://localhost:3000/**",
   "http://127.0.0.1:3000/**",
+  # De poort waarop de e2e-tests de site starten (zie playwright.config.ts).
+  # Zonder deze regel weigert Supabase de terugkeerlink in de bevestigingsmail
+  # en komt de testleerling op de echte site uit.
+  "http://localhost:3177/**",
 ]
 # How long tokens are valid for, in seconds. Defaults to 3600 (1 hour), maximum 604,800 (1 week).
 jwt_expiry = 3600
@@ -209,7 +218,11 @@ password_requirements = ""
 
 [auth.rate_limit]
 # Number of emails that can be sent per hour. Requires auth.email.smtp to be enabled.
-email_sent = 2
+# Ruim, want dit geldt alleen voor de Supabase op je eigen computer en in de
+# controle: daar lopen per run meerdere registraties en wachtwoord-vergeten
+# -mails door de testpostbus. Wat de echte site mag versturen, staat in het
+# Supabase-dashboard van het project zelf.
+email_sent = 100
 # Number of SMS messages that can be sent per hour. Requires auth.sms to be enabled.
 sms_sent = 30
 # Number of anonymous sign-ins that can be made per hour per IP address. Requires enable_anonymous_sign_ins = true.
@@ -236,6 +249,8 @@ enable_signup = true
 # addresses. If disabled, only the new email is required to confirm.
 double_confirm_changes = true
 # If enabled, users need to confirm their email address before signing in.
+# Aan, net als op de echte site: wie zich registreert moet eerst op de link in
+# de bevestigingsmail klikken. De e2e-tests lopen die weg helemaal na.
 enable_confirmations = true
 # If enabled, users will need to reauthenticate or have logged in recently to change their password.
 secure_password_change = false
@@ -256,10 +271,19 @@ content_path = "./supabase/email-templates/confirm-signup.html"
 subject = "Nieuw wachtwoord voor IntegraalOefenen"
 content_path = "./supabase/email-templates/reset-password-nl.html"
 
-# Afzender via Resend. De sleutel staat alleen in .env.local (RESEND_API_KEY_INTEGRAAL),
-# met alleen verzendrechten voor het domein integraaloefenen.nl.
+# Afzender via Resend. Staat uit: deze instellingen gelden alleen voor de
+# Supabase op je eigen computer en in de controle, en daar horen mails in de
+# testpostbus hierboven ([local_smtp]) terecht te komen — niet in de echte
+# inbox van wie je toevallig als adres intypt. Zet je hem aan, dan verstuurt je
+# eigen computer echte mail en loopt de e2e-test vast omdat de bevestigingsmail
+# nergens op te halen is.
+#
+# De echte site verstuurt wel via Resend; dat staat ingesteld in het
+# Supabase-dashboard van het project zelf (Authentication → SMTP Settings), net
+# als de teksten uit supabase/email-templates/. De sleutel hoort in .env.local
+# (RESEND_API_KEY_INTEGRAAL) en nooit in dit bestand.
 [auth.email.smtp]
-enabled = true
+enabled = false
 host = "smtp.resend.com"
 port = 465
 user = "resend"

@@ -39,12 +39,65 @@ export function testDatabase(): SupabaseClient {
 }
 
 /** Inloggen zoals een leerling dat doet: formulier invullen en versturen. */
-export async function logIn(page: Page) {
+export async function logIn(
+  page: Page,
+  account: { email: string; wachtwoord: string } = TESTLEERLING,
+) {
   await page.goto('/nl/inloggen')
-  await page.locator('input[name="email"]').fill(TESTLEERLING.email)
-  await page.locator('input[name="password"]').fill(TESTLEERLING.wachtwoord)
+  await page.locator('input[name="email"]').fill(account.email)
+  await page.locator('input[name="password"]').fill(account.wachtwoord)
   await page.getByRole('button', { name: 'Inloggen' }).click()
   await expect(page).toHaveURL(/\/nl\/dashboard/)
+}
+
+/**
+ * Uitloggen via het menu, zoals een leerling. Op computerformaat zit dat
+ * achter het rondje met je initiaal (dat rondje heet naar je gebruikersnaam),
+ * op telefoonformaat achter het hamburgermenu.
+ *
+ * Daarna controleren we dat de sessie echt weg is: een pagina achter de inlog
+ * stuurt je terug naar het inlogscherm.
+ */
+export async function logUit(page: Page) {
+  const smal = (page.viewportSize()?.width ?? 1280) < 768
+  const knop = smal
+    ? page.getByRole('button', { name: 'Menu openen' })
+    : // Het rondje rechtsboven. Het heet naar je gebruikersnaam, en die kan
+      // per leerling verschillen; het is wel altijd het laatste klapmenu in
+      // de balk.
+      page.locator('header button[aria-haspopup="menu"]').last()
+
+  await knop.click()
+  await page.getByRole('button', { name: 'Uitloggen' }).click()
+  // Uitloggen zet je terug op de voorpagina (/ of /nl).
+  await expect(page).toHaveURL(/\/(nl)?\/?$/)
+
+  await page.goto('/nl/dashboard')
+  await expect(page).toHaveURL(/\/nl\/inloggen/)
+}
+
+/**
+ * De rondleiding van Aaf wegklikken. Die legt een grijze laag over de pagina
+ * waar geen knop meer doorheen komt, dus zonder dit kan een test verder niets
+ * meer aanklikken.
+ *
+ * Hij staat er niet altijd: alleen op brede schermen, en alleen zolang de
+ * leerling hem nog niet heeft weggeklikt. Daarom kijkt dit eerst of hij
+ * opkomt in plaats van het af te dwingen. Dát de rondleiding er voor een
+ * nieuwe leerling ís, controleert `e2e/nieuwe-leerling.spec.ts` apart.
+ */
+export async function rondleidingWegklikken(page: Page) {
+  const overslaan = page.getByRole('button', { name: 'Overslaan' })
+
+  // De rondleiding komt pas na een halve seconde op.
+  const erIsEen = await overslaan
+    .waitFor({ state: 'visible', timeout: 3_000 })
+    .then(() => true)
+    .catch(() => false)
+  if (!erIsEen) return
+
+  await overslaan.click()
+  await expect(overslaan).toBeHidden()
 }
 
 /**
@@ -74,6 +127,18 @@ export async function kiesOpgave(page: Page, nummer: number) {
 
 function antwoordveld(page: Page): Locator {
   return page.getByPlaceholder('Bijv. 12x^2')
+}
+
+/**
+ * De rode melding op een formulier ("Onjuiste combinatie van e-mail en
+ * wachtwoord", "Je wachtwoord moet minstens 8 tekens lang zijn").
+ *
+ * Niet via `getByRole('alert')`: Next.js hangt zelf een lege melder voor
+ * schermlezers in elke pagina, en die heeft dezelfde rol. Met `p[role=alert]`
+ * houden we alleen de melding over die een leerling ziet staan.
+ */
+export function foutmelding(page: Page): Locator {
+  return page.locator('p[role="alert"]')
 }
 
 /** Antwoord intypen en op Nakijken drukken. */
