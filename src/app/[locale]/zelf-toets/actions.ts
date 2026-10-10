@@ -5,7 +5,12 @@ import { getLocale } from 'next-intl/server'
 
 import { checkWrongAnswerNew } from '@/lib/ai/check-answer-new'
 import { answersMatch } from '@/lib/practice/engine'
-import { pickQuestionsForTest, type QuestionSource } from '@/lib/practice/custom-test'
+import {
+  createCustomTest,
+  pickQuestionsForTest,
+  removeEmptyCustomTests,
+  type QuestionSource,
+} from '@/lib/practice/custom-test'
 import { createClient, createServiceRoleClient } from '@/lib/supabase/server'
 
 const MAX_QUESTIONS = 50
@@ -51,32 +56,18 @@ export async function createCustomTestAction(
     return { error: 'Geen vragen beschikbaar voor deze selectie.' }
   }
 
-  const trimmedName = payload.name?.trim() || 'Zelf-toets'
+  // Eerdere mislukte pogingen van deze leerling horen hier niet meer te
+  // staan; ze drijven anders de naam van de nieuwe toets op.
+  await removeEmptyCustomTests(supabase, user.id)
 
-  const showAnswers = payload.showAnswers === 'end' ? 'end' : 'immediate'
+  const result = await createCustomTest(supabase, user.id, {
+    questionIds,
+    name: payload.name?.trim() || 'Zelf-toets',
+    showAnswers: payload.showAnswers === 'end' ? 'end' : 'immediate',
+  })
 
-  const { data: session, error: sessionErr } = await supabase
-    .from('user_sessions_new')
-    .insert({ user_id: user.id, session_type: 'custom_test', name: trimmedName, show_answers: showAnswers })
-    .select('id')
-    .single()
-  if (sessionErr || !session) {
-    return { error: sessionErr?.message ?? 'Kon sessie niet aanmaken.' }
-  }
-
-  const rows = questionIds.map((qid, i) => ({
-    session_id: session.id,
-    question_id: qid,
-    order_index: i,
-  }))
-  const { error: insertErr } = await supabase
-    .from('custom_test_questions')
-    .insert(rows)
-  if (insertErr) {
-    return { error: insertErr.message }
-  }
-
-  return { sessionId: session.id }
+  if (!result.ok) return { error: result.error }
+  return { sessionId: result.sessionId }
 }
 
 export type CustomTestAnswerResult =

@@ -126,7 +126,11 @@ export async function loadConfigData(db: DB, userId: string): Promise<ConfigData
 
 /**
  * Pick `count` random question IDs from `clusterIds`, filtered by source.
- * Returns null on no available questions.
+ * Returns an empty list when nothing matches.
+ *
+ * De lijst is altijd zonder dubbelen: `custom_test_questions` heeft een
+ * UNIQUE op (session_id, question_id), dus één dubbele id laat de hele
+ * toets klappen.
  */
 export async function pickQuestionsForTest(
   db: DB,
@@ -143,7 +147,7 @@ export async function pickQuestionsForTest(
     .eq('site', SITE)
     .in('cluster_id', clusterIds)
 
-  let pool = (questions ?? []).map((q) => q.id)
+  let pool = Array.from(new Set((questions ?? []).map((q) => q.id)))
   if (pool.length === 0) return []
 
   if (source !== 'all') {
@@ -178,6 +182,176 @@ export async function pickQuestionsForTest(
   }
 
   return pool.slice(0, count)
+}
+
+/**
+ * Een zelf-toets bestaat uit twee rijen-groepen: de sessie in
+ * `user_sessions_new` en de gekozen vragen in `custom_test_questions`. Die
+ * kunnen niet in één keer weg (de vragen verwijzen naar de sessie), dus hier
+ * wordt met de hand opgeruimd als de tweede stap misgaat. Zonder dat blijft
+ * er een toets zonder vragen staan: de leerling krijgt een foutmelding, ziet
+ * daarna "Bezig" in zijn lijst, en de teller achter de naam loopt op (INT-80).
+ */
+export type CreateCustomTestResult =
+  | { ok: true; sessionId: string }
+  | { ok: false; error: string }
+
+/** Wat de leerling te zien krijgt. De echte fout gaat naar de serverlog. */
+const AANMAKEN_MISLUKT =
+  'Het maken van je toets lukte niet. Probeer het nog een keer.'
+
+/** Hoeveel keer het wegschrijven van de vragen opnieuw geprobeerd wordt. */
+const POGINGEN = 2
+
+/**
+ * Een databasefout in stukjes die veilig in de log mogen: geen antwoorden,
+ * geen e-mailadressen, alleen wat PostgREST zelf teruggeeft.
+ */
+function foutDetails(error: unknown): Record<string, unknown> {
+  if (!error || typeof error !== 'object') return { message: String(error) }
+  const e = error as { code?: string; message?: string; details?: string; hint?: string }
+  return { code: e.code, message: e.message, details: e.details, hint: e.hint }
+}
+
+export async function createCustomTest(
+  db: DB,
+  userId: string,
+  input: {
+    questionIds: string[]
+    name: string
+    showAnswers: 'immediate' | 'end'
+  },
+): Promise<CreateCustomTestResult> {
+  const questionIds = Array.from(new Set(input.questionIds))
+  if (questionIds.length === 0) {
+    return { ok: false, error: 'Geen vragen beschikbaar voor deze selectie.' }
+  }
+
+  const { data: session, error: sessionErr } = await db
+    .from('user_sessions_new')
+    .insert({
+      user_id: userId,
+      session_type: 'custom_test',
+      name: input.name,
+      show_answers: input.showAnswers,
+    })
+    .select('id')
+    .single()
+  if (sessionErr || !session) {
+    console.error('[zelf-toets] sessie aanmaken mislukt', foutDetails(sessionErr))
+    return { ok: false, error: AANMAKEN_MISLUKT }
+  }
+
+  const rows = questionIds.map((questionId, index) => ({
+    session_id: session.id,
+    question_id: questionId,
+    order_index: index,
+  }))
+
+  for (let poging = 1; poging <= POGINGEN; poging++) {
+    const { error: insertErr } = await db
+      .from('custom_test_questions')
+      .insert(rows)
+
+    if (insertErr) {
+      console.error(`[zelf-toets] poging ${poging}: vragen wegschrijven mislukt`, {
+        aantal: rows.length,
+        ...foutDetails(insertErr),
+      })
+    } else {
+      // Pas doortellen als de vragen er écht in staan. Zonder deze controle
+      // sturen we de leerling door naar een toets die leeg blijkt te zijn.
+      const { count, error: countErr } = await db
+        .from('custom_test_questions')
+        .select('*', { count: 'exact', head: true })
+        .eq('session_id', session.id)
+
+      if (!countErr && count === rows.length) {
+        return { ok: true, sessionId: session.id }
+      }
+      console.error(`[zelf-toets] poging ${poging}: ${count ?? '?'} van ${rows.length} vragen opgeslagen`, foutDetails(countErr))
+    }
+
+    // Schone lei voor de volgende poging: een halve vullingen zou op de
+    // primaire sleutel (session_id, order_index) stuklopen.
+    await db.from('custom_test_questions').delete().eq('session_id', session.id)
+  }
+
+  const { error: opruimErr } = await db
+    .from('user_sessions_new')
+    .delete()
+    .eq('id', session.id)
+  if (opruimErr) {
+    console.error('[zelf-toets] lege toets kon niet worden opgeruimd', {
+      sessionId: session.id,
+      ...foutDetails(opruimErr),
+    })
+  }
+
+  return { ok: false, error: AANMAKEN_MISLUKT }
+}
+
+/** Hoeveel lege toetsen er per keer worden opgeruimd. */
+const MAX_OPRUIMEN = 25
+
+/**
+ * Ruim zelf-toetsen van deze leerling op waar geen enkele vraag in staat.
+ * Die zijn blijven liggen toen het aanmaken halverwege misging: de leerling
+ * kan er niets mee ("Bezig", maar de knop brengt je terug naar het begin), ze
+ * tellen mee in de naam van de volgende toets, en ze vervuilen de metingen.
+ *
+ * Alleen toetsen van een paar minuten oud, zodat een toets die op dit moment
+ * ergens anders wordt aangemaakt met rust wordt gelaten.
+ */
+export async function removeEmptyCustomTests(
+  db: DB,
+  userId: string,
+): Promise<number> {
+  const grens = new Date(Date.now() - 5 * 60 * 1000).toISOString()
+
+  const { data: sessions } = await db
+    .from('user_sessions_new')
+    .select('id')
+    .eq('user_id', userId)
+    .eq('session_type', 'custom_test')
+    .lt('started_at', grens)
+
+  const ids = (sessions ?? []).map((s) => s.id)
+  if (ids.length === 0) return 0
+
+  // Een gevulde toets heeft altijd een vraag op plek 0. Door daarop te
+  // filteren komt er hooguit één rij per toets terug, dus de rijlimiet van
+  // PostgREST kan een volle toets nooit per ongeluk leeg laten lijken.
+  const { data: eerste, error: eersteErr } = await db
+    .from('custom_test_questions')
+    .select('session_id')
+    .in('session_id', ids)
+    .eq('order_index', 0)
+  if (eersteErr) return 0
+
+  const gevuld = new Set((eerste ?? []).map((r) => r.session_id))
+  const kandidaten = ids.filter((id) => !gevuld.has(id)).slice(0, MAX_OPRUIMEN)
+  if (kandidaten.length === 0) return 0
+
+  // Dubbelcheck: alleen weg als er echt niets aan hangt.
+  const [{ data: vragen }, { data: antwoorden }] = await Promise.all([
+    db.from('custom_test_questions').select('session_id').in('session_id', kandidaten),
+    db.from('session_answers_new').select('session_id').in('session_id', kandidaten),
+  ])
+  const inGebruik = new Set([
+    ...(vragen ?? []).map((r) => r.session_id),
+    ...(antwoorden ?? []).map((r) => r.session_id),
+  ])
+
+  const leeg = kandidaten.filter((id) => !inGebruik.has(id))
+  if (leeg.length === 0) return 0
+
+  const { error } = await db.from('user_sessions_new').delete().in('id', leeg)
+  if (error) {
+    console.error('[zelf-toets] opruimen van lege toetsen mislukt', foutDetails(error))
+    return 0
+  }
+  return leeg.length
 }
 
 export type TestSessionState = {
