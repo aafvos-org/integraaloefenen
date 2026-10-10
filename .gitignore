@@ -69,3 +69,6 @@ next-env.d.ts
 
 # Paperclip-werkmappen van agents
 .paperclip/
+
+# lokale instellingen van Claude Code
+.claude/
