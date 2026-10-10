@@ -89,7 +89,7 @@ export function TheorieLayout({
                         : 'flex w-full items-center gap-2 rounded-md px-3 py-2 text-sm text-text-muted hover:bg-surface-2 hover:text-text'
                     }
                   >
-                    <span className="truncate text-left">
+                    <span className="min-w-0 break-words text-left">
                       {it.code && (
                         <>
                           <span className="font-mono font-semibold">{it.code}</span>
@@ -103,9 +103,9 @@ export function TheorieLayout({
                   {isActive && it.sub && it.sub.length > 0 && (
                     <ul className="mb-1 mt-0.5">
                       {it.sub.map((s) => (
-                        <li key={s} className="flex items-center gap-2 py-1.5 pl-7 pr-3 text-xs text-text-muted">
-                          <span className="size-1.5 shrink-0 rounded-full bg-border" />
-                          <span className="truncate">{s}</span>
+                        <li key={s} className="flex items-start gap-2 py-1.5 pl-7 pr-3 text-xs text-text-muted">
+                          <span className="mt-[0.3125rem] size-1.5 shrink-0 rounded-full bg-border" />
+                          <span className="min-w-0 break-words">{s}</span>
                         </li>
                       ))}
                     </ul>

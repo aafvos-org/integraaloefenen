@@ -182,7 +182,7 @@ export function TheorieClient({
                         : 'flex w-full items-center gap-2 rounded-md px-3 py-2 text-sm text-text-muted hover:bg-surface-2 hover:text-text'
                     }
                   >
-                    <span className="truncate text-left">
+                    <span className="min-w-0 break-words text-left">
                       {code && (
                         <>
                           <span className="font-mono font-semibold">{code}</span>
@@ -200,10 +200,10 @@ export function TheorieClient({
                           <button
                             type="button"
                             onClick={() => scrollToId(`stappenplan-${ch.slug}`)}
-                            className="flex w-full items-center gap-2 rounded-md py-1.5 pl-7 pr-3 text-xs font-medium text-accent hover:text-text"
+                            className="flex w-full items-start gap-2 rounded-md py-1.5 pl-7 pr-3 text-xs font-medium text-accent hover:text-text"
                           >
-                            <span className="size-1.5 shrink-0 rounded-full bg-accent" />
-                            <span className="truncate text-left">{labels.stappenplanTitle}</span>
+                            <span className="mt-[0.3125rem] size-1.5 shrink-0 rounded-full bg-accent" />
+                            <span className="min-w-0 break-words text-left">{labels.stappenplanTitle}</span>
                           </button>
                         </li>
                       )}
@@ -213,10 +213,10 @@ export function TheorieClient({
                             type="button"
                             onClick={() => scrollToId(`kaart-${ch.slug}-${card.id}`)}
                             aria-label={platteTekst(card.title)}
-                            className="flex w-full items-center gap-2 rounded-md py-1.5 pl-7 pr-3 text-xs text-text-muted hover:text-text"
+                            className="flex w-full items-start gap-2 rounded-md py-1.5 pl-7 pr-3 text-xs text-text-muted hover:text-text"
                           >
-                            <span className="size-1.5 shrink-0 rounded-full bg-border" />
-                            <span className="truncate text-left">
+                            <span className="mt-[0.3125rem] size-1.5 shrink-0 rounded-full bg-border" />
+                            <span className="min-w-0 break-words text-left">
                               <RichMath source={card.title} />
                             </span>
                           </button>
