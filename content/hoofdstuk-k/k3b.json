@@ -1,0 +1,404 @@
+{
+  "hoofdstuk": "K",
+  "onderdeel": "K.3 Theorie B — De arctangensfunctie en primitiveren (eigen varianten)",
+  "vragen": [
+    {
+      "nummer": "hs-1",
+      "cluster": "k3b_herschrijven",
+      "niveau": 1,
+      "latex": "Primitiveer: $f(x) = \\dfrac{6}{x^{2} + 9}$",
+      "antwoord_latex": "F(x) = 2\\arctan\\left(\\tfrac{1}{3}x\\right) + c",
+      "integrand": "6 / (x^2 + 9)",
+      "primitieve": "2 * atan(x / 3)",
+      "stappen": [
+        "Alleen deel 2 van de driedeling speelt hier: bereken de goede integraal. Buitenste schil: een breuk met een getal in de teller en $px^{2} + q$ in de noemer → nog geen standaardvorm, want achter het kwadraat staat niet $1$. Deel eerst teller en noemer door $q$, zodat er $\\dfrac{a}{(bx)^{2} + 1}$ komt te staan.",
+        "Deel teller en noemer door $9$: $f(x) = \\dfrac{\\tfrac{6}{9}}{\\tfrac{x^{2}}{9} + 1} = \\dfrac{\\tfrac{2}{3}}{\\left(\\tfrac{1}{3}x\\right)^{2} + 1}$. Want $\\tfrac{x^{2}}{9} = \\left(\\tfrac{1}{3}x\\right)^{2}$. De kern is dus $\\tfrac{1}{3}x$, met $a = \\tfrac{1}{3}$.",
+        "De standaardvorm $\\dfrac{1}{x^{2} + 1}$ geeft $\\arctan(x) + c$ geeft $\\arctan\\left(\\tfrac{1}{3}x\\right)$. De regel voor $f(ax + b)$ zegt: primitiveer alsof er $x$ staat en deel daarna door $a$. Delen door $\\tfrac{1}{3}$ is vermenigvuldigen met $3$: $\\dfrac{1}{\\left(\\tfrac{1}{3}x\\right)^{2} + 1}$ geeft $3\\arctan\\left(\\tfrac{1}{3}x\\right)$.",
+        "Zet de $\\tfrac{2}{3}$ er weer voor: $F(x) = \\tfrac{2}{3} \\cdot 3\\arctan\\left(\\tfrac{1}{3}x\\right) + c = 2\\arctan\\left(\\tfrac{1}{3}x\\right) + c$. Controle: differentieer $F$ en je krijgt $f$ terug."
+      ]
+    },
+    {
+      "nummer": "hs-2",
+      "cluster": "k3b_herschrijven",
+      "niveau": 1,
+      "latex": "Primitiveer: $f(x) = \\dfrac{1}{x^{2} + 25}$",
+      "antwoord_latex": "F(x) = \\tfrac{1}{5}\\arctan\\left(\\tfrac{1}{5}x\\right) + c",
+      "integrand": "1 / (x^2 + 25)",
+      "primitieve": "1/5 * atan(x / 5)",
+      "stappen": [
+        "Alleen deel 2 van de driedeling speelt hier: bereken de goede integraal. Buitenste schil: een breuk met een getal in de teller en $px^{2} + q$ in de noemer → nog geen standaardvorm, want achter het kwadraat staat niet $1$. Deel eerst teller en noemer door $q$, zodat er $\\dfrac{a}{(bx)^{2} + 1}$ komt te staan.",
+        "Deel teller en noemer door $25$: $f(x) = \\dfrac{\\tfrac{1}{25}}{\\left(\\tfrac{1}{5}x\\right)^{2} + 1}$, want $\\tfrac{x^{2}}{25} = \\left(\\tfrac{1}{5}x\\right)^{2}$. De kern is $\\tfrac{1}{5}x$, met $a = \\tfrac{1}{5}$.",
+        "De standaardvorm geeft $\\arctan\\left(\\tfrac{1}{5}x\\right)$, en De regel voor $f(ax + b)$ zegt: primitiveer alsof er $x$ staat en deel daarna door $a$. Delen door $\\tfrac{1}{5}$ is vermenigvuldigen met $5$: $\\dfrac{1}{\\left(\\tfrac{1}{5}x\\right)^{2} + 1}$ geeft $5\\arctan\\left(\\tfrac{1}{5}x\\right)$.",
+        "Zet de $\\tfrac{1}{25}$ er weer voor: $F(x) = \\tfrac{1}{25} \\cdot 5\\arctan\\left(\\tfrac{1}{5}x\\right) + c = \\tfrac{1}{5}\\arctan\\left(\\tfrac{1}{5}x\\right) + c$. Controle: differentieer $F$ en je krijgt $f$ terug."
+      ]
+    },
+    {
+      "nummer": "hs-3",
+      "cluster": "k3b_herschrijven",
+      "niveau": 2,
+      "latex": "Schrijf $f(x) = \\dfrac{8}{x^{2} + 16}$ eerst in de vorm $\\dfrac{a}{(bx)^{2} + 1}$ en primitiveer daarna.",
+      "antwoord_latex": "F(x) = 2\\arctan\\left(\\tfrac{1}{4}x\\right) + c",
+      "integrand": "8 / (x^2 + 16)",
+      "primitieve": "2 * atan(x / 4)",
+      "stappen": [
+        "Alleen deel 2 van de driedeling speelt hier: bereken de goede integraal. Buitenste schil: een breuk met een getal in de teller en $px^{2} + q$ in de noemer → nog geen standaardvorm, want achter het kwadraat staat niet $1$. Deel eerst teller en noemer door $q$, zodat er $\\dfrac{a}{(bx)^{2} + 1}$ komt te staan.",
+        "Deel teller en noemer door $16$: $f(x) = \\dfrac{\\tfrac{8}{16}}{\\tfrac{x^{2}}{16} + 1} = \\dfrac{\\tfrac{1}{2}}{\\left(\\tfrac{1}{4}x\\right)^{2} + 1}$. In de gevraagde vorm is dus $a = \\tfrac{1}{2}$ en $b = \\tfrac{1}{4}$.",
+        "De standaardvorm geeft $\\arctan\\left(\\tfrac{1}{4}x\\right)$, en De regel voor $f(ax + b)$ zegt: primitiveer alsof er $x$ staat en deel daarna door $a$. Hier is $a = \\tfrac{1}{4}$, dus vermenigvuldigen met $4$: $\\dfrac{1}{\\left(\\tfrac{1}{4}x\\right)^{2} + 1}$ geeft $4\\arctan\\left(\\tfrac{1}{4}x\\right)$.",
+        "Zet de $\\tfrac{1}{2}$ er weer voor: $F(x) = \\tfrac{1}{2} \\cdot 4\\arctan\\left(\\tfrac{1}{4}x\\right) + c = 2\\arctan\\left(\\tfrac{1}{4}x\\right) + c$. Controle: differentieer $F$ en je krijgt $f$ terug."
+      ]
+    },
+    {
+      "nummer": "hs-4",
+      "cluster": "k3b_herschrijven",
+      "niveau": 2,
+      "latex": "Primitiveer: $f(x) = \\dfrac{3}{9x^{2} + 4}$",
+      "antwoord_latex": "F(x) = \\tfrac{1}{2}\\arctan\\left(1\\tfrac{1}{2}x\\right) + c",
+      "integrand": "3 / (9 * x^2 + 4)",
+      "primitieve": "1/2 * atan(3 * x / 2)",
+      "stappen": [
+        "Alleen deel 2 van de driedeling speelt hier: bereken de goede integraal. Buitenste schil: een breuk met een getal in de teller en $px^{2} + q$ in de noemer → nog geen standaardvorm, want achter het kwadraat staat niet $1$. Deel eerst teller en noemer door $q$, zodat er $\\dfrac{a}{(bx)^{2} + 1}$ komt te staan. Hier staat er ook nog een getal vóór $x^{2}$; dat verdwijnt vanzelf in de kern.",
+        "Deel teller en noemer door $4$: $f(x) = \\dfrac{\\tfrac{3}{4}}{\\tfrac{9x^{2}}{4} + 1} = \\dfrac{\\tfrac{3}{4}}{\\left(1\\tfrac{1}{2}x\\right)^{2} + 1}$, want $\\tfrac{9}{4}x^{2} = \\left(\\tfrac{3}{2}x\\right)^{2}$. De kern is $1\\tfrac{1}{2}x$, met $a = 1\\tfrac{1}{2}$.",
+        "De standaardvorm geeft $\\arctan\\left(1\\tfrac{1}{2}x\\right)$, en De regel voor $f(ax + b)$ zegt: primitiveer alsof er $x$ staat en deel daarna door $a$. Delen door $1\\tfrac{1}{2}$ is vermenigvuldigen met $\\tfrac{2}{3}$: $\\dfrac{1}{\\left(1\\tfrac{1}{2}x\\right)^{2} + 1}$ geeft $\\tfrac{2}{3}\\arctan\\left(1\\tfrac{1}{2}x\\right)$.",
+        "Zet de $\\tfrac{3}{4}$ er weer voor: $F(x) = \\tfrac{3}{4} \\cdot \\tfrac{2}{3}\\arctan\\left(1\\tfrac{1}{2}x\\right) + c = \\tfrac{1}{2}\\arctan\\left(1\\tfrac{1}{2}x\\right) + c$. Controle: differentieer $F$ en je krijgt $f$ terug."
+      ]
+    },
+    {
+      "nummer": "hs-5",
+      "cluster": "k3b_herschrijven",
+      "niveau": 3,
+      "latex": "Primitiveer: $f(x) = \\dfrac{6}{4x^{2} + 3}$",
+      "antwoord_latex": "F(x) = \\sqrt{3}\\arctan\\left(\\tfrac{2}{3}\\sqrt{3}x\\right) + c",
+      "integrand": "6 / (4 * x^2 + 3)",
+      "primitieve": "sqrt(3) * atan(2 * x / sqrt(3))",
+      "stappen": [
+        "Alleen deel 2 van de driedeling speelt hier: bereken de goede integraal. Buitenste schil: een breuk met een getal in de teller en $px^{2} + q$ in de noemer → nog geen standaardvorm, want achter het kwadraat staat niet $1$. Deel eerst teller en noemer door $q$, zodat er $\\dfrac{a}{(bx)^{2} + 1}$ komt te staan. Deelt het niet mooi uit, dan komt er een wortel in de kern; dat mag.",
+        "Deel teller en noemer door $3$: $f(x) = \\dfrac{2}{\\tfrac{4}{3}x^{2} + 1} = \\dfrac{2}{\\left(\\tfrac{2}{\\sqrt{3}}x\\right)^{2} + 1}$, want $\\tfrac{4}{3}x^{2} = \\left(\\tfrac{2}{\\sqrt{3}}x\\right)^{2}$. De kern is $\\tfrac{2}{\\sqrt{3}}x = \\tfrac{2}{3}\\sqrt{3}x$, met $a = \\tfrac{2}{3}\\sqrt{3}$.",
+        "De standaardvorm geeft $\\arctan\\left(\\tfrac{2}{3}\\sqrt{3}x\\right)$, en De regel voor $f(ax + b)$ zegt: primitiveer alsof er $x$ staat en deel daarna door $a$. Delen door $\\tfrac{2}{\\sqrt{3}}$ is vermenigvuldigen met $\\tfrac{\\sqrt{3}}{2}$: $\\dfrac{1}{\\left(\\tfrac{2}{3}\\sqrt{3}x\\right)^{2} + 1}$ geeft $\\tfrac{1}{2}\\sqrt{3}\\arctan\\left(\\tfrac{2}{3}\\sqrt{3}x\\right)$.",
+        "Zet de $2$ er weer voor: $F(x) = 2 \\cdot \\tfrac{1}{2}\\sqrt{3}\\arctan\\left(\\tfrac{2}{3}\\sqrt{3}x\\right) + c = \\sqrt{3}\\arctan\\left(\\tfrac{2}{3}\\sqrt{3}x\\right) + c$. Controle: differentieer $F$ en je krijgt $f$ terug."
+      ]
+    },
+    {
+      "nummer": "hs-6",
+      "cluster": "k3b_herschrijven",
+      "niveau": 3,
+      "latex": "Primitiveer: $f(x) = \\dfrac{x^{2} + 5}{x^{2} + 2}$",
+      "antwoord_latex": "F(x) = x + 1\\tfrac{1}{2}\\sqrt{2}\\arctan\\left(\\tfrac{1}{2}\\sqrt{2}x\\right) + c",
+      "integrand": "(x^2 + 5) / (x^2 + 2)",
+      "primitieve": "x + 3 / sqrt(2) * atan(x / sqrt(2))",
+      "stappen": [
+        "Alleen deel 2 van de driedeling speelt hier: bereken de goede integraal. Buitenste schil: een breuk met $x^{2}$ in de teller én in de noemer → eerst splitsen, en pas daarna herschrijven naar de standaardvorm. Er is geen quotiëntregel voor primitiveren.",
+        "Maak in de teller de noemer zichtbaar: $x^{2} + 5 = \\left(x^{2} + 2\\right) + 3$. Dus $f(x) = \\dfrac{x^{2} + 2}{x^{2} + 2} + \\dfrac{3}{x^{2} + 2} = 1 + \\dfrac{3}{x^{2} + 2}$.",
+        "Het stuk $1$ geeft $x$. Voor het tweede stuk deel je teller en noemer door $2$: $\\dfrac{3}{x^{2} + 2} = \\dfrac{\\tfrac{3}{2}}{\\left(\\tfrac{1}{\\sqrt{2}}x\\right)^{2} + 1}$. De kern is $\\tfrac{1}{2}\\sqrt{2}x$, dus vermenigvuldigen met $\\sqrt{2}$: dat geeft $\\tfrac{3}{2}\\sqrt{2}\\arctan\\left(\\tfrac{1}{2}\\sqrt{2}x\\right)$.",
+        "Schrijf het antwoord op: $F(x) = x + 1\\tfrac{1}{2}\\sqrt{2}\\arctan\\left(\\tfrac{1}{2}\\sqrt{2}x\\right) + c$. Controle: differentieer $F$ en je krijgt $f$ terug."
+      ]
+    },
+    {
+      "nummer": "kw-1",
+      "cluster": "k3b_kwadraat",
+      "niveau": 1,
+      "latex": "Primitiveer: $f(x) = \\dfrac{1}{x^{2} + 2x + 2}$",
+      "antwoord_latex": "F(x) = \\arctan(x + 1) + c",
+      "integrand": "1 / (x^2 + 2 * x + 2)",
+      "primitieve": "atan(x + 1)",
+      "stappen": [
+        "Alleen deel 2 van de driedeling speelt hier: bereken de goede integraal. Buitenste schil: een breuk met in de noemer een polynoom $x^{2} + bx + c$ waar geen kwadraat in te zien is → eerst kwadraatafsplitsen, en dan pas kijken welke standaardvorm erbij hoort.",
+        "Kwadraatafsplitsen: neem de helft van het getal voor $x$, zet dat in het kwadraat, en corrigeer met een getal. De helft van $2$ is $1$, dus begin met $(x + 1)^{2} = x^{2} + 2x + 1$. Dat is $1$ te weinig: $x^{2} + 2x + 2 = (x + 1)^{2} + 1$.",
+        "Nu staat er $\\dfrac{1}{(x + 1)^{2} + 1}$: precies de standaardvorm met kern $x + 1$. De regel voor $f(ax + b)$ zegt: primitiveer alsof er $x$ staat en deel daarna door $a$. Hier is $a = 1$, dus delen verandert niets.",
+        "Schrijf het antwoord op: $F(x) = \\arctan(x + 1) + c$. Controle: differentieer $F$ en je krijgt $f$ terug."
+      ]
+    },
+    {
+      "nummer": "kw-2",
+      "cluster": "k3b_kwadraat",
+      "niveau": 1,
+      "latex": "Primitiveer: $f(x) = \\dfrac{4}{x^{2} - 10x + 26}$",
+      "antwoord_latex": "F(x) = 4\\arctan(x - 5) + c",
+      "integrand": "4 / (x^2 - 10 * x + 26)",
+      "primitieve": "4 * atan(x - 5)",
+      "stappen": [
+        "Alleen deel 2 van de driedeling speelt hier: bereken de goede integraal. Buitenste schil: een breuk met in de noemer een polynoom $x^{2} + bx + c$ waar geen kwadraat in te zien is → eerst kwadraatafsplitsen, en dan pas kijken welke standaardvorm erbij hoort.",
+        "Kwadraatafsplitsen: neem de helft van het getal voor $x$, zet dat in het kwadraat, en corrigeer met een getal. De helft van $-10$ is $-5$, dus begin met $(x - 5)^{2} = x^{2} - 10x + 25$. Er moet $26$ staan, dus $x^{2} - 10x + 26 = (x - 5)^{2} + 1$.",
+        "Nu staat er $\\dfrac{4}{(x - 5)^{2} + 1}$: de standaardvorm met kern $x - 5$ en een $4$ ervoor. Omdat $a = 1$ hoef je niet te delen.",
+        "Schrijf het antwoord op: $F(x) = 4\\arctan(x - 5) + c$. Controle: differentieer $F$ en je krijgt $f$ terug."
+      ]
+    },
+    {
+      "nummer": "kw-3",
+      "cluster": "k3b_kwadraat",
+      "niveau": 2,
+      "latex": "Primitiveer: $f(x) = \\dfrac{6}{x^{2} + 8x + 20}$",
+      "antwoord_latex": "F(x) = 3\\arctan\\left(\\tfrac{1}{2}x + 2\\right) + c",
+      "integrand": "6 / (x^2 + 8 * x + 20)",
+      "primitieve": "3 * atan((x + 4) / 2)",
+      "stappen": [
+        "Alleen deel 2 van de driedeling speelt hier: bereken de goede integraal. Buitenste schil: een breuk met in de noemer een polynoom $x^{2} + bx + c$ waar geen kwadraat in te zien is → eerst kwadraatafsplitsen, en dan pas kijken welke standaardvorm erbij hoort. Blijft er achter het kwadraat geen $1$ over, dan moet je daarna nog delen.",
+        "Kwadraatafsplitsen: neem de helft van het getal voor $x$, zet dat in het kwadraat, en corrigeer met een getal. De helft van $8$ is $4$: $(x + 4)^{2} = x^{2} + 8x + 16$, dus $x^{2} + 8x + 20 = (x + 4)^{2} + 4$.",
+        "Achter het kwadraat staat $4$ en niet $1$, dus deel teller en noemer door $4$: $f(x) = \\dfrac{\\tfrac{6}{4}}{\\left(\\tfrac{x + 4}{2}\\right)^{2} + 1}$. De kern is $\\tfrac{1}{2}x + 2$, met $a = \\tfrac{1}{2}$: De regel voor $f(ax + b)$ zegt: primitiveer alsof er $x$ staat en deel daarna door $a$. Dat betekent vermenigvuldigen met $2$.",
+        "Alles bij elkaar: $F(x) = \\tfrac{3}{2} \\cdot 2\\arctan\\left(\\tfrac{1}{2}x + 2\\right) + c = 3\\arctan\\left(\\tfrac{1}{2}x + 2\\right) + c$. Controle: differentieer $F$ en je krijgt $f$ terug."
+      ]
+    },
+    {
+      "nummer": "kw-4",
+      "cluster": "k3b_kwadraat",
+      "niveau": 2,
+      "latex": "Primitiveer: $f(x) = \\dfrac{2}{x^{2} - 4x + 13}$",
+      "antwoord_latex": "F(x) = \\tfrac{2}{3}\\arctan\\left(\\tfrac{1}{3}(x - 2)\\right) + c",
+      "integrand": "2 / (x^2 - 4 * x + 13)",
+      "primitieve": "2/3 * atan((x - 2) / 3)",
+      "stappen": [
+        "Alleen deel 2 van de driedeling speelt hier: bereken de goede integraal. Buitenste schil: een breuk met in de noemer een polynoom $x^{2} + bx + c$ waar geen kwadraat in te zien is → eerst kwadraatafsplitsen, en dan pas kijken welke standaardvorm erbij hoort. Blijft er achter het kwadraat geen $1$ over, dan moet je daarna nog delen.",
+        "Kwadraatafsplitsen: neem de helft van het getal voor $x$, zet dat in het kwadraat, en corrigeer met een getal. De helft van $-4$ is $-2$: $(x - 2)^{2} = x^{2} - 4x + 4$, dus $x^{2} - 4x + 13 = (x - 2)^{2} + 9$.",
+        "Deel teller en noemer door $9$: $f(x) = \\dfrac{\\tfrac{2}{9}}{\\left(\\tfrac{x - 2}{3}\\right)^{2} + 1}$. De kern is $\\tfrac{1}{3}(x - 2)$, met $a = \\tfrac{1}{3}$: De regel voor $f(ax + b)$ zegt: primitiveer alsof er $x$ staat en deel daarna door $a$. Dat betekent vermenigvuldigen met $3$.",
+        "Alles bij elkaar: $F(x) = \\tfrac{2}{9} \\cdot 3\\arctan\\left(\\tfrac{1}{3}(x - 2)\\right) + c = \\tfrac{2}{3}\\arctan\\left(\\tfrac{1}{3}(x - 2)\\right) + c$. Controle: differentieer $F$ en je krijgt $f$ terug."
+      ]
+    },
+    {
+      "nummer": "kw-5",
+      "cluster": "k3b_kwadraat",
+      "niveau": 3,
+      "latex": "Primitiveer: $f(x) = \\dfrac{1}{4x^{2} + 4x + 5}$",
+      "antwoord_latex": "F(x) = \\tfrac{1}{4}\\arctan\\left(x + \\tfrac{1}{2}\\right) + c",
+      "integrand": "1 / (4 * x^2 + 4 * x + 5)",
+      "primitieve": "1/4 * atan(x + 1/2)",
+      "stappen": [
+        "Alleen deel 2 van de driedeling speelt hier: bereken de goede integraal. Buitenste schil: een breuk met in de noemer een polynoom $x^{2} + bx + c$ waar geen kwadraat in te zien is → eerst kwadraatafsplitsen, en dan pas kijken welke standaardvorm erbij hoort. Staat er een getal vóór $x^{2}$, haal dat dan eerst buiten haakjes.",
+        "Haal de $4$ buiten haakjes: $4x^{2} + 4x + 5 = 4\\left(x^{2} + x + \\tfrac{5}{4}\\right)$. Kwadraatafsplitsen: neem de helft van het getal voor $x$, zet dat in het kwadraat, en corrigeer met een getal. De helft van $1$ is $\\tfrac{1}{2}$: $\\left(x + \\tfrac{1}{2}\\right)^{2} = x^{2} + x + \\tfrac{1}{4}$, dus $x^{2} + x + \\tfrac{5}{4} = \\left(x + \\tfrac{1}{2}\\right)^{2} + 1$.",
+        "Er staat dus $f(x) = \\dfrac{1}{4\\left(\\left(x + \\tfrac{1}{2}\\right)^{2} + 1\\right)} = \\tfrac{1}{4} \\cdot \\dfrac{1}{\\left(x + \\tfrac{1}{2}\\right)^{2} + 1}$: de standaardvorm met kern $x + \\tfrac{1}{2}$ en $a = 1$, dus delen is niet nodig.",
+        "Schrijf het antwoord op: $F(x) = \\tfrac{1}{4}\\arctan\\left(x + \\tfrac{1}{2}\\right) + c$. Controle: differentieer $F$ en je krijgt $f$ terug."
+      ]
+    },
+    {
+      "nummer": "kw-6",
+      "cluster": "k3b_kwadraat",
+      "niveau": 3,
+      "latex": "Primitiveer: $f(x) = \\dfrac{10}{2x^{2} - 4x + 10}$",
+      "antwoord_latex": "F(x) = 2\\tfrac{1}{2}\\arctan\\left(\\tfrac{1}{2}(x - 1)\\right) + c",
+      "integrand": "10 / (2 * x^2 - 4 * x + 10)",
+      "primitieve": "5/2 * atan((x - 1) / 2)",
+      "stappen": [
+        "Alleen deel 2 van de driedeling speelt hier: bereken de goede integraal. Buitenste schil: een breuk met in de noemer een polynoom $x^{2} + bx + c$ waar geen kwadraat in te zien is → eerst kwadraatafsplitsen, en dan pas kijken welke standaardvorm erbij hoort. Staat er een getal vóór $x^{2}$, haal dat dan eerst buiten haakjes.",
+        "Haal de $2$ buiten haakjes: $2x^{2} - 4x + 10 = 2\\left(x^{2} - 2x + 5\\right)$, dus $f(x) = \\dfrac{5}{x^{2} - 2x + 5}$. Kwadraatafsplitsen: neem de helft van het getal voor $x$, zet dat in het kwadraat, en corrigeer met een getal. De helft van $-2$ is $-1$: $x^{2} - 2x + 5 = (x - 1)^{2} + 4$.",
+        "Achter het kwadraat staat $4$, dus deel teller en noemer door $4$: $f(x) = \\dfrac{\\tfrac{5}{4}}{\\left(\\tfrac{x - 1}{2}\\right)^{2} + 1}$. De kern is $\\tfrac{1}{2}(x - 1)$ met $a = \\tfrac{1}{2}$: De regel voor $f(ax + b)$ zegt: primitiveer alsof er $x$ staat en deel daarna door $a$. Dat betekent vermenigvuldigen met $2$.",
+        "Alles bij elkaar: $F(x) = \\tfrac{5}{4} \\cdot 2\\arctan\\left(\\tfrac{1}{2}(x - 1)\\right) + c = 2\\tfrac{1}{2}\\arctan\\left(\\tfrac{1}{2}(x - 1)\\right) + c$. Controle: differentieer $F$ en je krijgt $f$ terug."
+      ]
+    },
+    {
+      "nummer": "bp-1",
+      "cluster": "k3b_bepaald_exact",
+      "niveau": 1,
+      "latex": "Bereken exact: $\\displaystyle\\int_{0}^{2} \\dfrac{1}{x^{2} + 4}\\,\\mathrm{d}x$",
+      "antwoord_latex": "\\tfrac{1}{8}\\pi",
+      "integrand": "1 / (x^2 + 4)",
+      "primitieve": "1/2 * atan(x / 2)",
+      "grenzen": [
+        0,
+        2
+      ],
+      "waarde": "pi / 8",
+      "stappen": [
+        "Alleen deel 2 van de driedeling speelt hier: bereken de goede integraal. Eerst een primitieve zoeken, daarna de grenzen invullen. Het antwoord blijft exact. Buitenste schil: een breuk met een getal in de teller en $px^{2} + q$ in de noemer → nog geen standaardvorm, want achter het kwadraat staat niet $1$. Deel eerst teller en noemer door $q$, zodat er $\\dfrac{a}{(bx)^{2} + 1}$ komt te staan.",
+        "Deel teller en noemer door $4$: $\\dfrac{1}{x^{2} + 4} = \\dfrac{\\tfrac{1}{4}}{\\left(\\tfrac{1}{2}x\\right)^{2} + 1}$. De kern is $\\tfrac{1}{2}x$, met $a = \\tfrac{1}{2}$.",
+        "Primitiveren: de standaardvorm geeft $\\arctan\\left(\\tfrac{1}{2}x\\right)$ en delen door $\\tfrac{1}{2}$ is vermenigvuldigen met $2$, dus $F(x) = \\tfrac{1}{4} \\cdot 2\\arctan\\left(\\tfrac{1}{2}x\\right) = \\tfrac{1}{2}\\arctan\\left(\\tfrac{1}{2}x\\right)$.",
+        "Vul de grenzen in: $\\left[\\tfrac{1}{2}\\arctan\\left(\\tfrac{1}{2}x\\right)\\right]_{0}^{2} = \\tfrac{1}{2}\\arctan(1) - \\tfrac{1}{2}\\arctan(0) = \\tfrac{1}{2} \\cdot \\tfrac{1}{4}\\pi = \\tfrac{1}{8}\\pi$."
+      ]
+    },
+    {
+      "nummer": "bp-2",
+      "cluster": "k3b_bepaald_exact",
+      "niveau": 1,
+      "latex": "Bereken exact: $\\displaystyle\\int_{0}^{5} \\dfrac{1}{x^{2} + 25}\\,\\mathrm{d}x$",
+      "antwoord_latex": "\\tfrac{1}{20}\\pi",
+      "integrand": "1 / (x^2 + 25)",
+      "primitieve": "1/5 * atan(x / 5)",
+      "grenzen": [
+        0,
+        5
+      ],
+      "waarde": "pi / 20",
+      "stappen": [
+        "Alleen deel 2 van de driedeling speelt hier: bereken de goede integraal. Eerst een primitieve zoeken, daarna de grenzen invullen. Het antwoord blijft exact. Buitenste schil: een breuk met een getal in de teller en $px^{2} + q$ in de noemer → nog geen standaardvorm, want achter het kwadraat staat niet $1$. Deel eerst teller en noemer door $q$, zodat er $\\dfrac{a}{(bx)^{2} + 1}$ komt te staan.",
+        "Deel teller en noemer door $25$: $\\dfrac{1}{x^{2} + 25} = \\dfrac{\\tfrac{1}{25}}{\\left(\\tfrac{1}{5}x\\right)^{2} + 1}$. De kern is $\\tfrac{1}{5}x$, met $a = \\tfrac{1}{5}$.",
+        "Primitiveren: $F(x) = \\tfrac{1}{25} \\cdot 5\\arctan\\left(\\tfrac{1}{5}x\\right) = \\tfrac{1}{5}\\arctan\\left(\\tfrac{1}{5}x\\right)$. De grens $5$ is niet toevallig: daar wordt de kern $1$.",
+        "Vul de grenzen in: $\\left[\\tfrac{1}{5}\\arctan\\left(\\tfrac{1}{5}x\\right)\\right]_{0}^{5} = \\tfrac{1}{5}\\arctan(1) - 0 = \\tfrac{1}{5} \\cdot \\tfrac{1}{4}\\pi = \\tfrac{1}{20}\\pi$."
+      ]
+    },
+    {
+      "nummer": "bp-3",
+      "cluster": "k3b_bepaald_exact",
+      "niveau": 2,
+      "latex": "Bereken exact: $\\displaystyle\\int_{2}^{2 + 3\\sqrt{3}} \\dfrac{6}{x^{2} - 4x + 13}\\,\\mathrm{d}x$",
+      "antwoord_latex": "\\tfrac{2}{3}\\pi",
+      "integrand": "6 / (x^2 - 4 * x + 13)",
+      "primitieve": "2 * atan((x - 2) / 3)",
+      "grenzen": [
+        2,
+        7.196152422706632
+      ],
+      "waarde": "2 * pi / 3",
+      "stappen": [
+        "Alleen deel 2 van de driedeling speelt hier: bereken de goede integraal. Eerst een primitieve zoeken, daarna de grenzen invullen. Het antwoord blijft exact. Buitenste schil: een breuk met in de noemer een polynoom $x^{2} + bx + c$ waar geen kwadraat in te zien is → eerst kwadraatafsplitsen, en dan pas kijken welke standaardvorm erbij hoort.",
+        "Kwadraatafsplitsen: neem de helft van het getal voor $x$, zet dat in het kwadraat, en corrigeer met een getal. De helft van $-4$ is $-2$: $x^{2} - 4x + 13 = (x - 2)^{2} + 9$. Deel daarna door $9$: $\\dfrac{6}{x^{2} - 4x + 13} = \\dfrac{\\tfrac{6}{9}}{\\left(\\tfrac{x - 2}{3}\\right)^{2} + 1}$.",
+        "De kern is $\\tfrac{1}{3}(x - 2)$ met $a = \\tfrac{1}{3}$, dus vermenigvuldigen met $3$: $F(x) = \\tfrac{2}{3} \\cdot 3\\arctan\\left(\\tfrac{x - 2}{3}\\right) = 2\\arctan\\left(\\tfrac{x - 2}{3}\\right)$.",
+        "Vul de grenzen in. Bij $x = 2 + 3\\sqrt{3}$ is de kern $\\tfrac{3\\sqrt{3}}{3} = \\sqrt{3}$ en bij $x = 2$ is de kern $0$: $2\\arctan\\left(\\sqrt{3}\\right) - 2\\arctan(0) = 2 \\cdot \\tfrac{1}{3}\\pi = \\tfrac{2}{3}\\pi$. Zulke lelijke grenzen zijn een hint dat de kern er een mooie waarde van maakt."
+      ]
+    },
+    {
+      "nummer": "bp-4",
+      "cluster": "k3b_bepaald_exact",
+      "niveau": 2,
+      "latex": "Bereken exact: $\\displaystyle\\int_{-1}^{1} \\dfrac{4}{x^{2} + 2x + 5}\\,\\mathrm{d}x$",
+      "antwoord_latex": "\\tfrac{1}{2}\\pi",
+      "integrand": "4 / (x^2 + 2 * x + 5)",
+      "primitieve": "2 * atan((x + 1) / 2)",
+      "grenzen": [
+        -1,
+        1
+      ],
+      "waarde": "pi / 2",
+      "stappen": [
+        "Alleen deel 2 van de driedeling speelt hier: bereken de goede integraal. Eerst een primitieve zoeken, daarna de grenzen invullen. Het antwoord blijft exact. Buitenste schil: een breuk met in de noemer een polynoom $x^{2} + bx + c$ waar geen kwadraat in te zien is → eerst kwadraatafsplitsen, en dan pas kijken welke standaardvorm erbij hoort.",
+        "Kwadraatafsplitsen: neem de helft van het getal voor $x$, zet dat in het kwadraat, en corrigeer met een getal. De helft van $2$ is $1$: $x^{2} + 2x + 5 = (x + 1)^{2} + 4$. Deel daarna door $4$: $\\dfrac{4}{x^{2} + 2x + 5} = \\dfrac{1}{\\left(\\tfrac{x + 1}{2}\\right)^{2} + 1}$.",
+        "De kern is $\\tfrac{1}{2}(x + 1)$ met $a = \\tfrac{1}{2}$, dus vermenigvuldigen met $2$: $F(x) = 2\\arctan\\left(\\tfrac{x + 1}{2}\\right)$.",
+        "Vul de grenzen in. Bij $x = 1$ is de kern $1$ en bij $x = -1$ is de kern $0$: $2\\arctan(1) - 2\\arctan(0) = 2 \\cdot \\tfrac{1}{4}\\pi = \\tfrac{1}{2}\\pi$."
+      ]
+    },
+    {
+      "nummer": "bp-5",
+      "cluster": "k3b_bepaald_exact",
+      "niveau": 3,
+      "latex": "Bereken exact: $\\displaystyle\\int_{0}^{\\sqrt{2}} \\dfrac{6x}{x^{4} + 4}\\,\\mathrm{d}x$",
+      "antwoord_latex": "\\tfrac{3}{8}\\pi",
+      "integrand": "6 * x / (x^4 + 4)",
+      "primitieve": "3/2 * atan(x^2 / 2)",
+      "grenzen": [
+        0,
+        1.4142135623730951
+      ],
+      "waarde": "3 * pi / 8",
+      "stappen": [
+        "Alleen deel 2 van de driedeling speelt hier: bereken de goede integraal. Eerst een primitieve zoeken, daarna de grenzen invullen. Het antwoord blijft exact. Buitenste schil: in de noemer staat het kwadraat van iets anders dan $x$, en de afgeleide daarvan staat in de teller → substitutie. Met $\\int \\dfrac{g'}{g^{2} + 1}\\,\\mathrm{d}x = \\arctan(g) + c$ ben je er in één stap. Achter het kwadraat staat hier geen $1$, dus daarna moet je ook nog delen.",
+        "Schrijf de noemer als een kwadraat: $x^{4} + 4 = \\left(x^{2}\\right)^{2} + 4$. Neem $g(x) = x^{2}$, dan is $g'(x) = 2x$ — en in de teller staat $6x = 3 \\cdot 2x$. Deel daarna door $4$: $\\dfrac{6x}{x^{4} + 4} = 3 \\cdot 2x \\cdot \\dfrac{\\tfrac{1}{4}}{\\left(\\tfrac{x^{2}}{2}\\right)^{2} + 1}$.",
+        "Naar $g$ staat er $\\int \\dfrac{3}{g^{2} + 4}\\,\\mathrm{d}g = \\tfrac{3}{2}\\arctan\\left(\\tfrac{1}{2}g\\right)$, dus $F(x) = \\tfrac{3}{2}\\arctan\\left(\\tfrac{1}{2}x^{2}\\right)$. Controleer dat met de kettingregel.",
+        "Vul de grenzen in. Bij $x = \\sqrt{2}$ is $\\tfrac{1}{2}x^{2} = 1$ en bij $x = 0$ is het $0$: $\\tfrac{3}{2}\\arctan(1) - 0 = \\tfrac{3}{2} \\cdot \\tfrac{1}{4}\\pi = \\tfrac{3}{8}\\pi$."
+      ]
+    },
+    {
+      "nummer": "bp-6",
+      "cluster": "k3b_bepaald_exact",
+      "niveau": 3,
+      "latex": "Bereken exact: $\\displaystyle\\int_{\\mathrm{e}^{-2}}^{\\mathrm{e}^{2}} \\dfrac{1}{x\\ln^{2}(x) + 4x}\\,\\mathrm{d}x$",
+      "antwoord_latex": "\\tfrac{1}{4}\\pi",
+      "integrand": "1 / (x * ln(x)^2 + 4 * x)",
+      "primitieve": "1/2 * atan(ln(x) / 2)",
+      "domein": [
+        0.5,
+        2.5
+      ],
+      "grenzen": [
+        0.1353352832366127,
+        7.38905609893065
+      ],
+      "waarde": "pi / 4",
+      "stappen": [
+        "Alleen deel 2 van de driedeling speelt hier: bereken de goede integraal. Eerst een primitieve zoeken, daarna de grenzen invullen. Het antwoord blijft exact. Buitenste schil: in de noemer staat het kwadraat van iets anders dan $x$, en de afgeleide daarvan staat in de teller → substitutie. Met $\\int \\dfrac{g'}{g^{2} + 1}\\,\\mathrm{d}x = \\arctan(g) + c$ ben je er in één stap. Hier is die \"iets anders\" de logaritme.",
+        "Haal $x$ buiten haakjes in de noemer: $x\\ln^{2}(x) + 4x = x\\left(\\ln^{2}(x) + 4\\right)$, dus de integrand is $\\dfrac{\\tfrac{1}{x}}{\\ln^{2}(x) + 4}$. Neem $g(x) = \\ln(x)$, dan is $g'(x) = \\tfrac{1}{x}$ — en dat staat nu in de teller.",
+        "Naar $g$ staat er $\\int \\dfrac{1}{g^{2} + 4}\\,\\mathrm{d}g$. Deel teller en noemer door $4$: $\\int \\dfrac{\\tfrac{1}{4}}{\\left(\\tfrac{1}{2}g\\right)^{2} + 1}\\,\\mathrm{d}g = \\tfrac{1}{2}\\arctan\\left(\\tfrac{1}{2}g\\right)$. Dus $F(x) = \\tfrac{1}{2}\\arctan\\left(\\tfrac{1}{2}\\ln(x)\\right)$.",
+        "Vul de grenzen in. Bij $x = \\mathrm{e}^{2}$ is $\\ln(x) = 2$ en bij $x = \\mathrm{e}^{-2}$ is $\\ln(x) = -2$: $\\tfrac{1}{2}\\arctan(1) - \\tfrac{1}{2}\\arctan(-1) = \\tfrac{1}{8}\\pi + \\tfrac{1}{8}\\pi = \\tfrac{1}{4}\\pi$."
+      ]
+    },
+    {
+      "nummer": "op-2",
+      "cluster": "k3b_oppervlakte",
+      "niveau": 1,
+      "latex": "Het vlakdeel $V$ wordt ingesloten door de grafiek van $f(x) = \\dfrac{8}{x^{2} + 4}$, de $x$-as en de lijnen $x = 0$ en $x = 2$. Bereken exact de oppervlakte van $V$.",
+      "antwoord_latex": "\\pi",
+      "integrand": "8 / (x^2 + 4)",
+      "primitieve": "4 * atan(x / 2)",
+      "grenzen": [
+        0,
+        2
+      ],
+      "waarde": "pi",
+      "stappen": [
+        "Hier spelen alle drie de delen van de driedeling: eerst het verhaaltje vertalen naar een integraal (deel 1), dan die integraal berekenen (deel 2), en daarna nog iets doen met de uitkomst (deel 3). Deel 1: het vlakdeel tussen de grafiek, de $x$-as en de lijnen $x = 0$ en $x = 2$ wordt de integraal van $f$ van $0$ tot $2$. Dat mag zonder minteken, want $f$ is overal positief: de noemer $x^{2} + 4$ is altijd groter dan $0$.",
+        "$O(V) = \\displaystyle\\int_{0}^{2} \\dfrac{8}{x^{2} + 4}\\,\\mathrm{d}x$. Deel teller en noemer door $4$: $\\dfrac{8}{x^{2} + 4} = \\dfrac{2}{\\left(\\tfrac{1}{2}x\\right)^{2} + 1}$. De kern is $\\tfrac{1}{2}x$, met $a = \\tfrac{1}{2}$.",
+        "Deel 2: primitiveren. De standaardvorm geeft $\\arctan\\left(\\tfrac{1}{2}x\\right)$ en delen door $\\tfrac{1}{2}$ is vermenigvuldigen met $2$, dus $F(x) = 2 \\cdot 2\\arctan\\left(\\tfrac{1}{2}x\\right) = 4\\arctan\\left(\\tfrac{1}{2}x\\right)$.",
+        "Deel 3: de grenzen invullen. $O(V) = \\big[4\\arctan\\left(\\tfrac{1}{2}x\\right)\\big]_{0}^{2} = 4\\arctan(1) - 4\\arctan(0) = 4 \\cdot \\tfrac{1}{4}\\pi = \\pi$."
+      ]
+    },
+    {
+      "nummer": "op-3",
+      "cluster": "k3b_oppervlakte",
+      "niveau": 2,
+      "latex": "Het vlakdeel $V$ wordt ingesloten door de grafiek van $f(x) = \\dfrac{6}{x^{2} - 6x + 18}$, de $x$-as en de lijnen $x = 3$ en $x = 6$. Bereken exact de oppervlakte van $V$.",
+      "antwoord_latex": "\\tfrac{1}{2}\\pi",
+      "integrand": "6 / (x^2 - 6 * x + 18)",
+      "primitieve": "2 * atan((x - 3) / 3)",
+      "grenzen": [
+        3,
+        6
+      ],
+      "waarde": "pi / 2",
+      "stappen": [
+        "Hier spelen alle drie de delen van de driedeling: eerst het verhaaltje vertalen naar een integraal (deel 1), dan die integraal berekenen (deel 2), en daarna nog iets doen met de uitkomst (deel 3). Deel 1: het vlakdeel tussen de grafiek, de $x$-as en de lijnen $x = 3$ en $x = 6$ wordt $O(V) = \\displaystyle\\int_{3}^{6} \\dfrac{6}{x^{2} - 6x + 18}\\,\\mathrm{d}x$. De noemer is nooit $0$, dus de grafiek loopt netjes boven de $x$-as.",
+        "Kwadraatafsplitsen: neem de helft van het getal voor $x$, zet dat in het kwadraat, en corrigeer met een getal. De helft van $-6$ is $-3$: $x^{2} - 6x + 18 = (x - 3)^{2} + 9$. Deel daarna door $9$: $\\dfrac{6}{x^{2} - 6x + 18} = \\dfrac{\\tfrac{2}{3}}{\\left(\\tfrac{x - 3}{3}\\right)^{2} + 1}$.",
+        "Deel 2: de kern is $\\tfrac{1}{3}(x - 3)$ met $a = \\tfrac{1}{3}$, dus vermenigvuldigen met $3$: $F(x) = \\tfrac{2}{3} \\cdot 3\\arctan\\left(\\tfrac{x - 3}{3}\\right) = 2\\arctan\\left(\\tfrac{x - 3}{3}\\right)$.",
+        "Deel 3: de grenzen invullen. Bij $x = 6$ is de kern $1$ en bij $x = 3$ is de kern $0$: $O(V) = 2\\arctan(1) - 2\\arctan(0) = 2 \\cdot \\tfrac{1}{4}\\pi = \\tfrac{1}{2}\\pi$."
+      ]
+    },
+    {
+      "nummer": "op-4",
+      "cluster": "k3b_oppervlakte",
+      "niveau": 2,
+      "latex": "Het vlakdeel $V$ wordt ingesloten door de grafiek van $f(x) = \\dfrac{3}{x^{2} - 2x + 2}$, de $x$-as en de lijnen $x = 0$ en $x = 2$. Bereken exact de oppervlakte van $V$.",
+      "antwoord_latex": "1\\tfrac{1}{2}\\pi",
+      "integrand": "3 / (x^2 - 2 * x + 2)",
+      "primitieve": "3 * atan(x - 1)",
+      "grenzen": [
+        0,
+        2
+      ],
+      "waarde": "3 * pi / 2",
+      "stappen": [
+        "Hier spelen alle drie de delen van de driedeling: eerst het verhaaltje vertalen naar een integraal (deel 1), dan die integraal berekenen (deel 2), en daarna nog iets doen met de uitkomst (deel 3). Deel 1: $O(V) = \\displaystyle\\int_{0}^{2} \\dfrac{3}{x^{2} - 2x + 2}\\,\\mathrm{d}x$. De grafiek ligt helemaal boven de $x$-as, dus er hoeft geen minteken bij.",
+        "Kwadraatafsplitsen: neem de helft van het getal voor $x$, zet dat in het kwadraat, en corrigeer met een getal. De helft van $-2$ is $-1$: $x^{2} - 2x + 2 = (x - 1)^{2} + 1$. Achter het kwadraat staat al $1$, dus delen hoeft niet.",
+        "Deel 2: de kern is $x - 1$ met $a = 1$, dus $F(x) = 3\\arctan(x - 1)$.",
+        "Deel 3: de grenzen invullen. Bij $x = 2$ is de kern $1$ en bij $x = 0$ is de kern $-1$: $O(V) = 3\\arctan(1) - 3\\arctan(-1) = \\tfrac{3}{4}\\pi + \\tfrac{3}{4}\\pi = 1\\tfrac{1}{2}\\pi$. Let op het dubbele minteken bij de ondergrens."
+      ]
+    },
+    {
+      "nummer": "op-5",
+      "cluster": "k3b_oppervlakte",
+      "niveau": 3,
+      "latex": "Het vlakdeel $V_p$ wordt ingesloten door de grafiek van $f(x) = \\dfrac{10}{x^{2} + 25}$, de $x$-as en de lijnen $x = 0$ en $x = p$ met $p > 0$. Bereken exact de waarde van $p$ waarvoor $O(V_p) = \\tfrac{1}{2}\\pi$.",
+      "antwoord_latex": "p = 5",
+      "integrand": "10 / (x^2 + 25)",
+      "primitieve": "2 * atan(x / 5)",
+      "stappen": [
+        "Hier spelen alle drie de delen van de driedeling: eerst het verhaaltje vertalen naar een integraal (deel 1), dan die integraal berekenen (deel 2), en daarna nog iets doen met de uitkomst (deel 3). Deel 1: $O(V_p) = \\displaystyle\\int_{0}^{p} \\dfrac{10}{x^{2} + 25}\\,\\mathrm{d}x$. De bovengrens is nu een letter; verder verandert er niets.",
+        "Deel teller en noemer door $25$: $\\dfrac{10}{x^{2} + 25} = \\dfrac{\\tfrac{2}{5}}{\\left(\\tfrac{1}{5}x\\right)^{2} + 1}$. De kern is $\\tfrac{1}{5}x$, met $a = \\tfrac{1}{5}$.",
+        "Deel 2: vermenigvuldigen met $5$ geeft $F(x) = \\tfrac{2}{5} \\cdot 5\\arctan\\left(\\tfrac{1}{5}x\\right) = 2\\arctan\\left(\\tfrac{1}{5}x\\right)$, dus $O(V_p) = 2\\arctan\\left(\\tfrac{1}{5}p\\right) - 2\\arctan(0) = 2\\arctan\\left(\\tfrac{1}{5}p\\right)$.",
+        "Deel 3: de vergelijking oplossen. $2\\arctan\\left(\\tfrac{1}{5}p\\right) = \\tfrac{1}{2}\\pi$ geeft $\\arctan\\left(\\tfrac{1}{5}p\\right) = \\tfrac{1}{4}\\pi$. Die hoek ligt tussen $-\\tfrac{1}{2}\\pi$ en $\\tfrac{1}{2}\\pi$, dus er is een oplossing: $\\tfrac{1}{5}p = \\tan\\left(\\tfrac{1}{4}\\pi\\right) = 1$, dus $p = 5$."
+      ]
+    },
+    {
+      "nummer": "op-6",
+      "cluster": "k3b_oppervlakte",
+      "niveau": 3,
+      "latex": "Het vlakdeel $V_p$ wordt ingesloten door de grafiek van $f(x) = \\dfrac{2}{x\\ln^{2}(x) + x}$, de $x$-as en de lijnen $x = 1$ en $x = p$ met $p > 1$. Bereken exact de waarde van $p$ waarvoor $O(V_p) = \\tfrac{2}{3}\\pi$.",
+      "antwoord_latex": "p = \\mathrm{e}^{\\sqrt{3}}",
+      "integrand": "2 / (x * ln(x)^2 + x)",
+      "primitieve": "2 * atan(ln(x))",
+      "domein": [
+        0.5,
+        2.5
+      ],
+      "stappen": [
+        "Hier spelen alle drie de delen van de driedeling: eerst het verhaaltje vertalen naar een integraal (deel 1), dan die integraal berekenen (deel 2), en daarna nog iets doen met de uitkomst (deel 3). Deel 1: $O(V_p) = \\displaystyle\\int_{1}^{p} \\dfrac{2}{x\\ln^{2}(x) + x}\\,\\mathrm{d}x$. Voor $x > 1$ is $f$ positief, dus de oppervlakte is gewoon de integraal.",
+        "Haal $x$ buiten haakjes in de noemer: $x\\ln^{2}(x) + x = x\\left(\\ln^{2}(x) + 1\\right)$, dus $f(x) = \\dfrac{2 \\cdot \\tfrac{1}{x}}{\\ln^{2}(x) + 1}$. Neem $g(x) = \\ln(x)$, dan is $g'(x) = \\tfrac{1}{x}$ — en dat staat in de teller. Buitenste schil: in de noemer staat het kwadraat van iets anders dan $x$, en de afgeleide daarvan staat in de teller → substitutie. Met $\\int \\dfrac{g'}{g^{2} + 1}\\,\\mathrm{d}x = \\arctan(g) + c$ ben je er in één stap.",
+        "Deel 2: naar $g$ staat er $\\int \\dfrac{2}{g^{2} + 1}\\,\\mathrm{d}g = 2\\arctan(g)$, dus $F(x) = 2\\arctan(\\ln(x))$. Omdat $\\ln(1) = 0$ is $O(V_p) = 2\\arctan(\\ln(p)) - 2\\arctan(0) = 2\\arctan(\\ln(p))$.",
+        "Deel 3: de vergelijking oplossen. $2\\arctan(\\ln(p)) = \\tfrac{2}{3}\\pi$ geeft $\\arctan(\\ln(p)) = \\tfrac{1}{3}\\pi$, dus $\\ln(p) = \\tan\\left(\\tfrac{1}{3}\\pi\\right) = \\sqrt{3}$ en $p = \\mathrm{e}^{\\sqrt{3}}$."
+      ]
+    }
+  ]
+}
