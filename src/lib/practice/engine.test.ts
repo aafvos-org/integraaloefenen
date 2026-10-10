@@ -71,4 +71,9 @@ describe('normalizeAnswer', () => {
   it('maakt van een lege invoer een lege tekst', () => {
     expect(normalizeAnswer('   ')).toBe('')
   })
+
+  it('maakt van een geplakt minteken een gewoon minteken', () => {
+    // U+2212, wat je meekrijgt als je uit een pdf of uit Word plakt
+    expect(normalizeAnswer('−cos(x) + c')).toBe('-cos(x)+c')
+  })
 })
