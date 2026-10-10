@@ -2,7 +2,7 @@ import { getTranslations } from 'next-intl/server'
 import { Link } from '@/i18n/navigation'
 
 import { Card } from '@/components/ui'
-import { eigenAdres } from '@/lib/seo'
+import { eigenPagina } from '@/lib/seo'
 
 export async function generateMetadata({
   params,
@@ -11,11 +11,12 @@ export async function generateMetadata({
 }) {
   const { locale } = await params
   const t = await getTranslations({ locale, namespace: 'HoeHetWerkt' })
-  return {
-    title: t('title'),
-    description: t('description'),
-    alternates: eigenAdres(locale, '/hoe-het-werkt'),
-  }
+  return eigenPagina({
+    locale,
+    pad: '/hoe-het-werkt',
+    titel: t('title'),
+    omschrijving: t('description'),
+  })
 }
 
 export default async function HoeHetWerktPage() {

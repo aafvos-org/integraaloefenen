@@ -26,13 +26,16 @@ export async function generateMetadata({
     description: t('description'),
     applicationName: domain,
     authors: [{ name: domain }],
-    // Geen canonical hier: een layout weet niet op welke pagina hij staat, dus
-    // zou elke pagina de startpagina als eigen adres opgeven. Elke openbare
-    // pagina zet hem zelf, met eigenAdres() uit src/lib/seo.ts.
+    // Geen canonical en geen og:url hier: een layout weet niet op welke pagina
+    // hij staat, dus zou elke pagina het adres van de startpagina opgeven. Elke
+    // openbare pagina zet ze zelf, met eigenPagina() uit src/lib/seo.ts.
+    //
+    // Wat hieronder blijft staan is de terugval voor de afgeschermde pagina's
+    // (dashboard, inloggen): die horen niet in een zoekmachine en hebben geen
+    // eigen kaartje nodig.
     openGraph: {
       type: 'website',
       locale: 'nl_NL',
-      url: siteUrl,
       siteName: domain,
       title: t('ogTitle'),
       description: t('description'),

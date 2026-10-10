@@ -1,6 +1,6 @@
 import { getTranslations } from 'next-intl/server'
 
-import { eigenAdres } from '@/lib/seo'
+import { eigenPagina } from '@/lib/seo'
 import { METHODE, THEORY_OVERVIEW } from '@/lib/theory'
 
 import { MethodeSchema } from './methode-schema'
@@ -15,11 +15,12 @@ export async function generateMetadata({
 }) {
   const { locale } = await params
   const t = await getTranslations({ locale, namespace: 'Theorie' })
-  return {
-    title: t('title'),
-    description: t('description'),
-    alternates: eigenAdres(locale, '/theorie'),
-  }
+  return eigenPagina({
+    locale,
+    pad: '/theorie',
+    titel: t('title'),
+    omschrijving: t('description'),
+  })
 }
 
 export default async function TheoriePage() {

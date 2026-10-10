@@ -1,7 +1,7 @@
 import { getTranslations } from 'next-intl/server'
 
 import { SITE } from '@/config/site'
-import { eigenAdres } from '@/lib/seo'
+import { eigenPagina } from '@/lib/seo'
 import { createClient } from '@/lib/supabase/server'
 import { getUitlegVideos } from '@/lib/videos'
 
@@ -14,11 +14,12 @@ export async function generateMetadata({
 }) {
   const { locale } = await params
   const t = await getTranslations({ locale, namespace: 'UitlegVideos' })
-  return {
-    title: t('title'),
-    description: t('intro'),
-    alternates: eigenAdres(locale, '/uitleg-videos'),
-  }
+  return eigenPagina({
+    locale,
+    pad: '/uitleg-videos',
+    titel: t('title'),
+    omschrijving: t('intro'),
+  })
 }
 
 type PageProps = {

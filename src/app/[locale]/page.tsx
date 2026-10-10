@@ -3,7 +3,7 @@ import { Link } from '@/i18n/navigation'
 import { redirect } from 'next/navigation'
 
 import { SITE_CONFIG } from '@/config/site'
-import { eigenAdres } from '@/lib/seo'
+import { eigenPagina } from '@/lib/seo'
 import { createClient } from '@/lib/supabase/server'
 
 import { HomeDemo } from './home-demo'
@@ -14,8 +14,14 @@ export async function generateMetadata({
   params: Promise<{ locale: string }>
 }) {
   const { locale } = await params
-  // Titel en omschrijving komen uit de layout; alleen het eigen adres staat hier.
-  return { alternates: eigenAdres(locale) }
+  const t = await getTranslations({ locale, namespace: 'Metadata' })
+  // De titel in het tabblad komt uit de layout; het kaartje heeft een kortere
+  // eigen titel, omdat de sitenaam er toch al los onder staat.
+  return eigenPagina({
+    locale,
+    kaartTitel: t('ogTitle'),
+    omschrijving: t('description'),
+  })
 }
 
 export default async function HomePage() {

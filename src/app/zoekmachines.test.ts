@@ -88,14 +88,16 @@ describe('sitemap.xml', () => {
 // =====================================================================
 // Elke openbare pagina noemt zijn eigen adres
 //
-// De canonical stond in src/app/[locale]/layout.tsx. Een layout weet niet op
-// welke pagina hij staat, dus riep elke pagina dat ze de startpagina was en
-// bleef de rest uit de index. Nu zet elke openbare pagina hem zelf, met
-// eigenAdres() uit src/lib/seo.ts.
+// De canonical en og:url stonden in src/app/[locale]/layout.tsx. Een layout
+// weet niet op welke pagina hij staat, dus riep elke pagina dat ze de
+// startpagina was: de rest bleef uit de index, en onder een gedeelde link naar
+// /nl/theorie stond het adres van de startpagina. Nu zet elke openbare pagina
+// het zelf, met eigenPagina() uit src/lib/seo.ts.
 //
 // Deze test leest de broncode: hij ziet dat de regel er staat, niet wat de
 // pagina uiteindelijk naar de browser stuurt. Dat is genoeg om te merken dat
-// een nieuwe openbare pagina hem vergeet.
+// een nieuwe openbare pagina hem vergeet. Wat eigenPagina() er precies van
+// maakt, staat in src/lib/seo.test.ts.
 // =====================================================================
 
 /** De broncode van een pagina onder src/app/[locale]/. */
@@ -106,28 +108,33 @@ function broncode(...pad: string[]): string {
   )
 }
 
-describe('canonical', () => {
-  it('staat niet in de layout, want die kent het pad niet', () => {
+describe('eigen adres en deelkaartje', () => {
+  it('staan niet in de layout, want die kent het pad niet', () => {
     const layout = readFileSync(
       join(process.cwd(), 'src', 'app', '[locale]', 'layout.tsx'),
       'utf8',
     )
     expect(layout).not.toMatch(/canonical:/)
+    // Alleen in het openGraph-blok kijken: de iconen hebben ook een `url:`.
+    const kaartje = layout.match(/openGraph:\s*\{[^}]*\}/)?.[0] ?? ''
+    expect(kaartje).toContain('siteName:')
+    expect(kaartje).not.toMatch(/\burl:/)
   })
 
-  it('staat op de startpagina', () => {
-    expect(broncode()).toContain('eigenAdres(locale)')
+  it('staan op de startpagina', () => {
+    expect(broncode()).toMatch(/eigenPagina\(\{\s*locale,/)
   })
 
-  it('staat op elke openbare pagina, met het eigen pad', () => {
+  it('staan op elke openbare pagina, met het eigen pad', () => {
     for (const pad of OPENBAAR) {
-      expect(broncode(pad)).toContain(`eigenAdres(locale, '/${pad}')`)
+      expect(broncode(pad)).toMatch(/eigenPagina\(\{\s*locale,/)
+      expect(broncode(pad)).toContain(`pad: '/${pad}',`)
     }
   })
 
-  it('staat op een theorie-hoofdstuk, met het hoofdstuk erin', () => {
-    expect(broncode('theorie', '[hoofdstuk]')).toContain(
-      'eigenAdres(locale, `/theorie/${hoofdstuk}`)',
-    )
+  it('staan op een theorie-hoofdstuk, met het hoofdstuk erin', () => {
+    const bron = broncode('theorie', '[hoofdstuk]')
+    expect(bron).toMatch(/eigenPagina\(\{\s*locale,/)
+    expect(bron).toContain('pad: `/theorie/${hoofdstuk}`,')
   })
 })

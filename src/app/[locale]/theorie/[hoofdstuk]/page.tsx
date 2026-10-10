@@ -3,7 +3,7 @@ import { getTranslations } from 'next-intl/server'
 
 import { Link } from '@/i18n/navigation'
 import { RichMath } from '@/components/math'
-import { eigenAdres } from '@/lib/seo'
+import { eigenPagina } from '@/lib/seo'
 import { METHODE, THEORY_OVERVIEW } from '@/lib/theory'
 
 import { MethodeSchema } from '../methode-schema'
@@ -19,11 +19,12 @@ export async function generateMetadata({ params }: { params: Params }) {
   const methode = METHODE?.hoofdstukken.find((h) => h.slug === hoofdstuk)
   const kaart = THEORY_OVERVIEW.find((ch) => ch.slug === hoofdstuk)
   const naam = methode ? `${methode.code} · ${methode.title}` : kaart ? kaart.title : null
-  return {
-    title: naam ? `${naam} · ${t('methodeTab')}` : t('title'),
-    description: t('description'),
-    alternates: eigenAdres(locale, `/theorie/${hoofdstuk}`),
-  }
+  return eigenPagina({
+    locale,
+    pad: `/theorie/${hoofdstuk}`,
+    titel: naam ? `${naam} · ${t('methodeTab')}` : t('title'),
+    omschrijving: t('description'),
+  })
 }
 
 export default async function HoofdstukPage({
