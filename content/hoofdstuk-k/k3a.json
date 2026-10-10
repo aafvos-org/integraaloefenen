@@ -1,0 +1,396 @@
+{
+  "hoofdstuk": "K",
+  "onderdeel": "K.3 Theorie A — De functie arctan (eigen varianten)",
+  "vragen": [
+    {
+      "nummer": "afg-1",
+      "cluster": "k3a_afgeleide",
+      "niveau": 1,
+      "latex": "Differentieer: $f(x) = \\arctan(3x)$",
+      "antwoord_latex": "f'(x) = \\dfrac{3}{9x^{2} + 1}",
+      "integrand": "3 / (9 * x^2 + 1)",
+      "primitieve": "atan(3 * x)",
+      "stappen": [
+        "De afgeleide van $\\arctan$ is precies de standaardvorm die je bij deel 2 van de driedeling moet herkennen: $[\\arctan(x)]' = \\dfrac{1}{x^{2} + 1}$. Daarom oefen je hem eerst andersom. Buitenste schil: $\\arctan$ van een kern → kettingregel.",
+        "Buitenkant en kern: buitenkant $\\arctan(\\ldots)$, kern $3x$.",
+        "Afgeleide van de buitenkant met de kern erin: $\\dfrac{1}{(3x)^{2} + 1} = \\dfrac{1}{9x^{2} + 1}$. Afgeleide van de kern: $3$.",
+        "Vermenigvuldig: $f'(x) = \\dfrac{1}{9x^{2} + 1} \\cdot 3 = \\dfrac{3}{9x^{2} + 1}$. Werk het kwadraat van de kern altijd uit, anders herken je de noemer straks niet terug bij het primitiveren."
+      ]
+    },
+    {
+      "nummer": "afg-2",
+      "cluster": "k3a_afgeleide",
+      "niveau": 1,
+      "latex": "Differentieer: $g(x) = 4\\arctan\\left(\\tfrac{1}{2}x\\right)$",
+      "antwoord_latex": "g'(x) = \\dfrac{8}{x^{2} + 4}",
+      "integrand": "8 / (x^2 + 4)",
+      "primitieve": "4 * atan(x / 2)",
+      "stappen": [
+        "De afgeleide van $\\arctan$ is precies de standaardvorm die je bij deel 2 van de driedeling moet herkennen: $[\\arctan(x)]' = \\dfrac{1}{x^{2} + 1}$. Daarom oefen je hem eerst andersom. Buitenste schil: $\\arctan$ van een kern → kettingregel.",
+        "Buitenkant en kern: buitenkant $\\arctan(\\ldots)$, kern $\\tfrac{1}{2}x$.",
+        "Afgeleide van de buitenkant met de kern erin: $\\dfrac{1}{\\left(\\tfrac{1}{2}x\\right)^{2} + 1} = \\dfrac{1}{\\tfrac{1}{4}x^{2} + 1}$. Afgeleide van de kern: $\\tfrac{1}{2}$.",
+        "Vermenigvuldig, met de factor $4$ erbij: $g'(x) = 4 \\cdot \\dfrac{1}{\\tfrac{1}{4}x^{2} + 1} \\cdot \\tfrac{1}{2} = \\dfrac{2}{\\tfrac{1}{4}x^{2} + 1}$. Vermenigvuldig teller en noemer met $4$ om de breuken in de noemer weg te werken: $g'(x) = \\dfrac{8}{x^{2} + 4}$."
+      ]
+    },
+    {
+      "nummer": "afg-3",
+      "cluster": "k3a_afgeleide",
+      "niveau": 2,
+      "latex": "Differentieer: $h(x) = \\arctan(x + 2)$",
+      "antwoord_latex": "h'(x) = \\dfrac{1}{x^{2} + 4x + 5}",
+      "integrand": "1 / (x^2 + 4 * x + 5)",
+      "primitieve": "atan(x + 2)",
+      "stappen": [
+        "De afgeleide van $\\arctan$ is precies de standaardvorm die je bij deel 2 van de driedeling moet herkennen: $[\\arctan(x)]' = \\dfrac{1}{x^{2} + 1}$. Daarom oefen je hem eerst andersom. Buitenste schil: $\\arctan$ van een kern → kettingregel.",
+        "Buitenkant en kern: buitenkant $\\arctan(\\ldots)$, kern $x + 2$.",
+        "Afgeleide van de buitenkant met de kern erin: $\\dfrac{1}{(x + 2)^{2} + 1}$. Afgeleide van de kern: $1$.",
+        "Vermenigvuldig: $h'(x) = \\dfrac{1}{(x + 2)^{2} + 1} \\cdot 1$. Werk de noemer uit: $(x + 2)^{2} + 1 = x^{2} + 4x + 4 + 1 = x^{2} + 4x + 5$, dus $h'(x) = \\dfrac{1}{x^{2} + 4x + 5}$. Andersom is dit het signaal om bij zo'n noemer aan $\\arctan$ te denken."
+      ]
+    },
+    {
+      "nummer": "afg-4",
+      "cluster": "k3a_afgeleide",
+      "niveau": 2,
+      "latex": "Differentieer: $f(x) = \\arctan\\left(x^{2}\\right)$",
+      "antwoord_latex": "f'(x) = \\dfrac{2x}{x^{4} + 1}",
+      "integrand": "2 * x / (x^4 + 1)",
+      "primitieve": "atan(x^2)",
+      "stappen": [
+        "De afgeleide van $\\arctan$ is precies de standaardvorm die je bij deel 2 van de driedeling moet herkennen: $[\\arctan(x)]' = \\dfrac{1}{x^{2} + 1}$. Daarom oefen je hem eerst andersom. Buitenste schil: $\\arctan$ van een kern → kettingregel.",
+        "Buitenkant en kern: buitenkant $\\arctan(\\ldots)$, kern $x^{2}$.",
+        "Afgeleide van de buitenkant met de kern erin: $\\dfrac{1}{\\left(x^{2}\\right)^{2} + 1} = \\dfrac{1}{x^{4} + 1}$. Afgeleide van de kern: $2x$.",
+        "Vermenigvuldig: $f'(x) = \\dfrac{1}{x^{4} + 1} \\cdot 2x = \\dfrac{2x}{x^{4} + 1}$. De $2x$ in de teller is de afgeleide van de kern; dat is precies wat je bij het primitiveren terug moet zien."
+      ]
+    },
+    {
+      "nummer": "afg-5",
+      "cluster": "k3a_afgeleide",
+      "niveau": 3,
+      "latex": "Differentieer: $f(x) = \\arctan\\left(3x^{2} + 1\\right)$",
+      "antwoord_latex": "f'(x) = \\dfrac{6x}{9x^{4} + 6x^{2} + 2}",
+      "integrand": "6 * x / (9 * x^4 + 6 * x^2 + 2)",
+      "primitieve": "atan(3 * x^2 + 1)",
+      "stappen": [
+        "De afgeleide van $\\arctan$ is precies de standaardvorm die je bij deel 2 van de driedeling moet herkennen: $[\\arctan(x)]' = \\dfrac{1}{x^{2} + 1}$. Daarom oefen je hem eerst andersom. Buitenste schil: $\\arctan$ van een kern → kettingregel.",
+        "Buitenkant en kern: buitenkant $\\arctan(\\ldots)$, kern $3x^{2} + 1$.",
+        "Afgeleide van de buitenkant met de kern erin: $\\dfrac{1}{\\left(3x^{2} + 1\\right)^{2} + 1}$. Afgeleide van de kern: $6x$.",
+        "Vermenigvuldig: $f'(x) = \\dfrac{6x}{\\left(3x^{2} + 1\\right)^{2} + 1}$. Werk de noemer uit: $\\left(3x^{2} + 1\\right)^{2} + 1 = 9x^{4} + 6x^{2} + 1 + 1 = 9x^{4} + 6x^{2} + 2$, dus $f'(x) = \\dfrac{6x}{9x^{4} + 6x^{2} + 2}$."
+      ]
+    },
+    {
+      "nummer": "afg-6",
+      "cluster": "k3a_afgeleide",
+      "niveau": 3,
+      "latex": "Differentieer: $f(x) = x\\arctan(x)$",
+      "antwoord_latex": "f'(x) = \\arctan(x) + \\dfrac{x}{x^{2} + 1}",
+      "integrand": "atan(x) + x / (x^2 + 1)",
+      "primitieve": "x * atan(x)",
+      "stappen": [
+        "De afgeleide van $\\arctan$ is de standaardvorm $[\\arctan(x)]' = \\dfrac{1}{x^{2} + 1}$. Buitenste schil: twee factoren met een $\\cdot$ ertussen → productregel, met $\\arctan$ als een van de twee.",
+        "Kies $g$ en $h$: $g(x) = x$ en $h(x) = \\arctan(x)$.",
+        "Bereken $g'$ en $h'$: $g'(x) = 1$ en $h'(x) = \\dfrac{1}{x^{2} + 1}$. Hier is geen kettingregel nodig, want de kern is kaal $x$.",
+        "Vul de formule in: $f'(x) = g'(x) \\cdot h(x) + g(x) \\cdot h'(x) = 1 \\cdot \\arctan(x) + x \\cdot \\dfrac{1}{x^{2} + 1} = \\arctan(x) + \\dfrac{x}{x^{2} + 1}$. Deze opgave komt in K.3 nog terug: andersom geeft hij de primitieve van $\\arctan(x)$ zelf."
+      ]
+    },
+    {
+      "nummer": "std-1",
+      "cluster": "k3a_standaard",
+      "niveau": 1,
+      "latex": "Primitiveer: $f(x) = \\dfrac{1}{x^{2} + 1}$",
+      "antwoord_latex": "F(x) = \\arctan(x) + c",
+      "integrand": "1 / (x^2 + 1)",
+      "primitieve": "atan(x)",
+      "stappen": [
+        "Alleen deel 2 van de driedeling speelt hier: bereken de goede integraal. Buitenste schil: een breuk met $x^{2} + 1$ in de noemer → de standaardvorm $\\dfrac{1}{x^{2} + 1}$ geeft $\\arctan(x) + c$.",
+        "Herschrijven hoeft niet: er staat al precies $\\dfrac{1}{x^{2} + 1}$, met een kale $x$ in het kwadraat en een $1$ erachter.",
+        "Pas de standaardvorm toe: $\\dfrac{1}{x^{2} + 1}$ geeft $\\arctan(x) + c$.",
+        "Schrijf het antwoord op: $F(x) = \\arctan(x) + c$. Vergeet de integratieconstante niet. Controle: differentieer $F$ en je krijgt $f$ terug."
+      ]
+    },
+    {
+      "nummer": "std-2",
+      "cluster": "k3a_standaard",
+      "niveau": 1,
+      "latex": "Primitiveer: $f(x) = \\dfrac{5}{x^{2} + 1}$",
+      "antwoord_latex": "F(x) = 5\\arctan(x) + c",
+      "integrand": "5 / (x^2 + 1)",
+      "primitieve": "5 * atan(x)",
+      "stappen": [
+        "Alleen deel 2 van de driedeling speelt hier: bereken de goede integraal. Buitenste schil: een breuk met $x^{2} + 1$ in de noemer → de standaardvorm $\\dfrac{1}{x^{2} + 1}$ geeft $\\arctan(x) + c$.",
+        "Haal de constante naar voren: $f(x) = 5 \\cdot \\dfrac{1}{x^{2} + 1}$. Een getal voor de breuk mag je bij het primitiveren gewoon laten staan.",
+        "Pas de standaardvorm toe op wat er overblijft: $\\dfrac{1}{x^{2} + 1}$ geeft $\\arctan(x) + c$.",
+        "Schrijf het antwoord op: $F(x) = 5\\arctan(x) + c$. Controle: differentieer $F$ en je krijgt $f$ terug."
+      ]
+    },
+    {
+      "nummer": "std-3",
+      "cluster": "k3a_standaard",
+      "niveau": 2,
+      "latex": "Primitiveer: $f(x) = \\dfrac{x^{2} + 3}{x^{2} + 1}$",
+      "antwoord_latex": "F(x) = x + 2\\arctan(x) + c",
+      "integrand": "(x^2 + 3) / (x^2 + 1)",
+      "primitieve": "x + 2 * atan(x)",
+      "stappen": [
+        "Alleen deel 2 van de driedeling speelt hier: bereken de goede integraal. Buitenste schil: een breuk met $x^{2}$ in de teller én in de noemer → eerst splitsen. Zo'n breuk is geen standaardvorm; er is ook geen quotiëntregel voor primitiveren.",
+        "Maak in de teller de noemer zichtbaar: $x^{2} + 3 = \\left(x^{2} + 1\\right) + 2$. Dus $f(x) = \\dfrac{x^{2} + 1}{x^{2} + 1} + \\dfrac{2}{x^{2} + 1} = 1 + \\dfrac{2}{x^{2} + 1}$.",
+        "Nu twee losse stukken: $1$ geeft $x$, en $\\dfrac{2}{x^{2} + 1}$ geeft $2\\arctan(x)$ met de standaardvorm $\\dfrac{1}{x^{2} + 1}$ geeft $\\arctan(x) + c$.",
+        "Schrijf het antwoord op: $F(x) = x + 2\\arctan(x) + c$. Controle: differentieer $F$ en je krijgt $f$ terug."
+      ]
+    },
+    {
+      "nummer": "std-4",
+      "cluster": "k3a_standaard",
+      "niveau": 2,
+      "latex": "Primitiveer: $f(x) = \\dfrac{x^{2}}{x^{2} + 1}$",
+      "antwoord_latex": "F(x) = x - \\arctan(x) + c",
+      "integrand": "x^2 / (x^2 + 1)",
+      "primitieve": "x - atan(x)",
+      "stappen": [
+        "Alleen deel 2 van de driedeling speelt hier: bereken de goede integraal. Buitenste schil: een breuk met $x^{2}$ in de teller én in de noemer → eerst splitsen.",
+        "Maak in de teller de noemer zichtbaar: $x^{2} = \\left(x^{2} + 1\\right) - 1$. Dus $f(x) = \\dfrac{x^{2} + 1}{x^{2} + 1} - \\dfrac{1}{x^{2} + 1} = 1 - \\dfrac{1}{x^{2} + 1}$.",
+        "Nu twee losse stukken: $1$ geeft $x$, en $\\dfrac{1}{x^{2} + 1}$ geeft $\\arctan(x)$. Het minteken blijft staan.",
+        "Schrijf het antwoord op: $F(x) = x - \\arctan(x) + c$. Controle: differentieer $F$ en je krijgt $f$ terug."
+      ]
+    },
+    {
+      "nummer": "std-5",
+      "cluster": "k3a_standaard",
+      "niveau": 3,
+      "latex": "Primitiveer: $f(x) = \\dfrac{2x + 4}{x^{2} + 1}$",
+      "antwoord_latex": "F(x) = \\ln\\left(x^{2} + 1\\right) + 4\\arctan(x) + c",
+      "integrand": "(2 * x + 4) / (x^2 + 1)",
+      "primitieve": "ln(x^2 + 1) + 4 * atan(x)",
+      "stappen": [
+        "Alleen deel 2 van de driedeling speelt hier: bereken de goede integraal. Buitenste schil: dezelfde noemer, maar twee heel verschillende tellers → splits de breuk in twee stukken en kijk per stuk welke standaardvorm erbij hoort.",
+        "Splitsen: $f(x) = \\dfrac{2x}{x^{2} + 1} + \\dfrac{4}{x^{2} + 1}$. In het eerste stuk is de teller $2x$ precies de afgeleide van de noemer; in het tweede stuk staat alleen een getal.",
+        "Eerste stuk: $\\int \\dfrac{g'}{g}\\,\\mathrm{d}x = \\ln|g| + c$ met $g(x) = x^{2} + 1$, dus dat geeft $\\ln\\left(x^{2} + 1\\right)$ — de absoluutstrepen mogen weg, want $x^{2} + 1$ is altijd positief. Tweede stuk: de standaardvorm $\\dfrac{1}{x^{2} + 1}$ geeft $\\arctan(x) + c$ geeft $4\\arctan(x)$.",
+        "Schrijf het antwoord op: $F(x) = \\ln\\left(x^{2} + 1\\right) + 4\\arctan(x) + c$. Let op het verschil: een teller met $x$ erin geeft een logaritme, een teller zonder $x$ geeft een arctangens. Controle: differentieer $F$ en je krijgt $f$ terug."
+      ]
+    },
+    {
+      "nummer": "std-6",
+      "cluster": "k3a_standaard",
+      "niveau": 3,
+      "latex": "Primitiveer: $f(x) = \\dfrac{\\arctan(x)}{x^{2} + 1}$",
+      "antwoord_latex": "F(x) = \\tfrac{1}{2}\\arctan^{2}(x) + c",
+      "integrand": "atan(x) / (x^2 + 1)",
+      "primitieve": "1/2 * atan(x)^2",
+      "stappen": [
+        "Alleen deel 2 van de driedeling speelt hier: bereken de goede integraal. Buitenste schil: $\\arctan(x)$ staat zelf in de teller en $\\dfrac{1}{x^{2} + 1}$ is zijn eigen afgeleide → substitutie met $g(x) = \\arctan(x)$.",
+        "Neem $g(x) = \\arctan(x)$, dan is $g'(x) = \\dfrac{1}{x^{2} + 1}$. De integraal is dus $\\int g \\cdot g'\\,\\mathrm{d}x$, oftewel $\\int g\\,\\mathrm{d}g$.",
+        "Primitiveer naar $g$ met de machtsregel: $\\int g\\,\\mathrm{d}g = \\tfrac{1}{2}g^{2}$.",
+        "Vul $g$ terug in: $F(x) = \\tfrac{1}{2}\\arctan^{2}(x) + c$. Controle: differentieer $F$ en je krijgt $f$ terug."
+      ]
+    },
+    {
+      "nummer": "kern-1",
+      "cluster": "k3a_kern",
+      "niveau": 1,
+      "latex": "Primitiveer: $f(x) = \\dfrac{1}{(x + 3)^{2} + 1}$",
+      "antwoord_latex": "F(x) = \\arctan(x + 3) + c",
+      "integrand": "1 / ((x + 3)^2 + 1)",
+      "primitieve": "atan(x + 3)",
+      "stappen": [
+        "Alleen deel 2 van de driedeling speelt hier: bereken de goede integraal. Buitenste schil: een breuk met in de noemer een kwadraat plus $1$, maar niet kaal $x^{2} + 1$ → lees eerst de kern af. De regel voor $f(ax + b)$ zegt dat je daarna nog door $a$ moet delen.",
+        "De kern is $x + 3$, dus $a = 1$ en $b = 3$. Vergelijk met de standaardvorm: in plaats van $x^{2} + 1$ staat er $(x + 3)^{2} + 1$.",
+        "De regel voor $f(ax + b)$ geeft $\\tfrac{1}{a}F(ax + b)$, en hier is $a = 1$, dus delen door $a$ verandert niets.",
+        "Schrijf het antwoord op: $F(x) = \\arctan(x + 3) + c$. Controle: differentieer $F$ en je krijgt $f$ terug."
+      ]
+    },
+    {
+      "nummer": "kern-2",
+      "cluster": "k3a_kern",
+      "niveau": 1,
+      "latex": "Primitiveer: $f(x) = \\dfrac{2}{4x^{2} + 1}$",
+      "antwoord_latex": "F(x) = \\arctan(2x) + c",
+      "integrand": "2 / (4 * x^2 + 1)",
+      "primitieve": "atan(2 * x)",
+      "stappen": [
+        "Alleen deel 2 van de driedeling speelt hier: bereken de goede integraal. Buitenste schil: een breuk met in de noemer een kwadraat plus $1$, maar niet kaal $x^{2} + 1$ → lees eerst de kern af. De regel voor $f(ax + b)$ zegt dat je daarna nog door $a$ moet delen.",
+        "Schrijf de noemer als een kwadraat plus $1$: $4x^{2} + 1 = (2x)^{2} + 1$. De kern is dus $2x$ en $a = 2$.",
+        "De standaardvorm geeft $\\arctan(2x)$, en de regel voor $f(ax + b)$ zegt: deel door $a = 2$. Dat geeft $\\tfrac{1}{2}\\arctan(2x)$ voor $\\dfrac{1}{4x^{2} + 1}$. De factor $2$ uit de teller maakt dat weer ongedaan.",
+        "Schrijf het antwoord op: $F(x) = 2 \\cdot \\tfrac{1}{2}\\arctan(2x) + c = \\arctan(2x) + c$. Controle: differentieer $F$ en je krijgt $f$ terug."
+      ]
+    },
+    {
+      "nummer": "kern-3",
+      "cluster": "k3a_kern",
+      "niveau": 2,
+      "latex": "Primitiveer: $f(x) = \\dfrac{1}{(2x - 1)^{2} + 1}$",
+      "antwoord_latex": "F(x) = \\tfrac{1}{2}\\arctan(2x - 1) + c",
+      "integrand": "1 / ((2 * x - 1)^2 + 1)",
+      "primitieve": "1/2 * atan(2 * x - 1)",
+      "stappen": [
+        "Alleen deel 2 van de driedeling speelt hier: bereken de goede integraal. Buitenste schil: een breuk met in de noemer een kwadraat plus $1$, maar niet kaal $x^{2} + 1$ → lees eerst de kern af. De regel voor $f(ax + b)$ zegt dat je daarna nog door $a$ moet delen.",
+        "De kern is $2x - 1$, dus $a = 2$ en $b = -1$. De noemer staat al in de vorm kern-kwadraat plus $1$.",
+        "De standaardvorm geeft $\\arctan(2x - 1)$; de regel voor $f(ax + b)$ zegt dat je nog door $a = 2$ moet delen.",
+        "Schrijf het antwoord op: $F(x) = \\tfrac{1}{2}\\arctan(2x - 1) + c$. Controle: differentieer $F$ en je krijgt $f$ terug."
+      ]
+    },
+    {
+      "nummer": "kern-4",
+      "cluster": "k3a_kern",
+      "niveau": 2,
+      "latex": "Primitiveer: $f(x) = \\dfrac{6}{9x^{2} + 1}$",
+      "antwoord_latex": "F(x) = 2\\arctan(3x) + c",
+      "integrand": "6 / (9 * x^2 + 1)",
+      "primitieve": "2 * atan(3 * x)",
+      "stappen": [
+        "Alleen deel 2 van de driedeling speelt hier: bereken de goede integraal. Buitenste schil: een breuk met in de noemer een kwadraat plus $1$, maar niet kaal $x^{2} + 1$ → lees eerst de kern af. De regel voor $f(ax + b)$ zegt dat je daarna nog door $a$ moet delen.",
+        "Schrijf de noemer als een kwadraat plus $1$: $9x^{2} + 1 = (3x)^{2} + 1$. De kern is $3x$ en $a = 3$. De $6$ uit de teller houd je apart.",
+        "$\\dfrac{1}{(3x)^{2} + 1}$ geeft $\\tfrac{1}{3}\\arctan(3x)$: standaardvorm, daarna delen door $a = 3$.",
+        "Zet de $6$ er weer voor: $F(x) = 6 \\cdot \\tfrac{1}{3}\\arctan(3x) + c = 2\\arctan(3x) + c$. Controle: differentieer $F$ en je krijgt $f$ terug."
+      ]
+    },
+    {
+      "nummer": "kern-5",
+      "cluster": "k3a_kern",
+      "niveau": 3,
+      "latex": "Primitiveer: $f(x) = \\dfrac{2x}{x^{4} + 1}$",
+      "antwoord_latex": "F(x) = \\arctan\\left(x^{2}\\right) + c",
+      "integrand": "2 * x / (x^4 + 1)",
+      "primitieve": "atan(x^2)",
+      "stappen": [
+        "Alleen deel 2 van de driedeling speelt hier: bereken de goede integraal. Buitenste schil: in de noemer staat het kwadraat van iets anders dan $x$, en de afgeleide daarvan staat in de teller → substitutie. Met $\\int \\dfrac{g'}{g^{2} + 1}\\,\\mathrm{d}x = \\arctan(g) + c$ ben je er in één stap.",
+        "Schrijf de noemer als een kwadraat plus $1$: $x^{4} + 1 = \\left(x^{2}\\right)^{2} + 1$. Neem $g(x) = x^{2}$, dan is $g'(x) = 2x$ — en dat staat precies in de teller.",
+        "Dus $\\int \\dfrac{2x}{\\left(x^{2}\\right)^{2} + 1}\\,\\mathrm{d}x = \\int \\dfrac{1}{g^{2} + 1}\\,\\mathrm{d}g = \\arctan(g)$. De regel voor $f(ax + b)$ helpt hier niet: de kern is geen $ax + b$.",
+        "Vul $g$ terug in: $F(x) = \\arctan\\left(x^{2}\\right) + c$. Controle: differentieer $F$ en je krijgt $f$ terug."
+      ]
+    },
+    {
+      "nummer": "kern-6",
+      "cluster": "k3a_kern",
+      "niveau": 3,
+      "latex": "Primitiveer: $f(x) = \\dfrac{\\mathrm{e}^{x}}{\\mathrm{e}^{2x} + 1}$",
+      "antwoord_latex": "F(x) = \\arctan\\left(\\mathrm{e}^{x}\\right) + c",
+      "integrand": "e^x / (e^(2 * x) + 1)",
+      "primitieve": "atan(e^x)",
+      "stappen": [
+        "Alleen deel 2 van de driedeling speelt hier: bereken de goede integraal. Buitenste schil: in de noemer staat het kwadraat van iets anders dan $x$, en de afgeleide daarvan staat in de teller → substitutie. Met $\\int \\dfrac{g'}{g^{2} + 1}\\,\\mathrm{d}x = \\arctan(g) + c$ ben je er in één stap.",
+        "Gebruik de rekenregel $\\mathrm{e}^{2x} = \\left(\\mathrm{e}^{x}\\right)^{2}$: de noemer is $\\left(\\mathrm{e}^{x}\\right)^{2} + 1$. Neem $g(x) = \\mathrm{e}^{x}$, dan is $g'(x) = \\mathrm{e}^{x}$ — en dat staat in de teller.",
+        "Dus $\\int \\dfrac{\\mathrm{e}^{x}}{\\left(\\mathrm{e}^{x}\\right)^{2} + 1}\\,\\mathrm{d}x = \\int \\dfrac{1}{g^{2} + 1}\\,\\mathrm{d}g = \\arctan(g)$.",
+        "Vul $g$ terug in: $F(x) = \\arctan\\left(\\mathrm{e}^{x}\\right) + c$. Controle: differentieer $F$ en je krijgt $f$ terug."
+      ]
+    },
+    {
+      "nummer": "bep-1",
+      "cluster": "k3a_bepaald_exact",
+      "niveau": 1,
+      "latex": "Bereken exact: $\\displaystyle\\int_{0}^{1} \\dfrac{1}{x^{2} + 1}\\,\\mathrm{d}x$",
+      "antwoord_latex": "\\tfrac{1}{4}\\pi",
+      "integrand": "1 / (x^2 + 1)",
+      "primitieve": "atan(x)",
+      "grenzen": [
+        0,
+        1
+      ],
+      "waarde": "pi / 4",
+      "stappen": [
+        "Alleen deel 2 van de driedeling speelt hier: bereken de goede integraal. Eerst een primitieve zoeken, daarna de grenzen invullen. Het antwoord blijft exact. Buitenste schil: een breuk met $x^{2} + 1$ in de noemer → de standaardvorm $\\dfrac{1}{x^{2} + 1}$ geeft $\\arctan(x) + c$.",
+        "Er staat al precies de standaardvorm; herschrijven is niet nodig.",
+        "Primitiveer: $F(x) = \\arctan(x)$. De integratieconstante laat je weg; die valt bij het aftrekken toch weg.",
+        "Vul de grenzen in: $\\big[\\arctan(x)\\big]_{0}^{1} = \\arctan(1) - \\arctan(0) = \\tfrac{1}{4}\\pi - 0 = \\tfrac{1}{4}\\pi$."
+      ]
+    },
+    {
+      "nummer": "bep-2",
+      "cluster": "k3a_bepaald_exact",
+      "niveau": 1,
+      "latex": "Bereken exact: $\\displaystyle\\int_{-1}^{\\sqrt{3}} \\dfrac{1}{x^{2} + 1}\\,\\mathrm{d}x$",
+      "antwoord_latex": "\\tfrac{7}{12}\\pi",
+      "integrand": "1 / (x^2 + 1)",
+      "primitieve": "atan(x)",
+      "grenzen": [
+        -1,
+        1.7320508075688772
+      ],
+      "waarde": "7 * pi / 12",
+      "stappen": [
+        "Alleen deel 2 van de driedeling speelt hier: bereken de goede integraal. Eerst een primitieve zoeken, daarna de grenzen invullen. Het antwoord blijft exact. Buitenste schil: een breuk met $x^{2} + 1$ in de noemer → de standaardvorm $\\dfrac{1}{x^{2} + 1}$ geeft $\\arctan(x) + c$.",
+        "Er staat al precies de standaardvorm; alleen de grenzen zijn anders dan je gewend bent.",
+        "Primitiveer: $F(x) = \\arctan(x)$.",
+        "Vul de grenzen in: $\\big[\\arctan(x)\\big]_{-1}^{\\sqrt{3}} = \\arctan\\left(\\sqrt{3}\\right) - \\arctan(-1) = \\tfrac{1}{3}\\pi - \\left(-\\tfrac{1}{4}\\pi\\right) = \\tfrac{4}{12}\\pi + \\tfrac{3}{12}\\pi = \\tfrac{7}{12}\\pi$. Let op de dubbele mintekens bij de ondergrens."
+      ]
+    },
+    {
+      "nummer": "bep-3",
+      "cluster": "k3a_bepaald_exact",
+      "niveau": 2,
+      "latex": "Bereken exact: $\\displaystyle\\int_{0}^{\\frac{1}{2}} \\dfrac{2}{4x^{2} + 1}\\,\\mathrm{d}x$",
+      "antwoord_latex": "\\tfrac{1}{4}\\pi",
+      "integrand": "2 / (4 * x^2 + 1)",
+      "primitieve": "atan(2 * x)",
+      "grenzen": [
+        0,
+        0.5
+      ],
+      "waarde": "pi / 4",
+      "stappen": [
+        "Alleen deel 2 van de driedeling speelt hier: bereken de goede integraal. Eerst een primitieve zoeken, daarna de grenzen invullen. Het antwoord blijft exact. Buitenste schil: een breuk met in de noemer een kwadraat plus $1$, maar niet kaal $x^{2} + 1$ → lees eerst de kern af. De regel voor $f(ax + b)$ zegt dat je daarna nog door $a$ moet delen.",
+        "Schrijf de noemer als een kwadraat plus $1$: $4x^{2} + 1 = (2x)^{2} + 1$. De kern is $2x$, dus $a = 2$.",
+        "$\\dfrac{1}{(2x)^{2} + 1}$ geeft $\\tfrac{1}{2}\\arctan(2x)$, en met de $2$ uit de teller erbij is $F(x) = \\arctan(2x)$.",
+        "Vul de grenzen in: $\\big[\\arctan(2x)\\big]_{0}^{\\frac{1}{2}} = \\arctan(1) - \\arctan(0) = \\tfrac{1}{4}\\pi$."
+      ]
+    },
+    {
+      "nummer": "bep-4",
+      "cluster": "k3a_bepaald_exact",
+      "niveau": 2,
+      "latex": "Bereken exact: $\\displaystyle\\int_{-1}^{\\sqrt{3} - 1} \\dfrac{1}{(x + 1)^{2} + 1}\\,\\mathrm{d}x$",
+      "antwoord_latex": "\\tfrac{1}{3}\\pi",
+      "integrand": "1 / ((x + 1)^2 + 1)",
+      "primitieve": "atan(x + 1)",
+      "grenzen": [
+        -1,
+        0.7320508075688772
+      ],
+      "waarde": "pi / 3",
+      "stappen": [
+        "Alleen deel 2 van de driedeling speelt hier: bereken de goede integraal. Eerst een primitieve zoeken, daarna de grenzen invullen. Het antwoord blijft exact. Buitenste schil: een breuk met in de noemer een kwadraat plus $1$, maar niet kaal $x^{2} + 1$ → lees eerst de kern af. De regel voor $f(ax + b)$ zegt dat je daarna nog door $a$ moet delen.",
+        "De kern is $x + 1$, dus $a = 1$: delen door $a$ verandert hier niets. De rare grenzen zijn een hint dat de kern straks mooie waarden aanneemt.",
+        "Primitiveer: $F(x) = \\arctan(x + 1)$.",
+        "Vul de grenzen in. Bij $x = \\sqrt{3} - 1$ is de kern $\\sqrt{3}$ en bij $x = -1$ is de kern $0$: $\\big[\\arctan(x + 1)\\big]_{-1}^{\\sqrt{3} - 1} = \\arctan\\left(\\sqrt{3}\\right) - \\arctan(0) = \\tfrac{1}{3}\\pi$."
+      ]
+    },
+    {
+      "nummer": "bep-5",
+      "cluster": "k3a_bepaald_exact",
+      "niveau": 3,
+      "latex": "Bereken exact: $\\displaystyle\\int_{0}^{\\frac{1}{2}\\ln(3)} \\dfrac{\\mathrm{e}^{x}}{\\mathrm{e}^{2x} + 1}\\,\\mathrm{d}x$",
+      "antwoord_latex": "\\tfrac{1}{12}\\pi",
+      "integrand": "e^x / (e^(2 * x) + 1)",
+      "primitieve": "atan(e^x)",
+      "grenzen": [
+        0,
+        0.5493061443340548
+      ],
+      "waarde": "pi / 12",
+      "stappen": [
+        "Alleen deel 2 van de driedeling speelt hier: bereken de goede integraal. Eerst een primitieve zoeken, daarna de grenzen invullen. Het antwoord blijft exact. Buitenste schil: in de noemer staat het kwadraat van iets anders dan $x$, en de afgeleide daarvan staat in de teller → substitutie. Met $\\int \\dfrac{g'}{g^{2} + 1}\\,\\mathrm{d}x = \\arctan(g) + c$ ben je er in één stap.",
+        "Met $\\mathrm{e}^{2x} = \\left(\\mathrm{e}^{x}\\right)^{2}$ is de noemer $\\left(\\mathrm{e}^{x}\\right)^{2} + 1$. Neem $g(x) = \\mathrm{e}^{x}$; dan is $g'(x) = \\mathrm{e}^{x}$ en dat staat in de teller.",
+        "Dus $\\int \\dfrac{1}{g^{2} + 1}\\,\\mathrm{d}g = \\arctan(g)$, oftewel $F(x) = \\arctan\\left(\\mathrm{e}^{x}\\right)$.",
+        "Vul de grenzen in. Bij $x = \\tfrac{1}{2}\\ln(3)$ is $\\mathrm{e}^{x} = \\mathrm{e}^{\\frac{1}{2}\\ln(3)} = \\sqrt{3}$ en bij $x = 0$ is $\\mathrm{e}^{x} = 1$: $\\arctan\\left(\\sqrt{3}\\right) - \\arctan(1) = \\tfrac{1}{3}\\pi - \\tfrac{1}{4}\\pi = \\tfrac{4}{12}\\pi - \\tfrac{3}{12}\\pi = \\tfrac{1}{12}\\pi$."
+      ]
+    },
+    {
+      "nummer": "bep-6",
+      "cluster": "k3a_bepaald_exact",
+      "niveau": 3,
+      "latex": "Bereken exact: $\\displaystyle\\int_{0}^{1} \\dfrac{\\arctan(x)}{x^{2} + 1}\\,\\mathrm{d}x$",
+      "antwoord_latex": "\\dfrac{\\pi^{2}}{32}",
+      "integrand": "atan(x) / (x^2 + 1)",
+      "primitieve": "1/2 * atan(x)^2",
+      "grenzen": [
+        0,
+        1
+      ],
+      "waarde": "pi^2 / 32",
+      "stappen": [
+        "Alleen deel 2 van de driedeling speelt hier: bereken de goede integraal. Eerst een primitieve zoeken, daarna de grenzen invullen. Het antwoord blijft exact. Buitenste schil: $\\arctan(x)$ staat zelf in de teller en $\\dfrac{1}{x^{2} + 1}$ is zijn eigen afgeleide → substitutie met $g(x) = \\arctan(x)$.",
+        "Neem $g(x) = \\arctan(x)$, dan is $g'(x) = \\dfrac{1}{x^{2} + 1}$ en staat er $\\int g\\,\\mathrm{d}g$.",
+        "Primitiveer naar $g$: $\\int g\\,\\mathrm{d}g = \\tfrac{1}{2}g^{2}$, dus $F(x) = \\tfrac{1}{2}\\arctan^{2}(x)$.",
+        "Vul de grenzen in: $\\left[\\tfrac{1}{2}\\arctan^{2}(x)\\right]_{0}^{1} = \\tfrac{1}{2}\\left(\\tfrac{1}{4}\\pi\\right)^{2} - 0 = \\tfrac{1}{2} \\cdot \\dfrac{\\pi^{2}}{16} = \\dfrac{\\pi^{2}}{32}$."
+      ]
+    }
+  ]
+}

@@ -504,10 +504,17 @@ export type AdditiveQ = {
   alts?: string[]
   level: 1 | 2 | 3
   steps: Steps
-  /** De integrand in mathjs-notatie, voor `src/content/primitieven.test.ts`. */
-  integrand: string
+  /**
+   * De integrand in mathjs-notatie, voor `src/content/primitieven.test.ts`.
+   *
+   * Mag weg bij een vraag waar geen integraal in zit — een vergelijking of een
+   * exacte waarde. Zo'n vraag komt dan niet in het bestand in `content/` en
+   * wordt dus ook niet nagerekend; `integrand` en `primitieve` horen bij
+   * elkaar, dus laat je ze allebei weg of allebei staan.
+   */
+  integrand?: string
   /** De primitieve in mathjs-notatie, zonder integratieconstante. */
-  primitieve: string
+  primitieve?: string
   domein?: [number, number]
   grenzen?: [number, number]
   waarde?: string | number
@@ -574,8 +581,15 @@ export function validateAdditive(c: AdditiveChapter) {
     if ((q.grenzen === undefined) !== (q.waarde === undefined)) {
       throw new Error(`Vraag ${q.nummer}: \`grenzen\` en \`waarde\` horen bij elkaar`)
     }
+    if ((q.integrand === undefined) !== (q.primitieve === undefined)) {
+      throw new Error(`Vraag ${q.nummer}: \`integrand\` en \`primitieve\` horen bij elkaar`)
+    }
+    if (q.integrand === undefined && q.grenzen !== undefined) {
+      throw new Error(`Vraag ${q.nummer}: met \`grenzen\` hoort ook een \`primitieve\` om na te rekenen`)
+    }
     for (const veld of ['integrand', 'primitieve'] as const) {
-      if (/\blog\s*\(/.test(q[veld])) {
+      const formule = q[veld]
+      if (formule !== undefined && /\blog\s*\(/.test(formule)) {
         throw new Error(`Vraag ${q.nummer}: schrijf \`ln(...)\` of \`log10(...)\` in \`${veld}\``)
       }
     }
@@ -588,21 +602,26 @@ export function validateAdditive(c: AdditiveChapter) {
 /**
  * Het JSON-bestand voor `content/`, dat `src/content/primitieven.test.ts`
  * narekent: per vraag de integrand en de primitieve in mathjs-notatie.
+ *
+ * Vragen zonder integraal (een vergelijking, een exacte waarde) hebben niets
+ * om na te rekenen en blijven er dus buiten.
  */
 export function generateContentFile(c: AdditiveChapter, onderdeel: string): string {
-  const vragen = c.questions.map((q) => ({
-    nummer: q.nummer,
-    cluster: q.cluster,
-    niveau: q.level,
-    latex: q.latex,
-    antwoord_latex: q.antwoordLatex,
-    integrand: q.integrand,
-    primitieve: q.primitieve,
-    ...(q.domein ? { domein: q.domein } : {}),
-    ...(q.grenzen ? { grenzen: q.grenzen } : {}),
-    ...(q.waarde !== undefined ? { waarde: q.waarde } : {}),
-    stappen: q.steps,
-  }))
+  const vragen = c.questions
+    .filter((q) => q.integrand !== undefined && q.primitieve !== undefined)
+    .map((q) => ({
+      nummer: q.nummer,
+      cluster: q.cluster,
+      niveau: q.level,
+      latex: q.latex,
+      antwoord_latex: q.antwoordLatex,
+      integrand: q.integrand,
+      primitieve: q.primitieve,
+      ...(q.domein ? { domein: q.domein } : {}),
+      ...(q.grenzen ? { grenzen: q.grenzen } : {}),
+      ...(q.waarde !== undefined ? { waarde: q.waarde } : {}),
+      stappen: q.steps,
+    }))
   return `${JSON.stringify({ hoofdstuk: c.chapterSlug.toUpperCase(), onderdeel, vragen }, null, 2)}\n`
 }
 
