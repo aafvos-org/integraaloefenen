@@ -1,6 +1,11 @@
-# Planning — wat nog op de rol staat
+# Planning — oud document, niet meer leidend
 
-Live document: aangevuld naarmate je features afrondt. Zie ook [`idea.md`](./idea.md) voor de volledige bouwopdracht.
+> ⚠️ **Dit is geschiedenis, geen beschrijving van de site.** Deze planning komt
+> uit afgeleideoefenen.nl en beschrijft een opzet die hier niet meer geldt: het
+> leerpad op `/leerpad` en de onboarding-wizard staan uit, en
+> `src/lib/practice/bulk-progress.ts` wordt niet meer gebruikt. Volg dit
+> bestand niet. Wat er nu is, staat in [`README.md`](./README.md); de
+> afspraken staan in [`AGENTS.md`](./AGENTS.md).
 
 ---
 

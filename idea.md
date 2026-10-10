@@ -1,5 +1,12 @@
-# lerendifferentiëren.nl — Technische Bouwopdracht
+# lerendifferentiëren.nl — Technische Bouwopdracht (oud, niet meer leidend)
 **Versie 1.0 — April 2026**
+
+> ⚠️ **Dit is geschiedenis, geen bouwopdracht voor deze repo.** Het gaat over
+> een site over differentiëren, op Vercel, met afspraken die hier niet meer
+> gelden. Let vooral op: de notatie-afspraak `t(x)/n(x)` hieronder is het
+> tegenovergestelde van wat nu geldt — functies heten `f`, `g` en `h`.
+> Volg dit bestand niet. Wat er nu is, staat in [`README.md`](./README.md);
+> de afspraken staan in [`AGENTS.md`](./AGENTS.md).
 
 ---
 

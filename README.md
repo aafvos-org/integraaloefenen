@@ -1,67 +1,56 @@
-# afgeleideoefenen.nl
+# integraaloefenen.nl
 
-Nederlandse wiskundewebsite voor VWO-studenten om differentiëren te leren.
-Gebouwd met **Next.js (App Router) + Supabase + Gemini**. Zie
-[`idea.md`](./idea.md) voor de volledige bouwopdracht.
+Nederlandse wiskundesite waarop vwo-leerlingen **integreren en primitiveren**
+oefenen (wiskunde B). Gebouwd met Next.js, Supabase en Gemini; draait op
+Cloudflare Workers via OpenNext.
+
+> **Lees eerst [`AGENTS.md`](./AGENTS.md).** Daar staan de afspraken die
+> gelden: hoe je test, wat je niet zelf doet, en hoe de notatie en de
+> driedeling van een opgave eruitzien. Die afspraken gaan voor op dit bestand.
+
+Deze repo is in oktober 2026 afgesplitst van afgeleideoefenen.nl. Er zit nog
+afgeleiden-code in die stap voor stap weggaat. `PLANNING.md` en `idea.md` gaan
+over die oude opzet en zijn geschiedenis — volg ze niet.
 
 ---
 
 ## Tech stack
 
-| Laag        | Technologie                                   |
-|-------------|-----------------------------------------------|
-| Frontend    | Next.js 16 (App Router) + TypeScript + Tailwind |
-| Backend     | Next.js API Routes                            |
-| Database    | Supabase (PostgreSQL + Auth)                  |
-| AI          | Google Gemini (`gemini-2.5-flash`)            |
-| Wiskunde    | KaTeX                                         |
-| Hosting     | Vercel                                        |
+| Laag       | Technologie                                      |
+|------------|--------------------------------------------------|
+| Frontend   | Next.js 16 (App Router) + TypeScript + Tailwind 4 |
+| Backend    | Route handlers en server actions in diezelfde app |
+| Database   | Supabase (PostgreSQL + Auth), eigen project `IntegraalOefenen` |
+| AI         | Google Gemini (nakijken van antwoorden)           |
+| Wiskunde   | KaTeX                                             |
+| Mail       | Resend                                            |
+| Statistiek | PostHog                                           |
+| Hosting    | Cloudflare Workers via OpenNext (`@opennextjs/cloudflare`) |
 
 ---
 
 ## Snelstart
 
-### 1. Installeer dependencies
+### 1. Installeren
 
 ```bash
 npm install
 ```
 
-### 2. Supabase project opzetten
-
-1. Maak een gratis project aan op [supabase.com](https://supabase.com).
-2. Open in het dashboard **SQL Editor** en draai de volgende bestanden in
-   deze volgorde:
-   1. [`supabase/migrations/0001_init.sql`](./supabase/migrations/0001_init.sql) — schema + RLS
-   2. [`supabase/seed.sql`](./supabase/seed.sql) — topics, clusters, root causes, startvragen
-3. Onder **Authentication → Providers** is "Email" standaard aan. Dat is
-   voldoende voor Fase 1 van de bouwopdracht.
-
-> **Admin rol toekennen**
-> Na registratie heeft elke gebruiker `role = 'student'`. Om iemand admin
-> te maken, draai in de SQL editor:
-> ```sql
-> update public.profiles set role = 'admin' where username = 'jouw_naam';
-> -- óf op basis van het user id uit auth.users
-> ```
-
-### 3. Omgevingsvariabelen
-
-Kopieer het voorbeeld en vul je eigen keys in:
+### 2. Sleutels klaarzetten
 
 ```bash
 cp .env.local.example .env.local
 ```
 
-| Variabele                       | Waar te vinden in Supabase dashboard |
-|---------------------------------|--------------------------------------|
-| `NEXT_PUBLIC_SUPABASE_URL`      | Project Settings → API → Project URL |
-| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Project Settings → API → `anon` public key |
-| `SUPABASE_SERVICE_ROLE_KEY`     | Project Settings → API → `service_role` key (**niet** in de browser gebruiken!) |
-| `GEMINI_API_KEY`                | [aistudio.google.com/app/apikey](https://aistudio.google.com/app/apikey) |
-| `NEXT_PUBLIC_SITE_URL`          | Basis-URL van de site (lokaal: `http://localhost:3000`, productie: eigen domein) |
+In `.env.local.example` staat per sleutel waar je hem vandaan haalt en wat er
+misgaat als hij leeg blijft. Om de site lokaal te zien heb je genoeg aan de
+Supabase-sleutels; mail, Gemini en PostHog mogen leeg blijven.
 
-### 4. Start de dev server
+`.env*` en `.dev.vars*` staan in `.gitignore` en blijven daar. Geheimen voor
+de live site staan als Worker-secrets in Cloudflare, nooit in deze repo.
+
+### 3. Dev server
 
 ```bash
 npm run dev
@@ -71,83 +60,119 @@ Open [http://localhost:3000](http://localhost:3000).
 
 ---
 
-## Projectstructuur
+## Zelf controleren
 
+Voor elke pull request moeten deze vier slagen:
+
+```bash
+npm run lint
+npx tsc --noEmit
+npm test
+npx opennextjs-cloudflare build
 ```
-.
-├── idea.md                         # Volledige bouwopdracht (bron van waarheid)
-├── src/
-│   ├── app/                        # Next.js App Router pagina's
-│   ├── lib/
-│   │   └── supabase/
-│   │       ├── client.ts           # Browser Supabase client
-│   │       ├── server.ts           # Server + service-role client
-│   │       ├── middleware.ts       # Session refresh + admin guard (helper)
-│   │       └── types.ts            # Database TypeScript types
-│   └── proxy.ts                    # Next.js 16 proxy (voorheen middleware)
-├── supabase/
-│   ├── migrations/
-│   │   └── 0001_init.sql           # Schema uit sectie 3
-│   └── seed.sql                    # Seed data uit sectie 4 + 13
-└── .env.local.example
+
+Raak je iets aan dat een leerling ziet, draai dan ook de browsertests:
+
+```bash
+npx playwright install chromium
+npx supabase start      # Docker moet draaien
+npx supabase db reset   # zet de testleerling en het testhoofdstuk klaar
+npm run test:e2e
 ```
+
+Gebruik altijd `npm run test:e2e` en niet `npx playwright test`: het scriptje
+`scripts/e2e.mjs` zoekt de sleutels van de lokale Supabase op, controleert dat
+die écht lokaal is, en zet `AI_CHECK_MODE=stub` zodat er geen Gemini aan te
+pas komt. Zie [`AGENTS.md`](./AGENTS.md) voor de details en voor wat je doet
+als de poorten al bezet zijn.
 
 ---
 
 ## Scripts
 
-| Commando          | Actie                                     |
-|-------------------|-------------------------------------------|
-| `npm run dev`     | Start dev server                          |
-| `npm run build`   | Productie build                           |
-| `npm run start`   | Start productie build                     |
-| `npm run lint`    | ESLint                                    |
+| Commando                | Actie                                              |
+|-------------------------|----------------------------------------------------|
+| `npm run dev`           | Dev server                                         |
+| `npm run build`         | Next.js-build (niet wat Cloudflare draait)         |
+| `npm run lint`          | ESLint                                             |
+| `npm run typecheck`     | `tsc --noEmit`                                     |
+| `npm test`              | Vitest, één keer                                   |
+| `npm run test:watch`    | Vitest, blijft meekijken                           |
+| `npm run test:e2e`      | Playwright tegen lokale Supabase                   |
+| `npm run cf:build`      | OpenNext-build voor Workers                        |
+| `npm run cf:preview`    | Die build lokaal draaien in de Workers-omgeving    |
+| `npm run cf-typegen`    | Types van de Cloudflare-omgeving bijwerken         |
+
+`npm run cf:deploy` en `npm run cf:upload` staan er wel, maar die draai je
+niet zelf — zie hieronder.
 
 ---
 
-## Bouwvolgorde
+## Hoe iets live komt
 
-Zie `idea.md` sectie 11 — volg de vier fasen:
+1. Eigen tak vanaf de nieuwste `main`.
+2. Pull request met `gh pr create`.
+3. **Cloudflare Workers Builds** bouwt vanzelf bij elke pull request en zet er
+   een voorbeeldversie op een `*.workers.dev`-adres bij. Die controle moet
+   groen zijn.
+4. Merge naar `main` → dezelfde build gaat live op integraaloefenen.nl.
 
-1. **Fundament** — scaffolding + Supabase + admin CRUD ✓
-2. **Leerlogica** — oefenpagina, vraag­selectie, mastery tracking ✓
-3. **AI laag** — Gemini-integratie, fout­type­detectie, vraag­generatie ✓
-4. **Polish** — wiskundig toetsenbord, mobiel, extra statistieken ✓
+Deployen met `wrangler` of `opennextjs-cloudflare deploy` doe je niet. Live
+zetten gebeurt alleen via een merge naar `main`.
 
 ---
 
-## Deploy naar productie (Vercel)
+## Database
 
-1. **Push je code naar een Git-remote** (GitHub / GitLab / Bitbucket). Check
-   dat `.env.local` níét gecommit is (`git status` → zou leeg moeten zijn qua
-   secrets).
-2. Ga naar [vercel.com/new](https://vercel.com/new), koppel je repo en kies
-   **Next.js** als framework (wordt automatisch gedetecteerd).
-3. Vul onder **Environment Variables** alle keys uit `.env.local.example` in
-   voor zowel Production als Preview (behalve `NEXT_PUBLIC_SITE_URL`, die zet
-   je op je productie-domein, bv. `https://afgeleideoefenen.nl`).
-4. Deploy → je krijgt een `*.vercel.app`-URL.
-5. **Eigen domein koppelen**: in het Vercel-project → **Settings → Domains**
-   voeg je `afgeleideoefenen.nl` toe. Vercel geeft één A-record en één
-   CNAME — vul die in bij je domeinregistrar.
-6. **Supabase Auth redirect URLs** updaten: Supabase dashboard →
-   **Authentication → URL Configuration** → zet `Site URL` op je productie-URL
-   en voeg `https://<domein>/auth/callback` toe aan **Redirect URLs**.
-7. **Migraties draaien**: in de Supabase SQL Editor beide files draaien:
-   `0001_init.sql`, `0002_question_flags.sql` en daarna `seed.sql`.
-8. **Gemini API-key** onder Google AI Studio: zet een HTTP-referrer
-   restriction op `https://afgeleideoefenen.nl/*` zodat hij niet misbruikt
-   wordt als hij lekt.
+De oefenstof en het schema staan in [`supabase/migrations/`](./supabase/migrations/).
+Lokaal zet je alles klaar met:
 
-### SEO & vindbaarheid
+```bash
+npx supabase start
+npx supabase db reset   # draait de migraties + supabase/seed.sql
+```
 
-- `robots.ts` en `sitemap.ts` staan al in het project — na deploy bereikbaar op
-  `/robots.txt` en `/sitemap.xml`.
-- Dien je sitemap in bij **Google Search Console** (voeg je domein toe,
-  verifieer via DNS-TXT, submit `sitemap.xml`).
-- Voeg het domein ook toe aan **Bing Webmaster Tools**.
-- Open Graph metadata is al gezet; een `og-image.png` (1200×630) in `public/`
-  wordt automatisch opgepikt door `metadataBase`.
+- [`supabase/seed.sql`](./supabase/seed.sql) is **alleen lokaal**: een vaste
+  testleerling en een testhoofdstuk voor de browsertests. Draai dat bestand
+  nooit op het echte project.
+- Plak geen SQL met de hand in de Supabase SQL Editor van het echte project.
+  Een wijziging aan het schema gaat via een migratie, en alleen nadat Aaf dat
+  in de taak heeft goedgekeurd.
+- `IntegraalOefenen` is een eigen Supabase-project (`oyevapifmenqjuklprws`) en
+  wordt niet meer gedeeld met afgeleideoefenen.nl.
+
+---
+
+## Projectstructuur
+
+```
+.
+├── AGENTS.md                  # De afspraken — lees dit eerst
+├── wrangler.jsonc             # Cloudflare Worker-config
+├── open-next.config.ts        # OpenNext-adapter
+├── src/
+│   ├── middleware.ts          # Edge-runtime, nodig voor Cloudflare
+│   ├── app/
+│   │   ├── [locale]/          # De pagina's die een leerling ziet
+│   │   ├── admin/             # Beheer
+│   │   └── api/               # Route handlers (nakijken, mail, webhooks)
+│   ├── components/            # Gedeelde UI (header, math, toetsenbord)
+│   ├── config/site.ts         # Welke site dit is
+│   ├── content/               # Theorie en uitleg
+│   └── lib/
+│       ├── ai/                # Gemini + de stub voor tests
+│       ├── practice/          # Vraagselectie, nakijken, voortgang
+│       ├── email/             # Resend
+│       └── supabase/          # Clients voor browser en server
+├── supabase/
+│   ├── migrations/            # Schema + oefenstof
+│   ├── seed.sql               # Alleen lokaal
+│   └── config.toml
+├── e2e/                       # Playwright
+└── scripts/                   # Hulpscripts (e2e, migratiewerk, mail)
+```
+
+Tests staan naast de code die ze controleren (`src/**/*.test.ts`).
 
 ---
 
