@@ -187,4 +187,36 @@ describe('submitStudyAnswerAction', () => {
     expect(answers[0].is_correct).toBe(true)
     expect(progress.total_correct).toBeGreaterThan(2)
   })
+
+  it('telt een antwoord in een andere notatie één keer mee en breekt de reeks niet', async () => {
+    // Reeks staat op 2. Een goed antwoord in een andere notatie hoort de
+    // reeks op 3 te zetten en één keer bij de totalen te tellen — niet eerst
+    // fout gerekend te worden.
+    aiSaysCorrect = true
+
+    const result = await submitStudyAnswerAction('q1', 'x^3/3 + c')
+
+    expect(result).toMatchObject({ kind: 'correct', streak: 3, mastered: true })
+    expect(progress.correct_streak).toBe(3)
+    expect(progress.total_answered).toBe(3)
+    expect(progress.total_correct).toBe(3)
+    expect(progress.status).toBe('mastered')
+  })
+
+  it('pakt beheerst niet af bij een misser tijdens het herhalen', async () => {
+    progress = { ...freshProgress(5, 5), status: 'mastered', mastered_at: '2026-09-01T10:00:00.000Z' }
+
+    const fout = await submitStudyAnswerAction('q1', 'x^2')
+
+    expect(fout).toMatchObject({ kind: 'incorrect' })
+    expect(progress.correct_streak).toBe(0)
+    expect(progress.status).toBe('mastered')
+    expect(progress.mastered_at).toBe('2026-09-01T10:00:00.000Z')
+
+    // En het goede antwoord daarna zet beheerst niet terug naar bezig.
+    const goed = await submitStudyAnswerAction('q1', '1/3x^3 + c')
+
+    expect(goed).toMatchObject({ kind: 'correct', streak: 1, mastered: true })
+    expect(progress.status).toBe('mastered')
+  })
 })

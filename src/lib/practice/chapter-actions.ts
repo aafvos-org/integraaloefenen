@@ -5,8 +5,7 @@ import { checkWrongAnswerNew } from '@/lib/ai/check-answer-new'
 import { createClient, createServiceRoleClient } from '@/lib/supabase/server'
 
 import { answersMatch } from './engine'
-
-const MASTERY_THRESHOLD = 3
+import { progressAfterCorrect, progressAfterIncorrect } from './progress'
 
 type DB = Awaited<ReturnType<typeof createClient>>
 
@@ -43,7 +42,30 @@ export async function submitStudyAnswerAction(
   }
 
   const alts: string[] = question.answer_alternatives ?? []
-  const isCorrect = answersMatch(userAnswer, question.answer, alts)
+
+  // Eerst helemaal nakijken, dan pas opslaan. Komt het antwoord niet op de
+  // database uit, dan beslist de AI-controle: die rekent een andere notatie
+  // (bijvoorbeeld x^3/3 in plaats van 1/3x^3) alsnog goed. Pas als de
+  // uitslag vaststaat, gaat er één rij in en gaat de voortgang één keer
+  // omhoog.
+  let isCorrect = answersMatch(userAnswer, question.answer, alts)
+  let errorExplanation: string | null = null
+
+  if (!isCorrect) {
+    // AI-uitleg ophalen (cache-first; schrijfacties gaan via service role)
+    try {
+      const service = createServiceRoleClient()
+      const aiResult = await checkWrongAnswerNew(service, question.id, userAnswer)
+      if ('error' in aiResult) {
+        console.error('[check-answer-new]', aiResult.error)
+      } else {
+        errorExplanation = aiResult.errorExplanation || null
+        isCorrect = aiResult.isMathematicallyCorrect
+      }
+    } catch (e) {
+      console.error('[check-answer-new] unexpected', e)
+    }
+  }
 
   const sessionId = await getOrCreateSession(
     supabase,
@@ -72,52 +94,15 @@ export async function submitStudyAnswerAction(
     }
   }
 
+  const progress = await applyProgress(
+    supabase,
+    user.id,
+    question.topic_id,
+    question.cluster_id,
+    isCorrect,
+  )
+
   if (isCorrect) {
-    const progress = await bumpProgressOnCorrect(
-      supabase,
-      user.id,
-      question.topic_id,
-      question.cluster_id,
-    )
-    return {
-      kind: 'correct',
-      sessionId,
-      streak: progress.correct_streak,
-      mastered: progress.status === 'mastered',
-    }
-  }
-
-  await bumpTotalsOnIncorrect(supabase, user.id, question.topic_id, question.cluster_id)
-
-  // AI-uitleg ophalen (cache-first; schrijfacties gaan via service role)
-  let errorExplanation: string | null = null
-  let aiSaysCorrect = false
-  try {
-    const service = createServiceRoleClient()
-    const aiResult = await checkWrongAnswerNew(service, question.id, userAnswer)
-    if ('error' in aiResult) {
-      console.error('[check-answer-new]', aiResult.error)
-    } else {
-      errorExplanation = aiResult.errorExplanation || null
-      aiSaysCorrect = aiResult.isMathematicallyCorrect
-    }
-  } catch (e) {
-    console.error('[check-answer-new] unexpected', e)
-  }
-
-  // AI zegt wiskundig correct (alternatieve notatie): alsnog goed rekenen
-  if (aiSaysCorrect) {
-    await supabase
-      .from('session_answers_new')
-      .update({ is_correct: true })
-      .eq('id', answerRow.id)
-
-    const progress = await bumpProgressOnCorrect(
-      supabase,
-      user.id,
-      question.topic_id,
-      question.cluster_id,
-    )
     return {
       kind: 'correct',
       sessionId,
@@ -287,41 +272,23 @@ async function getOrCreateProgress(
   return created
 }
 
-async function bumpProgressOnCorrect(
+/** Werk de voortgang bij voor één nagekeken antwoord. */
+async function applyProgress(
   db: DB,
   userId: string,
   topicId: string,
   clusterId: string,
+  isCorrect: boolean,
 ) {
   const p = await getOrCreateProgress(db, userId, topicId, clusterId)
-  const newStreak = p.correct_streak + 1
-  const mastered = newStreak >= MASTERY_THRESHOLD
+  const next = isCorrect ? progressAfterCorrect(p) : progressAfterIncorrect(p)
+
   const { data, error } = await db
     .from('user_progress_new')
-    .update({
-      correct_streak: newStreak,
-      total_answered: p.total_answered + 1,
-      total_correct: p.total_correct + 1,
-      status: mastered ? 'mastered' : 'in_progress',
-      mastered_at:
-        mastered && !p.mastered_at ? new Date().toISOString() : p.mastered_at,
-    })
+    .update(next)
     .eq('id', p.id)
     .select('*')
     .single()
   if (error) throw new Error(error.message)
   return data
-}
-
-async function bumpTotalsOnIncorrect(
-  db: DB,
-  userId: string,
-  topicId: string,
-  clusterId: string,
-) {
-  const p = await getOrCreateProgress(db, userId, topicId, clusterId)
-  await db
-    .from('user_progress_new')
-    .update({ total_answered: p.total_answered + 1, correct_streak: 0 })
-    .eq('id', p.id)
 }
