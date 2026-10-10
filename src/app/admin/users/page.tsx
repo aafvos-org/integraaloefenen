@@ -2,83 +2,66 @@ import { createServiceRoleClient } from '@/lib/supabase/server'
 import { Badge, Card } from '@/components/ui'
 
 import { setUserRole } from './actions'
+import {
+  aggregateAnswers,
+  countMasteredClusters,
+  fetchAllAuthUsers,
+  fetchAllRows,
+  type AnswerRow,
+} from './stats'
 
 export default async function UsersPage() {
   const admin = createServiceRoleClient()
 
-  const [
-    authUsersRes,
-    { data: profiles },
-    { data: progressRows },
-    { data: answerRows },
-  ] = await Promise.all([
-    admin.auth.admin.listUsers({ page: 1, perPage: 200 }),
-    admin
-      .from('profiles')
-      .select('id, username, role, created_at')
-      .order('created_at', { ascending: false }),
-    admin
-      .from('user_progress_new')
-      .select('user_id, status'),
-    admin
-      .from('session_answers_new')
-      .select(
-        'is_correct, answered_at, session_id, user_sessions_new!inner(user_id)',
-      )
-      .returns<
-        Array<{
-          is_correct: boolean | null
-          answered_at: string
-          session_id: string
-          user_sessions_new: { user_id: string } | { user_id: string }[]
-        }>
-      >(),
+  // Alles per pagina ophalen: één query geeft hoogstens 1000 rijen terug,
+  // en bij meer antwoorden viel een deel stilletjes weg.
+  const [authUsers, profiles, progressRows, answerRows] = await Promise.all([
+    fetchAllAuthUsers(async (page, perPage) => {
+      const { data, error } = await admin.auth.admin.listUsers({ page, perPage })
+      if (error) throw error
+      return data.users
+    }, 200),
+    fetchAllRows(async (from, to) => {
+      const { data, error } = await admin
+        .from('profiles')
+        .select('id, username, role, created_at')
+        .order('created_at', { ascending: false })
+        .order('id', { ascending: true })
+        .range(from, to)
+      if (error) throw error
+      return data ?? []
+    }),
+    fetchAllRows(async (from, to) => {
+      const { data, error } = await admin
+        .from('user_progress_new')
+        .select('user_id, status')
+        .order('id', { ascending: true })
+        .range(from, to)
+      if (error) throw error
+      return data ?? []
+    }),
+    fetchAllRows(async (from, to) => {
+      const { data, error } = await admin
+        .from('session_answers_new')
+        .select('is_correct, answered_at, user_sessions_new!inner(user_id)')
+        .order('id', { ascending: true })
+        .range(from, to)
+        .returns<AnswerRow[]>()
+      if (error) throw error
+      return data ?? []
+    }),
   ])
 
-  const emailById = new Map(
-    authUsersRes.data.users.map((u) => [u.id, u.email ?? '—']),
-  )
-
-  const masteredByUser = new Map<string, number>()
-  for (const row of progressRows ?? []) {
-    if (row.status === 'mastered') {
-      masteredByUser.set(row.user_id, (masteredByUser.get(row.user_id) ?? 0) + 1)
-    }
-  }
-
-  const answersByUser = new Map<
-    string,
-    { total: number; correct: number; lastAnsweredAt: string | null }
-  >()
-  for (const row of answerRows ?? []) {
-    const userId = (
-      Array.isArray(row.user_sessions_new)
-        ? row.user_sessions_new[0]
-        : (row.user_sessions_new as unknown as { user_id: string })
-    )?.user_id
-    if (!userId) continue
-    const agg = answersByUser.get(userId) ?? {
-      total: 0,
-      correct: 0,
-      lastAnsweredAt: null,
-    }
-    agg.total += 1
-    if (row.is_correct) agg.correct += 1
-    if (
-      !agg.lastAnsweredAt ||
-      (row.answered_at && row.answered_at > agg.lastAnsweredAt)
-    ) {
-      agg.lastAnsweredAt = row.answered_at
-    }
-    answersByUser.set(userId, agg)
-  }
+  const emailById = new Map(authUsers.map((u) => [u.id, u.email ?? '—']))
+  const masteredByUser = countMasteredClusters(progressRows)
+  const answersByUser = aggregateAnswers(answerRows)
 
   return (
     <div className="space-y-6">
       <div>
         <h2 className="font-serif text-xl text-text">Gebruikers</h2>
         <p className="text-sm text-text-muted">
-          {profiles?.length ?? 0} accounts. Klik op een rol om iemand admin te
+          {profiles.length} accounts. Klik op een rol om iemand admin te
           maken of terug te zetten naar student.
         </p>
       </div>
@@ -97,7 +80,7 @@ export default async function UsersPage() {
             </tr>
           </thead>
           <tbody className="divide-y divide-border">
-            {profiles?.map((p) => {
+            {profiles.map((p) => {
               const stats = answersByUser.get(p.id)
               const mastered = masteredByUser.get(p.id) ?? 0
               const pct =
@@ -154,7 +137,7 @@ export default async function UsersPage() {
                 </tr>
               )
             })}
-            {!profiles?.length && (
+            {profiles.length === 0 && (
               <tr>
                 <td
                   colSpan={7}
