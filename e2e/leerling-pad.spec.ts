@@ -15,6 +15,14 @@ test.beforeEach(async ({ page }) => {
   await logIn(page)
 })
 
+test('boven de opgave staat wat je moet doen @telefoon', async ({ page }) => {
+  // Opgave 1 is een kale primitiveer-opgave: f(x) = x^2. Zonder regel erboven
+  // staat er nergens of je moet primitiveren of differentiëren.
+  await kiesOpgave(page, 1)
+
+  await expect(page.getByText('Bepaal de primitieve van:')).toBeVisible()
+})
+
 test('een goed antwoord wordt goedgekeurd @telefoon', async ({ page }) => {
   // Opgave 1: f(x) = x^2  →  F(x) = 1/3x^3 + c
   await kiesOpgave(page, 1)

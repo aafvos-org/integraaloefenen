@@ -255,6 +255,9 @@
   },
   "PracticeCard": {
     "difficulty": "Moeilijkheid {n}",
+    "promptPrimitieve": "Bepaal de primitieve van:",
+    "promptBepaaldeIntegraal": "Bereken exact (dus niet afronden):",
+    "promptOnbepaaldeIntegraal": "Bereken de integraal:",
     "checking": "Even nakijken…",
     "yourAnswer": "Jouw antwoord",
     "previousAttempt": "Vorige poging",

@@ -6,7 +6,6 @@ import { Link } from '@/i18n/navigation'
 import { useEffect, useRef, useState, useTransition } from 'react'
 import { useTranslations } from 'next-intl'
 
-import { SITE } from '@/config/site'
 import { Math as TeX, RichMath } from '@/components/math'
 import { Button, cn, ErrorBanner } from '@/components/ui'
 import {
@@ -14,6 +13,7 @@ import {
   type StudyResult,
 } from '@/lib/practice/chapter-actions'
 import { insertAtCursor, toLatexPreview } from '@/lib/practice/input'
+import { antwoordPrefix, opdrachtSleutel } from '@/lib/practice/opdracht'
 import {
   oefenFoutProps,
   type OefenEventNaam,
@@ -24,15 +24,6 @@ import type { UitlegVideo } from '@/lib/videos'
 import { MathKeyboard } from '@/components/math-keyboard'
 
 const MASTERY_THRESHOLD = 3
-
-/**
- * Notatie voor de antwoordregel onder de opgave, afgeleid van de functieletter
- * in de vraag: "k(x) = …" → "k'(x) =" (afgeleiden) of "K(x) =" (integralen).
- */
-function answerPrefix(latexBody: string | null): string {
-  const letter = latexBody?.match(/([a-zA-Z])\s*\(\s*x\s*\)\s*=/)?.[1] ?? 'f'
-  return SITE === 'integralen' ? `${letter.toUpperCase()}(x) =` : `${letter}'(x) =`
-}
 
 type Step = { id: string; step_order: number; step_description: string }
 
@@ -92,6 +83,10 @@ export function StudyCard({
   const feedbackRef = useRef<HTMLDivElement | null>(null)
   const attemptsRef = useRef(0)
   const shownAtRef = useRef(0)
+  // Wat er gevraagd wordt en hoe de antwoordregel begint, allebei afgeleid
+  // uit de opgave zelf. Zie src/lib/practice/opdracht.ts.
+  const opdracht = opdrachtSleutel(question.latex_body)
+  const prefix = antwoordPrefix(question.latex_body)
   // Reset bij vraagwissel gebeurt via key={question.id} op de call site.
 
   useEffect(() => {
@@ -224,6 +219,9 @@ export function StudyCard({
       </div>
 
       <div className="mb-6">
+        {opdracht && (
+          <p className="mb-1 text-sm font-medium text-text-muted">{t(opdracht)}</p>
+        )}
         <div className="font-serif text-2xl leading-snug text-text">
           {question.latex_body?.includes('$') ? (
             <RichMath source={question.latex_body} />
@@ -234,7 +232,7 @@ export function StudyCard({
         {state.phase === 'input' && (
           <div className="mt-2 font-serif text-2xl leading-snug text-accent">
             <TeX
-              tex={`${answerPrefix(question.latex_body)} ${
+              tex={`${prefix} ${
                 answer.trim() ? toLatexPreview(answer) : '\\ldots'
               }`}
               displayMode
@@ -250,7 +248,7 @@ export function StudyCard({
                 </p>
                 <div className="mt-1 font-serif text-2xl leading-snug text-accent-2">
                   <TeX
-                    tex={`${answerPrefix(question.latex_body)} ${toLatexPreview(
+                    tex={`${prefix} ${toLatexPreview(
                       state.userAnswer,
                     )}`}
                   />
@@ -264,7 +262,7 @@ export function StudyCard({
                 </p>
                 <div className="mt-1 font-serif text-2xl leading-snug text-accent">
                   <TeX
-                    tex={`${answerPrefix(question.latex_body)} ${(
+                    tex={`${prefix} ${(
                       state.latexCorrectAnswer ?? state.correctAnswer
                     ).replaceAll('$', '')}`}
                   />
