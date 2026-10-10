@@ -8,7 +8,6 @@ import { MET_TAAL } from './src/i18n/paths'
 const withNextIntl = createNextIntlPlugin('./src/i18n/request.ts')
 
 // Links zonder taal vooraan sturen we naar de Nederlandse versie.
-// Stond eerst in vercel.json; Cloudflare leest dat bestand niet.
 const PADEN = MET_TAAL.join('|')
 
 const nextConfig: NextConfig = {
@@ -21,15 +20,19 @@ const nextConfig: NextConfig = {
       { source: '/en/:rest*', destination: '/nl/:rest*', permanent: true },
     ]
   },
-  // Fix: multiple package-lock.json files on this machine confuse Next.js
-  // file tracing. Pin the root explicitly so Vercel builds work correctly.
+  // Meerdere package-lock.json-bestanden op één machine brengen het bijhouden
+  // van bestanden (file tracing) van Next.js in de war. Zet de hoofdmap daarom
+  // expliciet vast, zodat een build altijd dezelfde bestanden meeneemt.
   outputFileTracingRoot: path.resolve(__dirname),
   experimental: {
     serverActions: {
       // Video-verzoeken mogen foto's van een boekopgave meesturen. Standaard
       // is 1 MB, te weinig voor een telefoonfoto. De browser verkleint ze al
-      // (zie lib/images/compress.ts); 4 MB is de marge, en blijft onder de
-      // ~4,5 MB die Vercel per request toestaat.
+      // (zie lib/images/compress.ts); 4 MB is de marge.
+      //
+      // Let op: die 4 MB komt nog uit de tijd dat de site op Vercel draaide,
+      // dat per request rond 4,5 MB afkapte. Voor Cloudflare Workers is de
+      // grens niet opnieuw nagekeken; hij is nu dus mogelijk strenger dan nodig.
       bodySizeLimit: '4mb',
     },
   },

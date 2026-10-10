@@ -1,16 +1,16 @@
 /**
- * Site-specific configuration.
+ * Instellingen per site.
  *
- * Selected at build/runtime via the `NEXT_PUBLIC_SITE` env var. Lets the same
- * codebase serve afgeleideoefenen.nl and integraaloefenen.nl from one
- * deployment per Vercel project — only brand text, domain, and subject vocab
- * differ.
+ * Deze repo is integraaloefenen.nl. Welke site het is, staat als vaste waarde
+ * in `SITE` hieronder en komt niet uit een omgevingsvariabele: `NEXT_PUBLIC_SITE`
+ * wordt nergens meer gelezen, dus die ergens zetten verandert niets.
+ *
+ * De afgeleiden-tak staat er nog in en wordt stap voor stap opgeruimd; alleen
+ * merknaam, domein en vakwoorden verschillen.
  */
 
 export type SiteId = 'afgeleiden' | 'integralen'
 
-// Deze repo is integraaloefenen.nl. De site staat vast; de afgeleiden-tak
-// van de code wordt stap voor stap opgeruimd.
 export const SITE: SiteId = 'integralen'
 
 type SiteDef = {

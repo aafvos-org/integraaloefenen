@@ -1,6 +1,6 @@
 import { redirect } from 'next/navigation'
 
-// Fallback for when middleware locale-redirect doesn't fire (e.g. Vercel cold path)
+// Vangnet voor als de taal-omleiding in de middleware niet afgaat.
 export default function RootPage() {
   redirect('/nl')
 }
