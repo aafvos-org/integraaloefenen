@@ -57,8 +57,10 @@ export async function signupAction(
     email,
     password,
     options: {
-      // Na het bevestigen van de e-mail direct naar de inlogpagina
-      emailRedirectTo: `${origin}/auth/callback?next=${encodeURIComponent(`/${locale}/inloggen`)}`,
+      // Na het bevestigen van de e-mail meteen ingelogd op de oefenpagina,
+      // net als iemand die zich aanmeldt zonder bevestigingsmail. `van`
+      // vertelt de callback dat deze link uit de bevestigingsmail komt.
+      emailRedirectTo: `${origin}/auth/callback?next=${encodeURIComponent(`/${locale}/oefenen`)}&van=bevestiging`,
       data: username ? { username } : undefined,
     },
   })
@@ -72,7 +74,7 @@ export async function signupAction(
     return {
       error: null,
       notice:
-        'Account aangemaakt. Klik op de link in de bevestigingsmail om in te loggen.',
+        'Account aangemaakt. Klik op de link in de bevestigingsmail, dan kun je meteen beginnen.',
     }
   }
 

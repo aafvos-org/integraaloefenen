@@ -14,14 +14,12 @@ export async function GET(request: NextRequest) {
       : `/nl${nextParam}`  // no locale prefix → prepend default locale
     : '/nl/dashboard'      // no next param → default
 
-  // Bestemming is de inlogpagina (bv. na e-mailbevestiging): geen sessie
-  // aanmaken, zodat de gebruiker daar echt zelf kan inloggen. Het account is
-  // op dat moment al bevestigd door Supabase's verify-endpoint.
-  if (/^\/(nl|en)\/inloggen(\/|$|\?)/.test(next)) {
-    const url = new URL(next, origin)
-    url.searchParams.set('bevestigd', '1')
-    return NextResponse.redirect(url)
-  }
+  // Komt deze link uit de bevestigingsmail? Dan is het account bevestigd, ook
+  // als we de code niet kunnen inwisselen (bijvoorbeeld omdat de leerling de
+  // mail op zijn telefoon opent terwijl hij zich op de laptop aanmeldde: de
+  // code hoort bij die eerste browser). Dan sturen we hem naar de inlogpagina
+  // met de melding dat het gelukt is, en niet met een foutmelding.
+  const vanBevestiging = searchParams.get('van') === 'bevestiging'
 
   if (code) {
     const supabase = await createClient()
@@ -32,6 +30,10 @@ export async function GET(request: NextRequest) {
   }
 
   const url = new URL('/nl/inloggen', origin)
-  url.searchParams.set('error', 'auth_callback_failed')
+  if (vanBevestiging) {
+    url.searchParams.set('bevestigd', '1')
+  } else {
+    url.searchParams.set('error', 'auth_callback_failed')
+  }
   return NextResponse.redirect(url)
 }
