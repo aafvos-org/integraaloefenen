@@ -67,8 +67,5 @@
     "schemaStap2": "Stap 2 · Bereken de primitieven",
     "schemaGeneric2": "Bereken hun primitieven. Vraagt een deel een andere route? Dan noem je dat deel even f en begin je ervoor opnieuw bij stap 1.",
     "toonGenest": "Hoe kom ik aan deze primitieve?"
-  },
-  "Dashboard": {
-    "overviewSubtitle": "Dit is alles wat je moet kunnen voor integreren. Vink aan wat je al beheerst. Het percentage toont hoe vaak je vragen correct beantwoordde."
   }
 }
