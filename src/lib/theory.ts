@@ -1,18 +1,13 @@
 /**
- * Theorie-loader: dispatcht naar het content-bestand van de actieve site
- * (`afgeleiden` of `integralen`), bepaald door `SITE` in `@/config/site`.
+ * Theorie-loader: één plek waar de pagina's de theorie-content vandaan halen.
  *
- * Consumers blijven `from '@/lib/theory'` importeren — alleen de data eronder
- * verandert per site.
+ * De content staat in `@/content/theory/integralen`, de vorm ervan in
+ * `@/content/theory/types`. Consumers blijven `from '@/lib/theory'`
+ * importeren — alleen de data eronder verandert.
  */
 
-import { SITE } from '@/config/site'
-
-import * as afgeleiden from '@/content/theory/afgeleiden'
 import * as integralen from '@/content/theory/integralen'
-import type { Methode } from '@/content/theory/methode'
-
-const SOURCE = SITE === 'integralen' ? integralen : afgeleiden
+import type { Methode } from '@/content/theory/types'
 
 export type {
   ClusterTheory,
@@ -23,8 +18,6 @@ export type {
   Stappenplan,
   HerkenRij,
   HerkenVraag,
-} from '@/content/theory/afgeleiden'
-export type {
   Regel,
   RegelId,
   Voorbeeld,
@@ -33,15 +26,15 @@ export type {
   Genest as MethodeGenest,
   Deel,
   Uitwerking,
-} from '@/content/theory/methode'
+} from '@/content/theory/types'
 
-export const CLUSTER_THEORY = SOURCE.CLUSTER_THEORY
-export const TOPIC_FORMULA = SOURCE.TOPIC_FORMULA
-export const TOPIC_INTROS = SOURCE.TOPIC_INTROS
-export const THEORY_OVERVIEW = SOURCE.THEORY_OVERVIEW
+export const CLUSTER_THEORY = integralen.CLUSTER_THEORY
+export const TOPIC_FORMULA = integralen.TOPIC_FORMULA
+export const TOPIC_INTROS = integralen.TOPIC_INTROS
+export const THEORY_OVERVIEW = integralen.THEORY_OVERVIEW
 
 /** De methode (stappenplan + voorbeelden + hoofdstukken); null voor sites zonder methode-pagina. */
-export const METHODE: Methode | null = SOURCE.METHODE
+export const METHODE: Methode | null = integralen.METHODE
 
 /** Alle hoofdstukken met theorie, voor navigatie: eerst de methode-hoofdstukken, dan de overige kaarten. */
 export const THEORIE_HOOFDSTUKKEN: Array<{ slug: string; code: string; title: string }> = [

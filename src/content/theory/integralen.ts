@@ -9,8 +9,8 @@
  * altijd in. Zie `docs/k3-cyclometrische-functies-opgaven.md` voor de bron
  * (alle opgaven en antwoorden van K.3).
  *
- * Behoudt dezelfde shape als `afgeleiden.ts` zodat de loader en consumers
- * niets hoeven aan te passen.
+ * De vorm van de content staat in `./types`; `@/lib/theory` deelt hem door
+ * aan de pagina's.
  *
  * Volgorde volgt de leerlijn van de leerling: opgave → welke vorm is dit?
  * (de keuzehulp van stap 0) → één route → stappen → terug naar de opgave.
@@ -21,8 +21,9 @@
 
 import type {
   ClusterTheory,
+  Methode,
   OverviewChapter,
-} from './afgeleiden'
+} from './types'
 
 export type { ClusterTheory, OverviewChapter }
 
@@ -560,8 +561,6 @@ export const THEORY_OVERVIEW: OverviewChapter[] = [
     ],
   },
 ]
-
-import type { Methode } from './methode'
 
 /** Geen methode-pagina voor integralen (nog). */
 export const METHODE: Methode | null = null

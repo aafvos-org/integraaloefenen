@@ -224,7 +224,7 @@ Alleen herkenning + korte uitwerking; mix van topics 1–5. Optioneel in fase 1b
 
 ## 4. Opslag in DB en scripts
 
-Spiegel H2 (`docs/h2-afgeleide-berekenen.md` §4 / `scripts/h2-content.ts`):
+De bouwstenen en de SQL-generator staan in `scripts/lib/stappenplan-content.ts`:
 
 | Veld | Afspraak K.1 |
 | --- | --- |

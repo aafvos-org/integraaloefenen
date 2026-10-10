@@ -1,7 +1,8 @@
 /**
  * Generieke bouwstenen voor hoofdstuk-content met het vaste stappenplan
  * (stap 0 · buitenste schil, stap 1–3 per regel) en de generator die er een
- * SQL-migratie van maakt. Gebruikt door scripts/h2-content.ts, h6-content.ts, …
+ * SQL-migratie van maakt. Bedoeld voor de hoofdstuk-scripts (zie
+ * docs/k1-substitutiemethode.md §4); nu nog geen gebruiker in de repo.
  *
  * Elke vraag heeft precies vier stappen (step_order 0 t/m 3). Een geneste regel
  * staat inline in stap 2. Bestaande vragen worden herkend op (oud cluster,
