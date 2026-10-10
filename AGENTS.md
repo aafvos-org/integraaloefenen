@@ -26,8 +26,8 @@ Vitest, zonder browser en zonder database. Draait in een paar seconden:
     npm run test:watch  # blijft meekijken terwijl je typt
 
 De tests staan naast de code die ze controleren (`src/**/*.test.ts`): het
-nakijken van antwoorden, de voortgangsregel en de grens van de neppe
-AI-controle.
+nakijken van antwoorden, de voortgangsregel, de grens van de neppe AI-controle
+en het narekenen van de primitieven in `content/`.
 
 ### `npm run test:e2e` — de weg van een leerling
 Playwright klikt in een echte browser door de site: inloggen → oefenen →
@@ -58,6 +58,48 @@ Draait er al een andere Supabase op je computer (bijvoorbeeld die van
 afgeleideoefenen), dan zijn de poorten bezet. Zet die eerst stil, of geef deze
 tijdelijk andere poorten in `supabase/config.toml` — en draai die wijziging
 terug voordat je commit.
+
+## Oefenvragen in `content/`
+
+De vragen staan in `content/hoofdstuk-<letter>/<wat-dan-ook>.json`. Elk bestand
+heeft een lijst `vragen`; per vraag staat er een `integrand` en een
+`primitieve`:
+
+    {
+      "hoofdstuk": "K",
+      "vragen": [
+        {
+          "nummer": "1b",
+          "integrand": "2 * x / (x^2 + 1)",
+          "primitieve": "ln(x^2 + 1)",
+          "domein": [-2, 2],
+          "grenzen": [0, 1],
+          "waarde": "ln(2)"
+        }
+      ]
+    }
+
+`nummer`, `integrand` en `primitieve` moeten erbij. `domein` is het stuk van de
+x-as waar de test kijkt (laat je het weg, dan is het `[-2.5, 2.5]`). `grenzen`
+en `waarde` horen bij elkaar en zijn alleen voor bepaalde integralen; `waarde`
+mag een getal zijn of een formule tussen aanhalingstekens.
+
+Schrijf de formules zoals een rekenmachine ze leest: `*` voor maal (nooit
+weglaten), `^` voor machten, `sqrt(x)`, `sin(x)`, `asin(x)`, `e^x`, `pi`. Voor
+de natuurlijke logaritme schrijf je `ln(x)`. `log(...)` wordt geweigerd, want
+dat betekent in de wiskundeles grondtal 10 en in de meeste software grondtal e;
+bedoel je echt grondtal 10, schrijf dan `log10(x)`. Laat de integratieconstante
+weg: `x^3`, niet `x^3 + C`.
+
+`src/content/primitieven.test.ts` leest al die bestanden en rekent elke vraag
+na: hij differentieert de primitieve naar x en vergelijkt die met de integrand
+op dertien x-waarden in het domein (punten waar een van beide niet bestaat
+slaat hij over, maar er moeten er minstens drie overblijven). Staan er grenzen
+bij, dan rekent hij ook `F(b) − F(a)` uit en legt dat naast `waarde`. Klopt er
+iets niet, dan noemt de melding het bestand, het vraagnummer en de x-waarde.
+
+Deze test draait mee in `npm test` en dus in de verplichte controle **Tests**:
+een rekenfout in een primitieve kan niet naar `main`.
 
 ## Wat je niet zelf doet
 - Wijzigingen aan de database (`supabase/migrations/`, `supabase/sql/`, `supabase/config.toml`) eerst in de taak vragen. Integraaloefenen.nl heeft een eigen Supabase-project (IntegraalOefenen, `oyevapifmenqjuklprws`); de database wordt niet meer gedeeld met afgeleideoefenen.nl.
