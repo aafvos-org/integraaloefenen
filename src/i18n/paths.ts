@@ -38,3 +38,25 @@ export const OPENBAAR = ['hoe-het-werkt', 'theorie', 'uitleg-videos'] as const
 export const AFGESCHERMD: readonly string[] = MET_TAAL.filter(
   (pad) => !(OPENBAAR as readonly string[]).includes(pad),
 )
+
+// ACHTER_INLOG is waar je voor moet inloggen. De middleware stuurt een
+// uitgelogde bezoeker hier meteen naar /nl/inloggen, zodat hij niet eerst een
+// halve pagina ziet opbouwen. Let op het verschil met AFGESCHERMD: daar staat
+// ook /inloggen en /registreren in (die horen niet in een zoekmachine, maar
+// zijn juist voor wie nog níet is ingelogd).
+//
+// Dit is een extra poort, geen vervanging: elke pagina en elke server action
+// controleert zelf ook of er iemand is ingelogd. De handleiding van Next.js
+// zegt dat met zoveel woorden, omdat een server action op een pad kan zitten
+// dat de matcher overslaat (node_modules/next/dist/docs/01-app/03-api-reference/
+// 03-file-conventions/proxy.md, kopje "Execution order").
+//
+// paths.test.ts vergelijkt deze lijst met de pagina's die zelf `if (!user)
+// redirect(...)` doen, zodat de twee niet uit elkaar kunnen lopen.
+export const ACHTER_INLOG = [
+  'dashboard',
+  'feedback',
+  'instellingen',
+  'oefenen',
+  'zelf-toets',
+] as const

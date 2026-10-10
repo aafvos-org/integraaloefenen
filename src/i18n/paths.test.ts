@@ -1,9 +1,9 @@
-import { readdirSync } from 'node:fs'
+import { readFileSync, readdirSync } from 'node:fs'
 import { join } from 'node:path'
 
 import { describe, expect, it } from 'vitest'
 
-import { AFGESCHERMD, MET_TAAL, OPENBAAR, ZONDER_TAAL } from './paths'
+import { ACHTER_INLOG, AFGESCHERMD, MET_TAAL, OPENBAAR, ZONDER_TAAL } from './paths'
 
 // =====================================================================
 // De lijst met paden tegen de mappen op schijf
@@ -52,5 +52,56 @@ describe('OPENBAAR en AFGESCHERMD', () => {
 
   it('verdeelt MET_TAAL zonder iets over te slaan of dubbel te doen', () => {
     expect([...OPENBAAR, ...AFGESCHERMD].sort()).toEqual([...MET_TAAL].sort())
+  })
+})
+
+// =====================================================================
+// De inlogpoort van de middleware tegen de pagina's zelf
+//
+// De middleware stuurt een uitgelogde bezoeker weg bij alles wat in
+// ACHTER_INLOG staat. Die lijst mag niet uit de pas lopen met de pagina's,
+// want dan sluit de poort te veel (een openbare pagina wordt onbereikbaar)
+// of te weinig (een leerling ziet weer een halve pagina opbouwen voordat de
+// pagina zelf doorverwijst). Daarom leest deze test de pagina's zelf.
+// =====================================================================
+
+/** Alle page.tsx onder src/app/[locale]/<map>/, ook die dieper liggen. */
+function paginas(map: string): string[] {
+  const gevonden: string[] = []
+  for (const item of readdirSync(map, { withFileTypes: true })) {
+    const pad = join(map, item.name)
+    if (item.isDirectory()) gevonden.push(...paginas(pad))
+    else if (item.name === 'page.tsx') gevonden.push(pad)
+  }
+  return gevonden
+}
+
+/** De regel waarmee een pagina zelf een uitgelogde bezoeker wegstuurt. */
+const EIGEN_INLOGCHECK = /if \(!user\) redirect\(`\/\$\{locale\}\/inloggen`\)/
+
+describe('ACHTER_INLOG', () => {
+  const taalmap = join(process.cwd(), 'src', 'app', '[locale]')
+
+  it('noemt alleen pagina’s die echt bestaan', () => {
+    const metTaal = new Set<string>(MET_TAAL)
+    expect(ACHTER_INLOG.filter((pad) => !metTaal.has(pad))).toEqual([])
+  })
+
+  it('bevat geen pagina die iedereen mag lezen', () => {
+    const openbaar = new Set<string>(OPENBAAR)
+    expect(ACHTER_INLOG.filter((pad) => openbaar.has(pad))).toEqual([])
+  })
+
+  it('komt overeen met de pagina’s die zelf naar /inloggen sturen', () => {
+    const uitDeMappen = MET_TAAL.filter((pad) => {
+      const bestanden = paginas(join(taalmap, pad))
+      return (
+        bestanden.length > 0 &&
+        bestanden.every((bestand) =>
+          EIGEN_INLOGCHECK.test(readFileSync(bestand, 'utf8')),
+        )
+      )
+    })
+    expect([...ACHTER_INLOG].sort()).toEqual([...uitDeMappen].sort())
   })
 })

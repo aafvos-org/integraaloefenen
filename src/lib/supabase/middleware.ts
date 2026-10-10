@@ -1,6 +1,9 @@
 import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 
+import { ACHTER_INLOG } from '@/i18n/paths'
+import { routing } from '@/i18n/routing'
+
 import type { Database } from './types'
 
 export async function updateSession(request: NextRequest) {
@@ -45,9 +48,7 @@ export async function updateSession(request: NextRequest) {
 
   if (path.startsWith('/admin')) {
     if (!user) {
-      const url = request.nextUrl.clone()
-      url.pathname = '/inloggen'
-      return NextResponse.redirect(url)
+      return naarInloggen(request, routing.defaultLocale)
     }
 
     const { data: profile } = await supabase
@@ -63,14 +64,38 @@ export async function updateSession(request: NextRequest) {
     }
   }
 
-  // Verder schermt de middleware niets af. De pagina's achter een inlog doen
-  // dat zelf, met `if (!user) redirect(`/${locale}/inloggen`)` bovenaan de
-  // server component (zie bijvoorbeeld src/app/[locale]/oefenen/page.tsx).
-  // Daar weet de pagina ook welke taal in de URL staat; hier zou je die er
-  // eerst af moeten pellen. Zet nieuwe beschermde pagina's dus niet in een
-  // lijstje hier, maar begin de pagina met diezelfde regel.
-  //
-  // /admin hierboven blijft wel staan: dat pad ligt buiten de taalmappen, dus
-  // die vergelijking klopt wel.
+  // De rest van de site hangt onder een taal: /nl/dashboard. Next.js past de
+  // doorverwijzingen uit next.config.ts toe vóórdat deze code draait, dus hier
+  // staat de taal er altijd al voor. Pel hem eraf om te vergelijken en zet hem
+  // bij een doorverwijzing weer terug.
+  const taalEnRest = splitsTaal(path)
+  if (!user && taalEnRest && achterInlog(taalEnRest.rest)) {
+    return naarInloggen(request, taalEnRest.taal)
+  }
+
   return supabaseResponse
+}
+
+/** `/nl/zelf-toets/loop/abc` wordt `{ taal: 'nl', rest: 'zelf-toets/loop/abc' }`. */
+function splitsTaal(path: string): { taal: string; rest: string } | null {
+  const match = path.match(TAAL_VOORAAN)
+  if (!match) return null
+  return { taal: match[1], rest: match[2] ?? '' }
+}
+
+const TAAL_VOORAAN = new RegExp(`^/(${routing.locales.join('|')})(?:/(.*))?$`)
+
+/** Kijkt alleen naar het eerste stuk: /oefenen en /oefenen/wat-dan-ook tellen allebei. */
+function achterInlog(rest: string): boolean {
+  const eerste = rest.split('/')[0]
+  return (ACHTER_INLOG as readonly string[]).includes(eerste)
+}
+
+function naarInloggen(request: NextRequest, taal: string) {
+  const url = request.nextUrl.clone()
+  url.pathname = `/${taal}/inloggen`
+  // Zonder dit neemt de inlogpagina de zoekwoorden van de vorige pagina over,
+  // en toont `?error=` uit een oude URL ineens een foutmelding.
+  url.search = ''
+  return NextResponse.redirect(url)
 }
