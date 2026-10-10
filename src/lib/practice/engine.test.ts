@@ -56,10 +56,48 @@ describe('answersMatch', () => {
     expect(answersMatch('', '1/3x^3 + c')).toBe(false)
   })
 
-  it('laat een ontbrekende + c hier nog staan', () => {
-    // Zonder integratieconstante is de primitieve wiskundig nog steeds goed,
-    // maar dat beoordeelt de AI-stap — hier blijft het een verschil.
-    expect(answersMatch('1/3x^3', '1/3x^3 + c')).toBe(false)
+  it('rekent een primitieve zonder + c goed', () => {
+    // Zonder integratieconstante is de primitieve nog steeds een goede
+    // primitieve. In content/ staat de constante er met opzet niet bij, in de
+    // database vaak wel; die twee horen samen te vallen.
+    expect(answersMatch('1/3x^3', '1/3x^3 + c')).toBe(true)
+    expect(answersMatch('x^3', 'x^3 + c')).toBe(true)
+    expect(answersMatch('x^3 + C', 'x^3')).toBe(true)
+    expect(answersMatch('-cos(x)', '-cos(x) + c')).toBe(true)
+    // ook met een min ervoor: F - c is net zo goed een primitieve
+    expect(answersMatch('x^3', 'x^3 - c')).toBe(true)
+  })
+
+  it('rekent dezelfde functie anders opgeschreven goed', () => {
+    // De drie gevallen uit de echte data (INT-79).
+    expect(answersMatch('x^3', 'x^3 + c')).toBe(true)
+    expect(answersMatch('((3x+4)^(6))/(18)', '(3x+4)^6 / 18 + c')).toBe(true)
+    expect(answersMatch('x^-1-x^-2-x^-3', '1/x - 1/x^2 - 1/x^3 + c')).toBe(true)
+  })
+
+  it('rekent andere schrijfwijzen van dezelfde primitieve goed', () => {
+    expect(answersMatch('x^3/3', '1/3x^3 + c')).toBe(true)
+    expect(answersMatch('(1/2)x^2', '0,5x^2 + c')).toBe(true)
+    expect(answersMatch('2sqrt(x)', '2x^(1/2) + c')).toBe(true)
+    expect(answersMatch('e^(2x)/2', '1/2e^(2x) + c')).toBe(true)
+  })
+
+  it('slaat niet door naar een fout antwoord', () => {
+    expect(answersMatch('x^3', 'x^4 + c')).toBe(false)
+    // een losse c is geen antwoord
+    expect(answersMatch('c', 'x^3 + c')).toBe(false)
+    expect(answersMatch('c', 'c')).toBe(true) // alleen nog via de tekst
+    expect(answersMatch('1/3x^3', 'x^3 + c')).toBe(false)
+    expect(answersMatch('ln(x)', 'ln(-x) + c')).toBe(false)
+    expect(answersMatch('sqrt(x^2)', 'x + c')).toBe(false)
+    // een bepaalde integraal blijft een exact getal
+    expect(answersMatch('0,69', 'ln(2)')).toBe(false)
+    expect(answersMatch('5', '7')).toBe(false)
+  })
+
+  it('rekent een getal dat uitkomt op hetzelfde goed', () => {
+    expect(answersMatch('6/18', '1/3')).toBe(true)
+    expect(answersMatch('2ln(2)', 'ln(4)')).toBe(true)
   })
 })
 
