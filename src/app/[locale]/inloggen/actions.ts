@@ -8,6 +8,12 @@ import { getLocale } from 'next-intl/server'
 import { stuurWelkomstmail } from '@/lib/email/welkom'
 import { createClient } from '@/lib/supabase/server'
 
+import {
+  RESEND_WACHTTIJD,
+  vertaalResendFout,
+  type ResendUitkomst,
+} from './resend'
+
 export type LoginState = { error: string | null; unconfirmedEmail?: string | null }
 
 export async function loginAction(
@@ -61,11 +67,17 @@ function translateAuthError(msg: string): string {
   return msg
 }
 
+/**
+ * De bevestigingsmail nog een keer. Of dat lukt bepaalt Supabase: hij weigert
+ * als er net al een mail de deur uit ging, en als de mailgrens van het project
+ * vol zit. De inlogpagina leest de uitkomst en zegt wat er aan de hand is —
+ * zie resend.ts.
+ */
 export async function resendConfirmationAction(
   email: string,
-): Promise<{ error: string | null }> {
+): Promise<ResendUitkomst> {
   const supabase = await createClient()
   const { error } = await supabase.auth.resend({ type: 'signup', email })
-  if (error) return { error: error.message }
-  return { error: null }
+  if (!error) return { reden: 'gelukt', wachtSeconden: RESEND_WACHTTIJD }
+  return vertaalResendFout(error.message, error.code)
 }

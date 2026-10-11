@@ -170,6 +170,10 @@
     "resendButton": "Stuur bevestigingsmail opnieuw",
     "resendPending": "Bezig met versturen…",
     "resendSuccess": "Mail verstuurd. Check je inbox (en je spammap).",
+    "resendTeSnel": "Je hebt net al een bevestigingsmail aangevraagd. Wacht even en probeer het daarna opnieuw.",
+    "resendGrensVol": "Er kunnen op dit moment geen mails verstuurd worden. Probeer het over een kwartier nog eens.",
+    "resendMislukt": "Het lukt nu even niet om de mail te versturen. Probeer het over een paar minuten nog eens.",
+    "resendWachten": "{n, plural, one {Nog # seconde wachten} other {Nog # seconden wachten}}",
     "confirmedNotice": "Je account is bevestigd! Je kunt nu inloggen.",
     "expiredLinkNotice": "Deze link werkt niet meer. Log in met je e-mailadres en wachtwoord; lukt dat niet, laat de bevestigingsmail dan opnieuw sturen."
   },

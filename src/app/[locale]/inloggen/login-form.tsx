@@ -1,25 +1,44 @@
 'use client'
 
-import { useActionState, useState, useTransition } from 'react'
+import { useActionState, useEffect, useState, useTransition } from 'react'
 import { useFormStatus } from 'react-dom'
 import { useTranslations } from 'next-intl'
 
 import { loginAction, resendConfirmationAction, type LoginState } from './actions'
+import type { ResendUitkomst } from './resend'
 
 const initialState: LoginState = { error: null }
+
+/** Bij welke uitkomst welke zin uit messages/nl.json → Login hoort. */
+const RESEND_ZIN = {
+  gelukt: 'resendSuccess',
+  teSnel: 'resendTeSnel',
+  grensVol: 'resendGrensVol',
+  mislukt: 'resendMislukt',
+} as const
 
 export function LoginForm({ callbackError }: { callbackError?: string | null }) {
   const [state, formAction] = useActionState(loginAction, initialState)
   const t = useTranslations('Login')
   const [showPassword, setShowPassword] = useState(false)
   const [resendPending, startResend] = useTransition()
-  const [resendDone, setResendDone] = useState(false)
+  const [resend, setResend] = useState<ResendUitkomst | null>(null)
+  const [wacht, setWacht] = useState(0)
+
+  // Aftellen zolang de knop uit staat, zodat de leerling ziet hoe lang het
+  // nog duurt in plaats van tegen een dode knop aan te kijken.
+  useEffect(() => {
+    if (wacht <= 0) return
+    const tik = setTimeout(() => setWacht((over) => over - 1), 1000)
+    return () => clearTimeout(tik)
+  }, [wacht])
 
   function handleResend() {
-    if (!state.unconfirmedEmail) return
+    if (!state.unconfirmedEmail || resendPending || wacht > 0) return
     startResend(async () => {
-      await resendConfirmationAction(state.unconfirmedEmail!)
-      setResendDone(true)
+      const uitkomst = await resendConfirmationAction(state.unconfirmedEmail!)
+      setResend(uitkomst)
+      setWacht(uitkomst.wachtSeconden)
     })
   }
 
@@ -47,18 +66,26 @@ export function LoginForm({ callbackError }: { callbackError?: string | null }) 
 
       {state.unconfirmedEmail && (
         <div className="rounded-md border border-border bg-surface-2 px-3 py-2 text-sm text-text-muted">
-          {resendDone ? (
-            <p role="status">{t('resendSuccess')}</p>
-          ) : (
-            <button
-              type="button"
-              onClick={handleResend}
-              disabled={resendPending}
-              className="font-medium text-accent hover:underline disabled:opacity-60"
+          {resend && (
+            <p
+              role={resend.reden === 'gelukt' ? 'status' : 'alert'}
+              className={resend.reden === 'gelukt' ? 'text-text' : 'text-accent-2'}
             >
-              {resendPending ? t('resendPending') : t('resendButton')}
-            </button>
+              {t(RESEND_ZIN[resend.reden])}
+            </p>
           )}
+          <button
+            type="button"
+            onClick={handleResend}
+            disabled={resendPending || wacht > 0}
+            className="inline-flex min-h-[44px] items-center font-medium text-accent hover:underline disabled:cursor-not-allowed disabled:opacity-60"
+          >
+            {resendPending
+              ? t('resendPending')
+              : wacht > 0
+                ? t('resendWachten', { n: wacht })
+                : t('resendButton')}
+          </button>
         </div>
       )}
 

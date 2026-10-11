@@ -134,6 +134,37 @@ test('inloggen vóór het bevestigen zegt wat eraan schort', async ({ page }) =>
   await expect(page).toHaveURL(/\/nl\/inloggen/)
 })
 
+test('een bevestigingsmail die niet verstuurd wordt, heet ook niet verstuurd', async ({
+  page,
+}) => {
+  const email = nieuwAdres('teSnel')
+  await registreer(page, { email })
+  await expect(page.getByRole('status')).toBeVisible()
+
+  await page.goto('/nl/inloggen')
+  await page.locator('input[name="email"]').fill(email)
+  await page.locator('input[name="password"]').fill(WACHTWOORD)
+  await page.getByRole('button', { name: 'Inloggen' }).click()
+
+  // De bevestigingsmail van het registreren is nog geen minuut oud, dus
+  // Supabase weigert er een tweede te sturen (`max_frequency` in
+  // supabase/config.toml). Vroeger stond er dan toch "Mail verstuurd" en bleef
+  // de leerling wachten op post die nooit kwam.
+  await page.getByRole('button', { name: 'Stuur bevestigingsmail opnieuw' }).click()
+
+  await expect(
+    page.getByText('Je hebt net al een bevestigingsmail aangevraagd', {
+      exact: false,
+    }),
+  ).toBeVisible()
+  await expect(page.getByText('Mail verstuurd', { exact: false })).toBeHidden()
+
+  // En de knop telt zichtbaar af in plaats van nog een keer niets te doen.
+  const knop = page.getByRole('button', { name: /wachten$/ })
+  await expect(knop).toBeVisible()
+  await expect(knop).toBeDisabled()
+})
+
 test('een te kort wachtwoord komt er niet doorheen', async ({ page }) => {
   await page.goto('/nl/registreren')
   await page.locator('input[name="email"]').fill(nieuwAdres('kort'))
