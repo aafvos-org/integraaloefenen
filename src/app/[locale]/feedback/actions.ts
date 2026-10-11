@@ -1,6 +1,10 @@
 'use server'
 
-import { SITE_CONFIG } from '@/config/site'
+import {
+  afzender,
+  onderwerpAanAaf,
+  ontvangerAanAaf,
+} from '@/lib/email/adressen'
 import { verstuurMail } from '@/lib/email/versturen'
 import { createClient } from '@/lib/supabase/server'
 
@@ -9,14 +13,8 @@ export type FeedbackState = {
   sent: boolean
 }
 
-/**
- * Afzender: zet EMAIL_FROM zodra het eigen domein in Resend geverifieerd is;
- * tot die tijd valt dit terug op het domein van de site.
- */
-const EMAIL_FROM = process.env.EMAIL_FROM ?? `no-reply@${SITE_CONFIG.domain}`
-
-/** Waar een vraag via Aaf heen gaat; feedback gaat naar NOTIFY_EMAIL. */
-const VRAGEN_NAAR = 'aaf@example.com'
+/** Wat de leerling ziet als het bericht niet weg kon. */
+const NIET_GELUKT = 'Versturen is niet gelukt. Probeer het later nog eens.'
 
 function escapeHtml(s: string): string {
   return s
@@ -45,23 +43,27 @@ export async function askAafAction(
   } = await supabase.auth.getUser()
   if (!user) return { error: 'Niet ingelogd.', sent: false }
 
+  const aan = ontvangerAanAaf()
+  if (!aan) {
+    console.error('[ask-aaf] NOTIFY_EMAIL staat niet ingesteld; de vraag gaat nergens heen.')
+    return { error: NIET_GELUKT, sent: false }
+  }
+
+  const vanWie = user.email ?? user.id
   const uitkomst = await verstuurMail({
-    van: EMAIL_FROM,
-    aan: VRAGEN_NAAR,
+    van: afzender(),
+    aan,
     antwoordNaar: user.email ?? undefined,
-    onderwerp: `Vraag via Aaf op ${SITE_CONFIG.domain}`,
+    onderwerp: onderwerpAanAaf('vraag', vanWie),
     html: `
         <h2>Vraag via Aaf</h2>
-        <p><b>Van:</b> ${escapeHtml(user.email ?? user.id)}</p>
+        <p><b>Van:</b> ${escapeHtml(vanWie)}</p>
         <p style="white-space:pre-wrap">${escapeHtml(message)}</p>
       `,
   })
   if (!uitkomst.gelukt) {
     console.error('[ask-aaf]', uitkomst.fout)
-    return {
-      error: 'Versturen is niet gelukt. Probeer het later nog eens.',
-      sent: false,
-    }
+    return { error: NIET_GELUKT, sent: false }
   }
 
   return { error: null, sent: true }
@@ -86,23 +88,27 @@ export async function sendFeedbackAction(
   } = await supabase.auth.getUser()
   if (!user) return { error: 'Niet ingelogd.', sent: false }
 
+  const aan = ontvangerAanAaf()
+  if (!aan) {
+    console.error('[feedback] NOTIFY_EMAIL staat niet ingesteld; de feedback gaat nergens heen.')
+    return { error: NIET_GELUKT, sent: false }
+  }
+
+  const vanWie = user.email ?? user.id
   const uitkomst = await verstuurMail({
-    van: EMAIL_FROM,
-    aan: process.env.NOTIFY_EMAIL ?? '',
+    van: afzender(),
+    aan,
     antwoordNaar: user.email ?? undefined,
-    onderwerp: `Feedback op ${SITE_CONFIG.domain}`,
+    onderwerp: onderwerpAanAaf('feedback', vanWie),
     html: `
         <h2>Feedback</h2>
-        <p><b>Van:</b> ${escapeHtml(user.email ?? user.id)}</p>
+        <p><b>Van:</b> ${escapeHtml(vanWie)}</p>
         <p style="white-space:pre-wrap">${escapeHtml(message)}</p>
       `,
   })
   if (!uitkomst.gelukt) {
     console.error('[feedback]', uitkomst.fout)
-    return {
-      error: 'Versturen is niet gelukt. Probeer het later nog eens.',
-      sent: false,
-    }
+    return { error: NIET_GELUKT, sent: false }
   }
 
   return { error: null, sent: true }

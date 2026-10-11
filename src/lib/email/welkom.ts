@@ -1,8 +1,8 @@
 import { SITE_CONFIG } from '@/config/site'
+import { afzender } from '@/lib/email/adressen'
 import { verstuurMail } from '@/lib/email/versturen'
 import { createServiceRoleClient } from '@/lib/supabase/server'
 
-const EMAIL_FROM = process.env.EMAIL_FROM ?? `no-reply@${SITE_CONFIG.domain}`
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? `https://www.${SITE_CONFIG.domain}`
 
 export type WelkomResultaat =
@@ -120,10 +120,7 @@ export function welkomstmail(): {
   const videosUrl = `${SITE_URL}/nl/uitleg-videos`
   return {
     // Merknaam als afzender, geen persoonsnaam: dit is een no-reply-bericht.
-    // EMAIL_FROM mag al een naam bevatten ("IntegraalOefenen <no-reply@…>"); dan niet nog eens inpakken.
-    van: EMAIL_FROM.includes('<')
-      ? EMAIL_FROM
-      : `${SITE_CONFIG.brand} <${EMAIL_FROM}>`,
+    van: afzender(),
     onderwerp: `Welkom bij ${SITE_CONFIG.brand}!`,
     html: html(videosUrl),
     tekst: tekst(videosUrl),

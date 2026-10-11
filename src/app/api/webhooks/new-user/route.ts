@@ -1,4 +1,8 @@
-import { SITE_CONFIG } from '@/config/site'
+import {
+  afzender,
+  onderwerpAanAaf,
+  ontvangerAanAaf,
+} from '@/lib/email/adressen'
 import { verstuurMail } from '@/lib/email/versturen'
 import { createServiceRoleClient } from '@/lib/supabase/server'
 
@@ -48,10 +52,22 @@ export async function POST(req: Request) {
       console.error('Kon gebruikersgegevens niet ophalen:', lookupErr)
     }
 
+    // Geen adres ingesteld? Dan één regel in de logs en toch een 200. De
+    // trigger in de database (supabase/sql/triggers-en-webhooks.sql) kijkt niet
+    // of de webhook aankwam, dus van een 502 wordt niemand wijzer; dit is geen
+    // mislukte verzending maar een instelling die ontbreekt.
+    const aan = ontvangerAanAaf()
+    if (!aan) {
+      console.error(
+        'NOTIFY_EMAIL staat niet ingesteld; het seintje over de nieuwe gebruiker gaat nergens heen.',
+      )
+      return Response.json({ ok: true, verstuurd: false })
+    }
+
     const uitkomst = await verstuurMail({
-      van: process.env.EMAIL_FROM ?? `no-reply@${SITE_CONFIG.domain}`,
-      aan: process.env.NOTIFY_EMAIL ?? '',
-      onderwerp: `Nieuwe gebruiker op ${SITE_CONFIG.domain}`,
+      van: afzender(),
+      aan,
+      onderwerp: onderwerpAanAaf('aanmelding', email ?? username ?? String(record.id)),
       html: `
         <h2>Nieuwe registratie</h2>
         <table cellpadding="6">

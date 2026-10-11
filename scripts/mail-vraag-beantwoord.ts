@@ -16,9 +16,9 @@
 import { Resend } from 'resend'
 
 import { SITE_CONFIG } from '@/config/site'
+import { afzender } from '@/lib/email/adressen'
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? `https://www.${SITE_CONFIG.domain}`
-const EMAIL_FROM = process.env.EMAIL_FROM ?? `no-reply@${SITE_CONFIG.domain}`
 /** Antwoorden komen bij Aaf zelf binnen, niet bij het no-reply-adres. */
 const REPLY_TO = 'aaf@example.com'
 
@@ -127,8 +127,7 @@ async function main() {
   const videoUrl = `${SITE_URL}/nl/uitleg-videos?video=${encodeURIComponent(slug)}`
   const resend = new Resend(process.env.RESEND_API_KEY)
   const { data, error } = await resend.emails.send({
-    // EMAIL_FROM mag al een naam bevatten ("IntegraalOefenen <no-reply@…>"); dan niet nog eens inpakken.
-    from: EMAIL_FROM.includes('<') ? EMAIL_FROM : `${SITE_CONFIG.brand} <${EMAIL_FROM}>`,
+    from: afzender(),
     to: adres,
     replyTo: REPLY_TO,
     subject: 'Je vraag is beantwoord — er staat een video voor je klaar',

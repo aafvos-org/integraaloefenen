@@ -1,15 +1,17 @@
 'use server'
 
-import { SITE_CONFIG } from '@/config/site'
 import { checkWrongAnswerNew } from '@/lib/ai/check-answer-new'
+import {
+  afzender,
+  onderwerpAanAaf,
+  ontvangerAanAaf,
+} from '@/lib/email/adressen'
 import { verstuurMail } from '@/lib/email/versturen'
 import { answersMatch } from '@/lib/practice/engine'
 import { createClient, createServiceRoleClient } from '@/lib/supabase/server'
 
-const EMAIL_FROM = process.env.EMAIL_FROM ?? `no-reply@${SITE_CONFIG.domain}`
-
-/** Waar een video-verzoek heen gaat; zelfde adres als een vraag via Aaf. */
-const VRAGEN_NAAR = 'aaf@example.com'
+/** Wat de leerling ziet als het verzoek niet weg kon. */
+const NIET_GELUKT = 'Versturen mislukt. Probeer het later opnieuw.'
 
 function escapeHtml(s: string): string {
   return s
@@ -110,15 +112,22 @@ export async function vraagVideoAction(
   const fotos = await leesFotos(formData)
   if ('error' in fotos) return { error: fotos.error, sent: false }
 
+  const aan = ontvangerAanAaf()
+  if (!aan) {
+    console.error('[vraag-video] NOTIFY_EMAIL staat niet ingesteld; het verzoek gaat nergens heen.')
+    return { error: NIET_GELUKT, sent: false }
+  }
+
+  const vanWie = user.email ?? user.id
   const uitkomst = await verstuurMail({
-    van: EMAIL_FROM,
-    aan: VRAGEN_NAAR,
+    van: afzender(),
+    aan,
     antwoordNaar: user.email ?? undefined,
-    onderwerp: `Video-verzoek via ${SITE_CONFIG.domain}`,
+    onderwerp: onderwerpAanAaf('video', vanWie),
     bijlagen: fotos.bijlagen.length > 0 ? fotos.bijlagen : undefined,
     html: `
         <h2>Video-verzoek (uitlegvideo's)</h2>
-        <p><b>Van:</b> ${escapeHtml(user.email ?? user.id)}</p>
+        <p><b>Van:</b> ${escapeHtml(vanWie)}</p>
         <p style="white-space:pre-wrap">${escapeHtml(message)}</p>
         ${
           fotos.bijlagen.length > 0
@@ -137,7 +146,7 @@ export async function vraagVideoAction(
 
   if (!uitkomst.gelukt) {
     console.error('[vraag-video]', uitkomst.fout)
-    return { error: 'Versturen mislukt. Probeer het later opnieuw.', sent: false }
+    return { error: NIET_GELUKT, sent: false }
   }
   return { error: null, sent: true }
 }
