@@ -170,7 +170,8 @@
     "resendButton": "Stuur bevestigingsmail opnieuw",
     "resendPending": "Bezig met versturen…",
     "resendSuccess": "Mail verstuurd. Check je inbox (en je spammap).",
-    "confirmedNotice": "Je account is bevestigd! Je kunt nu inloggen."
+    "confirmedNotice": "Je account is bevestigd! Je kunt nu inloggen.",
+    "expiredLinkNotice": "Deze link werkt niet meer. Log in met je e-mailadres en wachtwoord; lukt dat niet, laat de bevestigingsmail dan opnieuw sturen."
   },
   "Register": {
     "title": "Registreren",

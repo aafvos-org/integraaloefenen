@@ -4,6 +4,7 @@ import { redirect } from 'next/navigation'
 
 import { createClient } from '@/lib/supabase/server'
 
+import { BevestigingsMelding } from './bevestigings-melding'
 import { LoginForm } from './login-form'
 
 export async function generateMetadata({
@@ -19,7 +20,7 @@ export async function generateMetadata({
 export default async function LoginPage({
   searchParams,
 }: {
-  searchParams: Promise<{ error?: string; bevestigd?: string }>
+  searchParams: Promise<{ error?: string; bevestigd?: string; linkfout?: string }>
 }) {
   const supabase = await createClient()
   const locale = await getLocale()
@@ -32,7 +33,7 @@ export default async function LoginPage({
   }
 
   const t = await getTranslations('Login')
-  const { error, bevestigd } = await searchParams
+  const { error, bevestigd, linkfout } = await searchParams
   const callbackError = error === 'auth_callback_failed' ? t('callbackError') : null
 
   return (
@@ -40,14 +41,7 @@ export default async function LoginPage({
       <h1 className="font-serif text-3xl text-text">{t('h1')}</h1>
       <p className="mt-2 text-sm text-text-muted">{t('subtitle')}</p>
 
-      {bevestigd && (
-        <p
-          role="status"
-          className="mt-6 rounded-md border border-accent/30 bg-accent-light px-3 py-2 text-sm text-accent"
-        >
-          {t('confirmedNotice')}
-        </p>
-      )}
+      {(bevestigd || linkfout) && <BevestigingsMelding linkFout={Boolean(linkfout)} />}
 
       <div className="mt-8 rounded-xl border border-border bg-surface p-6">
         <LoginForm callbackError={callbackError} />

@@ -21,6 +21,13 @@ export async function GET(request: NextRequest) {
   // met de melding dat het gelukt is, en niet met een foutmelding.
   const vanBevestiging = searchParams.get('van') === 'bevestiging'
 
+  // Heeft Supabase de bevestiging juist geweigerd (link verlopen of al een
+  // keer gebruikt)? Dan mag die melding er niet komen. Supabase zet die fout
+  // nu achter een `#` in de link, en dat deel komt nooit bij de server aan —
+  // daarom kijkt de inlogpagina er zelf ook nog naar. Zet Supabase hem later
+  // wél in de adresregel, dan vangen we hem hier al op.
+  const linkFout = Boolean(searchParams.get('error') ?? searchParams.get('error_code'))
+
   if (code) {
     const supabase = await createClient()
     const { error } = await supabase.auth.exchangeCodeForSession(code)
@@ -30,7 +37,9 @@ export async function GET(request: NextRequest) {
   }
 
   const url = new URL('/nl/inloggen', origin)
-  if (vanBevestiging) {
+  if (vanBevestiging && linkFout) {
+    url.searchParams.set('linkfout', '1')
+  } else if (vanBevestiging) {
     url.searchParams.set('bevestigd', '1')
   } else {
     url.searchParams.set('error', 'auth_callback_failed')

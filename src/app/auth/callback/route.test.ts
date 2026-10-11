@@ -53,6 +53,16 @@ describe('de link uit de bevestigingsmail', () => {
     expect(bestemming).toBe(`${ORIGIN}/nl/inloggen?bevestigd=1`)
   })
 
+  it('meldt niet dat het gelukt is als Supabase de bevestiging weigert', async () => {
+    // Supabase zet zo'n fout nu achter een `#` (daar kijkt de inlogpagina
+    // zelf naar), maar als hij hem in de adresregel zet, vangen we hem hier.
+    const bestemming = await volgDeLink(
+      'van=bevestiging&error=access_denied&error_code=otp_expired',
+    )
+
+    expect(bestemming).toBe(`${ORIGIN}/nl/inloggen?linkfout=1`)
+  })
+
   it('maakt ook voor oude mails die naar de inlogpagina wijzen een sessie aan', async () => {
     // Mails die al verstuurd zijn, hebben nog next=/nl/inloggen. De
     // inlogpagina stuurt een ingelogde leerling door naar het dashboard.
