@@ -218,7 +218,14 @@
   "Dashboard": {
     "title": "Dashboard",
     "greetingWithName": "Hoi {name}",
-    "progressTitle": "Jouw voortgang"
+    "progressTitle": "Jouw voortgang",
+    "masteryLabel": "Beheerst",
+    "masterySub": "onderdelen beheerst",
+    "streakLabel": "Dagen op rij",
+    "accuracyLabel": "Goed beantwoord",
+    "questionsLabel": "Vragen",
+    "questionsSub": "totaal beantwoord",
+    "perChapterTitle": "Voortgang per hoofdstuk"
   },
   "HomeDemo": {
     "eyebrow": "Probeer direct",

@@ -1,6 +1,7 @@
 'use client'
 
 import { useMemo } from 'react'
+import { useTranslations } from 'next-intl'
 
 import { cn } from '@/components/ui'
 import { VraagForm, type VraagLabels } from '@/components/vraag-form'
@@ -24,8 +25,9 @@ export function DashboardGrid({
   vraagTitel: string
   vraagIntro: string
 }) {
+  const t = useTranslations('Dashboard')
   const allClusters = useMemo(
-    () => chapterData.flatMap((ch) => ch.topics.flatMap((t) => t.clusters)),
+    () => chapterData.flatMap((ch) => ch.topics.flatMap((topic) => topic.clusters)),
     [chapterData],
   )
   const mastered = allClusters.filter((c) => c.isKnown).length
@@ -42,10 +44,10 @@ export function DashboardGrid({
     <>
       {/* KPI row */}
       <div className="mb-5 grid grid-cols-2 gap-3 lg:grid-cols-4">
-        <KpiHero pct={pctOverall} mastered={mastered} total={total} />
-        <KpiCard label="Streak" value={String(streakDays)} sub="dagen op rij" tone="warn" />
-        <KpiCard label="Accuracy" value={`${pctAccuracy}%`} tone="accent" />
-        <KpiCard label="Vragen" value={String(totalAnswered)} sub="totaal beantwoord" tone="neutral" />
+        <KpiHero pct={pctOverall} mastered={mastered} total={total} label={t('masteryLabel')} sub={t('masterySub')} />
+        <KpiCard label={t('streakLabel')} value={String(streakDays)} tone="warn" />
+        <KpiCard label={t('accuracyLabel')} value={`${pctAccuracy}%`} tone="accent" />
+        <KpiCard label={t('questionsLabel')} value={String(totalAnswered)} sub={t('questionsSub')} tone="neutral" />
       </div>
 
       {/* 2-column layout */}
@@ -53,7 +55,7 @@ export function DashboardGrid({
         {/* Left: topic accordions */}
         <div className="lg:col-span-2">
           <p className="mb-3 text-[11px] font-medium uppercase tracking-wider text-text-muted">
-            Voortgang per hoofdstuk
+            {t('perChapterTitle')}
           </p>
           <div className="space-y-2">
             {chapterData.map((chapter) => (
@@ -75,18 +77,30 @@ export function DashboardGrid({
   )
 }
 
-function KpiHero({ pct, mastered, total }: { pct: number; mastered: number; total: number }) {
+function KpiHero({
+  pct,
+  mastered,
+  total,
+  label,
+  sub,
+}: {
+  pct: number
+  mastered: number
+  total: number
+  label: string
+  sub: string
+}) {
   return (
     <div className="rounded-xl border border-border bg-surface p-4">
       <div className="flex items-center gap-3">
         <Ring pct={pct} size={60} stroke={7} />
         <div>
-          <div className="text-[11px] font-medium uppercase tracking-wider text-text-muted">Mastery</div>
+          <div className="text-[11px] font-medium uppercase tracking-wider text-text-muted">{label}</div>
           <div className="font-serif text-xl text-text">
             {mastered} <span className="text-text-muted">/ {total}</span>
           </div>
           <div className="text-xs text-text-muted">
-            onderdelen gemasterd
+            {sub}
           </div>
         </div>
       </div>
@@ -115,7 +129,6 @@ function KpiCard({
     </div>
   )
 }
-
 
 function Ring({ pct, size = 92, stroke = 9 }: { pct: number; size?: number; stroke?: number }) {
   const r = (size - stroke) / 2
