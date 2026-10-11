@@ -16,11 +16,16 @@
 import { Resend } from 'resend'
 
 import { SITE_CONFIG } from '@/config/site'
-import { afzender } from '@/lib/email/adressen'
+import { afzender, ontvangerAanAaf } from '@/lib/email/adressen'
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? `https://www.${SITE_CONFIG.domain}`
-/** Antwoorden komen bij Aaf zelf binnen, niet bij het no-reply-adres. */
-const REPLY_TO = 'aaf@example.com'
+/**
+ * Antwoorden komen bij Aaf zelf binnen, niet bij het no-reply-adres. Het adres
+ * komt net als bij de rest van de site uit `NOTIFY_EMAIL` (zie
+ * src/lib/email/adressen.ts); staat die niet ingesteld, dan kan de leerling
+ * niet antwoorden en stopt dit script.
+ */
+const REPLY_TO = ontvangerAanAaf()
 
 function html(videoUrl: string, onderwerp: string): string {
   return `
@@ -116,6 +121,14 @@ Groeten van Aaf`
 }
 
 async function main() {
+  if (!REPLY_TO) {
+    console.error(
+      'NOTIFY_EMAIL staat niet ingesteld; zonder antwoordadres kan de leerling\n' +
+        'niet bij Aaf terecht. Zet NOTIFY_EMAIL in .env.local.',
+    )
+    process.exit(1)
+  }
+
   const [adres, slug, onderwerp] = process.argv.slice(2)
   if (!adres || !slug || !onderwerp) {
     console.error(

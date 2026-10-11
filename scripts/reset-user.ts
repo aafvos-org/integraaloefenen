@@ -1,10 +1,19 @@
 /**
  * Reset een user naar nieuwe-gebruiker-staat.
- * Run met: npx tsx scripts/reset-user.ts
+ * Run met: npx tsx scripts/reset-user.ts <e-mailadres>
+ * Of zet het adres in de omgeving: RESET_EMAIL=<e-mailadres> npx tsx scripts/reset-user.ts
  */
 import { createClient } from '@supabase/supabase-js'
 
-const EMAIL = 'leerling@example.com'
+const EMAIL = process.env.RESET_EMAIL?.trim() || process.argv[2]
+if (!EMAIL) {
+  console.error(
+    'Geef het e-mailadres van de leerling op: zet het als argument achter het\n' +
+    'script (npx tsx scripts/reset-user.ts <e-mailadres>) of in de omgeving\n' +
+    '(RESET_EMAIL=<e-mailadres>).',
+  )
+  process.exit(1)
+}
 
 async function main() {
   const sb = createClient(
