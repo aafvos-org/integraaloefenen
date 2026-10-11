@@ -1,0 +1,65 @@
+# Botst een pull request met main, dan start de gewone controle niet: die
+# draait op de samengevoegde versie, en die bestaat bij een conflict niet.
+# Deze workflow draait wél, op de code van main, en zet dan een rode controle.
+#
+# Veilig houden:
+# - geen checkout, ook niet van main
+# - geen scripts of pakketten uit de pull request
+# - geen geheimen
+# - alleen het pull-requestnummer, nooit de titel of de tekst
+# Een pull request kan dit bestand pas veranderen nadat het op main staat.
+
+name: Conflict
+
+on:
+  pull_request_target:
+    types: [opened, synchronize, reopened, ready_for_review]
+
+concurrency:
+  group: geen-conflict-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  pull-requests: read
+
+jobs:
+  geen-conflict:
+    name: Geen conflict
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - name: Kijken of de pull request botst met main
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          PR_NUMMER: ${{ github.event.pull_request.number }}
+        run: |
+          set -euo pipefail
+
+          if ! [[ "$PR_NUMMER" =~ ^[0-9]+$ ]]; then
+            echo "::error::Ongeldig pull-requestnummer."
+            exit 1
+          fi
+
+          staat=""
+          for _ in 1 2 3 4 5 6 7 8 9 10; do
+            staat=$(gh pr view "$PR_NUMMER" --json mergeable --jq .mergeable)
+            if [ "$staat" = "MERGEABLE" ] || [ "$staat" = "CONFLICTING" ]; then
+              break
+            fi
+            sleep 3
+          done
+
+          if [ "$staat" = "MERGEABLE" ]; then
+            echo "Deze pull request botst niet met main."
+            exit 0
+          fi
+
+          if [ "$staat" = "CONFLICTING" ]; then
+            echo "::error::Deze pull request botst met main. Haal main binnen en los het conflict op. De andere controles starten niet zolang dat conflict er is."
+            exit 1
+          fi
+
+          echo "::error::GitHub heeft nog niet berekend of de pull request botst. De controle wordt opnieuw gestart."
+          exit 1

@@ -19,6 +19,31 @@ Deze repo is de live site integraaloefenen.nl, voor vwo-leerlingen. Hij draait o
 
 ## Zelf controleren
 
+### Controles op de pull request
+
+De controles **Lint en types**, **Tests** en **Weg van een leerling** draaien
+op de versie waarin jouw tak al met `main` is samengevoegd. Botst de pull
+request met `main`, dan bestaat die versie niet en start GitHub die controles
+niet. Ze blijven dan ontbreken. **Workers Builds** kan intussen wél groen
+worden, en `gh pr checks` ziet eruit alsof alles in orde is.
+
+Kijk daarom vóór `gh pr checks <nummer> --watch` eerst:
+
+    gh pr view <nummer> --json mergeable,mergeStateStatus
+
+Is `mergeable` gelijk aan `CONFLICTING` (dan is `mergeStateStatus` meestal
+`DIRTY`), haal dan eerst `main` binnen en los het conflict op:
+
+    git fetch origin && git merge origin/main
+
+Wacht niet op controles die nooit starten. Pas als `mergeable` `MERGEABLE` is,
+wacht je de controles af. Is `mergeable` nog `UNKNOWN`, kijk dan even later
+opnieuw: GitHub is dan nog aan het rekenen.
+
+Staat de controle **Geen conflict** op rood, dan botst de pull request met
+`main`. Die controle draait geen code van de pull request; hij kijkt alleen of
+samenvoegen lukt.
+
 ### `npm test` — de rekenregels
 Vitest, zonder browser en zonder database. Draait in een paar seconden:
 
