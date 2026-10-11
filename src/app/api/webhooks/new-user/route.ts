@@ -1,18 +1,14 @@
-import {
-  afzender,
-  onderwerpAanAaf,
-  ontvangerAanAaf,
-} from '@/lib/email/adressen'
-import { verstuurMail } from '@/lib/email/versturen'
+import { seintjeAanmelding, verstuurSeintje } from '@/lib/email/beheer'
 import { createServiceRoleClient } from '@/lib/supabase/server'
 
-function escapeHtml(value: string): string {
-  return value
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-}
-
+/**
+ * Trigger `webhook_nieuwe_gebruiker` op `public.profiles` (INSERT), uit
+ * supabase/migrations/0043_webhook_triggers.sql.
+ *
+ * Deze gaat af bij het **registreren**, dus vóór het bevestigen van het
+ * e-mailadres. Het tweede seintje — na het bevestigen — hangt aan de
+ * welkomstmail (src/lib/email/welkom.ts).
+ */
 export async function POST(req: Request) {
   // Verify webhook secret
   const secret = req.headers.get('x-webhook-secret')
@@ -28,9 +24,6 @@ export async function POST(req: Request) {
     }
 
     const record = payload.record
-    const aangemeldOp = new Date(record.created_at).toLocaleString('nl-NL', {
-      timeZone: 'Europe/Amsterdam',
-    })
 
     // De record uit de profiles-trigger bevat het id, maar niet altijd het
     // e-mailadres. Haal e-mail en gebruikersnaam op via de service-role.
@@ -52,32 +45,23 @@ export async function POST(req: Request) {
       console.error('Kon gebruikersgegevens niet ophalen:', lookupErr)
     }
 
+    const uitkomst = await verstuurSeintje(
+      seintjeAanmelding(
+        { id: String(record.id), email, gebruikersnaam: username },
+        new Date(record.created_at),
+      ),
+    )
+
     // Geen adres ingesteld? Dan één regel in de logs en toch een 200. De
-    // trigger in de database (supabase/sql/triggers-en-webhooks.sql) kijkt niet
-    // of de webhook aankwam, dus van een 502 wordt niemand wijzer; dit is geen
-    // mislukte verzending maar een instelling die ontbreekt.
-    const aan = ontvangerAanAaf()
-    if (!aan) {
+    // trigger in de database kijkt niet of de webhook aankwam, dus van een 502
+    // wordt niemand wijzer; dit is geen mislukte verzending maar een
+    // instelling die ontbreekt.
+    if (!uitkomst.gelukt && uitkomst.reden === 'geen-ontvanger') {
       console.error(
         'NOTIFY_EMAIL staat niet ingesteld; het seintje over de nieuwe gebruiker gaat nergens heen.',
       )
       return Response.json({ ok: true, verstuurd: false })
     }
-
-    const uitkomst = await verstuurMail({
-      van: afzender(),
-      aan,
-      onderwerp: onderwerpAanAaf('aanmelding', email ?? username ?? String(record.id)),
-      html: `
-        <h2>Nieuwe registratie</h2>
-        <table cellpadding="6">
-          <tr><td><b>E-mail</b></td><td>${email ? escapeHtml(email) : '—'}</td></tr>
-          <tr><td><b>Gebruikersnaam</b></td><td>${username ? escapeHtml(username) : '—'}</td></tr>
-          <tr><td><b>Aangemeld op</b></td><td>${aangemeldOp}</td></tr>
-          <tr><td><b>ID</b></td><td>${escapeHtml(String(record.id))}</td></tr>
-        </table>
-      `,
-    })
 
     if (!uitkomst.gelukt) {
       console.error('Kon het seintje over de nieuwe gebruiker niet versturen:', uitkomst.fout)

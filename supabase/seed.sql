@@ -150,3 +150,37 @@ from (values
   ('e2e_rij',       'f(x) = 5x^{4}', 'x^5 + c',    'x^{5} + c',             3)
 ) as q(cluster_slug, latex_body, answer, latex_answer, order_index)
 join public.topic_clusters_new tc on tc.slug = q.cluster_slug;
+
+-- =====================================================================
+-- De webhooks lokaal: waar ze heen mogen en met welk geheim
+-- =====================================================================
+-- De triggers uit migratie 0043 sturen alleen iets als allebei deze waarden
+-- in de Vault staan. Hier wijzen ze naar de ontwikkelserver op je eigen
+-- computer, zodat een registratie in een test nooit bij de echte site
+-- uitkomt. De migratie zet er het echte domein neer; dit blok draait daarna
+-- en zet het terug naar lokaal.
+--
+-- `host.docker.internal`: de database draait in Docker, de site erbuiten.
+-- Poort 3177 is die van `npm run test:e2e` (playwright.config.ts); draai je
+-- met E2E_PORT op een andere poort, dan komt de webhook niet aan.
+--
+-- Het geheim hieronder is geen geheim: het bestaat alleen op je eigen
+-- computer. Dezelfde waarde staat in scripts/e2e.mjs als WEBHOOK_SECRET.
+-- =====================================================================
+do $$
+begin
+  if to_regclass('vault.secrets') is null then
+    raise warning 'Geen Vault in deze database; de webhooks blijven lokaal uit.';
+    return;
+  end if;
+  delete from vault.secrets where name in ('webhook_secret', 'webhook_basis_url');
+  perform vault.create_secret(
+    'lokaal-webhook-geheim', 'webhook_secret',
+    'x-webhook-secret voor /api/webhooks/* (alleen lokaal)'
+  );
+  perform vault.create_secret(
+    'http://host.docker.internal:3177', 'webhook_basis_url',
+    'Waar /api/webhooks/* staat (alleen lokaal)'
+  );
+end
+$$;

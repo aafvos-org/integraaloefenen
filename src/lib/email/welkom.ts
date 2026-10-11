@@ -1,5 +1,6 @@
 import { SITE_CONFIG } from '@/config/site'
 import { afzender } from '@/lib/email/adressen'
+import { seintjeBevestigd, verstuurSeintje } from '@/lib/email/beheer'
 import { verstuurMail } from '@/lib/email/versturen'
 import { createServiceRoleClient } from '@/lib/supabase/server'
 
@@ -128,6 +129,41 @@ export function welkomstmail(): {
 }
 
 /**
+ * Het seintje aan de beheerder dat deze leerling zijn adres heeft bevestigd.
+ *
+ * Gaat mee met de welkomstmail en dus met dezelfde vlag: wie geen welkomstmail
+ * meer krijgt, levert ook geen tweede seintje op. Lukt het versturen niet, dan
+ * blijft het daarbij — de welkomstmail aan de leerling is dan al weg en die
+ * mag niet opnieuw.
+ */
+async function meldBevestigingAanBeheer(
+  supabase: ReturnType<typeof createServiceRoleClient>,
+  user: { id: string; email?: string | null; email_confirmed_at?: string | null },
+): Promise<void> {
+  try {
+    const { data: profiel } = await supabase
+      .from('profiles')
+      .select('username')
+      .eq('id', user.id)
+      .maybeSingle()
+
+    const uitkomst = await verstuurSeintje(
+      seintjeBevestigd(
+        {
+          id: user.id,
+          email: user.email ?? null,
+          gebruikersnaam: profiel?.username ?? null,
+        },
+        user.email_confirmed_at ? new Date(user.email_confirmed_at) : new Date(),
+      ),
+    )
+    if (!uitkomst.gelukt) console.error('[seintje bevestigd]', uitkomst.reden)
+  } catch (e) {
+    console.error('[seintje bevestigd]', e)
+  }
+}
+
+/**
  * Stuurt de welkomstmail, maar alleen als het adres bevestigd is en er nog geen
  * welkomstmail uit is. De vlag staat in `user_metadata.welcome_sent_at` en niet
  * in een eigen kolom, zodat hier geen migratie voor nodig is.
@@ -170,6 +206,8 @@ export async function stuurWelkomstmail(userId: string): Promise<WelkomResultaat
       })
       return { verstuurd: false, reden: 'fout' }
     }
+
+    await meldBevestigingAanBeheer(supabase, user)
 
     return { verstuurd: true }
   } catch (e) {

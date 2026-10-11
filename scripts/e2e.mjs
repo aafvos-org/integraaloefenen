@@ -79,6 +79,10 @@ const env = {
   // Vaste afzender, zodat de test hem kan nakijken ook als er in .env.local
   // iets anders staat. Zelfde waarde als in supabase/config.toml.
   EMAIL_FROM: 'no-reply@integraaloefenen.nl',
+  // De triggers uit migratie 0043 roepen /api/webhooks/* aan met deze header.
+  // Zelfde waarde als in supabase/seed.sql, en geen geheim: hij bestaat
+  // alleen op je eigen computer.
+  WEBHOOK_SECRET: 'lokaal-webhook-geheim',
 }
 
 const run = spawnSync(npx, ['playwright', 'test', ...process.argv.slice(2)], {
