@@ -9,7 +9,7 @@ export async function GET(request: NextRequest) {
   // otherwise default to the Dutch dashboard.
   const nextParam = searchParams.get('next')
   const next = nextParam
-    ? /^\/(nl|en)(\/|$)/.test(nextParam)
+    ? /^\/nl(\/|$)/.test(nextParam)
       ? nextParam          // already has locale prefix → use as-is
       : `/nl${nextParam}`  // no locale prefix → prepend default locale
     : '/nl/dashboard'      // no next param → default
