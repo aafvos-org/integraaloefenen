@@ -28,10 +28,12 @@ function TriCheckbox({
   state,
   onToggle,
   ariaLabel,
+  className,
 }: {
   state: CheckState
   onToggle: () => void
   ariaLabel: string
+  className?: string
 }) {
   return (
     <button
@@ -40,7 +42,7 @@ function TriCheckbox({
       aria-checked={state === 'all' ? 'true' : state === 'some' ? 'mixed' : 'false'}
       aria-label={ariaLabel}
       onClick={onToggle}
-      className={`flex size-5 shrink-0 items-center justify-center rounded border transition ${
+      className={`flex size-5 shrink-0 items-center justify-center rounded border transition ${className ?? ''} ${
         state === 'all'
           ? 'border-accent bg-accent text-white'
           : state === 'some'
@@ -262,11 +264,11 @@ export function ConfigForm({
             const chState = chapterState(ch.id)
             return (
               <li key={ch.id}>
-                <div className="flex items-center gap-2 rounded-md px-2 py-1.5 text-sm hover:bg-surface-2">
+                <div className="flex items-start gap-2 rounded-md px-2 py-1.5 text-sm hover:bg-surface-2">
                   <button
                     type="button"
                     onClick={() => toggleExpand(expandedChapters, setExpandedChapters, ch.id)}
-                    className="flex size-5 shrink-0 items-center justify-center text-text-muted hover:text-text"
+                    className="flex size-5 shrink-0 items-center justify-center text-text-muted hover:text-text mt-0.5"
                     aria-label={chExpanded ? t('collapse') : t('expand')}
                     disabled={topics.length === 0}
                   >
@@ -284,8 +286,9 @@ export function ConfigForm({
                     state={chState}
                     onToggle={() => toggleChapter(ch.id)}
                     ariaLabel={ch.title}
+                    className="mt-0.5"
                   />
-                  <span className="flex-1 truncate">
+                  <span className="min-w-0 flex-1 break-words">
                     <span className="font-mono font-semibold">
                       {ch.slug.toUpperCase()}
                     </span>
@@ -308,14 +311,15 @@ export function ConfigForm({
                         const checked = selectedClusters.has(onlyCluster.id)
                         return (
                           <li key={tp.id}>
-                            <label className="flex cursor-pointer items-center gap-2 rounded-md px-2 py-1 text-xs hover:bg-surface-2">
-                              <span className="size-5 shrink-0" />
+                            <label className="flex cursor-pointer items-start gap-2 rounded-md px-2 py-1 text-xs hover:bg-surface-2">
+                              <span className="size-5 shrink-0 mt-0.5" />
                               <TriCheckbox
                                 state={checked ? 'all' : 'none'}
                                 onToggle={() => toggleCluster(onlyCluster.id)}
                                 ariaLabel={onlyCluster.title}
+                                className="mt-0.5"
                               />
-                              <span className="flex-1 truncate">{onlyCluster.title}</span>
+                              <span className="min-w-0 flex-1 break-words">{onlyCluster.title}</span>
                               <span className="shrink-0 text-text-muted tabular-nums">
                                 {clusterCountLabel(onlyCluster)}
                               </span>
@@ -326,11 +330,11 @@ export function ConfigForm({
 
                       return (
                         <li key={tp.id}>
-                          <div className="flex items-center gap-2 rounded-md px-2 py-1 text-xs hover:bg-surface-2">
+                          <div className="flex items-start gap-2 rounded-md px-2 py-1 text-xs hover:bg-surface-2">
                             <button
                               type="button"
                               onClick={() => toggleExpand(expandedTopics, setExpandedTopics, tp.id)}
-                              className="flex size-5 shrink-0 items-center justify-center text-text-muted hover:text-text"
+                              className="flex size-5 shrink-0 items-center justify-center text-text-muted hover:text-text mt-0.5"
                               aria-label={tpExpanded ? t('collapse') : t('expand')}
                               disabled={clusters.length === 0}
                             >
@@ -348,8 +352,9 @@ export function ConfigForm({
                               state={tpState}
                               onToggle={() => toggleTopic(tp.id)}
                               ariaLabel={tp.title}
+                              className="mt-0.5"
                             />
-                            <span className="flex-1 truncate">{tp.title}</span>
+                            <span className="min-w-0 flex-1 break-words">{tp.title}</span>
                           </div>
 
                           {tpExpanded && clusters.length > 0 && (
@@ -358,14 +363,15 @@ export function ConfigForm({
                                 const checked = selectedClusters.has(cl.id)
                                 return (
                                   <li key={cl.id}>
-                                    <label className="flex cursor-pointer items-center gap-2 rounded-md px-2 py-1 text-xs hover:bg-surface-2">
-                                      <span className="size-5 shrink-0" />
+                                    <label className="flex cursor-pointer items-start gap-2 rounded-md px-2 py-1 text-xs hover:bg-surface-2">
+                                      <span className="size-5 shrink-0 mt-0.5" />
                                       <TriCheckbox
                                         state={checked ? 'all' : 'none'}
                                         onToggle={() => toggleCluster(cl.id)}
                                         ariaLabel={cl.title}
+                                        className="mt-0.5"
                                       />
-                                      <span className="flex-1 truncate">{cl.title}</span>
+                                      <span className="min-w-0 flex-1 break-words">{cl.title}</span>
                                       <span className="shrink-0 text-text-muted tabular-nums">
                                         {clusterCountLabel(cl)}
                                       </span>

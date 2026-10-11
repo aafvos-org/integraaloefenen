@@ -492,13 +492,13 @@ export function OefenenClient({
                   onClick={() => handleChapterClick(ch)}
                   className={
                     chActive
-                      ? 'flex w-full items-center gap-2 rounded-md bg-accent px-3 py-2 text-sm font-medium text-white'
-                      : 'flex w-full items-center gap-2 rounded-md px-3 py-2 text-sm text-text-muted hover:bg-surface-2 hover:text-text'
+                      ? 'flex w-full items-start gap-2 rounded-md bg-accent px-3 py-2 text-sm font-medium text-white'
+                      : 'flex w-full items-start gap-2 rounded-md px-3 py-2 text-sm text-text-muted hover:bg-surface-2 hover:text-text'
                   }
                 >
                   {chTopics.length > 0 ? (
                     <svg
-                      className={`hidden size-3 shrink-0 transition-transform lg:block ${chOpen ? 'rotate-90' : ''}`}
+                      className={`mt-0.5 hidden size-3 shrink-0 transition-transform lg:block ${chOpen ? 'rotate-90' : ''}`}
                       viewBox="0 0 24 24"
                       fill="currentColor"
                       aria-hidden
@@ -508,7 +508,7 @@ export function OefenenClient({
                   ) : (
                     <span className="hidden size-3 lg:block" />
                   )}
-                  <span className="truncate text-left">
+                  <span className="min-w-0 break-words text-left">
                     <span className="font-mono font-semibold">{ch.slug.toUpperCase()}</span>
                     {' – '}
                     {ch.title}
@@ -531,14 +531,14 @@ export function OefenenClient({
                               onClick={() => handleClusterClick(onlyCluster, tp)}
                               className={
                                 isActive
-                                  ? 'flex w-full items-center gap-2 rounded-md py-1.5 pl-7 pr-3 text-xs font-semibold text-accent'
-                                  : 'flex w-full items-center gap-2 rounded-md py-1.5 pl-7 pr-3 text-xs text-text-muted hover:text-text'
+                                  ? 'flex w-full items-start gap-2 rounded-md py-1.5 pl-7 pr-3 text-xs font-semibold text-accent'
+                                  : 'flex w-full items-start gap-2 rounded-md py-1.5 pl-7 pr-3 text-xs text-text-muted hover:text-text'
                               }
                             >
                               <span
-                                className={`size-1.5 shrink-0 rounded-full ${isActive ? 'bg-accent' : 'bg-border'}`}
+                                className={`mt-1 size-1.5 shrink-0 rounded-full ${isActive ? 'bg-accent' : 'bg-border'}`}
                               />
-                              <span className="truncate text-left">{onlyCluster.title}</span>
+                              <span className="min-w-0 break-words text-left">{onlyCluster.title}</span>
                             </button>
                           </li>
                         )
@@ -551,13 +551,13 @@ export function OefenenClient({
                             onClick={() => handleTopicClick(tp)}
                             className={
                               tpActive
-                                ? 'flex w-full items-center gap-2 rounded-md py-1.5 pl-7 pr-3 text-xs font-semibold text-accent'
-                                : 'flex w-full items-center gap-2 rounded-md py-1.5 pl-7 pr-3 text-xs text-text-muted hover:text-text'
+                                ? 'flex w-full items-start gap-2 rounded-md py-1.5 pl-7 pr-3 text-xs font-semibold text-accent'
+                                : 'flex w-full items-start gap-2 rounded-md py-1.5 pl-7 pr-3 text-xs text-text-muted hover:text-text'
                             }
                           >
                             {tpClusters.length > 0 ? (
                               <svg
-                                className={`size-2.5 shrink-0 transition-transform ${tpActive ? 'rotate-90' : ''}`}
+                                className={`mt-0.5 size-2.5 shrink-0 transition-transform ${tpActive ? 'rotate-90' : ''}`}
                                 viewBox="0 0 24 24"
                                 fill="currentColor"
                                 aria-hidden
@@ -567,7 +567,7 @@ export function OefenenClient({
                             ) : (
                               <span className="size-2.5 shrink-0" />
                             )}
-                            <span className="truncate text-left">{tp.title}</span>
+                            <span className="min-w-0 break-words text-left">{tp.title}</span>
                           </button>
 
                           {tpActive && tpClusters.length > 0 && (
@@ -581,14 +581,14 @@ export function OefenenClient({
                                       onClick={() => handleClusterClick(cl, tp)}
                                       className={
                                         clActive
-                                          ? 'flex w-full items-center gap-2 rounded-md py-1 pl-8 pr-3 text-xs font-medium text-accent'
-                                          : 'flex w-full items-center gap-2 rounded-md py-1 pl-8 pr-3 text-xs text-text-muted hover:text-text'
+                                          ? 'flex w-full items-start gap-2 rounded-md py-1 pl-8 pr-3 text-xs font-medium text-accent'
+                                          : 'flex w-full items-start gap-2 rounded-md py-1 pl-8 pr-3 text-xs text-text-muted hover:text-text'
                                       }
                                     >
                                       <span
-                                        className={`size-1.5 shrink-0 rounded-full ${clActive ? 'bg-accent' : 'bg-border'}`}
+                                        className={`mt-1 size-1.5 shrink-0 rounded-full ${clActive ? 'bg-accent' : 'bg-border'}`}
                                       />
-                                      <span className="truncate text-left">{cl.title}</span>
+                                      <span className="min-w-0 break-words text-left">{cl.title}</span>
                                     </button>
                                   </li>
                                 )
