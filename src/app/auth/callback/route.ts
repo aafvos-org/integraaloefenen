@@ -29,6 +29,12 @@ export async function GET(request: NextRequest) {
   // wél in de adresregel, dan vangen we hem hier al op.
   const linkFout = Boolean(searchParams.get('error') ?? searchParams.get('error_code'))
 
+  // Komt de leerling uit de mail *wachtwoord vergeten*? De resetlink stuurt
+  // hem hier naartoe met `next=/wachtwoord-opnieuw`. Kan de code niet worden
+  // ingewisseld, dan is die link verlopen of al een keer gebruikt — de
+  // inlogpagina legt dan uit dat hij een nieuwe resetlink moet aanvragen.
+  const isHerstelLink = nextParam === '/wachtwoord-opnieuw'
+
   if (code) {
     const supabase = await createClient()
     const { data, error } = await supabase.auth.exchangeCodeForSession(code)
@@ -45,6 +51,8 @@ export async function GET(request: NextRequest) {
     url.searchParams.set('linkfout', '1')
   } else if (vanBevestiging) {
     url.searchParams.set('bevestigd', '1')
+  } else if (isHerstelLink) {
+    url.searchParams.set('herstel', '1')
   } else {
     url.searchParams.set('error', 'auth_callback_failed')
   }

@@ -81,12 +81,33 @@ describe('andere links naar de callback', () => {
     expect(bestemming).toBe(`${ORIGIN}/nl/wachtwoord-opnieuw`)
   })
 
-  it('toont bij een mislukte herstellink wel een foutmelding', async () => {
+  it('stuurt een verlopen of gebruikte herstellink naar de inlogpagina met een duidelijke melding', async () => {
+    // Bij een verlopen of al gebruikte link lukt het inwisselen van de code
+    // niet. De callback herkent de resetlink aan `next=/wachtwoord-opnieuw`
+    // en stuurt de leerling door naar de inlogpagina, die uitlegt dat hij een
+    // nieuwe resetlink moet aanvragen in plaats van de algemene foutmelding.
     codeWisseltIn = false
 
     const bestemming = await volgDeLink('code=abc&next=%2Fwachtwoord-opnieuw')
 
-    expect(bestemming).toBe(`${ORIGIN}/nl/inloggen?error=auth_callback_failed`)
+    expect(bestemming).toBe(`${ORIGIN}/nl/inloggen?herstel=1`)
+  })
+
+  it('herkent een verlopen herstellink ook zonder code in de adresregel', async () => {
+    // Supabase zet zo'n fout nu achter een `#`; dat deel komt nooit bij de
+    // server aan. De inlogpagina kijkt er zelf naar, de callback herkent de
+    // resetlink hier aan `next` en vult de melding alvast aan.
+    const bestemming = await volgDeLink('next=%2Fwachtwoord-opnieuw')
+
+    expect(bestemming).toBe(`${ORIGIN}/nl/inloggen?herstel=1`)
+  })
+
+  it('vangt ook de fout op als Supabase hem wél in de adresregel zet', async () => {
+    const bestemming = await volgDeLink(
+      'next=%2Fwachtwoord-opnieuw&error=access_denied&error_code=otp_expired',
+    )
+
+    expect(bestemming).toBe(`${ORIGIN}/nl/inloggen?herstel=1`)
   })
 
   it('stuurt zonder code naar de inlogpagina met een foutmelding', async () => {

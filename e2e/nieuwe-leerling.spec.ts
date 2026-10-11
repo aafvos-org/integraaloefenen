@@ -259,6 +259,7 @@ test('wachtwoord vergeten: mail, link, nieuw wachtwoord, inloggen', async ({
 }) => {
   const email = nieuwAdres('vergeten')
   const nieuwWachtwoord = 'nieuwgeheim123'
+  let mail: Awaited<ReturnType<typeof wachtOpMail>>
 
   await test.step('eerst een account dat bestaat en bevestigd is', async () => {
     await registreer(page, { email })
@@ -280,7 +281,7 @@ test('wachtwoord vergeten: mail, link, nieuw wachtwoord, inloggen', async ({
   })
 
   await test.step('de mail komt aan en de link opent het formulier', async () => {
-    const mail = await wachtOpMail(email, 'Nieuw wachtwoord voor IntegraalOefenen')
+    mail = await wachtOpMail(email, 'Nieuw wachtwoord voor IntegraalOefenen')
     expect(mail.onderwerp).toBe('Nieuw wachtwoord voor IntegraalOefenen')
     expect(mail.afzender.naam).toBe('IntegraalOefenen')
 
@@ -291,13 +292,42 @@ test('wachtwoord vergeten: mail, link, nieuw wachtwoord, inloggen', async ({
     ).toBeVisible()
   })
 
-  await test.step('een nieuw wachtwoord zetten en ermee inloggen', async () => {
+  await test.step('een nieuw wachtwoord zetten en uitloggen', async () => {
     await page.locator('input[name="password"]').fill(nieuwWachtwoord)
     await page.getByRole('button', { name: 'Wachtwoord opslaan' }).click()
     await expect(page).toHaveURL(/\/nl\/dashboard/)
 
     await rondleidingWegklikken(page)
     await logUit(page)
+  })
+
+  await test.step('een gebruikte resetlink legt uit dat hij niet meer werkt', async () => {
+    // De resetlink is net een keer gebruikt; nog eens openen kan niet meer.
+    // De leerling komt dan op de inlogpagina met uitleg en een link om een
+    // nieuwe resetlink aan te vragen.
+    await page.goto(linkUitMail(mail))
+    await expect(page).toHaveURL(/\/nl\/inloggen/)
+    await expect(
+      page.getByText('Deze resetlink werkt niet meer', { exact: false }),
+    ).toBeVisible()
+    await expect(
+      page.getByRole('link', { name: 'Vraag een nieuwe aan' }),
+    ).toBeVisible()
+  })
+
+  await test.step('ook zonder herkende resetlink kijkt de inlogpagina achter de #', async () => {
+    // Supabase zet de reden van een geweigerde link achter een `#`, en dat
+    // stuk komt nooit bij de server aan. Zelfs dan hoort de pagina te zien
+    // dat de resetlink stuk was.
+    await page.goto(
+      '/nl/inloggen?error=auth_callback_failed#error=access_denied&error_code=otp_expired',
+    )
+    await expect(
+      page.getByText('Deze resetlink werkt niet meer', { exact: false }),
+    ).toBeVisible()
+  })
+
+  await test.step('de resetlink heeft gewerkt: inloggen met het nieuwe wachtwoord', async () => {
     await logIn(page, { email, wachtwoord: nieuwWachtwoord })
   })
 })

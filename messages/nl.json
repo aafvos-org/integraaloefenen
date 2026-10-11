@@ -175,7 +175,9 @@
     "resendMislukt": "Het lukt nu even niet om de mail te versturen. Probeer het over een paar minuten nog eens.",
     "resendWachten": "{n, plural, one {Nog # seconde wachten} other {Nog # seconden wachten}}",
     "confirmedNotice": "Je account is bevestigd! Je kunt nu inloggen.",
-    "expiredLinkNotice": "Deze link werkt niet meer. Log in met je e-mailadres en wachtwoord; lukt dat niet, laat de bevestigingsmail dan opnieuw sturen."
+    "expiredLinkNotice": "Deze link werkt niet meer. Log in met je e-mailadres en wachtwoord; lukt dat niet, laat de bevestigingsmail dan opnieuw sturen.",
+    "expiredResetNotice": "Deze resetlink werkt niet meer.",
+    "requestNewResetLink": "Vraag een nieuwe aan"
   },
   "Register": {
     "title": "Registreren",

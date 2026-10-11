@@ -17,7 +17,7 @@ const RESEND_ZIN = {
   mislukt: 'resendMislukt',
 } as const
 
-export function LoginForm({ callbackError }: { callbackError?: string | null }) {
+export function LoginForm() {
   const [state, formAction] = useActionState(loginAction, initialState)
   const t = useTranslations('Login')
   const [showPassword, setShowPassword] = useState(false)
@@ -55,12 +55,12 @@ export function LoginForm({ callbackError }: { callbackError?: string | null }) 
         toggleLabel={showPassword ? t('hidePassword') : t('showPassword')}
       />
 
-      {(callbackError || state.error) && (
+      {state.error && (
         <p
           role="alert"
           className="rounded-md border border-accent-2/30 bg-accent-2-light px-3 py-2 text-sm text-accent-2"
         >
-          {callbackError ?? state.error}
+          {state.error}
         </p>
       )}
 

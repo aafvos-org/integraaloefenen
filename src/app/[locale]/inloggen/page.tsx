@@ -5,6 +5,7 @@ import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 
 import { BevestigingsMelding } from './bevestigings-melding'
+import { HerstelMelding } from './herstel-melding'
 import { LoginForm } from './login-form'
 
 export async function generateMetadata({
@@ -20,7 +21,12 @@ export async function generateMetadata({
 export default async function LoginPage({
   searchParams,
 }: {
-  searchParams: Promise<{ error?: string; bevestigd?: string; linkfout?: string }>
+  searchParams: Promise<{
+    error?: string
+    bevestigd?: string
+    linkfout?: string
+    herstel?: string
+  }>
 }) {
   const supabase = await createClient()
   const locale = await getLocale()
@@ -33,8 +39,9 @@ export default async function LoginPage({
   }
 
   const t = await getTranslations('Login')
-  const { error, bevestigd, linkfout } = await searchParams
-  const callbackError = error === 'auth_callback_failed' ? t('callbackError') : null
+  const { error, bevestigd, linkfout, herstel } = await searchParams
+  const callbackError = error === 'auth_callback_failed'
+  const herstelFout = herstel === '1'
 
   return (
     <div className="mx-auto max-w-md px-4 py-16">
@@ -42,9 +49,10 @@ export default async function LoginPage({
       <p className="mt-2 text-sm text-text-muted">{t('subtitle')}</p>
 
       {(bevestigd || linkfout) && <BevestigingsMelding linkFout={Boolean(linkfout)} />}
+      {(callbackError || herstelFout) && <HerstelMelding kapot={herstelFout} />}
 
       <div className="mt-8 rounded-xl border border-border bg-surface p-6">
-        <LoginForm callbackError={callbackError} />
+        <LoginForm />
       </div>
 
       <p className="mt-6 text-center text-sm text-text-muted">
