@@ -1,5 +1,6 @@
 import { NextResponse, type NextRequest } from 'next/server'
 
+import { zetGekozenGebruikersnaam } from '@/lib/supabase/gebruikersnaam'
 import { createClient } from '@/lib/supabase/server'
 
 export async function GET(request: NextRequest) {
@@ -30,8 +31,11 @@ export async function GET(request: NextRequest) {
 
   if (code) {
     const supabase = await createClient()
-    const { error } = await supabase.auth.exchangeCodeForSession(code)
+    const { data, error } = await supabase.auth.exchangeCodeForSession(code)
     if (!error) {
+      // Gekozen gebruikersnaam van het registreren op het profiel zetten
+      // (INT-89): bij mailbevestiging kon dat bij het registreren nog niet.
+      await zetGekozenGebruikersnaam(supabase, data.user)
       return NextResponse.redirect(`${origin}${next}`)
     }
   }

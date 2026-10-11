@@ -6,6 +6,7 @@ import { getLocale } from 'next-intl/server'
 
 import { requestOrigin } from '@/lib/request-origin'
 import { authFoutmelding } from '@/lib/supabase/auth-fouten'
+import { zetGekozenGebruikersnaam } from '@/lib/supabase/gebruikersnaam'
 import { createClient } from '@/lib/supabase/server'
 
 export type SignupState = {
@@ -79,10 +80,8 @@ export async function signupAction(
     }
   }
 
-  // Persist username on the auto-created profile row.
-  if (username && data.user) {
-    await supabase.from('profiles').update({ username }).eq('id', data.user.id)
-  }
+  // Zonder mailbevestiging is er meteen een sessie: zet de naam nu al.
+  await zetGekozenGebruikersnaam(supabase, data.user)
 
   revalidatePath('/', 'layout')
   redirect(`/${locale}/oefenen`)

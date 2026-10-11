@@ -7,6 +7,7 @@ import { getLocale } from 'next-intl/server'
 
 import { stuurWelkomstmail } from '@/lib/email/welkom'
 import { authFoutmelding, herkenAuthFout } from '@/lib/supabase/auth-fouten'
+import { zetGekozenGebruikersnaam } from '@/lib/supabase/gebruikersnaam'
 import { createClient } from '@/lib/supabase/server'
 
 import {
@@ -53,6 +54,9 @@ export async function loginAction(
   if (data.user) {
     const userId = data.user.id
     after(() => stuurWelkomstmail(userId))
+    // Vangnet voor INT-89: wie de bevestigingslink op een ander apparaat
+    // opende, krijgt zijn gekozen gebruikersnaam bij de eerste keer inloggen.
+    await zetGekozenGebruikersnaam(supabase, data.user)
   }
 
   const locale = await getLocale()

@@ -15,7 +15,9 @@ vi.mock('@/lib/supabase/server', () => ({
   createClient: async () => ({
     auth: {
       exchangeCodeForSession: async () =>
-        codeWisseltIn ? { error: null } : { error: { message: 'code verifier ontbreekt' } },
+        codeWisseltIn
+          ? { data: { user: null }, error: null }
+          : { data: { user: null }, error: { message: 'code verifier ontbreekt' } },
     },
   }),
 }))

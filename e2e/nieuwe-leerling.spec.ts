@@ -37,13 +37,21 @@ function nieuwAdres(wat: string): string {
   return `${wat}-${Date.now()}-${Math.round(Math.random() * 1e6)}@test.local`
 }
 
+/**
+ * Een unieke gebruikersnaam per testadres: de kolom is uniek, en elke run
+ * registreert nieuwe accounts.
+ */
+function gebruikersnaamVoor(email: string): string {
+  return 'Leerling ' + email.split('@')[0].slice(-12)
+}
+
 /** Het registratieformulier invullen en versturen, zoals een leerling. */
 async function registreer(
   page: Page,
   { email, wachtwoord = WACHTWOORD }: { email: string; wachtwoord?: string },
 ) {
   await page.goto('/nl/registreren')
-  await page.locator('input[name="username"]').fill('Nieuwe Leerling')
+  await page.locator('input[name="username"]').fill(gebruikersnaamVoor(email))
   await page.locator('input[name="email"]').fill(email)
   await page.locator('input[name="password"]').fill(wachtwoord)
   await page.locator('input[name="passwordConfirm"]').fill(wachtwoord)
@@ -88,6 +96,14 @@ test('een nieuwe leerling registreert zich, bevestigt zijn mail en maakt zijn ee
     // dan ben je ingelogd. Een mislukte bevestiging eindigt op /nl/inloggen.
     await expect(page).toHaveURL(/\/nl\/oefenen/)
     await expect(foutmelding(page)).toBeHidden()
+  })
+
+  await test.step('4b. zijn gekozen gebruikersnaam staat in de site, niet zijn mailadres (INT-89)', async () => {
+    // De naam staat op de knop van het gebruikersmenu (zichtbaar is alleen
+    // de eerste letter); op telefoonformaat zit die knop in het verborgen menu.
+    await expect(
+      page.locator(`button[aria-label="${gebruikersnaamVoor(email)}"]`).first(),
+    ).toBeAttached()
   })
 
   await test.step('5. de rondleiding van Aaf begroet hem', async () => {
