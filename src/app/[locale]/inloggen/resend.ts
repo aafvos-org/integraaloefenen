@@ -12,6 +12,8 @@
 // async functies mag exporteren — een constante of een rekenfunctie niet.
 // =====================================================================
 
+import { herkenAuthFout } from '@/lib/supabase/auth-fouten'
+
 /**
  * Hoe lang de knop uit blijft na een mail die wél de deur uit ging.
  * Supabase weigert een volgende mail binnen `max_frequency`
@@ -31,24 +33,17 @@ export type ResendUitkomst = {
 }
 
 /**
- * Supabase zegt op twee manieren nee, allebei met code
- * `over_email_send_rate_limit`:
+ * Welke zin en welke wachttijd horen bij het antwoord van Supabase?
  *
- * - te snel achter elkaar (`max_frequency`): "For security purposes, you can
- *   only request this after 43 seconds." Daar staat in hoelang het nog duurt,
- *   en dat is precies wat een leerling wil weten.
- * - de mailgrens van het hele project is vol: "email rate limit exceeded".
- *   Dan helpt wachten ook, maar veel langer, en het ligt niet aan hem.
- *
- * Alles wat we niet herkennen wordt één algemene zin: liever vaag dan Engels.
+ * Het herkennen zelf gebeurt in `herkenAuthFout`, want dezelfde meldingen
+ * komen ook langs bij registreren en wachtwoord vergeten. Hier staat alleen
+ * wat deze knop ermee doet: te snel achter elkaar geeft een aftelling, een
+ * volle mailgrens niet. Alles wat we niet herkennen wordt één algemene zin:
+ * liever vaag dan Engels.
  */
 export function vertaalResendFout(bericht: string, code?: string): ResendUitkomst {
-  const seconden = Number(/after (\d+) seconds?/i.exec(bericht)?.[1])
-  if (seconden > 0) {
-    return { reden: 'teSnel', wachtSeconden: seconden }
-  }
-  if (code === 'over_email_send_rate_limit' || /rate limit/i.test(bericht)) {
-    return { reden: 'grensVol', wachtSeconden: 0 }
-  }
+  const { soort, wachtSeconden } = herkenAuthFout(bericht, code)
+  if (soort === 'mailTeSnel') return { reden: 'teSnel', wachtSeconden }
+  if (soort === 'mailGrensVol') return { reden: 'grensVol', wachtSeconden: 0 }
   return { reden: 'mislukt', wachtSeconden: 0 }
 }

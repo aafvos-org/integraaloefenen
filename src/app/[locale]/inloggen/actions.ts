@@ -6,6 +6,7 @@ import { after } from 'next/server'
 import { getLocale } from 'next-intl/server'
 
 import { stuurWelkomstmail } from '@/lib/email/welkom'
+import { authFoutmelding, herkenAuthFout } from '@/lib/supabase/auth-fouten'
 import { createClient } from '@/lib/supabase/server'
 
 import {
@@ -31,10 +32,12 @@ export async function loginAction(
   const { data, error } = await supabase.auth.signInWithPassword({ email, password })
 
   if (error) {
-    const isUnconfirmed = /email not confirmed/i.test(error.message)
+    // Alleen bij een onbevestigd adres heeft de knop "stuur de mail opnieuw"
+    // zin; daarvoor moet de pagina weten om welk adres het ging.
+    const nietBevestigd = herkenAuthFout(error.message, error.code).soort === 'nietBevestigd'
     return {
-      error: translateAuthError(error.message),
-      unconfirmedEmail: isUnconfirmed ? email : null,
+      error: authFoutmelding(error, 'inloggen'),
+      unconfirmedEmail: nietBevestigd ? email : null,
     }
   }
 
@@ -55,16 +58,6 @@ export async function loginAction(
   const locale = await getLocale()
   revalidatePath('/', 'layout')
   redirect(`/${locale}/dashboard`)
-}
-
-function translateAuthError(msg: string): string {
-  if (/invalid login credentials/i.test(msg)) {
-    return 'Onjuiste combinatie van e-mail en wachtwoord.'
-  }
-  if (/email not confirmed/i.test(msg)) {
-    return 'Je hebt je e-mailadres nog niet bevestigd. Check je inbox.'
-  }
-  return msg
 }
 
 /**

@@ -130,7 +130,7 @@ function antwoordveld(page: Page): Locator {
 }
 
 /**
- * De rode melding op een formulier ("Onjuiste combinatie van e-mail en
+ * De rode melding op een formulier ("Onjuiste combinatie van e-mailadres en
  * wachtwoord", "Je wachtwoord moet minstens 8 tekens lang zijn").
  *
  * Niet via `getByRole('alert')`: Next.js hangt zelf een lege melder voor

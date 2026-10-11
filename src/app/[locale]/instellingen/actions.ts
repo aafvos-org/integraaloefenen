@@ -2,6 +2,7 @@
 
 import { revalidatePath } from 'next/cache'
 
+import { AUTH_FOUT_ZINNEN, authFoutmelding } from '@/lib/supabase/auth-fouten'
 import { createClient } from '@/lib/supabase/server'
 
 export type SettingsState = {
@@ -35,7 +36,15 @@ export async function updateUsernameAction(
     .update({ username })
     .eq('id', user.id)
 
-  if (error) return { error: error.message, success: null }
+  // `profiles.username` is uniek in de database; die botsing is het enige wat
+  // een leerling hier zelf kan veroorzaken. De rest is een storing.
+  if (error) {
+    if (error.code === '23505' || /duplicate key|unique/i.test(error.message)) {
+      return { error: 'Deze gebruikersnaam is al bezet. Kies een andere.', success: null }
+    }
+    console.error('[instellingen gebruikersnaam]', error.code, error.message)
+    return { error: AUTH_FOUT_ZINNEN.onbekend, success: null }
+  }
 
   revalidatePath('/', 'layout')
   return { error: null, success: 'Gebruikersnaam opgeslagen.', username }
@@ -67,13 +76,7 @@ export async function updatePasswordAction(
   const { error } = await supabase.auth.updateUser({ password })
 
   if (error) {
-    if (/same password|different from the old/i.test(error.message)) {
-      return {
-        error: 'Het nieuwe wachtwoord moet anders zijn dan je huidige wachtwoord.',
-        success: null,
-      }
-    }
-    return { error: error.message, success: null }
+    return { error: authFoutmelding(error, 'instellingen wachtwoord'), success: null }
   }
 
   return { error: null, success: 'Wachtwoord gewijzigd.' }

@@ -5,6 +5,7 @@ import { redirect } from 'next/navigation'
 import { getLocale } from 'next-intl/server'
 
 import { requestOrigin } from '@/lib/request-origin'
+import { authFoutmelding } from '@/lib/supabase/auth-fouten'
 import { createClient } from '@/lib/supabase/server'
 
 export type SignupState = {
@@ -66,7 +67,7 @@ export async function signupAction(
   })
 
   if (error) {
-    return { error: translateAuthError(error.message), notice: null, values }
+    return { error: authFoutmelding(error, 'registreren'), notice: null, values }
   }
 
   // If email confirmation is enabled, the user isn't logged in yet.
@@ -85,14 +86,4 @@ export async function signupAction(
 
   revalidatePath('/', 'layout')
   redirect(`/${locale}/oefenen`)
-}
-
-function translateAuthError(msg: string): string {
-  if (/already registered|already exists|already in use/i.test(msg)) {
-    return 'Er bestaat al een account met dit e-mailadres.'
-  }
-  if (/password should be|weak password/i.test(msg)) {
-    return 'Kies een sterker wachtwoord (minstens 8 tekens).'
-  }
-  return msg
 }
