@@ -9,7 +9,7 @@ import {
   logUit,
   rondleidingWegklikken,
 } from './leerling'
-import { linkUitMail, wachtOpMail } from './postbus'
+import { kopregelsVoor, linkUitMail, wachtOpMail } from './postbus'
 
 /**
  * De weg van een nieuwe leerling, van het registratieformulier tot zijn eerste
@@ -18,10 +18,14 @@ import { linkUitMail, wachtOpMail } from './postbus'
  * — die loggen in met het vaste account uit `supabase/seed.sql`.
  *
  * De mail gaat niet de deur uit: een lokale Supabase levert hem af in de
- * testpostbus (Mailpit), en daar haalt `e2e/postbus.ts` hem op.
+ * testpostbus (Mailpit), en daar haalt `e2e/postbus.ts` hem op. Dat geldt ook
+ * voor de welkomstmail, die de site zelf verstuurt: `scripts/e2e.mjs` zet
+ * `MAIL_MODE=postbus`.
  */
 
 const WACHTWOORD = 'oefenen123'
+const BEVESTIGING = 'Bevestig je account bij IntegraalOefenen'
+const WELKOM = 'Welkom bij IntegraalOefenen!'
 
 /**
  * Elk account een eigen adres, met de tijd erin. Twee runs achter elkaar
@@ -63,9 +67,9 @@ test('een nieuwe leerling registreert zich, bevestigt zijn mail en maakt zijn ee
   })
 
   const mail = await test.step('3. de mail komt aan, in het Nederlands, van IntegraalOefenen', async () => {
-    const mail = await wachtOpMail(email)
+    const mail = await wachtOpMail(email, BEVESTIGING)
 
-    expect(mail.onderwerp).toBe('Bevestig je account bij IntegraalOefenen')
+    expect(mail.onderwerp).toBe(BEVESTIGING)
     expect(mail.afzender).toEqual({
       naam: 'IntegraalOefenen',
       adres: 'no-reply@integraaloefenen.nl',
@@ -101,7 +105,21 @@ test('een nieuwe leerling registreert zich, bevestigt zijn mail en maakt zijn ee
     await logIn(page, { email, wachtwoord: WACHTWOORD })
   })
 
-  await test.step('7. zijn eerste opgave openen en nakijken', async () => {
+  await test.step('7. de welkomstmail van de site zelf ligt in de postbus', async () => {
+    // Deze mail komt niet van Supabase maar van de site (src/lib/email/welkom.ts),
+    // als vangnet bij de eerste keer inloggen. Hij vertrekt ná de response,
+    // dus even wachten tot hij er is.
+    const welkom = await wachtOpMail(email, WELKOM)
+
+    expect(welkom.afzender).toEqual({
+      naam: 'IntegraalOefenen',
+      adres: 'no-reply@integraaloefenen.nl',
+    })
+    expect(welkom.html).toContain('Je account is klaar.')
+    expect(welkom.html).toContain('Stel je eerste vraag')
+  })
+
+  await test.step('8. zijn eerste opgave openen en nakijken', async () => {
     await kiesOpgave(page, 1)
     await expect(page.getByText('Bepaal de primitieve van:')).toBeVisible()
 
@@ -111,6 +129,17 @@ test('een nieuwe leerling registreert zich, bevestigt zijn mail en maakt zijn ee
     await expect(page.getByText('Goed!', { exact: true })).toBeVisible()
     // Vers account, dus de reeks begint echt bij één.
     await expect(page.getByText('Streak: 1/3')).toBeVisible()
+  })
+
+  await test.step('9. nog een keer inloggen levert geen tweede welkomstmail op', async () => {
+    await logUit(page)
+    await logIn(page, { email, wachtwoord: WACHTWOORD })
+
+    // De welkomstmail gaat bij elke login opnieuw langs `stuurWelkomstmail`;
+    // de vlag in user_metadata moet een tweede mail tegenhouden. Even wachten,
+    // want die aanroep gebeurt ná de response.
+    await page.waitForTimeout(3_000)
+    expect(await kopregelsVoor(email, WELKOM)).toHaveLength(1)
   })
 })
 
@@ -217,8 +246,8 @@ test('wachtwoord vergeten: mail, link, nieuw wachtwoord, inloggen', async ({
 
   await test.step('eerst een account dat bestaat en bevestigd is', async () => {
     await registreer(page, { email })
-    const welkom = await wachtOpMail(email)
-    await page.goto(linkUitMail(welkom))
+    const bevestiging = await wachtOpMail(email, BEVESTIGING)
+    await page.goto(linkUitMail(bevestiging))
     await expect(page).toHaveURL(/\/nl\/oefenen/)
     await rondleidingWegklikken(page)
     await logUit(page)
@@ -235,7 +264,7 @@ test('wachtwoord vergeten: mail, link, nieuw wachtwoord, inloggen', async ({
   })
 
   await test.step('de mail komt aan en de link opent het formulier', async () => {
-    const mail = await wachtOpMail(email)
+    const mail = await wachtOpMail(email, 'Nieuw wachtwoord voor IntegraalOefenen')
     expect(mail.onderwerp).toBe('Nieuw wachtwoord voor IntegraalOefenen')
     expect(mail.afzender.naam).toBe('IntegraalOefenen')
 

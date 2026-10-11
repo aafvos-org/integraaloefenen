@@ -1,6 +1,5 @@
-import { Resend } from 'resend'
-
 import { SITE_CONFIG } from '@/config/site'
+import { verstuurMail } from '@/lib/email/versturen'
 import { createServiceRoleClient } from '@/lib/supabase/server'
 
 function escapeHtml(value: string): string {
@@ -49,12 +48,10 @@ export async function POST(req: Request) {
       console.error('Kon gebruikersgegevens niet ophalen:', lookupErr)
     }
 
-    // Pas hier aanmaken: tijdens de build is RESEND_API_KEY er niet.
-    const resend = new Resend(process.env.RESEND_API_KEY)
-    const { error } = await resend.emails.send({
-      from: process.env.EMAIL_FROM ?? `no-reply@${SITE_CONFIG.domain}`,
-      to: process.env.NOTIFY_EMAIL!,
-      subject: `Nieuwe gebruiker op ${SITE_CONFIG.domain}`,
+    const uitkomst = await verstuurMail({
+      van: process.env.EMAIL_FROM ?? `no-reply@${SITE_CONFIG.domain}`,
+      aan: process.env.NOTIFY_EMAIL ?? '',
+      onderwerp: `Nieuwe gebruiker op ${SITE_CONFIG.domain}`,
       html: `
         <h2>Nieuwe registratie</h2>
         <table cellpadding="6">
@@ -66,11 +63,12 @@ export async function POST(req: Request) {
       `,
     })
 
-    // De Resend-SDK gooit geen fout bij een geweigerde verzending
-    // (bv. niet-geverifieerd afzenderdomein); die zit in `error`.
-    if (error) {
-      console.error('Resend kon de mail niet versturen:', error)
-      return Response.json({ error: 'Email not sent', detail: error }, { status: 502 })
+    if (!uitkomst.gelukt) {
+      console.error('Kon het seintje over de nieuwe gebruiker niet versturen:', uitkomst.fout)
+      return Response.json(
+        { error: 'Email not sent', detail: uitkomst.fout },
+        { status: 502 },
+      )
     }
 
     return Response.json({ ok: true })

@@ -1,6 +1,5 @@
-import { Resend } from 'resend'
-
 import { SITE_CONFIG } from '@/config/site'
+import { verstuurMail } from '@/lib/email/versturen'
 import { createServiceRoleClient } from '@/lib/supabase/server'
 
 const EMAIL_FROM = process.env.EMAIL_FROM ?? `no-reply@${SITE_CONFIG.domain}`
@@ -109,8 +108,8 @@ Groeten van Aaf`
  * De welkomstmail zoals hij in de inbox van een leerling terechtkomt.
  *
  * Apart van het versturen, zodat `welkom.test.ts` de inhoud kan nakijken
- * zonder Resend. Lokaal en in de e2e-controle komt deze mail er niet: hij gaat
- * niet via Supabase maar via Resend, en daar is in een test geen sleutel voor.
+ * zonder Resend. In de e2e-controle komt deze mail wél echt aan: met
+ * `MAIL_MODE=postbus` levert `verstuurMail` hem af in de testpostbus.
  */
 export function welkomstmail(): {
   van: string
@@ -158,17 +157,16 @@ export async function stuurWelkomstmail(userId: string): Promise<WelkomResultaat
     })
 
     const mail = welkomstmail()
-    const resend = new Resend(process.env.RESEND_API_KEY)
-    const { error: mailError } = await resend.emails.send({
-      from: mail.van,
-      to: user.email,
-      subject: mail.onderwerp,
+    const uitkomst = await verstuurMail({
+      van: mail.van,
+      aan: user.email,
+      onderwerp: mail.onderwerp,
       html: mail.html,
-      text: mail.tekst,
+      tekst: mail.tekst,
     })
 
-    if (mailError) {
-      console.error('[welkomstmail]', mailError)
+    if (!uitkomst.gelukt) {
+      console.error('[welkomstmail]', uitkomst.fout)
       // Vlag terugdraaien, zodat een volgende poging het opnieuw probeert.
       await supabase.auth.admin.updateUserById(userId, {
         user_metadata: { ...user.user_metadata, welcome_sent_at: null },

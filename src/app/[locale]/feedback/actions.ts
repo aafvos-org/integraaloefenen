@@ -1,8 +1,7 @@
 'use server'
 
-import { Resend } from 'resend'
-
 import { SITE_CONFIG } from '@/config/site'
+import { verstuurMail } from '@/lib/email/versturen'
 import { createClient } from '@/lib/supabase/server'
 
 export type FeedbackState = {
@@ -15,6 +14,9 @@ export type FeedbackState = {
  * tot die tijd valt dit terug op het domein van de site.
  */
 const EMAIL_FROM = process.env.EMAIL_FROM ?? `no-reply@${SITE_CONFIG.domain}`
+
+/** Waar een vraag via Aaf heen gaat; feedback gaat naar NOTIFY_EMAIL. */
+const VRAGEN_NAAR = 'aaf@example.com'
 
 function escapeHtml(s: string): string {
   return s
@@ -43,28 +45,19 @@ export async function askAafAction(
   } = await supabase.auth.getUser()
   if (!user) return { error: 'Niet ingelogd.', sent: false }
 
-  try {
-    const resend = new Resend(process.env.RESEND_API_KEY)
-    const { error } = await resend.emails.send({
-      from: EMAIL_FROM,
-      to: 'aaf@example.com',
-      replyTo: user.email ?? undefined,
-      subject: `Vraag via Aaf op ${SITE_CONFIG.domain}`,
-      html: `
+  const uitkomst = await verstuurMail({
+    van: EMAIL_FROM,
+    aan: VRAGEN_NAAR,
+    antwoordNaar: user.email ?? undefined,
+    onderwerp: `Vraag via Aaf op ${SITE_CONFIG.domain}`,
+    html: `
         <h2>Vraag via Aaf</h2>
         <p><b>Van:</b> ${escapeHtml(user.email ?? user.id)}</p>
         <p style="white-space:pre-wrap">${escapeHtml(message)}</p>
       `,
-    })
-    if (error) {
-      console.error('[ask-aaf]', error)
-      return {
-        error: 'Versturen is niet gelukt. Probeer het later nog eens.',
-        sent: false,
-      }
-    }
-  } catch (e) {
-    console.error('[ask-aaf]', e)
+  })
+  if (!uitkomst.gelukt) {
+    console.error('[ask-aaf]', uitkomst.fout)
     return {
       error: 'Versturen is niet gelukt. Probeer het later nog eens.',
       sent: false,
@@ -93,28 +86,19 @@ export async function sendFeedbackAction(
   } = await supabase.auth.getUser()
   if (!user) return { error: 'Niet ingelogd.', sent: false }
 
-  try {
-    const resend = new Resend(process.env.RESEND_API_KEY)
-    const { error } = await resend.emails.send({
-      from: EMAIL_FROM,
-      to: process.env.NOTIFY_EMAIL!,
-      replyTo: user.email ?? undefined,
-      subject: `Feedback op ${SITE_CONFIG.domain}`,
-      html: `
+  const uitkomst = await verstuurMail({
+    van: EMAIL_FROM,
+    aan: process.env.NOTIFY_EMAIL ?? '',
+    antwoordNaar: user.email ?? undefined,
+    onderwerp: `Feedback op ${SITE_CONFIG.domain}`,
+    html: `
         <h2>Feedback</h2>
         <p><b>Van:</b> ${escapeHtml(user.email ?? user.id)}</p>
         <p style="white-space:pre-wrap">${escapeHtml(message)}</p>
       `,
-    })
-    if (error) {
-      console.error('[feedback]', error)
-      return {
-        error: 'Versturen is niet gelukt. Probeer het later nog eens.',
-        sent: false,
-      }
-    }
-  } catch (e) {
-    console.error('[feedback]', e)
+  })
+  if (!uitkomst.gelukt) {
+    console.error('[feedback]', uitkomst.fout)
     return {
       error: 'Versturen is niet gelukt. Probeer het later nog eens.',
       sent: false,

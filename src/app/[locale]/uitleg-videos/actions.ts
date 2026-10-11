@@ -1,13 +1,15 @@
 'use server'
 
-import { Resend } from 'resend'
-
 import { SITE_CONFIG } from '@/config/site'
 import { checkWrongAnswerNew } from '@/lib/ai/check-answer-new'
+import { verstuurMail } from '@/lib/email/versturen'
 import { answersMatch } from '@/lib/practice/engine'
 import { createClient, createServiceRoleClient } from '@/lib/supabase/server'
 
 const EMAIL_FROM = process.env.EMAIL_FROM ?? `no-reply@${SITE_CONFIG.domain}`
+
+/** Waar een video-verzoek heen gaat; zelfde adres als een vraag via Aaf. */
+const VRAGEN_NAAR = 'aaf@example.com'
 
 function escapeHtml(s: string): string {
   return s
@@ -108,15 +110,13 @@ export async function vraagVideoAction(
   const fotos = await leesFotos(formData)
   if ('error' in fotos) return { error: fotos.error, sent: false }
 
-  try {
-    const resend = new Resend(process.env.RESEND_API_KEY)
-    const { error } = await resend.emails.send({
-      from: EMAIL_FROM,
-      to: 'aaf@example.com',
-      replyTo: user.email ?? undefined,
-      subject: `Video-verzoek via ${SITE_CONFIG.domain}`,
-      attachments: fotos.bijlagen.length > 0 ? fotos.bijlagen : undefined,
-      html: `
+  const uitkomst = await verstuurMail({
+    van: EMAIL_FROM,
+    aan: VRAGEN_NAAR,
+    antwoordNaar: user.email ?? undefined,
+    onderwerp: `Video-verzoek via ${SITE_CONFIG.domain}`,
+    bijlagen: fotos.bijlagen.length > 0 ? fotos.bijlagen : undefined,
+    html: `
         <h2>Video-verzoek (uitlegvideo's)</h2>
         <p><b>Van:</b> ${escapeHtml(user.email ?? user.id)}</p>
         <p style="white-space:pre-wrap">${escapeHtml(message)}</p>
@@ -133,16 +133,13 @@ export async function vraagVideoAction(
             : ''
         }
       `,
-    })
-    if (error) {
-      console.error('[vraag-video]', error)
-      return { error: 'Versturen mislukt. Probeer het later opnieuw.', sent: false }
-    }
-    return { error: null, sent: true }
-  } catch (e) {
-    console.error('[vraag-video]', e)
+  })
+
+  if (!uitkomst.gelukt) {
+    console.error('[vraag-video]', uitkomst.fout)
     return { error: 'Versturen mislukt. Probeer het later opnieuw.', sent: false }
   }
+  return { error: null, sent: true }
 }
 
 export type VideoAnswerResult =
