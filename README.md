@@ -141,6 +141,33 @@ npx supabase db reset   # draait de migraties + supabase/seed.sql
 - `IntegraalOefenen` is een eigen Supabase-project (`oyevapifmenqjuklprws`) en
   wordt niet meer gedeeld met afgeleideoefenen.nl.
 
+### De instellingen van het echte project
+
+[`supabase/config.toml`](./supabase/config.toml) beschrijft standaard de
+Supabase op je eigen computer. Wat op de echte site anders moet, staat onderaan
+datzelfde bestand in `[remotes.production]` — nu: de mailserver van Resend aan,
+en hoeveel mails er per uur de deur uit mogen. De CLI legt dat blok over de
+waarden erboven heen zodra je met projectnummer `oyevapifmenqjuklprws` werkt;
+lokaal gebeurt er niets mee.
+
+Verander die instellingen daar, niet in het Supabase-dashboard — anders weet
+niemand meer wat er staat. Kijken mag altijd:
+
+```bash
+npx supabase config diff --project-ref oyevapifmenqjuklprws   # alleen kijken
+```
+
+Schrijven doet `npx supabase config push`. Draai altijd eerst `config diff` en
+lees elke regel. Gebruik nooit `--yes`. Zet `RESEND_API_KEY_INTEGRAAL` in je
+omgeving voordat je pusht: zonder die sleutel gaat er een leeg wachtwoord naar
+de mailserver en verstuurt de echte site geen mail meer.
+
+Het blok is nog **niet** nagekeken tegen het dashboard. Hoeveel mails er nu per
+uur mogen, hoe lang een bevestigingslink geldig is en of de teksten in
+[`supabase/email-templates/`](./supabase/email-templates/) nog kloppen, laat
+`npx supabase config pull --project-ref oyevapifmenqjuklprws --dry-run` zien
+zonder iets aan te raken. Zolang dat niet gedaan is: niet pushen.
+
 ---
 
 ## Projectstructuur

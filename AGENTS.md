@@ -65,6 +65,30 @@ afgeleideoefenen), dan zijn de poorten bezet. Zet die eerst stil, of geef deze
 tijdelijk andere poorten in `supabase/config.toml` — en draai die wijziging
 terug voordat je commit.
 
+## De instellingen van het echte Supabase-project
+
+`supabase/config.toml` beschrijft standaard de Supabase op je eigen computer.
+Wat op de echte site anders moet, staat onderaan datzelfde bestand in
+`[remotes.production]`: nu de mailserver van Resend (aan) en hoeveel mails er
+per uur mogen. De CLI legt dat blok over de waarden erboven heen zodra je met
+projectnummer `oyevapifmenqjuklprws` werkt — veld voor veld, tot in de diepste
+onderverdeling. Lokaal (`npx supabase start`, `npm run test:e2e`) gebeurt er
+niets mee.
+
+Verander zo'n instelling daar en niet in het Supabase-dashboard, anders weet
+niemand meer wat er staat. Kijken mag altijd, schrijven niet zomaar:
+
+    npx supabase config diff --project-ref oyevapifmenqjuklprws   # alleen kijken
+    npx supabase config push --project-ref oyevapifmenqjuklprws   # schrijft écht
+
+Draai altijd eerst `config diff` en lees elke regel die hij noemt. Gebruik
+nooit `--yes`. Zet `RESEND_API_KEY_INTEGRAAL` in je omgeving voordat je pusht:
+zonder die sleutel gaat er een leeg wachtwoord naar de mailserver en verstuurt
+de echte site geen mail meer.
+
+Het blok is nog niet nagekeken tegen het dashboard — zie de opmerking erboven
+in `config.toml`. Pushen doet Aaf, niet een agent.
+
 ## Oefenvragen in `content/`
 
 De vragen staan in `content/hoofdstuk-<letter>/<wat-dan-ook>.json`. Elk bestand

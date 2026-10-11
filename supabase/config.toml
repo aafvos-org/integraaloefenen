@@ -220,8 +220,8 @@ password_requirements = ""
 # Number of emails that can be sent per hour. Requires auth.email.smtp to be enabled.
 # Ruim, want dit geldt alleen voor de Supabase op je eigen computer en in de
 # controle: daar lopen per run meerdere registraties en wachtwoord-vergeten
-# -mails door de testpostbus. Wat de echte site mag versturen, staat in het
-# Supabase-dashboard van het project zelf.
+# -mails door de testpostbus. Wat de echte site mag versturen, staat onderaan
+# dit bestand in [remotes.production.auth.rate_limit].
 email_sent = 100
 # Number of SMS messages that can be sent per hour. Requires auth.sms to be enabled.
 sms_sent = 30
@@ -278,9 +278,9 @@ content_path = "./supabase/email-templates/reset-password-nl.html"
 # eigen computer echte mail en loopt de e2e-test vast omdat de bevestigingsmail
 # nergens op te halen is.
 #
-# De echte site verstuurt wel via Resend; dat staat ingesteld in het
-# Supabase-dashboard van het project zelf (Authentication → SMTP Settings), net
-# als de teksten uit supabase/email-templates/. De sleutel hoort in .env.local
+# De echte site verstuurt wel via Resend: onderaan dit bestand zet
+# [remotes.production.auth.email.smtp] hem aan, met de host, poort, gebruiker,
+# afzender en merknaam van hieronder. De sleutel zelf hoort in .env.local
 # (RESEND_API_KEY_INTEGRAAL) en nooit in dit bestand.
 [auth.email.smtp]
 enabled = false
@@ -469,3 +469,56 @@ enabled = true
 # declarative_schema_path = "./database"
 # JSON string passed through to pg-delta SQL formatting.
 # format_options = "{\"keywordCase\":\"upper\",\"indent\":2,\"maxWidth\":80,\"commaStyle\":\"trailing\"}"
+
+# ----------------------------------------------------------------------------
+# De echte Supabase van integraaloefenen.nl
+# ----------------------------------------------------------------------------
+# Alles hierboven beschrijft de Supabase die op je eigen computer draait. Een
+# paar waarden moeten op de echte site juist anders zijn. Die staan hieronder.
+#
+# Hoe de CLI dit leest: hij zoekt het [remotes.*]-blok waarvan `project_id`
+# gelijk is aan het projectnummer waar je mee werkt (het nummer achter
+# `--project-ref`, of het project waaraan deze map gekoppeld is). Vindt hij er
+# een, dan legt hij dat blok over de waarden hierboven heen — veld voor veld,
+# tot in de diepste onderverdeling. Wat hieronder niet staat, blijft dus zoals
+# het hierboven staat. Lokaal (`npx supabase start`, `npm run test:e2e`) wordt
+# dit blok nooit gebruikt.
+#
+# Zonder dit blok zou `npx supabase config push` de regel
+# `[auth.email.smtp] enabled = false` naar de echte site schrijven, en dan
+# krijgt niemand die zich registreert nog een bevestigingsmail.
+#
+# Kijken mag altijd, schrijven niet zomaar:
+#
+#     npx supabase config diff --project-ref oyevapifmenqjuklprws   # alleen kijken
+#     npx supabase config push --project-ref oyevapifmenqjuklprws   # schrijft écht
+#
+# Draai `config diff` altijd eerst en lees elke regel die hij noemt. Gebruik
+# nooit `--yes`: dan slaat hij de vraag over en schrijft hij alles in één keer.
+# Let vooral op het wachtwoord van de mailserver: dat komt uit de omgeving
+# (RESEND_API_KEY_INTEGRAAL). Staat die niet in je omgeving als je pusht, dan
+# gaat er een leeg wachtwoord naar de echte site en verstuurt hij geen mail
+# meer.
+#
+# NOG NIET NAGEKEKEN tegen het dashboard. Van deze waarden weten we nog niet
+# zeker wat er nú op de echte site staat; `npx supabase config pull
+# --project-ref oyevapifmenqjuklprws --dry-run` laat het zien zonder iets aan
+# te raken:
+#   - auth.rate_limit.email_sent  (hoeveel mails per uur)
+#   - auth.email.otp_expiry       (hoe lang een bevestigingslink geldig is)
+#   - de teksten van de mails in supabase/email-templates/
+# Zolang dat niet gedaan is: niet pushen.
+[remotes.production]
+project_id = "oyevapifmenqjuklprws"
+
+[remotes.production.auth.email.smtp]
+# De echte site verstuurt via Resend. Host, poort, gebruiker, wachtwoord,
+# afzender en merknaam komen uit [auth.email.smtp] hierboven; alleen deze
+# schakelaar is anders.
+enabled = true
+
+[remotes.production.auth.rate_limit]
+# Met een eigen mailserver (Resend) mag de echte site meer versturen dan de
+# twee per uur van de ingebouwde mailservice van Supabase. Honderd per uur is
+# ruim genoeg voor een klas die zich tegelijk aanmeldt.
+email_sent = 100
