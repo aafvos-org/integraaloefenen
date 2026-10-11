@@ -13,6 +13,7 @@
  */
 
 import { SITE_CONFIG } from '@/config/site'
+import { opgavesoort } from '@/lib/practice/opdracht'
 
 /** Gedeelde kop: wie Gemini is en hoe hij moet antwoorden. */
 const ROLE_HEADER = `Je bent een wiskundedocent voor VWO-leerlingen die leren ${SITE_CONFIG.subjectVerbNl}.
@@ -75,7 +76,7 @@ export function buildCheckAnswerPromptNew(input: {
 Context:
 - Topic: ${input.topicTitle}
 - Cluster: ${input.clusterTitle}
-- Vraag: ${SITE_CONFIG.taskPromptNl} ${input.questionBody}
+- Vraag: ${opgavesoort(input.questionBody) === 'eigen-opdracht' ? '' : `${SITE_CONFIG.taskPromptNl} `}${input.questionBody}
 - Correct antwoord: ${input.correctAnswer}
 - Antwoord van de leerling: ${input.studentAnswer}
 
