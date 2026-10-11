@@ -69,9 +69,10 @@ terug voordat je commit.
 
 `supabase/config.toml` beschrijft standaard de Supabase op je eigen computer.
 Wat op de echte site anders moet, staat onderaan datzelfde bestand in
-`[remotes.production]`: nu de mailserver van Resend (aan) en hoeveel mails er
-per uur mogen. De CLI legt dat blok over de waarden erboven heen zodra je met
-projectnummer `oyevapifmenqjuklprws` werkt — veld voor veld, tot in de diepste
+`[remotes.production]`: nu de mailserver van Resend (aan), hoeveel mails er per
+uur mogen en hoeveel aanmeldingen en bevestigingslinks er per 5 minuten per
+netwerk-adres mogen. De CLI legt dat blok over de waarden erboven heen zodra je
+met projectnummer `oyevapifmenqjuklprws` werkt — veld voor veld, tot in de diepste
 onderverdeling. Lokaal (`npx supabase start`, `npm run test:e2e`) gebeurt er
 niets mee.
 

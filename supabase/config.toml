@@ -504,8 +504,10 @@ enabled = true
 # zeker wat er nú op de echte site staat; `npx supabase config pull
 # --project-ref oyevapifmenqjuklprws --dry-run` laat het zien zonder iets aan
 # te raken:
-#   - auth.rate_limit.email_sent  (hoeveel mails per uur)
-#   - auth.email.otp_expiry       (hoe lang een bevestigingslink geldig is)
+#   - auth.rate_limit.email_sent           (hoeveel mails per uur)
+#   - auth.rate_limit.sign_in_sign_ups     (aanmeldingen per 5 min per adres)
+#   - auth.rate_limit.token_verifications  (bevestigingslinks per 5 min)
+#   - auth.email.otp_expiry                (hoe lang een bevestigingslink geldig is)
 #   - de teksten van de mails in supabase/email-templates/
 # Zolang dat niet gedaan is: niet pushen.
 [remotes.production]
@@ -522,3 +524,11 @@ enabled = true
 # twee per uur van de ingebouwde mailservice van Supabase. Honderd per uur is
 # ruim genoeg voor een klas die zich tegelijk aanmeldt.
 email_sent = 100
+# Een klas op school deelt één netwerk-adres, en deze twee tellers gaan per
+# netwerk-adres. Met de standaard van 30 per 5 minuten zit een klas van dertig
+# er precies op: elke poging telt mee, ook een typefout en ook een tweede klik,
+# dus wie als laatste op "Registreren" of op de link in de bevestigingsmail
+# tikt, komt er niet in. Honderdvijftig is dezelfde ruimte als token_refresh
+# hierboven en blijft een grens tegen het raden van wachtwoorden.
+sign_in_sign_ups = 150
+token_verifications = 150
