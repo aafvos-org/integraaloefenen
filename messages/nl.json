@@ -481,5 +481,11 @@
     "emptyTitle": "De eerste video's komen eraan",
     "emptyBody": "Hier komen korte video's over integreren en primitiveren, met oefenvragen eronder om meteen mee te doen. Die worden nu gemaakt. Wil jij iets uitgelegd zien? Stel je vraag hieronder: grote kans dat hij de eerste video wordt.",
     "emptyPractice": "Ga oefenen"
+  },
+  "NotFound": {
+    "eyebrow": "Fout 404",
+    "title": "Deze pagina bestaat niet",
+    "body": "Misschien is het adres verkeerd getypt, of werkt de link niet meer. Geen probleem: je kunt zo weer verder met oefenen.",
+    "cta": "Naar de startpagina"
   }
 }
