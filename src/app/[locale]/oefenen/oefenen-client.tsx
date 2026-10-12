@@ -51,8 +51,7 @@ type Props = {
   chapters: ChapterInfo[]
   allTopics: TopicInfo[]
   allClusters: ClusterInfo[]
-  showCategories: boolean
-  activeCategory: TopicCategory | null
+  activeCategory: TopicCategory
   categoryOrder: TopicCategory[]
   categoryLabels: Record<TopicCategory, string>
   initialChapterSlug: string | null
@@ -82,7 +81,6 @@ export function OefenenClient({
   chapters,
   allTopics,
   allClusters,
-  showCategories,
   activeCategory,
   categoryOrder,
   categoryLabels,
@@ -184,7 +182,7 @@ export function OefenenClient({
     [topicClusters, selectedClusterSlug],
   )
 
-  const catQS = activeCategory ? `category=${encodeURIComponent(activeCategory)}&` : ''
+  const catQS = `category=${encodeURIComponent(activeCategory)}&`
   const baseHref = `/oefenen?${catQS}chapter=${encodeURIComponent(selectedChapter?.slug ?? '')}${
     selectedTopic ? `&topic=${encodeURIComponent(selectedTopic.slug)}` : ''
   }${selectedCluster ? `&cluster=${encodeURIComponent(selectedCluster.slug)}` : ''}`
@@ -477,8 +475,7 @@ export function OefenenClient({
         onScroll={handleMainScroll}
         className="nice-scrollbar flex-1 lg:h-full lg:overflow-y-auto"
       >
-        {showCategories && (
-          <nav className="border-b border-border bg-surface">
+        <nav className="border-b border-border bg-surface">
             <div className="mx-auto flex max-w-6xl gap-1 overflow-x-auto px-4">
               {categoryOrder.map((cat) => {
                 const catActive = cat === activeCategory
@@ -498,7 +495,6 @@ export function OefenenClient({
               })}
             </div>
           </nav>
-        )}
 
         <div className="mx-auto max-w-6xl px-4 py-8">
           <h1 className="sr-only">{labels.h1}</h1>

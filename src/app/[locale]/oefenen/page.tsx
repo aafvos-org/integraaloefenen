@@ -1,7 +1,6 @@
 import { getTranslations, getLocale } from 'next-intl/server'
 import { redirect } from 'next/navigation'
 
-import { SITE } from '@/config/site'
 import {
   loadAllTopics,
   loadClustersForTopics,
@@ -70,12 +69,9 @@ export default async function OefenenPage({ searchParams }: PageProps) {
   const clusterParam = params.cluster?.trim() ?? null
   const qParam = params.q?.trim() ?? null
 
-  const showCategories = SITE === 'integralen'
-  const activeCategory: TopicCategory | null = showCategories
-    ? isCategory(categoryParam)
-      ? categoryParam
-      : 'primitiveren'
-    : null
+  const activeCategory: TopicCategory = isCategory(categoryParam)
+    ? categoryParam
+    : 'primitiveren'
 
   const [t, chapters, allTopicsRaw] = await Promise.all([
     getTranslations('FreeExercise'),
@@ -153,11 +149,10 @@ export default async function OefenenPage({ searchParams }: PageProps) {
 
   return (
     <OefenenClient
-      key={activeCategory ?? 'none'}
+      key={activeCategory}
       chapters={visibleChapters}
       allTopics={allTopics}
       allClusters={allClusters}
-      showCategories={showCategories}
       activeCategory={activeCategory}
       categoryOrder={CATEGORY_ORDER}
       categoryLabels={CATEGORY_LABELS}

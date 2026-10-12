@@ -10,8 +10,6 @@
  * de opdracht er in gewone taal boven.
  */
 
-import { SITE } from '@/config/site'
-
 /** Soort opgave, bepaalt welke opdrachtregel erboven komt. */
 export type Opgavesoort =
   /** De opgave zegt zelf al wat er moet gebeuren. */
@@ -85,8 +83,8 @@ function vraagtOmPrimitieve(latexBody: string | null): boolean {
 
 /**
  * Notatie voor de antwoordregel onder de opgave, afgeleid van de functieletter
- * in de vraag: "k(x) = …" → "k'(x) =" (afgeleiden) of "K(x) =" (integralen).
- * Staat er een andere variabele, dan volgt die mee: "h(t) = …" → "H(t) =".
+ * in de vraag: "k(x) = …" → "K(x) =". Staat er een andere variabele, dan volgt
+ * die mee: "h(t) = …" → "H(t) =".
  *
  * Vraagt de opgave niet om een primitieve, dan is het een lege string: dan
  * staat er alleen het antwoord zelf.
@@ -96,7 +94,5 @@ export function antwoordPrefix(latexBody: string | null): string {
   const match = latexBody?.match(/([a-zA-Z])\s*\(\s*([a-zA-Z])\s*\)\s*=/)
   const letter = match?.[1] ?? 'f'
   const variabele = match?.[2] ?? 'x'
-  return SITE === 'integralen'
-    ? `${letter.toUpperCase()}(${variabele}) =`
-    : `${letter}'(${variabele}) =`
+  return `${letter.toUpperCase()}(${variabele}) =`
 }
