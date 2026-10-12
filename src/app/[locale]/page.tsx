@@ -130,6 +130,14 @@ export default async function HomePage() {
         <section className="mt-20">
           <h2 className="font-serif text-3xl text-text">{t('topicsH2')}</h2>
           <p className="mt-3 text-text-muted">{t('topicsIntro')}</p>
+          <p className="mt-4">
+            <Link
+              href={'/theorie/k3' as '/theorie'}
+              className="inline-flex min-h-11 items-center font-medium text-accent underline underline-offset-2"
+            >
+              {t('theoryK3Link')}
+            </Link>
+          </p>
           <ul className="mt-6 grid gap-3 sm:grid-cols-2">
             {[
               [t('topic1Title'), t('topic1Body')],
