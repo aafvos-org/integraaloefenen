@@ -13,7 +13,7 @@
  * Hij kent de notatie uit `AGENTS.md`: `*` mag je weglaten, `^` voor machten,
  * `sqrt(x)`, `sin(x)`, `asin(x)`, `e^x`, `pi`, `ln(x)` en `log10(x)`. `log(...)`
  * kent hij niet — dat is te verwarrend — en een formule daarmee gaat dus langs
- * de AI-stap.
+ * de AI-stap. Staafjes `|x|` zijn hetzelfde als `abs(x)`, ook in `ln|x+2|`.
  */
 
 /** Langer dan dit is geen antwoord meer; dan rekenen we niet door. */
@@ -47,6 +47,17 @@ type Token =
   | { soort: 'teken'; waarde: string }
 
 const TEKENS = new Set(['+', '-', '/', '^', '(', ')'])
+
+/**
+ * Schoolnotatie `|x+2|` is hetzelfde als `abs(x+2)`. Ook `ln|x+2|`, zonder
+ * haakjes om de staafjes. Een ongepaard staafje is geen formule die we
+ * kunnen narekenen.
+ */
+function staafjesNaarAbs(bron: string): string | null {
+  const omgezet = bron.replace(/\|([^|]*)\|/g, '(abs($1))')
+  if (omgezet.includes('|')) return null
+  return omgezet
+}
 
 /**
  * De namen die we kennen, de langste eerst — zo wordt `exp` niet gelezen als
@@ -84,7 +95,7 @@ function tokenize(bron: string): Token[] | null {
       continue
     }
 
-    // Iets wat we niet kennen (=, |, √, …): dan rekenen we niet door.
+    // Iets wat we niet kennen (=, √, …): dan rekenen we niet door.
     return null
   }
   return tokens
@@ -98,8 +109,9 @@ function tokenize(bron: string): Token[] | null {
  * letters, zonder spaties en zonder maaltekens.
  */
 export function readFormula(bron: string): Formula | null {
-  if (bron.length === 0 || bron.length > MAX_LENGTE) return null
-  const tokens = tokenize(bron)
+  const metAbs = staafjesNaarAbs(bron)
+  if (metAbs === null || metAbs.length === 0 || metAbs.length > MAX_LENGTE) return null
+  const tokens = tokenize(metAbs)
   if (!tokens || tokens.length === 0) return null
 
   let pos = 0

@@ -148,7 +148,7 @@ const VRAGEN: AdditiveQ[] = [
     integrand: 'cos(x/2)^2',
     primitieve: 'x/2 + sin(x)/2',
     steps: vier(
-      `${DEEL2} De hoek in de verdubbelingsformule is $\tfrac{1}{2}x$. Twee keer die hoek is gewoon $x$.`,
+      `${DEEL2} De hoek in de verdubbelingsformule is $\\tfrac{1}{2}x$. Twee keer die hoek is gewoon $x$.`,
       r`$\cos^{2}\left(\tfrac{1}{2}x\right) = \tfrac{1}{2} + \tfrac{1}{2}\cos(x)$.`,
       r`Een primitieve van $\tfrac{1}{2}$ is $\tfrac{1}{2}x$. Een primitieve van $\tfrac{1}{2}\cos(x)$ is $\tfrac{1}{2}\sin(x)$.`,
       r`$F(x) = \tfrac{1}{2}x + \tfrac{1}{2}\sin(x) + c$. Controle: de afgeleide is $\tfrac{1}{2} + \tfrac{1}{2}\cos(x) = \cos^{2}\left(\tfrac{1}{2}x\right)$.`,

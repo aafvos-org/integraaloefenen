@@ -44,6 +44,15 @@ describe('readFormula', () => {
     expect(reken('0,5x', 4)).toBe(2)
   })
 
+  it('leest staafjes als absolute waarde', () => {
+    expect(reken('|x|', -3)).toBe(3)
+    expect(reken('2|x|', -3)).toBe(6)
+    expect(reken('|-2|', 0)).toBe(2)
+    expect(reken('ln|x+2|', 1)).toBeCloseTo(Math.log(3), 12)
+    expect(reken('ln(|x+2|)', 1)).toBeCloseTo(Math.log(3), 12)
+    expect(readFormula('ln|x+2')).toBeNull()
+  })
+
   it('weigert wat hij niet kent', () => {
     // log(...) is te verwarrend: grondtal 10 in de les, grondtal e in software
     expect(readFormula('log(x)')).toBeNull()

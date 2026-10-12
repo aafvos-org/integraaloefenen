@@ -101,7 +101,7 @@
       "integrand": "cos(x/2)^2",
       "primitieve": "x/2 + sin(x)/2",
       "stappen": [
-        "Alleen deel 2 van de driedeling speelt hier: bereken de goede integraal. De hoek in de verdubbelingsformule is $\tfrac{1}{2}x$. Twee keer die hoek is gewoon $x$.",
+        "Alleen deel 2 van de driedeling speelt hier: bereken de goede integraal. De hoek in de verdubbelingsformule is $\\tfrac{1}{2}x$. Twee keer die hoek is gewoon $x$.",
         "$\\cos^{2}\\left(\\tfrac{1}{2}x\\right) = \\tfrac{1}{2} + \\tfrac{1}{2}\\cos(x)$.",
         "Een primitieve van $\\tfrac{1}{2}$ is $\\tfrac{1}{2}x$. Een primitieve van $\\tfrac{1}{2}\\cos(x)$ is $\\tfrac{1}{2}\\sin(x)$.",
         "$F(x) = \\tfrac{1}{2}x + \\tfrac{1}{2}\\sin(x) + c$. Controle: de afgeleide is $\\tfrac{1}{2} + \\tfrac{1}{2}\\cos(x) = \\cos^{2}\\left(\\tfrac{1}{2}x\\right)$."

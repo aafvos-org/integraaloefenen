@@ -99,6 +99,14 @@ describe('answersMatch', () => {
     expect(answersMatch('6/18', '1/3')).toBe(true)
     expect(answersMatch('2ln(2)', 'ln(4)')).toBe(true)
   })
+
+  it('rekent staafjes hetzelfde als abs', () => {
+    expect(answersMatch('ln|x+2|', 'ln(abs(x+2))')).toBe(true)
+    expect(answersMatch('ln(|x+2|)', 'ln(abs(x+2))')).toBe(true)
+    expect(answersMatch('ln|x+2| + c', 'ln(abs(x+2)) + c')).toBe(true)
+    expect(answersMatch('x + 2ln|x+1| + c', 'x + 2ln(abs(x+1)) + c')).toBe(true)
+    expect(answersMatch('ln|x+3|', 'ln(abs(x+2))')).toBe(false)
+  })
 })
 
 describe('normalizeAnswer', () => {

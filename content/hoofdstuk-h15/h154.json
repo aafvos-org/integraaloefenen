@@ -676,7 +676,7 @@
       ],
       "waarde": "1/6",
       "stappen": [
-        "Hier spelen deel 1 en deel 2 van de driedeling: eerst het verhaal vertalen naar een integraal, dan die integraal exact uitrekenen. Op $[0, 1]$ ligt $sqrt{x}$ boven $y = x$.",
+        "Hier spelen deel 1 en deel 2 van de driedeling: eerst het verhaal vertalen naar een integraal, dan die integraal exact uitrekenen. Op $[0, 1]$ ligt $\\sqrt{x}$ boven $y = x$.",
         "$O(V) = \\displaystyle\\int_{0}^{1} \\left(\\sqrt{x} - x\\right)\\,\\mathrm{d}x$ en $O(W) = \\displaystyle\\int_{0}^{1} x\\,\\mathrm{d}x = \\dfrac{1}{2}$.",
         "Een primitieve van $\\sqrt{x} - x$ is $\\dfrac{2}{3}x^{3/2} - \\dfrac{1}{2}x^{2}$. Dus $O(V) = \\dfrac{2}{3} - \\dfrac{1}{2} = \\dfrac{1}{6}$.",
         "$O(V) : O(W) = \\dfrac{1}{6} : \\dfrac{1}{2} = 1 : 3$."
@@ -1143,9 +1143,9 @@
       "cluster": "h15c_yas",
       "niveau": 1,
       "latex": "Het vlakdeel $V$ wordt ingesloten door de grafiek van $y = \\sqrt{x}$, de $x$-as en de lijn $x = 4$. Het lichaam $L$ ontstaat als $V$ wentelt om de $y$-as. Bereken exact de inhoud van $L$.",
-      "antwoord_latex": "\\dfrac{32}{5}\\pi",
-      "integrand": "pi*x^4",
-      "primitieve": "pi*x^5/5",
+      "antwoord_latex": "\\dfrac{128}{5}\\pi",
+      "integrand": "pi*(16 - x^4)",
+      "primitieve": "pi*(16*x - x^5/5)",
       "domein": [
         0,
         3
@@ -1154,12 +1154,12 @@
         0,
         2
       ],
-      "waarde": "(32/5)*pi",
+      "waarde": "(128/5)*pi",
       "stappen": [
-        "Hier spelen deel 1 en deel 2 van de driedeling: eerst het verhaal vertalen naar een integraal, dan die integraal exact uitrekenen. Schrijf $x$ als functie van $y$ en integreer het kwadraat van die straal.",
-        "$y = \\sqrt{x}$ geeft $x = y^{2}$, en $y$ loopt van $0$ tot $2$. $I(L) = \\pi \\displaystyle\\int_{0}^{2} (y^{2})^{2}\\,\\mathrm{d}y = \\pi \\displaystyle\\int_{0}^{2} y^{4}\\,\\mathrm{d}y$.",
-        "Een primitieve van $\\pi x^{4}$ is $F(x) = \\pi \\cdot \\dfrac{1}{5}x^{5}$.",
-        "$F(2) - F(0) = \\pi \\cdot \\dfrac{32}{5} = \\dfrac{32}{5}\\pi$. De inhoud is $\\dfrac{32}{5}\\pi$."
+        "Hier spelen deel 1 en deel 2 van de driedeling: eerst het verhaal vertalen naar een integraal, dan die integraal exact uitrekenen. Op een hoogte $y$ loopt het vlakdeel van de grafiek tot de lijn $x = 4$. De buitenste straal is $4$, de binnenste is de $x$ van de grafiek.",
+        "$y = \\sqrt{x}$ geeft $x = y^{2}$, en $y$ loopt van $0$ tot $2$. $I(L) = \\pi \\displaystyle\\int_{0}^{2} \\left(4^{2} - (y^{2})^{2}\\right)\\,\\mathrm{d}y = \\pi \\displaystyle\\int_{0}^{2} (16 - y^{4})\\,\\mathrm{d}y$. In de berekening hieronder heet de integratievariabele $x$.",
+        "Een primitieve van $\\pi(16 - x^{4})$ is $F(x) = \\pi\\left(16x - \\dfrac{1}{5}x^{5}\\right)$.",
+        "$F(2) - F(0) = \\pi\\left(32 - \\dfrac{32}{5}\\right) = \\dfrac{128}{5}\\pi$. De inhoud is $\\dfrac{128}{5}\\pi$."
       ]
     },
     {
@@ -1168,8 +1168,8 @@
       "niveau": 1,
       "latex": "Het vlakdeel $V$ wordt ingesloten door de grafiek van $y = x^{2}$, de $x$-as en de lijn $x = 2$. Het lichaam $L$ ontstaat als $V$ wentelt om de $y$-as. Bereken exact de inhoud van $L$.",
       "antwoord_latex": "8\\pi",
-      "integrand": "pi*x",
-      "primitieve": "pi*x^2/2",
+      "integrand": "pi*(4 - x)",
+      "primitieve": "pi*(4*x - x^2/2)",
       "domein": [
         0,
         5
@@ -1180,10 +1180,10 @@
       ],
       "waarde": "8*pi",
       "stappen": [
-        "Hier spelen deel 1 en deel 2 van de driedeling: eerst het verhaal vertalen naar een integraal, dan die integraal exact uitrekenen. Druk de straal uit in $y$.",
-        "$y = x^{2}$ met $x \\ge 0$ geeft $x = \\sqrt{y}$. En $y$ loopt van $0$ tot $4$. $I(L) = \\pi \\displaystyle\\int_{0}^{4} y\\,\\mathrm{d}y$.",
-        "Een primitieve van $\\pi x$ is $F(x) = \\pi \\cdot \\dfrac{1}{2}x^{2}$.",
-        "$F(4) - F(0) = 8\\pi$. De inhoud is $8\\pi$."
+        "Hier spelen deel 1 en deel 2 van de driedeling: eerst het verhaal vertalen naar een integraal, dan die integraal exact uitrekenen. Op een hoogte $y$ loopt het vlakdeel van de grafiek tot de lijn $x = 2$. De buitenste straal is $2$, de binnenste is de $x$ van de grafiek.",
+        "$y = x^{2}$ met $x \\ge 0$ geeft de binnenste straal $x = \\sqrt{y}$. Het kwadraat daarvan is $y$, en $y$ loopt van $0$ tot $4$. $I(L) = \\pi \\displaystyle\\int_{0}^{4} \\left(2^{2} - y\\right)\\,\\mathrm{d}y = \\pi \\displaystyle\\int_{0}^{4} (4 - y)\\,\\mathrm{d}y$. In de berekening hieronder heet de integratievariabele $x$.",
+        "Een primitieve van $\\pi(4 - x)$ is $F(x) = \\pi\\left(4x - \\dfrac{1}{2}x^{2}\\right)$.",
+        "$F(4) - F(0) = \\pi(16 - 8) = 8\\pi$. De inhoud is $8\\pi$."
       ]
     },
     {
@@ -1204,7 +1204,7 @@
       ],
       "waarde": "(16/3)*pi",
       "stappen": [
-        "Hier spelen deel 1 en deel 2 van de driedeling: eerst het verhaal vertalen naar een integraal, dan die integraal exact uitrekenen. Uit $y = 2x$ volgt de straal $x = dfrac{1}{2}y$.",
+        "Hier spelen deel 1 en deel 2 van de driedeling: eerst het verhaal vertalen naar een integraal, dan die integraal exact uitrekenen. Uit $y = 2x$ volgt de straal $x = \\dfrac{1}{2}y$.",
         "$y$ loopt van $0$ tot $4$. $I(L) = \\pi \\displaystyle\\int_{0}^{4} \\left(\\dfrac{y}{2}\\right)^{2}\\,\\mathrm{d}y = \\pi \\displaystyle\\int_{0}^{4} \\dfrac{1}{4}y^{2}\\,\\mathrm{d}y$.",
         "Een primitieve van $\\pi\\left(\\dfrac{x}{2}\\right)^{2}$ is $F(x) = \\pi \\cdot \\dfrac{1}{12}x^{3}$.",
         "$F(4) - F(0) = \\pi \\cdot \\dfrac{64}{12} = \\dfrac{16}{3}\\pi$. De inhoud is $\\dfrac{16}{3}\\pi$."
@@ -1300,7 +1300,7 @@
       ],
       "waarde": "(2/15)*pi",
       "stappen": [
-        "Hier spelen deel 1 en deel 2 van de driedeling: eerst het verhaal vertalen naar een integraal, dan die integraal exact uitrekenen. Op $[0, 1]$ is $y ge y^{2}$, dus de buitenste straal is $y$ en de binnenste is $y^{2}$.",
+        "Hier spelen deel 1 en deel 2 van de driedeling: eerst het verhaal vertalen naar een integraal, dan die integraal exact uitrekenen. Op $[0, 1]$ is $y \\ge y^{2}$, dus de buitenste straal is $y$ en de binnenste is $y^{2}$.",
         "$I(L) = \\pi \\displaystyle\\int_{0}^{1} \\left(y^{2} - (y^{2})^{2}\\right)\\,\\mathrm{d}y = \\pi \\displaystyle\\int_{0}^{1} (y^{2} - y^{4})\\,\\mathrm{d}y$.",
         "Een primitieve van $\\pi(x^{2} - x^{4})$ is $F(x) = \\pi\\left(\\dfrac{1}{3}x^{3} - \\dfrac{1}{5}x^{5}\\right)$.",
         "$F(1) - F(0) = \\pi\\left(\\dfrac{1}{3} - \\dfrac{1}{5}\\right) = \\dfrac{2}{15}\\pi$. De inhoud is $\\dfrac{2}{15}\\pi$."
@@ -1407,23 +1407,23 @@
       "cluster": "h15c_vergelijk",
       "niveau": 2,
       "latex": "Voor elke $p > 0$ ontstaat het lichaam $L_p$ als het vlakdeel onder $y = \\sqrt{x}$ van $x = 0$ tot $x = p$ wentelt om de $y$-as. Bereken exact de waarde van $p$ waarvoor de inhoud van $L_p$ gelijk is aan $\\dfrac{32}{5}\\pi$.",
-      "antwoord_latex": "p = 4",
-      "integrand": "pi*x^4",
-      "primitieve": "pi*x^5/5",
+      "antwoord_latex": "p = 8^{2/5}",
+      "integrand": "pi*(8^(4/5) - x^4)",
+      "primitieve": "pi*(8^(4/5)*x - x^5/5)",
       "domein": [
         0,
         3
       ],
       "grenzen": [
         0,
-        2
+        1.515716566510398
       ],
       "waarde": "(32/5)*pi",
       "stappen": [
-        "Hier spelen alle drie de delen: het verhaal wordt een integraal, die reken je exact uit, en met die uitkomst vind je de gevraagde waarde.",
-        "$y$ loopt van $0$ tot $\\sqrt{p}$ en de straal is $x = y^{2}$. $I(L_p) = \\pi \\displaystyle\\int_{0}^{\\sqrt{p}} y^{4}\\,\\mathrm{d}y = \\pi \\cdot \\dfrac{1}{5}p^{5/2}$.",
-        "Stel $\\dfrac{1}{5}p^{5/2} = \\dfrac{32}{5}$. Dan $p^{5/2} = 32 = 2^{5}$.",
-        "Deel 3: $\\sqrt{p} = 2$, dus $p = 4$."
+        "Hier spelen alle drie de delen: het verhaal wordt een integraal, die reken je exact uit, en met die uitkomst vind je de gevraagde waarde. Op een hoogte $y$ loopt het vlakdeel van de grafiek tot de lijn $x = p$.",
+        "$y$ loopt van $0$ tot $\\sqrt{p}$. De buitenste straal is $p$ en de binnenste is $y^{2}$. $I(L_p) = \\pi \\displaystyle\\int_{0}^{\\sqrt{p}} \\left(p^{2} - y^{4}\\right)\\,\\mathrm{d}y$.",
+        "Een primitieve van $p^{2} - y^{4}$ is $p^{2}y - \\dfrac{1}{5}y^{5}$. Invullen geeft $I(L_p) = \\dfrac{4}{5}\\pi p^{5/2}$. Stel $\\dfrac{4}{5}p^{5/2} = \\dfrac{32}{5}$, dus $p^{5/2} = 8$.",
+        "Deel 3: $p = 8^{2/5}$. Dat is hetzelfde als $2^{6/5}$."
       ]
     },
     {
@@ -1455,23 +1455,23 @@
       "cluster": "h15c_vergelijk",
       "niveau": 3,
       "latex": "Voor elke $a > 0$ wordt het vlakdeel onder $y = \\sqrt{x}$ van $x = 0$ tot $x = a$ bekeken. Lichaam $L$ ontstaat bij wentelen om de $x$-as, lichaam $M$ bij wentelen om de $y$-as. Bereken exact de waarde van $a$ waarvoor de inhoud van $L$ gelijk is aan de inhoud van $M$.",
-      "antwoord_latex": "a = \\dfrac{25}{4}",
+      "antwoord_latex": "a = \\dfrac{25}{64}",
       "integrand": "pi*x",
       "primitieve": "pi*x^2/2",
       "domein": [
         0,
-        7
+        1
       ],
       "grenzen": [
         0,
-        6.25
+        0.390625
       ],
-      "waarde": "(625/32)*pi",
+      "waarde": "(625/8192)*pi",
       "stappen": [
         "Hier spelen alle drie de delen: het verhaal wordt een integraal, die reken je exact uit, en met die uitkomst vind je de gevraagde waarde.",
-        "$I(L) = \\pi \\displaystyle\\int_{0}^{a} x\\,\\mathrm{d}x = \\pi \\cdot \\dfrac{1}{2}a^{2}$. Voor $M$ loopt $y$ van $0$ tot $\\sqrt{a}$ en is de straal $y^{2}$, dus $I(M) = \\pi \\displaystyle\\int_{0}^{\\sqrt{a}} y^{4}\\,\\mathrm{d}y = \\pi \\cdot \\dfrac{1}{5}a^{5/2}$.",
-        "Stel $\\dfrac{1}{2}a^{2} = \\dfrac{1}{5}a^{5/2}$. Deel door $a^{2}$, dat mag omdat $a > 0$: $\\dfrac{1}{2} = \\dfrac{1}{5}\\sqrt{a}$.",
-        "Deel 3: $\\sqrt{a} = \\dfrac{5}{2}$, dus $a = \\dfrac{25}{4}$."
+        "$I(L) = \\pi \\displaystyle\\int_{0}^{a} x\\,\\mathrm{d}x = \\pi \\cdot \\dfrac{1}{2}a^{2}$. Voor $M$ loopt $y$ van $0$ tot $\\sqrt{a}$. De buitenste straal is $a$ en de binnenste is $y^{2}$, dus $I(M) = \\pi \\displaystyle\\int_{0}^{\\sqrt{a}} \\left(a^{2} - y^{4}\\right)\\,\\mathrm{d}y = \\dfrac{4}{5}\\pi a^{5/2}$.",
+        "Stel $\\dfrac{1}{2}a^{2} = \\dfrac{4}{5}a^{5/2}$. Deel door $a^{2}$, dat mag omdat $a > 0$: $\\dfrac{1}{2} = \\dfrac{4}{5}\\sqrt{a}$.",
+        "Deel 3: $\\sqrt{a} = \\dfrac{5}{8}$, dus $a = \\dfrac{25}{64}$."
       ]
     },
     {
