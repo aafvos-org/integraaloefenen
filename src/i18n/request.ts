@@ -1,6 +1,6 @@
 import { getRequestConfig } from 'next-intl/server'
 
-import { SITE, SITE_CONFIG } from '@/config/site'
+import { SITE_CONFIG } from '@/config/site'
 
 import { routing } from './routing'
 
@@ -44,8 +44,6 @@ function substituteSiteVars(value: unknown, brand: string, domain: string): unkn
 }
 
 async function loadOverrides(): Promise<Msg> {
-  // Only the integralen site has overrides; afgeleiden uses the base as-is.
-  if (SITE !== 'integralen') return {}
   const mod = await import('../../messages/overrides/integralen.nl.json')
   return mod.default as Msg
 }
