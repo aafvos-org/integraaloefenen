@@ -69,11 +69,14 @@ export function TheorieClient({
   chapters,
   labels,
   sidebar = true,
+  eigenKop = false,
 }: {
   chapters: TheorieChapter[]
   labels: Labels
   /** false = zonder eigen zijbalk en scrollcontainer (wordt dan in TheorieLayout getoond) */
   sidebar?: boolean
+  /** true op een hoofdstukpagina: de h1 is dan de naam van dat hoofdstuk */
+  eigenKop?: boolean
 }) {
   const [sidebarOpen, setSidebarOpen] = useState(true)
   const [activeSlug, setActiveSlug] = useState<string | null>(chapters[0]?.slug ?? null)
@@ -239,10 +242,11 @@ export function TheorieClient({
         className={sidebar ? 'nice-scrollbar flex-1 lg:h-full lg:overflow-y-auto' : undefined}
       >
         <div className="mx-auto max-w-5xl px-4 py-8">
-          <h1 className="sr-only">{labels.h1}</h1>
+          {eigenKop ? null : <h1 className="sr-only">{labels.h1}</h1>}
 
           {chapters.map((ch) => {
             const { code, short } = splitTitle(ch.title)
+            const Kop = eigenKop ? 'h1' : 'h2'
             return (
               <section
                 key={ch.slug}
@@ -250,7 +254,13 @@ export function TheorieClient({
                 className="scroll-mt-4"
               >
                 <div className="mt-20 flex flex-wrap items-end justify-between gap-2 border-b border-border pb-3 first:mt-0">
-                  <h2 className="font-serif text-2xl text-text">
+                  <Kop
+                    className={
+                      eigenKop
+                        ? 'min-w-0 break-words font-serif text-3xl text-text'
+                        : 'font-serif text-2xl text-text'
+                    }
+                  >
                     {code && (
                       <>
                         <span className="font-mono font-semibold">{code}</span>
@@ -258,7 +268,7 @@ export function TheorieClient({
                       </>
                     )}
                     {short}
-                  </h2>
+                  </Kop>
                   <Link
                     href={`/oefenen?chapter=${encodeURIComponent(ch.slug)}` as '/oefenen'}
                     className="text-sm font-medium text-accent underline-offset-2 hover:underline"

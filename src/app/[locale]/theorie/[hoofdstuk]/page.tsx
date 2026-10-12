@@ -52,7 +52,7 @@ export default async function HoofdstukPage({ params }: { params: Params }) {
   }
   return (
     <TheorieLayout items={theorieNavItems()} active={kaart.slug} labels={layoutLabels(t)}>
-      <TheorieClient chapters={[chapter]} labels={kaartLabels(t)} sidebar={false} />
+      <TheorieClient chapters={[chapter]} labels={kaartLabels(t)} sidebar={false} eigenKop />
     </TheorieLayout>
   )
 }
