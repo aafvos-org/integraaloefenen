@@ -109,7 +109,7 @@ export function herkenAuthFout(bericht: string, code?: string): AuthFout {
  */
 export const AUTH_FOUT_ZINNEN: Record<AuthFoutSoort, string> = {
   onjuisteInlog: 'Onjuiste combinatie van e-mailadres en wachtwoord.',
-  nietBevestigd: 'Je hebt je e-mailadres nog niet bevestigd. Check je inbox.',
+  nietBevestigd: 'Je hebt je e-mailadres nog niet bevestigd. Kijk in je inbox.',
   adresBestaat: 'Er bestaat al een account met dit e-mailadres.',
   ongeldigAdres: 'Dit e-mailadres klopt niet. Kijk of je het goed hebt getypt.',
   zwakWachtwoord: 'Kies een sterker wachtwoord (minstens 8 tekens).',

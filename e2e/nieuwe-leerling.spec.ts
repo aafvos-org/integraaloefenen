@@ -170,7 +170,7 @@ test('inloggen vóór het bevestigen zegt wat eraan schort', async ({ page }) =>
   await page.getByRole('button', { name: 'Inloggen' }).click()
 
   await expect(foutmelding(page)).toHaveText(
-    'Je hebt je e-mailadres nog niet bevestigd. Check je inbox.',
+    'Je hebt je e-mailadres nog niet bevestigd. Kijk in je inbox.',
   )
   // En hij kan de mail opnieuw laten sturen, voor als hij hem kwijt is.
   await expect(

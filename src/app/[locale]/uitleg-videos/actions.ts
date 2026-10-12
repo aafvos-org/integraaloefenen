@@ -107,7 +107,7 @@ export async function vraagVideoAction(
   const {
     data: { user },
   } = await supabase.auth.getUser()
-  if (!user) return { error: 'Log in om een vraag in te sturen.', sent: false }
+  if (!user) return { error: 'Log eerst in om een vraag in te sturen.', sent: false }
 
   const fotos = await leesFotos(formData)
   if ('error' in fotos) return { error: fotos.error, sent: false }
