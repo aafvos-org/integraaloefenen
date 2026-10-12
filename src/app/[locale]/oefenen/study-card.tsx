@@ -14,6 +14,7 @@ import {
 } from '@/lib/practice/chapter-actions'
 import { insertAtCursor, toLatexPreview } from '@/lib/practice/input'
 import { antwoordPrefix, opdrachtSleutel } from '@/lib/practice/opdracht'
+import { MASTERY_THRESHOLD } from '@/lib/practice/progress'
 import {
   oefenFoutProps,
   type OefenEventNaam,
@@ -22,8 +23,6 @@ import {
 import type { UitlegVideo } from '@/lib/videos'
 
 import { MathKeyboard } from '@/components/math-keyboard'
-
-const MASTERY_THRESHOLD = 3
 
 type Step = { id: string; step_order: number; step_description: string }
 
