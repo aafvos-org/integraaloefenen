@@ -62,6 +62,54 @@ export type Database = {
         Update: Partial<Database['public']['Tables']['chapters']['Insert']>
         Relationships: []
       }
+      paragraphs: {
+        Row: {
+          id: string
+          chapter_id: string
+          site: 'afgeleiden' | 'integralen'
+          slug: string
+          label: string
+          title: string
+          order_index: number
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          chapter_id: string
+          site?: 'afgeleiden' | 'integralen'
+          slug: string
+          label: string
+          title: string
+          order_index: number
+          created_at?: string
+        }
+        Update: Partial<Database['public']['Tables']['paragraphs']['Insert']>
+        Relationships: []
+      }
+      theory_blocks: {
+        Row: {
+          id: string
+          paragraph_id: string
+          site: 'afgeleiden' | 'integralen'
+          slug: string
+          letter: string
+          title: string
+          order_index: number
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          paragraph_id: string
+          site?: 'afgeleiden' | 'integralen'
+          slug: string
+          letter: string
+          title: string
+          order_index: number
+          created_at?: string
+        }
+        Update: Partial<Database['public']['Tables']['theory_blocks']['Insert']>
+        Relationships: []
+      }
       topics_new: {
         Row: {
           id: string
@@ -72,6 +120,7 @@ export type Database = {
           order_index: number
           is_unlocked_by_default: boolean
           category: 'primitiveren' | 'integralen' | 'vergelijkingen' | 'toepassingen' | null
+          theory_block_id: string | null
           created_at: string
         }
         Insert: {
@@ -83,6 +132,7 @@ export type Database = {
           order_index: number
           is_unlocked_by_default?: boolean
           category?: 'primitiveren' | 'integralen' | 'vergelijkingen' | 'toepassingen' | null
+          theory_block_id?: string | null
           created_at?: string
         }
         Update: Partial<Database['public']['Tables']['topics_new']['Insert']>
