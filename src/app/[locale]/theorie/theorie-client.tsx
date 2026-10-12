@@ -7,6 +7,8 @@ import { Math as TeX, RichMath } from '@/components/math'
 import { cn } from '@/components/ui'
 import type { OverviewCard, Stappenplan } from '@/lib/theory'
 
+import { leesbareTekst, leesbareWiskunde } from './leesbare-tekst'
+
 export type TheorieChapter = {
   slug: string
   title: string
@@ -454,6 +456,66 @@ function StappenplanKaart({
   )
 }
 
+/**
+ * De uitleg van een dichte kaart, als gewone tekst in de HTML.
+ * De opgemaakte formules komen pas als de leerling de kaart opent.
+ */
+function KaartTekst({ card, labels }: { card: OverviewCard; labels: Labels }) {
+  return (
+    <div className="space-y-3 pt-1 text-sm leading-relaxed text-text">
+      {card.formula && <p>{leesbareWiskunde(card.formula)}</p>}
+      {card.answerNote && (
+        <p>
+          <span className="font-medium">{labels.answerNoteLabel}: </span>
+          {leesbareTekst(card.answerNote)}
+        </p>
+      )}
+      {card.table && (
+        <table>
+          <thead>
+            <tr>
+              {card.table.headers.map((h, i) => (
+                <th key={i}>{leesbareTekst(h)}</th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {card.table.rows.map((row, ri) => (
+              <tr key={ri}>
+                {row.map((cell, ci) => (
+                  <td key={ci}>{leesbareTekst(cell)}</td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
+      {card.examples?.map((ex, i) => (
+        <div key={i}>
+          <p>
+            {leesbareWiskunde(ex.problem)} → {leesbareWiskunde(ex.answer)}
+          </p>
+          {ex.steps && ex.steps.length > 0 && (
+            <ol>
+              {ex.steps.map((s, si) => (
+                <li key={si}>{leesbareTekst(s)}</li>
+              ))}
+            </ol>
+          )}
+        </div>
+      ))}
+      {card.herken?.map((item, i) => (
+        <p key={i}>
+          {leesbareWiskunde(item.problem)} — {item.regel}. {leesbareTekst(item.waarom)}
+        </p>
+      ))}
+      {card.notes?.map((note, i) => (
+        <p key={i}>{leesbareTekst(note)}</p>
+      ))}
+    </div>
+  )
+}
+
 /* ── Eén theoriekaart ───────────────────────────────────────────────────── */
 
 function TheoryCard({
@@ -537,6 +599,7 @@ function TheoryCard({
             }`}
           >
             <div className="min-h-0 overflow-hidden">
+              {open ? (
               <div className="space-y-3 pt-1">
                 {card.formula && (
                   <div className="flex min-w-0 items-center justify-center overflow-x-auto rounded-lg bg-accent-light/60 px-4 py-4 text-[0.9em]">
@@ -673,6 +736,9 @@ function TheoryCard({
                   </ul>
                 )}
               </div>
+              ) : (
+                <KaartTekst card={card} labels={labels} />
+              )}
             </div>
           </div>
         )}
