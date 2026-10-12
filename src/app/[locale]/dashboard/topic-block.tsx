@@ -35,6 +35,12 @@ function VoortgangCijfers({ clusters }: { clusters: ClusterVoortgang[] }) {
   )
 }
 
+function titelZonderCode(slug: string, title: string): string {
+  const code = slug.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+  const rest = title.replace(new RegExp(`^${code}\\s*[—–-]\\s*`, 'i'), '')
+  return rest || title
+}
+
 function Chevron({ open }: { open: boolean }) {
   return (
     <svg
@@ -75,7 +81,7 @@ function HoofdstukKop({
           {slug.toUpperCase()}
         </span>
         <span className="min-w-0 flex-1 break-words font-serif text-[15px] text-text">
-          {title}
+          {titelZonderCode(slug, title)}
         </span>
         <span className="shrink-0 tabular-nums text-xs text-text-muted">
           {mastered}/{total}
