@@ -273,10 +273,10 @@ test('wachtwoord vergeten: mail, link, nieuw wachtwoord, inloggen', async ({
   await test.step('een resetlink aanvragen', async () => {
     await page.goto('/nl/wachtwoord-vergeten')
     await page.locator('input[name="email"]').fill(email)
-    await page.getByRole('button', { name: 'Stuur reset-link' }).click()
+    await page.getByRole('button', { name: 'Stuur de link' }).click()
 
     await expect(
-      page.getByText('ontvang je zo een resetlink', { exact: false }),
+      page.getByText('ontvang je zo een link om je wachtwoord opnieuw in te stellen', { exact: false }),
     ).toBeVisible()
   })
 
@@ -308,7 +308,7 @@ test('wachtwoord vergeten: mail, link, nieuw wachtwoord, inloggen', async ({
     await page.goto(linkUitMail(mail))
     await expect(page).toHaveURL(/\/nl\/inloggen/)
     await expect(
-      page.getByText('Deze resetlink werkt niet meer', { exact: false }),
+      page.getByText('Deze link om je wachtwoord opnieuw in te stellen werkt niet meer', { exact: false }),
     ).toBeVisible()
     await expect(
       page.getByRole('link', { name: 'Vraag een nieuwe aan' }),
@@ -323,7 +323,7 @@ test('wachtwoord vergeten: mail, link, nieuw wachtwoord, inloggen', async ({
       '/nl/inloggen?error=auth_callback_failed#error=access_denied&error_code=otp_expired',
     )
     await expect(
-      page.getByText('Deze resetlink werkt niet meer', { exact: false }),
+      page.getByText('Deze link om je wachtwoord opnieuw in te stellen werkt niet meer', { exact: false }),
     ).toBeVisible()
   })
 
