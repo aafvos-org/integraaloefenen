@@ -1,0 +1,768 @@
+{
+  "hoofdstuk": "K",
+  "onderdeel": "K.4 Theorie B — Kwadratische noemer (eigen varianten)",
+  "vragen": [
+    {
+      "nummer": "dn-1",
+      "cluster": "k4b_negatief",
+      "niveau": 1,
+      "latex": "Primitiveer: $f(x) = \\dfrac{2x + 2}{x^{2} + 2x + 2}$",
+      "antwoord_latex": "F(x) = \\ln\\left(x^{2} + 2x + 2\\right) + c",
+      "integrand": "(2 * x + 2) / (x^2 + 2 * x + 2)",
+      "primitieve": "ln(x^2 + 2 * x + 2)",
+      "stappen": [
+        "Alleen deel 2 van de driedeling speelt hier: bereken de goede integraal. Buitenste schil: een breuk met een kwadratische noemer. Bereken eerst de discriminant. $D < 0$, dus de noemer heeft geen nulpunten: schrijf de teller als een veelvoud van de afgeleide van de noemer plus een constante. Het eerste stuk geeft een logaritme, het tweede een arctangens.",
+        "$D = 2^{2} - 4 \\cdot 1 \\cdot 2 = -4 < 0$. De afgeleide van de noemer is $2x + 2$, en dat is precies de teller. Er blijft geen constante over.",
+        "$\\displaystyle\\int \\dfrac{g'}{g}\\,\\mathrm{d}x = \\ln|g| + c$ met $g(x) = x^{2} + 2x + 2$. Die noemer is altijd positief ($D < 0$ en de kopcoëfficiënt is positief), dus de absoluutstrepen mogen weg.",
+        "Dus $F(x) = \\ln\\left(x^{2} + 2x + 2\\right) + c$. Controle: differentieer $F$ en je krijgt $f$ terug."
+      ]
+    },
+    {
+      "nummer": "dn-2",
+      "cluster": "k4b_negatief",
+      "niveau": 1,
+      "latex": "Primitiveer: $f(x) = \\dfrac{2x + 1}{x^{2} + 1}$",
+      "antwoord_latex": "F(x) = \\ln\\left(x^{2} + 1\\right) + \\arctan(x) + c",
+      "integrand": "(2 * x + 1) / (x^2 + 1)",
+      "primitieve": "ln(x^2 + 1) + atan(x)",
+      "stappen": [
+        "Alleen deel 2 van de driedeling speelt hier: bereken de goede integraal. Buitenste schil: een breuk met een kwadratische noemer. Bereken eerst de discriminant. $D < 0$, dus de noemer heeft geen nulpunten: schrijf de teller als een veelvoud van de afgeleide van de noemer plus een constante. Het eerste stuk geeft een logaritme, het tweede een arctangens.",
+        "$D = -4 < 0$. De afgeleide van de noemer is $2x$. Schrijf de teller als $2x + 1$, dus $f(x) = \\dfrac{2x}{x^{2} + 1} + \\dfrac{1}{x^{2} + 1}$.",
+        "Het eerste stuk geeft $\\ln\\left(x^{2} + 1\\right)$. Het tweede is de standaardvorm van de arctangens: $\\arctan(x)$.",
+        "Dus $F(x) = \\ln\\left(x^{2} + 1\\right) + \\arctan(x) + c$. Controle: differentieer $F$ en je krijgt $f$ terug."
+      ]
+    },
+    {
+      "nummer": "dn-3",
+      "cluster": "k4b_negatief",
+      "niveau": 1,
+      "latex": "Primitiveer: $f(x) = \\dfrac{4x}{x^{2} + 9}$",
+      "antwoord_latex": "F(x) = 2\\ln\\left(x^{2} + 9\\right) + c",
+      "integrand": "4 * x / (x^2 + 9)",
+      "primitieve": "2 * ln(x^2 + 9)",
+      "stappen": [
+        "Alleen deel 2 van de driedeling speelt hier: bereken de goede integraal. Buitenste schil: een breuk met een kwadratische noemer. Bereken eerst de discriminant. $D < 0$, dus de noemer heeft geen nulpunten: schrijf de teller als een veelvoud van de afgeleide van de noemer plus een constante. Het eerste stuk geeft een logaritme, het tweede een arctangens.",
+        "$D = -36 < 0$. De afgeleide van de noemer is $2x$. In de teller staat $4x = 2 \\cdot 2x$, dus $f(x) = 2 \\cdot \\dfrac{2x}{x^{2} + 9}$. Er blijft geen constante over, dus geen arctangens.",
+        "$\\displaystyle\\int \\dfrac{2x}{x^{2} + 9}\\,\\mathrm{d}x = \\ln\\left(x^{2} + 9\\right)$. De factor $2$ blijft ervoor staan.",
+        "Dus $F(x) = 2\\ln\\left(x^{2} + 9\\right) + c$. Controle: differentieer $F$ en je krijgt $f$ terug."
+      ]
+    },
+    {
+      "nummer": "dn-4",
+      "cluster": "k4b_negatief",
+      "niveau": 2,
+      "latex": "Primitiveer: $f(x) = \\dfrac{6x + 2}{x^{2} + 1}$",
+      "antwoord_latex": "F(x) = 3\\ln\\left(x^{2} + 1\\right) + 2\\arctan(x) + c",
+      "integrand": "(6 * x + 2) / (x^2 + 1)",
+      "primitieve": "3 * ln(x^2 + 1) + 2 * atan(x)",
+      "stappen": [
+        "Alleen deel 2 van de driedeling speelt hier: bereken de goede integraal. Buitenste schil: een breuk met een kwadratische noemer. Bereken eerst de discriminant. $D < 0$, dus de noemer heeft geen nulpunten: schrijf de teller als een veelvoud van de afgeleide van de noemer plus een constante. Het eerste stuk geeft een logaritme, het tweede een arctangens.",
+        "$D = -4 < 0$. De afgeleide van de noemer is $2x$. Schrijf $6x + 2 = 3 \\cdot 2x + 2$, dus $f(x) = \\dfrac{3 \\cdot 2x}{x^{2} + 1} + \\dfrac{2}{x^{2} + 1}$.",
+        "Het eerste stuk geeft $3\\ln\\left(x^{2} + 1\\right)$. Het tweede geeft $2\\arctan(x)$.",
+        "Dus $F(x) = 3\\ln\\left(x^{2} + 1\\right) + 2\\arctan(x) + c$. Controle: differentieer $F$ en je krijgt $f$ terug."
+      ]
+    },
+    {
+      "nummer": "dn-5",
+      "cluster": "k4b_negatief",
+      "niveau": 2,
+      "latex": "Primitiveer: $f(x) = \\dfrac{2x + 10}{x^{2} + 6x + 13}$",
+      "antwoord_latex": "F(x) = \\ln\\left(x^{2} + 6x + 13\\right) + 2\\arctan\\left(\\tfrac{1}{2}(x + 3)\\right) + c",
+      "integrand": "(2 * x + 10) / (x^2 + 6 * x + 13)",
+      "primitieve": "ln(x^2 + 6 * x + 13) + 2 * atan((x + 3) / 2)",
+      "stappen": [
+        "Alleen deel 2 van de driedeling speelt hier: bereken de goede integraal. Buitenste schil: een breuk met een kwadratische noemer. Bereken eerst de discriminant. $D < 0$, dus de noemer heeft geen nulpunten: schrijf de teller als een veelvoud van de afgeleide van de noemer plus een constante. Het eerste stuk geeft een logaritme, het tweede een arctangens.",
+        "$D = 36 - 52 = -16 < 0$. De afgeleide van de noemer is $2x + 6$. Schrijf $2x + 10 = (2x + 6) + 4$, dus $f(x) = \\dfrac{2x + 6}{x^{2} + 6x + 13} + \\dfrac{4}{x^{2} + 6x + 13}$.",
+        "Het eerste stuk geeft $\\ln\\left(x^{2} + 6x + 13\\right)$. Voor het tweede: $x^{2} + 6x + 13 = (x + 3)^{2} + 4$, dus $\\dfrac{4}{(x + 3)^{2} + 4} = \\dfrac{1}{\\left(\\tfrac{1}{2}(x + 3)\\right)^{2} + 1}$. De kern is $\\tfrac{1}{2}(x + 3)$, dus je deelt door $\\tfrac{1}{2}$: er komt $2\\arctan\\left(\\tfrac{1}{2}(x + 3)\\right)$.",
+        "Dus $F(x) = \\ln\\left(x^{2} + 6x + 13\\right) + 2\\arctan\\left(\\tfrac{1}{2}(x + 3)\\right) + c$. Controle: differentieer $F$ en je krijgt $f$ terug."
+      ]
+    },
+    {
+      "nummer": "dn-6",
+      "cluster": "k4b_negatief",
+      "niveau": 2,
+      "latex": "Primitiveer: $f(x) = \\dfrac{x}{x^{2} + 4x + 5}$",
+      "antwoord_latex": "F(x) = \\tfrac{1}{2}\\ln\\left(x^{2} + 4x + 5\\right) - 2\\arctan(x + 2) + c",
+      "integrand": "x / (x^2 + 4 * x + 5)",
+      "primitieve": "(1/2) * ln(x^2 + 4 * x + 5) - 2 * atan(x + 2)",
+      "stappen": [
+        "Alleen deel 2 van de driedeling speelt hier: bereken de goede integraal. Buitenste schil: een breuk met een kwadratische noemer. Bereken eerst de discriminant. $D < 0$, dus de noemer heeft geen nulpunten: schrijf de teller als een veelvoud van de afgeleide van de noemer plus een constante. Het eerste stuk geeft een logaritme, het tweede een arctangens.",
+        "$D = 16 - 20 = -4 < 0$. De afgeleide van de noemer is $2x + 4$. Schrijf $x = \\tfrac{1}{2}(2x + 4) - 2$, dus $f(x) = \\tfrac{1}{2} \\cdot \\dfrac{2x + 4}{x^{2} + 4x + 5} - \\dfrac{2}{x^{2} + 4x + 5}$.",
+        "Het eerste stuk geeft $\\tfrac{1}{2}\\ln\\left(x^{2} + 4x + 5\\right)$. Voor het tweede: $x^{2} + 4x + 5 = (x + 2)^{2} + 1$, dus $\\displaystyle\\int \\dfrac{2}{(x + 2)^{2} + 1}\\,\\mathrm{d}x = 2\\arctan(x + 2)$. Dat stuk staat met een minteken.",
+        "Dus $F(x) = \\tfrac{1}{2}\\ln\\left(x^{2} + 4x + 5\\right) - 2\\arctan(x + 2) + c$. Controle: differentieer $F$ en je krijgt $f$ terug."
+      ]
+    },
+    {
+      "nummer": "dn-7",
+      "cluster": "k4b_negatief",
+      "niveau": 3,
+      "latex": "Primitiveer: $f(x) = \\dfrac{x^{2} + 2x}{x^{2} + 4}$",
+      "antwoord_latex": "F(x) = x + \\ln\\left(x^{2} + 4\\right) - 2\\arctan\\left(\\tfrac{1}{2}x\\right) + c",
+      "integrand": "(x^2 + 2 * x) / (x^2 + 4)",
+      "primitieve": "x + ln(x^2 + 4) - 2 * atan(x / 2)",
+      "stappen": [
+        "Alleen deel 2 van de driedeling speelt hier: bereken de goede integraal. Buitenste schil: een breuk met een kwadratische noemer. Bereken eerst de discriminant. $D < 0$, dus de noemer heeft geen nulpunten: schrijf de teller als een veelvoud van de afgeleide van de noemer plus een constante. Het eerste stuk geeft een logaritme, het tweede een arctangens.",
+        "De teller is even lang als de noemer, dus eerst aftrekken: $x^{2} + 2x = \\left(x^{2} + 4\\right) + 2x - 4$, dus $f(x) = 1 + \\dfrac{2x - 4}{x^{2} + 4}$. Van de rest is $D = -16 < 0$. De afgeleide van $x^{2} + 4$ is $2x$, en $2x - 4$ is die afgeleide min $4$.",
+        "$1$ geeft $x$. $\\dfrac{2x}{x^{2} + 4}$ geeft $\\ln\\left(x^{2} + 4\\right)$. Blijft over $-\\dfrac{4}{x^{2} + 4} = -\\dfrac{1}{\\left(\\tfrac{1}{2}x\\right)^{2} + 1}$. Delen door $\\tfrac{1}{2}$ geeft $-2\\arctan\\left(\\tfrac{1}{2}x\\right)$.",
+        "Dus $F(x) = x + \\ln\\left(x^{2} + 4\\right) - 2\\arctan\\left(\\tfrac{1}{2}x\\right) + c$. Controle: differentieer $F$ en je krijgt $f$ terug."
+      ]
+    },
+    {
+      "nummer": "dn-8",
+      "cluster": "k4b_negatief",
+      "niveau": 3,
+      "latex": "Primitiveer: $f(x) = \\dfrac{x^{3} + 1}{x^{2} + 1}$",
+      "antwoord_latex": "F(x) = \\tfrac{1}{2}x^{2} - \\tfrac{1}{2}\\ln\\left(x^{2} + 1\\right) + \\arctan(x) + c",
+      "integrand": "(x^3 + 1) / (x^2 + 1)",
+      "primitieve": "(1/2) * x^2 - (1/2) * ln(x^2 + 1) + atan(x)",
+      "stappen": [
+        "Alleen deel 2 van de driedeling speelt hier: bereken de goede integraal. Buitenste schil: een breuk met een kwadratische noemer. Bereken eerst de discriminant. $D < 0$, dus de noemer heeft geen nulpunten: schrijf de teller als een veelvoud van de afgeleide van de noemer plus een constante. Het eerste stuk geeft een logaritme, het tweede een arctangens.",
+        "De teller is één graad langer. $x^{3} + 1 = x\\left(x^{2} + 1\\right) - x + 1$, dus $f(x) = x + \\dfrac{1 - x}{x^{2} + 1}$. Van de rest is $D = -4 < 0$. Schrijf $1 - x = -\\tfrac{1}{2} \\cdot 2x + 1$.",
+        "$x$ geeft $\\tfrac{1}{2}x^{2}$. $-\\dfrac{x}{x^{2} + 1}$ geeft $-\\tfrac{1}{2}\\ln\\left(x^{2} + 1\\right)$. $\\dfrac{1}{x^{2} + 1}$ geeft $\\arctan(x)$.",
+        "Dus $F(x) = \\tfrac{1}{2}x^{2} - \\tfrac{1}{2}\\ln\\left(x^{2} + 1\\right) + \\arctan(x) + c$. Controle: differentieer $F$ en je krijgt $f$ terug."
+      ]
+    },
+    {
+      "nummer": "dz-1",
+      "cluster": "k4b_nul",
+      "niveau": 1,
+      "latex": "Primitiveer: $f(x) = \\dfrac{1}{(x - 3)^{2}}$",
+      "antwoord_latex": "F(x) = -\\dfrac{1}{x - 3} + c",
+      "integrand": "1 / (x - 3)^2",
+      "primitieve": "-1 / (x - 3)",
+      "domein": [
+        0,
+        2
+      ],
+      "stappen": [
+        "Alleen deel 2 van de driedeling speelt hier: bereken de goede integraal. Buitenste schil: een breuk met een kwadratische noemer. $D = 0$, dus de noemer is een kwadraat van een lineaire factor. Schrijf de teller als een veelvoud van die factor plus een constante: er komt een logaritme uit en een breuk met het kwadraat in de noemer.",
+        "De noemer is al een kwadraat: $(x - 3)^{2}$, dus $D = 0$. Er staat alleen een constante in de teller, dus er komt geen logaritme.",
+        "Schrijf $(x - 3)^{-2}$. De machtsregel geeft $\\dfrac{(x - 3)^{-1}}{-1} = -\\dfrac{1}{x - 3}$.",
+        "Dus $F(x) = -\\dfrac{1}{x - 3} + c$. Controle: differentieer $F$ en je krijgt $f$ terug."
+      ]
+    },
+    {
+      "nummer": "dz-2",
+      "cluster": "k4b_nul",
+      "niveau": 1,
+      "latex": "Primitiveer: $f(x) = \\dfrac{2x - 6}{(x - 3)^{2}}$",
+      "antwoord_latex": "F(x) = 2\\ln|x - 3| + c",
+      "integrand": "(2 * x - 6) / (x - 3)^2",
+      "primitieve": "2 * ln(abs(x - 3))",
+      "domein": [
+        4,
+        6
+      ],
+      "stappen": [
+        "Alleen deel 2 van de driedeling speelt hier: bereken de goede integraal. Buitenste schil: een breuk met een kwadratische noemer. $D = 0$, dus de noemer is een kwadraat van een lineaire factor. Schrijf de teller als een veelvoud van die factor plus een constante: er komt een logaritme uit en een breuk met het kwadraat in de noemer.",
+        "$D = 0$ en $(x - 3)^{2}$ staat al klaar. Schrijf de teller als $2(x - 3)$: $f(x) = \\dfrac{2}{x - 3}$. Het stuk met het kwadraat in de noemer valt weg.",
+        "$\\displaystyle\\int \\dfrac{2}{x - 3}\\,\\mathrm{d}x = 2\\ln|x - 3|$.",
+        "Dus $F(x) = 2\\ln|x - 3| + c$. Controle: differentieer $F$ en je krijgt $f$ terug."
+      ]
+    },
+    {
+      "nummer": "dz-3",
+      "cluster": "k4b_nul",
+      "niveau": 1,
+      "latex": "Primitiveer: $f(x) = \\dfrac{4x - 4}{(x - 1)^{2}}$",
+      "antwoord_latex": "F(x) = 4\\ln|x - 1| + c",
+      "integrand": "(4 * x - 4) / (x - 1)^2",
+      "primitieve": "4 * ln(abs(x - 1))",
+      "domein": [
+        2,
+        4
+      ],
+      "stappen": [
+        "Alleen deel 2 van de driedeling speelt hier: bereken de goede integraal. Buitenste schil: een breuk met een kwadratische noemer. $D = 0$, dus de noemer is een kwadraat van een lineaire factor. Schrijf de teller als een veelvoud van die factor plus een constante: er komt een logaritme uit en een breuk met het kwadraat in de noemer.",
+        "$4x - 4 = 4(x - 1)$, dus $f(x) = \\dfrac{4}{x - 1}$.",
+        "Dat geeft $4\\ln|x - 1|$.",
+        "Dus $F(x) = 4\\ln|x - 1| + c$. Controle: differentieer $F$ en je krijgt $f$ terug."
+      ]
+    },
+    {
+      "nummer": "dz-4",
+      "cluster": "k4b_nul",
+      "niveau": 2,
+      "latex": "Primitiveer: $f(x) = \\dfrac{2x}{(x + 1)^{2}}$",
+      "antwoord_latex": "F(x) = 2\\ln|x + 1| + \\dfrac{2}{x + 1} + c",
+      "integrand": "2 * x / (x + 1)^2",
+      "primitieve": "2 * ln(abs(x + 1)) + 2 / (x + 1)",
+      "domein": [
+        0,
+        3
+      ],
+      "stappen": [
+        "Alleen deel 2 van de driedeling speelt hier: bereken de goede integraal. Buitenste schil: een breuk met een kwadratische noemer. $D = 0$, dus de noemer is een kwadraat van een lineaire factor. Schrijf de teller als een veelvoud van die factor plus een constante: er komt een logaritme uit en een breuk met het kwadraat in de noemer.",
+        "Schrijf $2x = 2(x + 1) - 2$, dus $f(x) = \\dfrac{2}{x + 1} - \\dfrac{2}{(x + 1)^{2}}$.",
+        "Het eerste stuk geeft $2\\ln|x + 1|$. Het tweede: $\\displaystyle\\int -2(x + 1)^{-2}\\,\\mathrm{d}x = \\dfrac{2}{x + 1}$.",
+        "Dus $F(x) = 2\\ln|x + 1| + \\dfrac{2}{x + 1} + c$. Controle: differentieer $F$ en je krijgt $f$ terug."
+      ]
+    },
+    {
+      "nummer": "dz-5",
+      "cluster": "k4b_nul",
+      "niveau": 2,
+      "latex": "Primitiveer: $f(x) = \\dfrac{x}{(x - 2)^{2}}$",
+      "antwoord_latex": "F(x) = \\ln|x - 2| - \\dfrac{2}{x - 2} + c",
+      "integrand": "x / (x - 2)^2",
+      "primitieve": "ln(abs(x - 2)) - 2 / (x - 2)",
+      "domein": [
+        3,
+        5
+      ],
+      "stappen": [
+        "Alleen deel 2 van de driedeling speelt hier: bereken de goede integraal. Buitenste schil: een breuk met een kwadratische noemer. $D = 0$, dus de noemer is een kwadraat van een lineaire factor. Schrijf de teller als een veelvoud van die factor plus een constante: er komt een logaritme uit en een breuk met het kwadraat in de noemer.",
+        "Schrijf $x = (x - 2) + 2$, dus $f(x) = \\dfrac{1}{x - 2} + \\dfrac{2}{(x - 2)^{2}}$.",
+        "Het eerste stuk geeft $\\ln|x - 2|$. Het tweede: $\\displaystyle\\int 2(x - 2)^{-2}\\,\\mathrm{d}x = -\\dfrac{2}{x - 2}$.",
+        "Dus $F(x) = \\ln|x - 2| - \\dfrac{2}{x - 2} + c$. Controle: differentieer $F$ en je krijgt $f$ terug."
+      ]
+    },
+    {
+      "nummer": "dz-6",
+      "cluster": "k4b_nul",
+      "niveau": 2,
+      "latex": "Primitiveer: $f(x) = \\dfrac{x + 1}{(x - 2)^{2}}$",
+      "antwoord_latex": "F(x) = \\ln|x - 2| - \\dfrac{3}{x - 2} + c",
+      "integrand": "(x + 1) / (x - 2)^2",
+      "primitieve": "ln(abs(x - 2)) - 3 / (x - 2)",
+      "domein": [
+        3,
+        5
+      ],
+      "stappen": [
+        "Alleen deel 2 van de driedeling speelt hier: bereken de goede integraal. Buitenste schil: een breuk met een kwadratische noemer. $D = 0$, dus de noemer is een kwadraat van een lineaire factor. Schrijf de teller als een veelvoud van die factor plus een constante: er komt een logaritme uit en een breuk met het kwadraat in de noemer.",
+        "Schrijf $x + 1 = (x - 2) + 3$, dus $f(x) = \\dfrac{1}{x - 2} + \\dfrac{3}{(x - 2)^{2}}$.",
+        "Het eerste stuk geeft $\\ln|x - 2|$. Het tweede geeft $-\\dfrac{3}{x - 2}$.",
+        "Dus $F(x) = \\ln|x - 2| - \\dfrac{3}{x - 2} + c$. Controle: differentieer $F$ en je krijgt $f$ terug."
+      ]
+    },
+    {
+      "nummer": "dz-7",
+      "cluster": "k4b_nul",
+      "niveau": 3,
+      "latex": "Primitiveer: $f(x) = \\dfrac{x^{2}}{(x - 1)^{2}}$",
+      "antwoord_latex": "F(x) = x + 2\\ln|x - 1| - \\dfrac{1}{x - 1} + c",
+      "integrand": "x^2 / (x - 1)^2",
+      "primitieve": "x + 2 * ln(abs(x - 1)) - 1 / (x - 1)",
+      "domein": [
+        2,
+        4
+      ],
+      "stappen": [
+        "Alleen deel 2 van de driedeling speelt hier: bereken de goede integraal. Buitenste schil: een breuk met een kwadratische noemer. $D = 0$, dus de noemer is een kwadraat van een lineaire factor. Schrijf de teller als een veelvoud van die factor plus een constante: er komt een logaritme uit en een breuk met het kwadraat in de noemer.",
+        "Schrijf $x = (x - 1) + 1$, dus $x^{2} = \\left((x - 1) + 1\\right)^{2} = (x - 1)^{2} + 2(x - 1) + 1$. Delen door $(x - 1)^{2}$ geeft $f(x) = 1 + \\dfrac{2}{x - 1} + \\dfrac{1}{(x - 1)^{2}}$.",
+        "$1$ geeft $x$. $\\dfrac{2}{x - 1}$ geeft $2\\ln|x - 1|$. $\\dfrac{1}{(x - 1)^{2}}$ geeft $-\\dfrac{1}{x - 1}$.",
+        "Dus $F(x) = x + 2\\ln|x - 1| - \\dfrac{1}{x - 1} + c$. Controle: differentieer $F$ en je krijgt $f$ terug."
+      ]
+    },
+    {
+      "nummer": "dz-8",
+      "cluster": "k4b_nul",
+      "niveau": 3,
+      "latex": "Primitiveer: $f(x) = \\dfrac{x^{2} + x}{(x + 2)^{2}}$",
+      "antwoord_latex": "F(x) = x - 3\\ln|x + 2| - \\dfrac{2}{x + 2} + c",
+      "integrand": "(x^2 + x) / (x + 2)^2",
+      "primitieve": "x - 3 * ln(abs(x + 2)) - 2 / (x + 2)",
+      "domein": [
+        -1,
+        2
+      ],
+      "stappen": [
+        "Alleen deel 2 van de driedeling speelt hier: bereken de goede integraal. Buitenste schil: een breuk met een kwadratische noemer. $D = 0$, dus de noemer is een kwadraat van een lineaire factor. Schrijf de teller als een veelvoud van die factor plus een constante: er komt een logaritme uit en een breuk met het kwadraat in de noemer.",
+        "Zet $x + 2$ even apart en noem dat stuk $g$. Dan is $x = g - 2$ en $x^{2} + x = g^{2} - 3g + 2$. Delen door $g^{2}$ geeft $1 - \\dfrac{3}{g} + \\dfrac{2}{g^{2}}$, dus $f(x) = 1 - \\dfrac{3}{x + 2} + \\dfrac{2}{(x + 2)^{2}}$.",
+        "$1$ geeft $x$. $-\\dfrac{3}{x + 2}$ geeft $-3\\ln|x + 2|$. $\\dfrac{2}{(x + 2)^{2}}$ geeft $-\\dfrac{2}{x + 2}$.",
+        "Dus $F(x) = x - 3\\ln|x + 2| - \\dfrac{2}{x + 2} + c$. Controle: differentieer $F$ en je krijgt $f$ terug."
+      ]
+    },
+    {
+      "nummer": "dp-1",
+      "cluster": "k4b_positief",
+      "niveau": 1,
+      "latex": "Primitiveer: $f(x) = \\dfrac{1}{x(x + 1)}$",
+      "antwoord_latex": "F(x) = \\ln|x| - \\ln|x + 1| + c",
+      "integrand": "1 / (x * (x + 1))",
+      "primitieve": "ln(abs(x)) - ln(abs(x + 1))",
+      "domein": [
+        0.4,
+        2
+      ],
+      "stappen": [
+        "Alleen deel 2 van de driedeling speelt hier: bereken de goede integraal. Buitenste schil: een breuk met een kwadratische noemer. $D > 0$, dus de noemer ontbindt in twee verschillende lineaire factoren. Splits de breuk in twee stukken; elk stuk geeft een logaritme.",
+        "De noemer is al ontbonden: $x$ en $x + 1$, twee verschillende factoren, dus $D > 0$. Zoek getallen $a$ en $b$ met $\\dfrac{a}{x} + \\dfrac{b}{x + 1} = \\dfrac{1}{x(x + 1)}$. Dan is $a(x + 1) + bx = 1$. Vul $x = 0$ in: $a = 1$. Vul $x = -1$ in: $b = -1$.",
+        "Dus $f(x) = \\dfrac{1}{x} - \\dfrac{1}{x + 1}$. Dat geeft $\\ln|x| - \\ln|x + 1|$.",
+        "Dus $F(x) = \\ln|x| - \\ln|x + 1| + c$. Controle: differentieer $F$ en je krijgt $f$ terug."
+      ]
+    },
+    {
+      "nummer": "dp-2",
+      "cluster": "k4b_positief",
+      "niveau": 1,
+      "latex": "Primitiveer: $f(x) = \\dfrac{2}{(x - 1)(x + 1)}$",
+      "antwoord_latex": "F(x) = \\ln|x - 1| - \\ln|x + 1| + c",
+      "integrand": "2 / ((x - 1) * (x + 1))",
+      "primitieve": "ln(abs(x - 1)) - ln(abs(x + 1))",
+      "domein": [
+        2,
+        4
+      ],
+      "stappen": [
+        "Alleen deel 2 van de driedeling speelt hier: bereken de goede integraal. Buitenste schil: een breuk met een kwadratische noemer. $D > 0$, dus de noemer ontbindt in twee verschillende lineaire factoren. Splits de breuk in twee stukken; elk stuk geeft een logaritme.",
+        "$x^{2} - 1 = (x - 1)(x + 1)$, dus $D > 0$. Zoek $a$ en $b$ met $a(x + 1) + b(x - 1) = 2$. Vul $x = 1$ in: $a = 1$. Vul $x = -1$ in: $b = -1$.",
+        "$f(x) = \\dfrac{1}{x - 1} - \\dfrac{1}{x + 1}$. Dat geeft $\\ln|x - 1| - \\ln|x + 1|$.",
+        "Dus $F(x) = \\ln|x - 1| - \\ln|x + 1| + c$. Controle: differentieer $F$ en je krijgt $f$ terug."
+      ]
+    },
+    {
+      "nummer": "dp-3",
+      "cluster": "k4b_positief",
+      "niveau": 1,
+      "latex": "Primitiveer: $f(x) = \\dfrac{2x + 4}{(x + 1)(x + 3)}$",
+      "antwoord_latex": "F(x) = \\ln|x + 1| + \\ln|x + 3| + c",
+      "integrand": "(2 * x + 4) / ((x + 1) * (x + 3))",
+      "primitieve": "ln(abs(x + 1)) + ln(abs(x + 3))",
+      "domein": [
+        0,
+        2
+      ],
+      "stappen": [
+        "Alleen deel 2 van de driedeling speelt hier: bereken de goede integraal. Buitenste schil: een breuk met een kwadratische noemer. $D > 0$, dus de noemer ontbindt in twee verschillende lineaire factoren. Splits de breuk in twee stukken; elk stuk geeft een logaritme.",
+        "Zoek $a$ en $b$ met $a(x + 3) + b(x + 1) = 2x + 4$. Vul $x = -1$ in: $2a = 2$, dus $a = 1$. Vul $x = -3$ in: $-2b = -2$, dus $b = 1$.",
+        "$f(x) = \\dfrac{1}{x + 1} + \\dfrac{1}{x + 3}$. Dat geeft $\\ln|x + 1| + \\ln|x + 3|$.",
+        "Dus $F(x) = \\ln|x + 1| + \\ln|x + 3| + c$. Controle: differentieer $F$ en je krijgt $f$ terug."
+      ]
+    },
+    {
+      "nummer": "dp-4",
+      "cluster": "k4b_positief",
+      "niveau": 2,
+      "latex": "Primitiveer: $f(x) = \\dfrac{3x + 1}{x(x + 1)}$",
+      "antwoord_latex": "F(x) = \\ln|x| + 2\\ln|x + 1| + c",
+      "integrand": "(3 * x + 1) / (x * (x + 1))",
+      "primitieve": "ln(abs(x)) + 2 * ln(abs(x + 1))",
+      "domein": [
+        0.4,
+        2
+      ],
+      "stappen": [
+        "Alleen deel 2 van de driedeling speelt hier: bereken de goede integraal. Buitenste schil: een breuk met een kwadratische noemer. $D > 0$, dus de noemer ontbindt in twee verschillende lineaire factoren. Splits de breuk in twee stukken; elk stuk geeft een logaritme.",
+        "Zoek $a$ en $b$ met $a(x + 1) + bx = 3x + 1$. Vul $x = 0$ in: $a = 1$. Vul $x = -1$ in: $-b = -2$, dus $b = 2$.",
+        "$f(x) = \\dfrac{1}{x} + \\dfrac{2}{x + 1}$. Dat geeft $\\ln|x| + 2\\ln|x + 1|$.",
+        "Dus $F(x) = \\ln|x| + 2\\ln|x + 1| + c$. Controle: differentieer $F$ en je krijgt $f$ terug."
+      ]
+    },
+    {
+      "nummer": "dp-5",
+      "cluster": "k4b_positief",
+      "niveau": 2,
+      "latex": "Primitiveer: $f(x) = \\dfrac{4}{(x - 1)(x - 3)}$",
+      "antwoord_latex": "F(x) = -2\\ln|x - 1| + 2\\ln|x - 3| + c",
+      "integrand": "4 / ((x - 1) * (x - 3))",
+      "primitieve": "-2 * ln(abs(x - 1)) + 2 * ln(abs(x - 3))",
+      "domein": [
+        4,
+        6
+      ],
+      "stappen": [
+        "Alleen deel 2 van de driedeling speelt hier: bereken de goede integraal. Buitenste schil: een breuk met een kwadratische noemer. $D > 0$, dus de noemer ontbindt in twee verschillende lineaire factoren. Splits de breuk in twee stukken; elk stuk geeft een logaritme.",
+        "Zoek $a$ en $b$ met $a(x - 3) + b(x - 1) = 4$. Vul $x = 1$ in: $-2a = 4$, dus $a = -2$. Vul $x = 3$ in: $2b = 4$, dus $b = 2$.",
+        "$f(x) = -\\dfrac{2}{x - 1} + \\dfrac{2}{x - 3}$. Dat geeft $-2\\ln|x - 1| + 2\\ln|x - 3|$.",
+        "Dus $F(x) = -2\\ln|x - 1| + 2\\ln|x - 3| + c$. Controle: differentieer $F$ en je krijgt $f$ terug."
+      ]
+    },
+    {
+      "nummer": "dp-6",
+      "cluster": "k4b_positief",
+      "niveau": 2,
+      "latex": "Primitiveer: $f(x) = \\dfrac{5x - 1}{(x - 1)(x + 2)}$",
+      "antwoord_latex": "F(x) = \\tfrac{4}{3}\\ln|x - 1| + \\tfrac{11}{3}\\ln|x + 2| + c",
+      "integrand": "(5 * x - 1) / ((x - 1) * (x + 2))",
+      "primitieve": "(4/3) * ln(abs(x - 1)) + (11/3) * ln(abs(x + 2))",
+      "domein": [
+        2,
+        4
+      ],
+      "stappen": [
+        "Alleen deel 2 van de driedeling speelt hier: bereken de goede integraal. Buitenste schil: een breuk met een kwadratische noemer. $D > 0$, dus de noemer ontbindt in twee verschillende lineaire factoren. Splits de breuk in twee stukken; elk stuk geeft een logaritme.",
+        "Zoek $a$ en $b$ met $a(x + 2) + b(x - 1) = 5x - 1$. Vul $x = 1$ in: $3a = 4$, dus $a = \\tfrac{4}{3}$. Vul $x = -2$ in: $-3b = -11$, dus $b = \\tfrac{11}{3}$.",
+        "$f(x) = \\dfrac{\\tfrac{4}{3}}{x - 1} + \\dfrac{\\tfrac{11}{3}}{x + 2}$. Elk stuk geeft een logaritme, met die breuk ervoor.",
+        "Dus $F(x) = \\tfrac{4}{3}\\ln|x - 1| + \\tfrac{11}{3}\\ln|x + 2| + c$. Controle: differentieer $F$ en je krijgt $f$ terug."
+      ]
+    },
+    {
+      "nummer": "dp-7",
+      "cluster": "k4b_positief",
+      "niveau": 3,
+      "latex": "Primitiveer: $f(x) = \\dfrac{x^{2}}{x^{2} - 1}$",
+      "antwoord_latex": "F(x) = x + \\tfrac{1}{2}\\ln|x - 1| - \\tfrac{1}{2}\\ln|x + 1| + c",
+      "integrand": "x^2 / (x^2 - 1)",
+      "primitieve": "x + (1/2) * ln(abs(x - 1)) - (1/2) * ln(abs(x + 1))",
+      "domein": [
+        2,
+        4
+      ],
+      "stappen": [
+        "Alleen deel 2 van de driedeling speelt hier: bereken de goede integraal. Buitenste schil: een breuk met een kwadratische noemer. $D > 0$, dus de noemer ontbindt in twee verschillende lineaire factoren. Splits de breuk in twee stukken; elk stuk geeft een logaritme.",
+        "Teller en noemer zijn even lang: $x^{2} = \\left(x^{2} - 1\\right) + 1$, dus $f(x) = 1 + \\dfrac{1}{(x - 1)(x + 1)}$. Zoek $a$ en $b$ met $a(x + 1) + b(x - 1) = 1$. Dan is $a = \\tfrac{1}{2}$ en $b = -\\tfrac{1}{2}$.",
+        "$1$ geeft $x$. De rest geeft $\\tfrac{1}{2}\\ln|x - 1| - \\tfrac{1}{2}\\ln|x + 1|$.",
+        "Dus $F(x) = x + \\tfrac{1}{2}\\ln|x - 1| - \\tfrac{1}{2}\\ln|x + 1| + c$. Controle: differentieer $F$ en je krijgt $f$ terug."
+      ]
+    },
+    {
+      "nummer": "dp-8",
+      "cluster": "k4b_positief",
+      "niveau": 3,
+      "latex": "Primitiveer: $f(x) = \\dfrac{x^{2} + 1}{(x - 1)(x - 2)}$",
+      "antwoord_latex": "F(x) = x - 2\\ln|x - 1| + 5\\ln|x - 2| + c",
+      "integrand": "(x^2 + 1) / ((x - 1) * (x - 2))",
+      "primitieve": "x - 2 * ln(abs(x - 1)) + 5 * ln(abs(x - 2))",
+      "domein": [
+        3,
+        5
+      ],
+      "stappen": [
+        "Alleen deel 2 van de driedeling speelt hier: bereken de goede integraal. Buitenste schil: een breuk met een kwadratische noemer. $D > 0$, dus de noemer ontbindt in twee verschillende lineaire factoren. Splits de breuk in twee stukken; elk stuk geeft een logaritme.",
+        "$(x - 1)(x - 2) = x^{2} - 3x + 2$. De teller is $3x - 1$ groter, dus $f(x) = 1 + \\dfrac{3x - 1}{(x - 1)(x - 2)}$. Zoek $a$ en $b$ met $a(x - 2) + b(x - 1) = 3x - 1$. Vul $x = 1$ in: $a = -2$. Vul $x = 2$ in: $b = 5$.",
+        "$1$ geeft $x$. De rest geeft $-2\\ln|x - 1| + 5\\ln|x - 2|$.",
+        "Dus $F(x) = x - 2\\ln|x - 1| + 5\\ln|x - 2| + c$. Controle: differentieer $F$ en je krijgt $f$ terug."
+      ]
+    },
+    {
+      "nummer": "bd-1",
+      "cluster": "k4b_bepaald",
+      "niveau": 1,
+      "latex": "Bereken exact: $\\displaystyle\\int_{0}^{1} \\dfrac{2x + 2}{x^{2} + 2x + 2}\\,\\mathrm{d}x$",
+      "antwoord_latex": "\\ln\\left(\\tfrac{5}{2}\\right)",
+      "integrand": "(2 * x + 2) / (x^2 + 2 * x + 2)",
+      "primitieve": "ln(x^2 + 2 * x + 2)",
+      "grenzen": [
+        0,
+        1
+      ],
+      "waarde": "ln(5/2)",
+      "stappen": [
+        "Alleen deel 2 van de driedeling speelt hier: bereken de goede integraal. Eerst een primitieve zoeken, daarna de grenzen invullen. Het antwoord blijft exact. Buitenste schil: een breuk met een kwadratische noemer. Bereken eerst de discriminant. $D < 0$, dus de noemer heeft geen nulpunten: schrijf de teller als een veelvoud van de afgeleide van de noemer plus een constante. Het eerste stuk geeft een logaritme, het tweede een arctangens.",
+        "$D = -4 < 0$ en de teller is precies de afgeleide van de noemer.",
+        "Een primitieve is $F(x) = \\ln\\left(x^{2} + 2x + 2\\right)$.",
+        "$F(1) - F(0) = \\ln 5 - \\ln 2 = \\ln\\left(\\tfrac{5}{2}\\right)$."
+      ]
+    },
+    {
+      "nummer": "bd-2",
+      "cluster": "k4b_bepaald",
+      "niveau": 1,
+      "latex": "Bereken exact: $\\displaystyle\\int_{0}^{1} \\dfrac{2x + 1}{x^{2} + 1}\\,\\mathrm{d}x$",
+      "antwoord_latex": "\\ln(2) + \\tfrac{1}{4}\\pi",
+      "integrand": "(2 * x + 1) / (x^2 + 1)",
+      "primitieve": "ln(x^2 + 1) + atan(x)",
+      "grenzen": [
+        0,
+        1
+      ],
+      "waarde": "ln(2) + pi/4",
+      "stappen": [
+        "Alleen deel 2 van de driedeling speelt hier: bereken de goede integraal. Eerst een primitieve zoeken, daarna de grenzen invullen. Het antwoord blijft exact. Buitenste schil: een breuk met een kwadratische noemer. Bereken eerst de discriminant. $D < 0$, dus de noemer heeft geen nulpunten: schrijf de teller als een veelvoud van de afgeleide van de noemer plus een constante. Het eerste stuk geeft een logaritme, het tweede een arctangens.",
+        "Splits: $\\dfrac{2x}{x^{2} + 1} + \\dfrac{1}{x^{2} + 1}$.",
+        "Een primitieve is $F(x) = \\ln\\left(x^{2} + 1\\right) + \\arctan(x)$.",
+        "$F(1) - F(0) = \\left(\\ln 2 + \\arctan 1\\right) - \\left(\\ln 1 + \\arctan 0\\right) = \\ln 2 + \\tfrac{1}{4}\\pi$."
+      ]
+    },
+    {
+      "nummer": "bd-3",
+      "cluster": "k4b_bepaald",
+      "niveau": 1,
+      "latex": "Bereken exact: $\\displaystyle\\int_{0}^{1} \\dfrac{1}{(x + 1)^{2}}\\,\\mathrm{d}x$",
+      "antwoord_latex": "\\tfrac{1}{2}",
+      "integrand": "1 / (x + 1)^2",
+      "primitieve": "-1 / (x + 1)",
+      "grenzen": [
+        0,
+        1
+      ],
+      "waarde": "1/2",
+      "stappen": [
+        "Alleen deel 2 van de driedeling speelt hier: bereken de goede integraal. Eerst een primitieve zoeken, daarna de grenzen invullen. Het antwoord blijft exact. Buitenste schil: een breuk met een kwadratische noemer. $D = 0$, dus de noemer is een kwadraat van een lineaire factor. Schrijf de teller als een veelvoud van die factor plus een constante: er komt een logaritme uit en een breuk met het kwadraat in de noemer.",
+        "De noemer is een kwadraat, $D = 0$, en de teller is een constante.",
+        "Een primitieve is $F(x) = -\\dfrac{1}{x + 1}$.",
+        "$F(1) - F(0) = -\\tfrac{1}{2} - \\left(-1\\right) = \\tfrac{1}{2}$."
+      ]
+    },
+    {
+      "nummer": "bd-4",
+      "cluster": "k4b_bepaald",
+      "niveau": 2,
+      "latex": "Bereken exact: $\\displaystyle\\int_{0}^{1} \\dfrac{2x}{(x + 1)^{2}}\\,\\mathrm{d}x$",
+      "antwoord_latex": "2\\ln(2) - 1",
+      "integrand": "2 * x / (x + 1)^2",
+      "primitieve": "2 * ln(x + 1) + 2 / (x + 1)",
+      "domein": [
+        0,
+        2
+      ],
+      "grenzen": [
+        0,
+        1
+      ],
+      "waarde": "2 * ln(2) - 1",
+      "stappen": [
+        "Alleen deel 2 van de driedeling speelt hier: bereken de goede integraal. Eerst een primitieve zoeken, daarna de grenzen invullen. Het antwoord blijft exact. Buitenste schil: een breuk met een kwadratische noemer. $D = 0$, dus de noemer is een kwadraat van een lineaire factor. Schrijf de teller als een veelvoud van die factor plus een constante: er komt een logaritme uit en een breuk met het kwadraat in de noemer.",
+        "$2x = 2(x + 1) - 2$, dus de integrand is $\\dfrac{2}{x + 1} - \\dfrac{2}{(x + 1)^{2}}$. Op $[0, 1]$ is $x + 1$ positief.",
+        "Een primitieve is $F(x) = 2\\ln(x + 1) + \\dfrac{2}{x + 1}$.",
+        "$F(1) = 2\\ln 2 + 1$ en $F(0) = 2$. Het verschil is $2\\ln 2 - 1$."
+      ]
+    },
+    {
+      "nummer": "bd-5",
+      "cluster": "k4b_bepaald",
+      "niveau": 2,
+      "latex": "Bereken exact: $\\displaystyle\\int_{2}^{4} \\dfrac{2}{(x - 1)(x + 1)}\\,\\mathrm{d}x$",
+      "antwoord_latex": "\\ln\\left(\\tfrac{9}{5}\\right)",
+      "integrand": "2 / ((x - 1) * (x + 1))",
+      "primitieve": "ln(x - 1) - ln(x + 1)",
+      "domein": [
+        2,
+        5
+      ],
+      "grenzen": [
+        2,
+        4
+      ],
+      "waarde": "ln(9/5)",
+      "stappen": [
+        "Alleen deel 2 van de driedeling speelt hier: bereken de goede integraal. Eerst een primitieve zoeken, daarna de grenzen invullen. Het antwoord blijft exact. Buitenste schil: een breuk met een kwadratische noemer. $D > 0$, dus de noemer ontbindt in twee verschillende lineaire factoren. Splits de breuk in twee stukken; elk stuk geeft een logaritme.",
+        "Splits: $\\dfrac{1}{x - 1} - \\dfrac{1}{x + 1}$. Op $[2, 4]$ zijn beide factoren positief.",
+        "Een primitieve is $F(x) = \\ln(x - 1) - \\ln(x + 1)$.",
+        "$F(4) - F(2) = \\left(\\ln 3 - \\ln 5\\right) - \\left(\\ln 1 - \\ln 3\\right) = 2\\ln 3 - \\ln 5 = \\ln\\left(\\tfrac{9}{5}\\right)$."
+      ]
+    },
+    {
+      "nummer": "bd-6",
+      "cluster": "k4b_bepaald",
+      "niveau": 2,
+      "latex": "Bereken exact: $\\displaystyle\\int_{2}^{3} \\dfrac{x}{x^{2} - 1}\\,\\mathrm{d}x$",
+      "antwoord_latex": "\\tfrac{3}{2}\\ln(2) - \\tfrac{1}{2}\\ln(3)",
+      "integrand": "x / (x^2 - 1)",
+      "primitieve": "(1/2) * ln(x^2 - 1)",
+      "domein": [
+        1.5,
+        4
+      ],
+      "grenzen": [
+        2,
+        3
+      ],
+      "waarde": "(3/2) * ln(2) - (1/2) * ln(3)",
+      "stappen": [
+        "Alleen deel 2 van de driedeling speelt hier: bereken de goede integraal. Eerst een primitieve zoeken, daarna de grenzen invullen. Het antwoord blijft exact. Buitenste schil: een breuk met een kwadratische noemer. $D > 0$, dus de noemer ontbindt in twee verschillende lineaire factoren. Splits de breuk in twee stukken; elk stuk geeft een logaritme.",
+        "$D = 4 > 0$ en de teller is de helft van de afgeleide van de noemer: $x = \\tfrac{1}{2} \\cdot 2x$. Je kunt ook splitsen in $\\tfrac{\\tfrac{1}{2}}{x - 1} + \\tfrac{\\tfrac{1}{2}}{x + 1}$; dat komt op hetzelfde neer.",
+        "Een primitieve is $F(x) = \\tfrac{1}{2}\\ln\\left(x^{2} - 1\\right)$. Op $[2, 3]$ is $x^{2} - 1$ positief.",
+        "$F(3) - F(2) = \\tfrac{1}{2}\\ln 8 - \\tfrac{1}{2}\\ln 3 = \\tfrac{3}{2}\\ln 2 - \\tfrac{1}{2}\\ln 3$, want $\\ln 8 = 3\\ln 2$."
+      ]
+    },
+    {
+      "nummer": "bd-7",
+      "cluster": "k4b_bepaald",
+      "niveau": 3,
+      "latex": "Bereken exact: $\\displaystyle\\int_{3}^{5} \\dfrac{x}{(x - 2)^{2}}\\,\\mathrm{d}x$",
+      "antwoord_latex": "\\ln(3) + \\tfrac{4}{3}",
+      "integrand": "x / (x - 2)^2",
+      "primitieve": "ln(x - 2) - 2 / (x - 2)",
+      "domein": [
+        3,
+        6
+      ],
+      "grenzen": [
+        3,
+        5
+      ],
+      "waarde": "ln(3) + 4/3",
+      "stappen": [
+        "Alleen deel 2 van de driedeling speelt hier: bereken de goede integraal. Eerst een primitieve zoeken, daarna de grenzen invullen. Het antwoord blijft exact. Buitenste schil: een breuk met een kwadratische noemer. $D = 0$, dus de noemer is een kwadraat van een lineaire factor. Schrijf de teller als een veelvoud van die factor plus een constante: er komt een logaritme uit en een breuk met het kwadraat in de noemer.",
+        "$x = (x - 2) + 2$, dus de integrand is $\\dfrac{1}{x - 2} + \\dfrac{2}{(x - 2)^{2}}$. Op $[3, 5]$ is $x - 2$ positief.",
+        "Een primitieve is $F(x) = \\ln(x - 2) - \\dfrac{2}{x - 2}$.",
+        "$F(5) = \\ln 3 - \\tfrac{2}{3}$ en $F(3) = -2$. Het verschil is $\\ln 3 - \\tfrac{2}{3} + 2 = \\ln 3 + \\tfrac{4}{3}$."
+      ]
+    },
+    {
+      "nummer": "bd-8",
+      "cluster": "k4b_bepaald",
+      "niveau": 3,
+      "latex": "Bereken exact: $\\displaystyle\\int_{0}^{1} \\dfrac{4x}{x^{2} + 9}\\,\\mathrm{d}x$",
+      "antwoord_latex": "2\\ln\\left(\\tfrac{10}{9}\\right)",
+      "integrand": "4 * x / (x^2 + 9)",
+      "primitieve": "2 * ln(x^2 + 9)",
+      "grenzen": [
+        0,
+        1
+      ],
+      "waarde": "2 * ln(10/9)",
+      "stappen": [
+        "Alleen deel 2 van de driedeling speelt hier: bereken de goede integraal. Eerst een primitieve zoeken, daarna de grenzen invullen. Het antwoord blijft exact. Buitenste schil: een breuk met een kwadratische noemer. Bereken eerst de discriminant. $D < 0$, dus de noemer heeft geen nulpunten: schrijf de teller als een veelvoud van de afgeleide van de noemer plus een constante. Het eerste stuk geeft een logaritme, het tweede een arctangens.",
+        "$D = -36 < 0$. De teller $4x$ is twee keer de afgeleide $2x$ van de noemer.",
+        "Een primitieve is $F(x) = 2\\ln\\left(x^{2} + 9\\right)$.",
+        "$F(1) - F(0) = 2\\ln 10 - 2\\ln 9 = 2\\ln\\left(\\tfrac{10}{9}\\right)$."
+      ]
+    },
+    {
+      "nummer": "op-1",
+      "cluster": "k4b_oppervlakte",
+      "niveau": 1,
+      "latex": "Het vlakdeel $V$ wordt ingesloten door de grafiek van $f(x) = \\dfrac{1}{x^{2} + 1}$, de $x$-as en de lijnen $x = 0$ en $x = 1$. Bereken exact de oppervlakte van $V$.",
+      "antwoord_latex": "\\tfrac{1}{4}\\pi",
+      "integrand": "1 / (x^2 + 1)",
+      "primitieve": "atan(x)",
+      "grenzen": [
+        0,
+        1
+      ],
+      "waarde": "pi/4",
+      "stappen": [
+        "Hier spelen alle drie de delen van de driedeling: eerst het verhaaltje vertalen naar een integraal (deel 1), dan die integraal berekenen (deel 2), en daarna nog iets doen met de uitkomst (deel 3). Deel 1: $O(V) = \\displaystyle\\int_{0}^{1} \\dfrac{1}{x^{2} + 1}\\,\\mathrm{d}x$. De functie is overal positief.",
+        "$D = -4 < 0$ en de teller is een constante, dus dit is meteen de standaardvorm van de arctangens. Er hoeft niets afgesplitst te worden.",
+        "Deel 2: een primitieve is $F(x) = \\arctan(x)$.",
+        "Deel 3: $F(1) - F(0) = \\arctan 1 - \\arctan 0 = \\tfrac{1}{4}\\pi$."
+      ]
+    },
+    {
+      "nummer": "op-2",
+      "cluster": "k4b_oppervlakte",
+      "niveau": 1,
+      "latex": "Het vlakdeel $V$ wordt ingesloten door de grafiek van $f(x) = \\dfrac{2x + 2}{x^{2} + 2x + 2}$, de $x$-as en de lijnen $x = 0$ en $x = 2$. Bereken exact de oppervlakte van $V$.",
+      "antwoord_latex": "\\ln(5)",
+      "integrand": "(2 * x + 2) / (x^2 + 2 * x + 2)",
+      "primitieve": "ln(x^2 + 2 * x + 2)",
+      "grenzen": [
+        0,
+        2
+      ],
+      "waarde": "ln(5)",
+      "stappen": [
+        "Hier spelen alle drie de delen van de driedeling: eerst het verhaaltje vertalen naar een integraal (deel 1), dan die integraal berekenen (deel 2), en daarna nog iets doen met de uitkomst (deel 3). Deel 1: $O(V) = \\displaystyle\\int_{0}^{2} \\dfrac{2x + 2}{x^{2} + 2x + 2}\\,\\mathrm{d}x$. De noemer is altijd positief en de teller is op $[0, 2]$ ook positief.",
+        "$D < 0$ en de teller is de afgeleide van de noemer.",
+        "Deel 2: een primitieve is $F(x) = \\ln\\left(x^{2} + 2x + 2\\right)$.",
+        "Deel 3: $F(2) - F(0) = \\ln 10 - \\ln 2 = \\ln 5$."
+      ]
+    },
+    {
+      "nummer": "op-3",
+      "cluster": "k4b_oppervlakte",
+      "niveau": 2,
+      "latex": "Het vlakdeel $V$ wordt ingesloten door de grafiek van $f(x) = \\dfrac{1}{(x + 1)^{2}}$, de $x$-as en de lijnen $x = 0$ en $x = 3$. Bereken exact de oppervlakte van $V$.",
+      "antwoord_latex": "\\tfrac{3}{4}",
+      "integrand": "1 / (x + 1)^2",
+      "primitieve": "-1 / (x + 1)",
+      "grenzen": [
+        0,
+        3
+      ],
+      "waarde": "3/4",
+      "stappen": [
+        "Hier spelen alle drie de delen van de driedeling: eerst het verhaaltje vertalen naar een integraal (deel 1), dan die integraal berekenen (deel 2), en daarna nog iets doen met de uitkomst (deel 3). Deel 1: $O(V) = \\displaystyle\\int_{0}^{3} \\dfrac{1}{(x + 1)^{2}}\\,\\mathrm{d}x$.",
+        "$D = 0$: de noemer is al een kwadraat en de teller is een constante.",
+        "Deel 2: een primitieve is $F(x) = -\\dfrac{1}{x + 1}$.",
+        "Deel 3: $F(3) - F(0) = -\\tfrac{1}{4} - \\left(-1\\right) = \\tfrac{3}{4}$."
+      ]
+    },
+    {
+      "nummer": "op-4",
+      "cluster": "k4b_oppervlakte",
+      "niveau": 2,
+      "latex": "Het vlakdeel $V$ wordt ingesloten door de grafiek van $f(x) = \\dfrac{2}{(x - 1)(x + 1)}$, de $x$-as en de lijnen $x = 2$ en $x = 3$. Bereken exact de oppervlakte van $V$.",
+      "antwoord_latex": "\\ln\\left(\\tfrac{3}{2}\\right)",
+      "integrand": "2 / ((x - 1) * (x + 1))",
+      "primitieve": "ln(x - 1) - ln(x + 1)",
+      "domein": [
+        2,
+        4
+      ],
+      "grenzen": [
+        2,
+        3
+      ],
+      "waarde": "ln(3/2)",
+      "stappen": [
+        "Hier spelen alle drie de delen van de driedeling: eerst het verhaaltje vertalen naar een integraal (deel 1), dan die integraal berekenen (deel 2), en daarna nog iets doen met de uitkomst (deel 3). Deel 1: $O(V) = \\displaystyle\\int_{2}^{3} \\dfrac{2}{(x - 1)(x + 1)}\\,\\mathrm{d}x$. Op $[2, 3]$ is $f$ positief.",
+        "$D > 0$. Splits in $\\dfrac{1}{x - 1} - \\dfrac{1}{x + 1}$.",
+        "Deel 2: een primitieve is $F(x) = \\ln(x - 1) - \\ln(x + 1)$.",
+        "Deel 3: $F(3) - F(2) = \\left(\\ln 2 - \\ln 4\\right) - \\left(0 - \\ln 3\\right) = -\\ln 2 + \\ln 3 = \\ln\\left(\\tfrac{3}{2}\\right)$."
+      ]
+    },
+    {
+      "nummer": "op-5",
+      "cluster": "k4b_oppervlakte",
+      "niveau": 2,
+      "latex": "Het vlakdeel $V$ wordt ingesloten door de grafiek van $f(x) = \\dfrac{x}{(x - 2)^{2}}$, de $x$-as en de lijnen $x = 3$ en $x = 4$. Bereken exact de oppervlakte van $V$.",
+      "antwoord_latex": "\\ln(2) + 1",
+      "integrand": "x / (x - 2)^2",
+      "primitieve": "ln(x - 2) - 2 / (x - 2)",
+      "domein": [
+        3,
+        5
+      ],
+      "grenzen": [
+        3,
+        4
+      ],
+      "waarde": "ln(2) + 1",
+      "stappen": [
+        "Hier spelen alle drie de delen van de driedeling: eerst het verhaaltje vertalen naar een integraal (deel 1), dan die integraal berekenen (deel 2), en daarna nog iets doen met de uitkomst (deel 3). Deel 1: $O(V) = \\displaystyle\\int_{3}^{4} \\dfrac{x}{(x - 2)^{2}}\\,\\mathrm{d}x$. Op $[3, 4]$ is $f$ positief.",
+        "$D = 0$. Schrijf $x = (x - 2) + 2$, dus $f(x) = \\dfrac{1}{x - 2} + \\dfrac{2}{(x - 2)^{2}}$.",
+        "Deel 2: een primitieve is $F(x) = \\ln(x - 2) - \\dfrac{2}{x - 2}$.",
+        "Deel 3: $F(4) = \\ln 2 - 1$ en $F(3) = -2$. Het verschil is $\\ln 2 + 1$."
+      ]
+    },
+    {
+      "nummer": "op-6",
+      "cluster": "k4b_oppervlakte",
+      "niveau": 3,
+      "latex": "Het vlakdeel $V_p$ wordt ingesloten door de grafiek van $f(x) = \\dfrac{1}{x^{2} + 1}$, de $x$-as en de lijnen $x = 0$ en $x = p$ met $p > 0$. Bereken exact de waarde van $p$ waarvoor de oppervlakte van $V_p$ gelijk is aan $\\tfrac{1}{6}\\pi$.",
+      "antwoord_latex": "p = \\tfrac{1}{3}\\sqrt{3}",
+      "integrand": "1 / (x^2 + 1)",
+      "primitieve": "atan(x)",
+      "stappen": [
+        "Hier spelen alle drie de delen van de driedeling: eerst het verhaaltje vertalen naar een integraal (deel 1), dan die integraal berekenen (deel 2), en daarna nog iets doen met de uitkomst (deel 3). Deel 1: $O(V_p) = \\displaystyle\\int_{0}^{p} \\dfrac{1}{x^{2} + 1}\\,\\mathrm{d}x$.",
+        "Dit is de standaardvorm van de arctangens.",
+        "Deel 2: een primitieve is $F(x) = \\arctan(x)$. Omdat $\\arctan(0) = 0$ is $O(V_p) = \\arctan(p)$.",
+        "Deel 3: $\\arctan(p) = \\tfrac{1}{6}\\pi$. Die hoek ligt tussen $-\\tfrac{1}{2}\\pi$ en $\\tfrac{1}{2}\\pi$, dus $p = \\tan\\left(\\tfrac{1}{6}\\pi\\right) = \\tfrac{1}{3}\\sqrt{3}$."
+      ]
+    },
+    {
+      "nummer": "op-7",
+      "cluster": "k4b_oppervlakte",
+      "niveau": 3,
+      "latex": "Het vlakdeel $V_p$ wordt ingesloten door de grafiek van $f(x) = \\dfrac{2x}{x^{2} + 1}$, de $x$-as en de lijnen $x = 0$ en $x = p$ met $p > 0$. Bereken exact de waarde van $p$ waarvoor de oppervlakte van $V_p$ gelijk is aan $\\ln(4)$.",
+      "antwoord_latex": "p = \\sqrt{3}",
+      "integrand": "2 * x / (x^2 + 1)",
+      "primitieve": "ln(x^2 + 1)",
+      "stappen": [
+        "Hier spelen alle drie de delen van de driedeling: eerst het verhaaltje vertalen naar een integraal (deel 1), dan die integraal berekenen (deel 2), en daarna nog iets doen met de uitkomst (deel 3). Deel 1: $O(V_p) = \\displaystyle\\int_{0}^{p} \\dfrac{2x}{x^{2} + 1}\\,\\mathrm{d}x$. Op $[0, p]$ is $f$ positief.",
+        "$D < 0$ en de teller is de afgeleide van de noemer.",
+        "Deel 2: een primitieve is $F(x) = \\ln\\left(x^{2} + 1\\right)$. Omdat $F(0) = \\ln 1 = 0$ is $O(V_p) = \\ln\\left(p^{2} + 1\\right)$.",
+        "Deel 3: $\\ln\\left(p^{2} + 1\\right) = \\ln 4$, dus $p^{2} + 1 = 4$ en $p^{2} = 3$. Omdat $p > 0$ is $p = \\sqrt{3}$."
+      ]
+    },
+    {
+      "nummer": "op-8",
+      "cluster": "k4b_oppervlakte",
+      "niveau": 3,
+      "latex": "Het vlakdeel $V$ wordt ingesloten door de grafiek van $f(x) = \\dfrac{1}{x + 1}$, de $x$-as en de lijnen $x = 0$ en $x = 1$. Het lichaam $L$ ontstaat als je $V$ om de $x$-as wentelt. Bereken exact de inhoud van $L$.",
+      "antwoord_latex": "\\tfrac{1}{2}\\pi",
+      "integrand": "pi / (x + 1)^2",
+      "primitieve": "-pi / (x + 1)",
+      "domein": [
+        0,
+        2
+      ],
+      "grenzen": [
+        0,
+        1
+      ],
+      "waarde": "pi/2",
+      "stappen": [
+        "Hier spelen alle drie de delen van de driedeling: eerst het verhaaltje vertalen naar een integraal (deel 1), dan die integraal berekenen (deel 2), en daarna nog iets doen met de uitkomst (deel 3). Deel 1: wentelen om de $x$-as geeft de inhoud $\\pi \\displaystyle\\int_{0}^{1} \\left(\\dfrac{1}{x + 1}\\right)^{2}\\,\\mathrm{d}x = \\displaystyle\\int_{0}^{1} \\dfrac{\\pi}{(x + 1)^{2}}\\,\\mathrm{d}x$.",
+        "Na het kwadrateren staat er een kwadraat in de noemer, dus $D = 0$, met een constante teller.",
+        "Deel 2: een primitieve is $F(x) = -\\dfrac{\\pi}{x + 1}$.",
+        "Deel 3: $F(1) - F(0) = -\\tfrac{1}{2}\\pi - \\left(-\\pi\\right) = \\tfrac{1}{2}\\pi$."
+      ]
+    }
+  ]
+}
