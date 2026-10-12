@@ -1,5 +1,7 @@
-import { getTranslations } from 'next-intl/server'
+import { getLocale, getTranslations } from 'next-intl/server'
 
+import { SITE_CONFIG } from '@/config/site'
+import { leermiddel } from '@/lib/gestructureerde-gegevens'
 import { eigenPagina } from '@/lib/seo'
 import { THEORY_OVERVIEW } from '@/lib/theory'
 
@@ -23,6 +25,13 @@ export async function generateMetadata({
 
 export default async function TheoriePage() {
   const t = await getTranslations('Theorie')
+  const locale = await getLocale()
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? `https://${SITE_CONFIG.domain}`
+  const gegevens = leermiddel({
+    titel: t('title'),
+    url: `${siteUrl}/${locale}/theorie`,
+    omschrijving: t('description'),
+  })
 
   const chapters: TheorieChapter[] = THEORY_OVERVIEW.map((ch) => ({
     slug: ch.slug,
@@ -32,5 +41,13 @@ export default async function TheoriePage() {
     practiceLabel: t('practiceLink', { topic: stripChapterCode(ch.title) }),
     cards: ch.cards,
   }))
-  return <TheorieClient chapters={chapters} labels={kaartLabels(t)} />
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(gegevens) }}
+      />
+      <TheorieClient chapters={chapters} labels={kaartLabels(t)} />
+    </>
+  )
 }

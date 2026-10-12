@@ -3,6 +3,7 @@ import { Link } from '@/i18n/navigation'
 import { redirect } from 'next/navigation'
 
 import { SITE_CONFIG } from '@/config/site'
+import { startpaginaGegevens } from '@/lib/gestructureerde-gegevens'
 import { eigenPagina } from '@/lib/seo'
 import { createClient } from '@/lib/supabase/server'
 
@@ -49,26 +50,7 @@ export default async function HomePage() {
     { question: t('faq6Q'), answer: t('faq6A') },
   ]
 
-  const structuredData = {
-    '@context': 'https://schema.org',
-    '@graph': [
-      {
-        '@type': 'WebSite',
-        '@id': `${SITE_URL}#website`,
-        url: SITE_URL,
-        name: domain,
-      },
-      {
-        '@type': 'FAQPage',
-        '@id': `${SITE_URL}#faq`,
-        mainEntity: FAQ_ITEMS.map((item) => ({
-          '@type': 'Question',
-          name: item.question,
-          acceptedAnswer: { '@type': 'Answer', text: item.answer },
-        })),
-      },
-    ],
-  }
+  const structuredData = startpaginaGegevens(SITE_URL, FAQ_ITEMS)
 
   return (
     <>

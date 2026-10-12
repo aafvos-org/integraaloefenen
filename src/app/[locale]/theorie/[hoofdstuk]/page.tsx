@@ -1,7 +1,9 @@
 import { notFound } from 'next/navigation'
 import { getTranslations } from 'next-intl/server'
 
+import { SITE_CONFIG } from '@/config/site'
 import { routing } from '@/i18n/routing'
+import { leermiddel } from '@/lib/gestructureerde-gegevens'
 import { eigenPagina } from '@/lib/seo'
 import { THEORY_OVERVIEW } from '@/lib/theory'
 
@@ -36,7 +38,7 @@ export async function generateMetadata({ params }: { params: Params }) {
 }
 
 export default async function HoofdstukPage({ params }: { params: Params }) {
-  const { hoofdstuk } = await params
+  const { locale, hoofdstuk } = await params
   const t = await getTranslations('Theorie')
 
   const kaart = THEORY_OVERVIEW.find((ch) => ch.slug === hoofdstuk)
@@ -50,8 +52,19 @@ export default async function HoofdstukPage({ params }: { params: Params }) {
     practiceLabel: t('practiceLink', { topic: stripChapterCode(kaart.title) }),
     cards: kaart.cards,
   }
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? `https://${SITE_CONFIG.domain}`
+  const gegevens = leermiddel({
+    titel: `${kaart.title} · ${t('eyebrow')}`,
+    url: `${siteUrl}/${locale}/theorie/${hoofdstuk}`,
+    omschrijving: hoofdstukOmschrijving(kaart.title, kaart.intro),
+  })
+
   return (
     <TheorieLayout items={theorieNavItems()} active={kaart.slug} labels={layoutLabels(t)}>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(gegevens) }}
+      />
       <TheorieClient chapters={[chapter]} labels={kaartLabels(t)} sidebar={false} eigenKop />
     </TheorieLayout>
   )
