@@ -4,8 +4,9 @@
 > uit afgeleideoefenen.nl en beschrijft een opzet die hier niet meer geldt: het
 > leerpad op `/leerpad` en de onboarding-wizard staan uit, en
 > `src/lib/practice/bulk-progress.ts` wordt niet meer gebruikt. Volg dit
-> bestand niet. Wat er nu is, staat in [`README.md`](./README.md); de
-> afspraken staan in [`AGENTS.md`](./AGENTS.md).
+> bestand niet. `pickNextQuestion` en `bulk-progress.ts` bestaan niet meer.
+> Wat er nu is, staat in [`README.md`](../../README.md); de
+> afspraken staan in [`AGENTS.md`](../../AGENTS.md).
 
 ---
 
@@ -15,8 +16,8 @@
 - **Onboarding-wizard** (`/onboarding`): klas, voornaam, leermodus → `profiles`.
 - **Topic-pad** (`/onboarding/pad`): tabel ken ik / wil ik → `applyPadSelections` (`bulk-progress.ts`).
 - **Diagnostische toets** (`/onboarding/toets`): 5 vragen (`diagnostic.ts`) → `applyDiagnosticResults`; alleen als `learning_mode === 'diagnostic'`.
-- **Bulk progress:** `masterAllClustersInTopic`, `clearProgressForTopic`, pad- en toets-logica in [`src/lib/practice/bulk-progress.ts`](./src/lib/practice/bulk-progress.ts).
-- **Migratie:** [`supabase/migrations/0003_onboarding.sql`](./supabase/migrations/0003_onboarding.sql).
+- **Bulk progress:** `masterAllClustersInTopic`, `clearProgressForTopic`, pad- en toets-logica zaten in `src/lib/practice/bulk-progress.ts` (bestand bestaat niet meer).
+- **Migratie:** [`supabase/migrations/0003_onboarding.sql`](../../supabase/migrations/0003_onboarding.sql).
 - **Middleware:** onboarding-guard; `/onboarding/*` uitgezonderd voor incomplete flow.
 
 ---

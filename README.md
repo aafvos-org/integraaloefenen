@@ -9,8 +9,9 @@ Cloudflare Workers via OpenNext.
 > driedeling van een opgave eruitzien. Die afspraken gaan voor op dit bestand.
 
 Deze repo is in oktober 2026 afgesplitst van afgeleideoefenen.nl. Er zit nog
-afgeleiden-code in die stap voor stap weggaat. `PLANNING.md` en `idea.md` gaan
-over die oude opzet en zijn geschiedenis — volg ze niet.
+afgeleiden-code in die stap voor stap weggaat. De oude plannen staan in
+[`docs/archief/`](./docs/archief/) (`PLANNING.md` en `idea.md`) en beschrijven
+code die er niet meer is — volg ze niet.
 
 ---
 
