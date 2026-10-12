@@ -2,6 +2,7 @@ import { getTranslations, getLocale } from 'next-intl/server'
 import { redirect } from 'next/navigation'
 
 import { SITE } from '@/config/site'
+import { bouwDashboardIndeling } from '@/lib/dashboard/indeling'
 import {
   getChapters,
   getCurrentProfile,
@@ -10,7 +11,6 @@ import {
 import { createClient } from '@/lib/supabase/server'
 
 import { DashboardGrid } from './dashboard-grid'
-import type { ChapterData, TopicData } from './topic-block'
 
 export async function generateMetadata({
   params,
@@ -33,18 +33,37 @@ export default async function DashboardPage() {
   since14.setDate(since14.getDate() - 13)
   since14.setHours(0, 0, 0, 0)
 
-  // Deze zeven ophaalacties hangen niet van elkaar af. Ze stonden achter elkaar
-  // en kostten samen ruim een seconde aan wachttijd; parallel is dat de duur
+  // Deze ophaalacties hangen niet van elkaar af. Parallel is dat de duur
   // van de traagste.
-  const [t, tv, profile, chapters, topicsRes, clustersRes, progressRes, sessionsRes] =
-    await Promise.all([
+  const [
+    t,
+    tv,
+    profile,
+    chapters,
+    topicsRes,
+    paragraphsRes,
+    blocksRes,
+    clustersRes,
+    progressRes,
+    sessionsRes,
+  ] = await Promise.all([
       getTranslations('Dashboard'),
       getTranslations('UitlegVideos'),
       getCurrentProfile(),
       getChapters(),
       supabase
         .from('topics_new')
-        .select('id, title, slug, chapter_id, order_index')
+        .select('id, title, slug, chapter_id, order_index, theory_block_id')
+        .eq('site', SITE)
+        .order('order_index'),
+      supabase
+        .from('paragraphs')
+        .select('id, chapter_id, slug, label, title, order_index')
+        .eq('site', SITE)
+        .order('order_index'),
+      supabase
+        .from('theory_blocks')
+        .select('id, paragraph_id, slug, letter, title, order_index')
         .eq('site', SITE)
         .order('order_index'),
       supabase
@@ -69,10 +88,6 @@ export default async function DashboardPage() {
 
   const firstName =
     profile?.display_name?.trim().split(/\s+/)[0]?.trim() || null
-
-  const progressByCluster = new Map(
-    (progressRows ?? []).map((p) => [p.cluster_id, p]),
-  )
 
   // Deze moet wél wachten: de antwoorden worden opgezocht per sessie-id.
   const sessionIds = (sessionsRes.data ?? []).map((s) => s.id)
@@ -111,61 +126,14 @@ export default async function DashboardPage() {
     else break
   }
 
-  // Build chapter → meta map
-  const chapterById = new Map((chapters ?? []).map((c) => [c.id, c]))
-
-  // Sort topics by chapter order then topic order
-  const sortedTopics = [...(topics ?? [])].sort((a, b) => {
-    const ca = chapterById.get(a.chapter_id)?.order_index ?? 999
-    const cb = chapterById.get(b.chapter_id)?.order_index ?? 999
-    if (ca !== cb) return ca - cb
-    return a.order_index - b.order_index
+  const indeling = bouwDashboardIndeling({
+    chapters: chapters ?? [],
+    paragraphs: paragraphsRes.data ?? [],
+    blocks: blocksRes.data ?? [],
+    topics: topics ?? [],
+    clusters: clusters ?? [],
+    voortgang: progressRows ?? [],
   })
-
-  // Build TopicData per topic
-  const topicDataById = new Map<string, TopicData>()
-  for (const topic of sortedTopics) {
-    const chapterSlug = chapterById.get(topic.chapter_id)?.slug ?? ''
-    const topicClusters = (clusters ?? [])
-      .filter((c) => c.topic_id === topic.id)
-      .sort((a, b) => a.order_index - b.order_index)
-      .map((c) => {
-        const progress = progressByCluster.get(c.id)
-        const isSkipped = progress?.is_skipped === true
-        return {
-          id: c.id,
-          slug: c.slug,
-          title: c.title,
-          topicId: topic.id,
-          totalAnswered: progress?.total_answered ?? 0,
-          totalCorrect: progress?.total_correct ?? 0,
-          isKnown: !isSkipped && progress?.status === 'mastered',
-          isSkipped,
-        }
-      })
-    topicDataById.set(topic.id, {
-      id: topic.id,
-      slug: topic.slug,
-      title: topic.title,
-      chapterSlug,
-      clusters: topicClusters,
-    })
-  }
-
-  // Group topics by chapter. Kopie vóór het sorteren: de hoofdstukkenlijst is
-  // nu per request gedeeld met de header, en `sort` wijzigt de lijst zelf.
-  const chapterData: ChapterData[] = [...(chapters ?? [])]
-    .sort((a, b) => a.order_index - b.order_index)
-    .map((chapter) => ({
-      id: chapter.id,
-      slug: chapter.slug,
-      title: chapter.title,
-      topics: sortedTopics
-        .filter((t) => t.chapter_id === chapter.id)
-        .map((t) => topicDataById.get(t.id)!)
-        .filter(Boolean),
-    }))
-    .filter((ch) => ch.topics.length > 0)
 
   return (
     <div className="mx-auto max-w-[1400px] px-3 py-6">
@@ -178,7 +146,7 @@ export default async function DashboardPage() {
       </div>
 
       <DashboardGrid
-        chapterData={chapterData}
+        indeling={indeling}
         streakDays={streakDays}
         totalAnswered={totalAnswered}
         totalCorrect={totalCorrect}

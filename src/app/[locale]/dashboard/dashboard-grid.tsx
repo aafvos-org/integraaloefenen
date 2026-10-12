@@ -6,10 +6,12 @@ import { useTranslations } from 'next-intl'
 import { cn } from '@/components/ui'
 import { VraagForm, type VraagLabels } from '@/components/vraag-form'
 
-import { ChapterBlock, type ChapterData } from './topic-block'
+import { weegClusters, type DashboardIndeling } from '@/lib/dashboard/indeling'
+
+import { NieuwHoofdstukBlock, OudHoofdstukBlock } from './topic-block'
 
 export function DashboardGrid({
-  chapterData,
+  indeling,
   streakDays = 0,
   totalAnswered = 0,
   totalCorrect = 0,
@@ -17,7 +19,7 @@ export function DashboardGrid({
   vraagTitel,
   vraagIntro,
 }: {
-  chapterData: ChapterData[]
+  indeling: DashboardIndeling
   streakDays?: number
   totalAnswered?: number
   totalCorrect?: number
@@ -27,17 +29,15 @@ export function DashboardGrid({
 }) {
   const t = useTranslations('Dashboard')
   const allClusters = useMemo(
-    () => chapterData.flatMap((ch) => ch.topics.flatMap((topic) => topic.clusters)),
-    [chapterData],
+    () => [
+      ...indeling.hoofdstukken.flatMap((hoofdstuk) => hoofdstuk.clusters),
+      ...indeling.oudeOpgaven.flatMap((hoofdstuk) =>
+        hoofdstuk.onderwerpen.flatMap((onderwerp) => onderwerp.clusters),
+      ),
+    ],
+    [indeling],
   )
-  const mastered = allClusters.filter((c) => c.isKnown).length
-  const total = allClusters.length
-  const weightedProgress = allClusters.reduce((sum, c) => {
-    if (c.isKnown) return sum + 1
-    if (c.totalAnswered > 0) return sum + c.totalCorrect / c.totalAnswered
-    return sum
-  }, 0)
-  const pctOverall = total > 0 ? Math.round((weightedProgress / total) * 100) : 0
+  const { mastered, total, pct: pctOverall } = weegClusters(allClusters)
   const pctAccuracy = totalAnswered > 0 ? Math.round((totalCorrect / totalAnswered) * 100) : 0
 
   return (
@@ -58,10 +58,22 @@ export function DashboardGrid({
             {t('perChapterTitle')}
           </p>
           <div className="space-y-2">
-            {chapterData.map((chapter) => (
-              <ChapterBlock key={chapter.id} chapter={chapter} />
+            {indeling.hoofdstukken.map((hoofdstuk) => (
+              <NieuwHoofdstukBlock key={hoofdstuk.id} chapter={hoofdstuk} />
             ))}
           </div>
+          {indeling.oudeOpgaven.length > 0 && (
+            <div className="mt-4 border-t border-border pt-3">
+              <p className="mb-3 text-[11px] font-medium uppercase tracking-wider text-text-muted">
+                {t('oudeOpgaven')}
+              </p>
+              <div className="space-y-2">
+                {indeling.oudeOpgaven.map((hoofdstuk) => (
+                  <OudHoofdstukBlock key={hoofdstuk.id} chapter={hoofdstuk} />
+                ))}
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Rechts: direct een vraag kunnen stellen */}

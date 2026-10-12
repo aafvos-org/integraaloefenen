@@ -222,7 +222,9 @@
     "accuracyLabel": "Goed beantwoord",
     "questionsLabel": "Vragen",
     "questionsSub": "totaal beantwoord",
-    "perChapterTitle": "Voortgang per hoofdstuk"
+    "perChapterTitle": "Voortgang per hoofdstuk",
+    "oudeOpgaven": "Oude opgaven",
+    "nogGeenOpgaven": "nog geen opgaven"
   },
   "HomeDemo": {
     "eyebrow": "Probeer direct",
