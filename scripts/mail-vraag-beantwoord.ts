@@ -12,11 +12,14 @@
  *     leerling@example.com substitutie "integreren met substitutie"
  *
  * De slug is die van een video uit src/lib/videos.ts.
+ *
+ * De mail gaat langs src/lib/email/versturen.ts. Met MAIL_MODE=postbus
+ * (alleen buiten productie) belandt hij in de lokale testpostbus in plaats
+ * van bij Resend.
  */
-import { Resend } from 'resend'
-
 import { SITE_CONFIG } from '@/config/site'
 import { afzender, ontvangerAanAaf } from '@/lib/email/adressen'
+import { mailGaatNaarDePostbus, verstuurMail } from '@/lib/email/versturen'
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? `https://www.${SITE_CONFIG.domain}`
 /**
@@ -138,21 +141,21 @@ async function main() {
   }
 
   const videoUrl = `${SITE_URL}/nl/uitleg-videos?video=${encodeURIComponent(slug)}`
-  const resend = new Resend(process.env.RESEND_API_KEY)
-  const { data, error } = await resend.emails.send({
-    from: afzender(),
-    to: adres,
-    replyTo: REPLY_TO,
-    subject: 'Je vraag is beantwoord — er staat een video voor je klaar',
+  const uitkomst = await verstuurMail({
+    van: afzender(),
+    aan: adres,
+    antwoordNaar: REPLY_TO,
+    onderwerp: 'Je vraag is beantwoord — er staat een video voor je klaar',
     html: html(videoUrl, onderwerp),
-    text: tekst(videoUrl, onderwerp),
+    tekst: tekst(videoUrl, onderwerp),
   })
 
-  if (error) {
-    console.error('Versturen mislukt:', error)
+  if (!uitkomst.gelukt) {
+    console.error('Versturen mislukt:', uitkomst.fout)
     process.exit(1)
   }
-  console.log(`Verstuurd naar ${adres} (id ${data?.id})`)
+  const via = mailGaatNaarDePostbus() ? ' (via de lokale testpostbus)' : ''
+  console.log(`Verstuurd naar ${adres}${via}`)
   console.log(`Link in de mail: ${videoUrl}`)
 }
 
