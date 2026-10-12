@@ -1,6 +1,6 @@
 /**
  * Database type definitions matching the Supabase schema in
- * `supabase/migrations/0001_init.sql`.
+ * `supabase/migrations/0001_basis.sql`.
  *
  * These are hand-written for now. Once the schema stabilises you can replace
  * this file with the output of `supabase gen types typescript`.

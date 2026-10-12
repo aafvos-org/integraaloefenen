@@ -1,0 +1,11 @@
+-- =============================================================================
+-- Deze bestanden niet draaien.
+--
+-- Ze horen bij de geschiedenis van afgeleideoefenen.nl. IntegraalOefenen is
+-- daaruit gekopieerd; deze migraties zijn op dit project nooit als migratie
+-- uitgevoerd. 0032 en 0033 zetten bovendien oefenstof met site = 'afgeleiden'
+-- neer, die hier juist is weggehaald.
+--
+-- Het schema van nu staat in supabase/migrations/0001_basis.sql. De oefenstof
+-- van deze site staat in de migraties 0022, 0024 en 0034 t/m 0042.
+-- =============================================================================
