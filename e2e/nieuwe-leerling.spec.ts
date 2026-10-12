@@ -144,7 +144,7 @@ test('een nieuwe leerling registreert zich, bevestigt zijn mail en maakt zijn ee
 
     await expect(page.getByText('Goed!', { exact: true })).toBeVisible()
     // Vers account, dus de reeks begint echt bij één.
-    await expect(page.getByText('Streak: 1/3')).toBeVisible()
+    await expect(page.getByText('Reeks: 1/3')).toBeVisible()
   })
 
   await test.step('9. nog een keer inloggen levert geen tweede welkomstmail op', async () => {

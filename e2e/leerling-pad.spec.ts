@@ -32,7 +32,7 @@ test('een goed antwoord wordt goedgekeurd @telefoon', async ({ page }) => {
   await expect(page.getByText('Goed!', { exact: true })).toBeVisible()
   // Geen vast getal: deze test draait twee keer (computer én telefoon) op
   // dezelfde oefenleerling, dus de reeks staat de tweede keer een hoger.
-  await expect(page.getByText(/Streak: \d\/3/)).toBeVisible()
+  await expect(page.getByText(/Reeks: \d\/3/)).toBeVisible()
 })
 
 test('een fout antwoord wordt afgekeurd', async ({ page }) => {
@@ -75,7 +75,7 @@ test('na drie goede antwoorden staat het onderdeel op beheerst', async ({
     await geefAntwoord(page, opgave.antwoord)
 
     if (i < opgaven.length - 1) {
-      await expect(page.getByText(`Streak: ${i + 1}/3`)).toBeVisible()
+      await expect(page.getByText(`Reeks: ${i + 1}/3`)).toBeVisible()
     } else {
       await expect(page.getByText('Geweldig, onderdeel afgerond!')).toBeVisible()
     }
