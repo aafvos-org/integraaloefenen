@@ -6,8 +6,8 @@
  *   Deel 2 — bereken de goede integraal (welke route hoort bij deze vorm?)
  *   Deel 3 — gebruik de goede oplossingsmethode op de uitkomst
  * Deel 1 en 3 ontbreken bij een kale "bereken exact"-opgave; deel 2 zit er
- * altijd in. Zie `docs/k3-cyclometrische-functies-opgaven.md` voor de bron
- * (alle opgaven en antwoorden van K.3).
+ * altijd in. De letterlijke boekopgaven van K.3 staan alleen lokaal, buiten
+ * git, in `content-bron/k3-cyclometrische-functies-opgaven.md`.
  *
  * De vorm van de content staat in `./types`; `@/lib/theory` deelt hem door
  * aan de pagina's.
