@@ -1,0 +1,621 @@
+{
+  "hoofdstuk": "H12",
+  "onderdeel": "12.2 Theorie B — Verdubbelingsformules en primitiveren (eigen varianten)",
+  "vragen": [
+    {
+      "nummer": "kw-1",
+      "cluster": "h12b_kwadraat",
+      "niveau": 1,
+      "latex": "Primitiveer $f(x) = \\cos^{2}(x)$.",
+      "antwoord_latex": "F(x) = \\tfrac{1}{2}x + \\tfrac{1}{4}\\sin(2x) + c",
+      "integrand": "cos(x)^2",
+      "primitieve": "x/2 + sin(2*x)/4",
+      "stappen": [
+        "Alleen deel 2 van de driedeling speelt hier: bereken de goede integraal. Een kwadraat van een cosinus herschrijf je eerst met een verdubbelingsformule.",
+        "Gebruik $\\cos^{2}(A) = \\tfrac{1}{2} + \\tfrac{1}{2}\\cos(2A)$ met $A = x$: $f(x) = \\tfrac{1}{2} + \\tfrac{1}{2}\\cos(2x)$.",
+        "Primitiveer term voor term. Bij $\\cos(2x)$ is de kern $2x$, dus deel door $2$: een primitieve van $\\tfrac{1}{2}\\cos(2x)$ is $\\tfrac{1}{4}\\sin(2x)$.",
+        "$F(x) = \\tfrac{1}{2}x + \\tfrac{1}{4}\\sin(2x) + c$. Controle: differentieer $F$ en je krijgt $\\tfrac{1}{2} + \\tfrac{1}{2}\\cos(2x) = \\cos^{2}(x)$ terug."
+      ]
+    },
+    {
+      "nummer": "kw-2",
+      "cluster": "h12b_kwadraat",
+      "niveau": 1,
+      "latex": "Primitiveer $f(x) = \\sin^{2}(x)$.",
+      "antwoord_latex": "F(x) = \\tfrac{1}{2}x - \\tfrac{1}{4}\\sin(2x) + c",
+      "integrand": "sin(x)^2",
+      "primitieve": "x/2 - sin(2*x)/4",
+      "stappen": [
+        "Alleen deel 2 van de driedeling speelt hier: bereken de goede integraal. Een kwadraat van een sinus herschrijf je eerst met een verdubbelingsformule.",
+        "Gebruik $\\sin^{2}(A) = \\tfrac{1}{2} - \\tfrac{1}{2}\\cos(2A)$ met $A = x$: $f(x) = \\tfrac{1}{2} - \\tfrac{1}{2}\\cos(2x)$.",
+        "Primitiveer term voor term. Bij $\\cos(2x)$ is de kern $2x$, dus deel door $2$: een primitieve van $-\\tfrac{1}{2}\\cos(2x)$ is $-\\tfrac{1}{4}\\sin(2x)$.",
+        "$F(x) = \\tfrac{1}{2}x - \\tfrac{1}{4}\\sin(2x) + c$. Controle: differentieer $F$ en je krijgt $\\sin^{2}(x)$ terug."
+      ]
+    },
+    {
+      "nummer": "kw-3",
+      "cluster": "h12b_kwadraat",
+      "niveau": 1,
+      "latex": "Primitiveer $f(x) = \\cos^{2}(2x)$.",
+      "antwoord_latex": "F(x) = \\tfrac{1}{2}x + \\tfrac{1}{8}\\sin(4x) + c",
+      "integrand": "cos(2*x)^2",
+      "primitieve": "x/2 + sin(4*x)/8",
+      "stappen": [
+        "Alleen deel 2 van de driedeling speelt hier: bereken de goede integraal. Eerst het kwadraat herschrijven. De hoek in de formule is de hele $2x$, niet alleen $x$.",
+        "$\\cos^{2}(2x) = \\tfrac{1}{2} + \\tfrac{1}{2}\\cos(4x)$, want $2A = 4x$ als $A = 2x$.",
+        "Een primitieve van $\\tfrac{1}{2}$ is $\\tfrac{1}{2}x$. Bij $\\tfrac{1}{2}\\cos(4x)$ is de kern $4x$, dus deel door $4$: $\\tfrac{1}{8}\\sin(4x)$.",
+        "$F(x) = \\tfrac{1}{2}x + \\tfrac{1}{8}\\sin(4x) + c$. Controle: de afgeleide is $\\tfrac{1}{2} + \\tfrac{1}{2}\\cos(4x) = \\cos^{2}(2x)$."
+      ]
+    },
+    {
+      "nummer": "kw-4",
+      "cluster": "h12b_kwadraat",
+      "niveau": 2,
+      "latex": "Primitiveer $g(x) = \\sin^{2}(3x)$.",
+      "antwoord_latex": "G(x) = \\tfrac{1}{2}x - \\tfrac{1}{12}\\sin(6x) + c",
+      "integrand": "sin(3*x)^2",
+      "primitieve": "x/2 - sin(6*x)/12",
+      "stappen": [
+        "Alleen deel 2 van de driedeling speelt hier: bereken de goede integraal. Herschrijf het kwadraat. De hoek in de formule is $3x$.",
+        "$\\sin^{2}(3x) = \\tfrac{1}{2} - \\tfrac{1}{2}\\cos(6x)$.",
+        "Een primitieve van $\\tfrac{1}{2}$ is $\\tfrac{1}{2}x$. Bij $-\\tfrac{1}{2}\\cos(6x)$ is de kern $6x$, dus deel door $6$: $-\\tfrac{1}{12}\\sin(6x)$.",
+        "$G(x) = \\tfrac{1}{2}x - \\tfrac{1}{12}\\sin(6x) + c$. Controle: differentieer $G$ en je krijgt $\\sin^{2}(3x)$ terug."
+      ]
+    },
+    {
+      "nummer": "kw-5",
+      "cluster": "h12b_kwadraat",
+      "niveau": 2,
+      "latex": "Primitiveer $f(x) = 4\\cos^{2}(x)$.",
+      "antwoord_latex": "F(x) = 2x + \\sin(2x) + c",
+      "integrand": "4 * cos(x)^2",
+      "primitieve": "2*x + sin(2*x)",
+      "stappen": [
+        "Alleen deel 2 van de driedeling speelt hier: bereken de goede integraal. Haal de factor $4$ mee als je het kwadraat herschrijft.",
+        "$4\\cos^{2}(x) = 4\\left(\\tfrac{1}{2} + \\tfrac{1}{2}\\cos(2x)\\right) = 2 + 2\\cos(2x)$.",
+        "Een primitieve van $2$ is $2x$. Bij $2\\cos(2x)$ is de kern $2x$, dus deel door $2$: $\\sin(2x)$.",
+        "$F(x) = 2x + \\sin(2x) + c$. Controle: de afgeleide is $2 + 2\\cos(2x) = 4\\cos^{2}(x)$."
+      ]
+    },
+    {
+      "nummer": "kw-6",
+      "cluster": "h12b_kwadraat",
+      "niveau": 2,
+      "latex": "Primitiveer $f(x) = \\sin^{2}(x) + \\cos^{2}(2x)$.",
+      "antwoord_latex": "F(x) = x - \\tfrac{1}{4}\\sin(2x) + \\tfrac{1}{8}\\sin(4x) + c",
+      "integrand": "sin(x)^2 + cos(2*x)^2",
+      "primitieve": "x - sin(2*x)/4 + sin(4*x)/8",
+      "stappen": [
+        "Alleen deel 2 van de driedeling speelt hier: bereken de goede integraal. Twee kwadraten, elk met een eigen hoek. Herschrijf ze apart en tel daarna op.",
+        "$\\sin^{2}(x) = \\tfrac{1}{2} - \\tfrac{1}{2}\\cos(2x)$ en $\\cos^{2}(2x) = \\tfrac{1}{2} + \\tfrac{1}{2}\\cos(4x)$. Samen: $f(x) = 1 - \\tfrac{1}{2}\\cos(2x) + \\tfrac{1}{2}\\cos(4x)$.",
+        "Primitiveer term voor term. De kernen zijn $2x$ en $4x$: een primitieve is $x - \\tfrac{1}{4}\\sin(2x) + \\tfrac{1}{8}\\sin(4x)$.",
+        "$F(x) = x - \\tfrac{1}{4}\\sin(2x) + \\tfrac{1}{8}\\sin(4x) + c$. Controle: differentieer $F$ en je krijgt $f$ terug."
+      ]
+    },
+    {
+      "nummer": "kw-7",
+      "cluster": "h12b_kwadraat",
+      "niveau": 3,
+      "latex": "Primitiveer $f(x) = \\cos^{2}\\left(\\tfrac{1}{2}x\\right)$.",
+      "antwoord_latex": "F(x) = \\tfrac{1}{2}x + \\tfrac{1}{2}\\sin(x) + c",
+      "integrand": "cos(x/2)^2",
+      "primitieve": "x/2 + sin(x)/2",
+      "stappen": [
+        "Alleen deel 2 van de driedeling speelt hier: bereken de goede integraal. De hoek in de verdubbelingsformule is $\tfrac{1}{2}x$. Twee keer die hoek is gewoon $x$.",
+        "$\\cos^{2}\\left(\\tfrac{1}{2}x\\right) = \\tfrac{1}{2} + \\tfrac{1}{2}\\cos(x)$.",
+        "Een primitieve van $\\tfrac{1}{2}$ is $\\tfrac{1}{2}x$. Een primitieve van $\\tfrac{1}{2}\\cos(x)$ is $\\tfrac{1}{2}\\sin(x)$.",
+        "$F(x) = \\tfrac{1}{2}x + \\tfrac{1}{2}\\sin(x) + c$. Controle: de afgeleide is $\\tfrac{1}{2} + \\tfrac{1}{2}\\cos(x) = \\cos^{2}\\left(\\tfrac{1}{2}x\\right)$."
+      ]
+    },
+    {
+      "nummer": "kw-8",
+      "cluster": "h12b_kwadraat",
+      "niveau": 3,
+      "latex": "Primitiveer $f(x) = 3\\sin^{2}(2x) - \\cos^{2}(x)$.",
+      "antwoord_latex": "F(x) = x - \\tfrac{1}{4}\\sin(2x) - \\tfrac{3}{8}\\sin(4x) + c",
+      "integrand": "3 * sin(2*x)^2 - cos(x)^2",
+      "primitieve": "x - sin(2*x)/4 - (3/8)*sin(4*x)",
+      "stappen": [
+        "Alleen deel 2 van de driedeling speelt hier: bereken de goede integraal. Herschrijf beide kwadraten, met elk de juiste hoek, en trek ze daarna van elkaar af.",
+        "$3\\sin^{2}(2x) = 3\\left(\\tfrac{1}{2} - \\tfrac{1}{2}\\cos(4x)\\right) = \\tfrac{3}{2} - \\tfrac{3}{2}\\cos(4x)$ en $\\cos^{2}(x) = \\tfrac{1}{2} + \\tfrac{1}{2}\\cos(2x)$. Dus $f(x) = 1 - \\tfrac{1}{2}\\cos(2x) - \\tfrac{3}{2}\\cos(4x)$.",
+        "Primitiveer term voor term. Een primitieve van $-\\tfrac{1}{2}\\cos(2x)$ is $-\\tfrac{1}{4}\\sin(2x)$. Een primitieve van $-\\tfrac{3}{2}\\cos(4x)$ is $-\\tfrac{3}{8}\\sin(4x)$.",
+        "$F(x) = x - \\tfrac{1}{4}\\sin(2x) - \\tfrac{3}{8}\\sin(4x) + c$. Controle: differentieer $F$ en je krijgt $f$ terug."
+      ]
+    },
+    {
+      "nummer": "pr-1",
+      "cluster": "h12b_product",
+      "niveau": 1,
+      "latex": "Primitiveer $f(x) = \\sin(x)\\cos(x)$.",
+      "antwoord_latex": "F(x) = -\\tfrac{1}{4}\\cos(2x) + c",
+      "integrand": "sin(x) * cos(x)",
+      "primitieve": "-cos(2*x)/4",
+      "stappen": [
+        "Alleen deel 2 van de driedeling speelt hier: bereken de goede integraal. Een product $\\sin(A)\\cos(A)$ herschrijf je met de verdubbelingsformule tot één sinus.",
+        "$\\sin(2A) = 2\\sin(A)\\cos(A)$, dus $\\sin(x)\\cos(x) = \\tfrac{1}{2}\\sin(2x)$.",
+        "Bij $\\tfrac{1}{2}\\sin(2x)$ is de kern $2x$. Een primitieve is $-\\tfrac{1}{4}\\cos(2x)$.",
+        "$F(x) = -\\tfrac{1}{4}\\cos(2x) + c$. Controle: de afgeleide is $\\tfrac{1}{2}\\sin(2x) = \\sin(x)\\cos(x)$."
+      ]
+    },
+    {
+      "nummer": "pr-2",
+      "cluster": "h12b_product",
+      "niveau": 1,
+      "latex": "Primitiveer $f(x) = \\sin(2x)\\cos(2x)$.",
+      "antwoord_latex": "F(x) = -\\tfrac{1}{8}\\cos(4x) + c",
+      "integrand": "sin(2*x) * cos(2*x)",
+      "primitieve": "-cos(4*x)/8",
+      "stappen": [
+        "Alleen deel 2 van de driedeling speelt hier: bereken de goede integraal. Zelfde product, maar de hoek is $2x$. Die hoek verdubbelt naar $4x$.",
+        "$\\sin(2x)\\cos(2x) = \\tfrac{1}{2}\\sin(4x)$.",
+        "Bij $\\tfrac{1}{2}\\sin(4x)$ is de kern $4x$, dus deel door $4$: een primitieve is $-\\tfrac{1}{8}\\cos(4x)$.",
+        "$F(x) = -\\tfrac{1}{8}\\cos(4x) + c$. Controle: de afgeleide is $\\tfrac{1}{2}\\sin(4x) = \\sin(2x)\\cos(2x)$."
+      ]
+    },
+    {
+      "nummer": "pr-3",
+      "cluster": "h12b_product",
+      "niveau": 1,
+      "latex": "Primitiveer $f(x) = 2\\sin(x)\\cos(x)$.",
+      "antwoord_latex": "F(x) = -\\tfrac{1}{2}\\cos(2x) + c",
+      "integrand": "2 * sin(x) * cos(x)",
+      "primitieve": "-cos(2*x)/2",
+      "stappen": [
+        "Alleen deel 2 van de driedeling speelt hier: bereken de goede integraal. De factor $2$ maakt het product meteen de verdubbelingsformule.",
+        "$2\\sin(x)\\cos(x) = \\sin(2x)$.",
+        "Bij $\\sin(2x)$ is de kern $2x$, dus deel door $2$: een primitieve is $-\\tfrac{1}{2}\\cos(2x)$.",
+        "$F(x) = -\\tfrac{1}{2}\\cos(2x) + c$. Controle: de afgeleide is $\\sin(2x) = 2\\sin(x)\\cos(x)$."
+      ]
+    },
+    {
+      "nummer": "pr-4",
+      "cluster": "h12b_product",
+      "niveau": 2,
+      "latex": "Primitiveer $g(x) = \\sin(3x)\\cos(3x)$.",
+      "antwoord_latex": "G(x) = -\\tfrac{1}{12}\\cos(6x) + c",
+      "integrand": "sin(3*x) * cos(3*x)",
+      "primitieve": "-cos(6*x)/12",
+      "stappen": [
+        "Alleen deel 2 van de driedeling speelt hier: bereken de goede integraal. De hoek is $3x$. Die verdubbelt naar $6x$.",
+        "$\\sin(3x)\\cos(3x) = \\tfrac{1}{2}\\sin(6x)$.",
+        "Bij $\\tfrac{1}{2}\\sin(6x)$ is de kern $6x$, dus deel door $6$: een primitieve is $-\\tfrac{1}{12}\\cos(6x)$.",
+        "$G(x) = -\\tfrac{1}{12}\\cos(6x) + c$. Controle: differentieer $G$ en je krijgt $g$ terug."
+      ]
+    },
+    {
+      "nummer": "pr-5",
+      "cluster": "h12b_product",
+      "niveau": 2,
+      "latex": "Primitiveer $f(x) = \\sin\\left(\\tfrac{1}{2}x\\right)\\cos\\left(\\tfrac{1}{2}x\\right)$.",
+      "antwoord_latex": "F(x) = -\\tfrac{1}{2}\\cos(x) + c",
+      "integrand": "sin(x/2) * cos(x/2)",
+      "primitieve": "-cos(x)/2",
+      "stappen": [
+        "Alleen deel 2 van de driedeling speelt hier: bereken de goede integraal. De hoek is $\\tfrac{1}{2}x$. Twee keer die hoek is $x$.",
+        "$\\sin\\left(\\tfrac{1}{2}x\\right)\\cos\\left(\\tfrac{1}{2}x\\right) = \\tfrac{1}{2}\\sin(x)$.",
+        "Een primitieve van $\\tfrac{1}{2}\\sin(x)$ is $-\\tfrac{1}{2}\\cos(x)$.",
+        "$F(x) = -\\tfrac{1}{2}\\cos(x) + c$. Controle: de afgeleide is $\\tfrac{1}{2}\\sin(x)$, en dat is het product weer."
+      ]
+    },
+    {
+      "nummer": "pr-6",
+      "cluster": "h12b_product",
+      "niveau": 2,
+      "latex": "Primitiveer $f(x) = 6\\sin(2x)\\cos(2x)$.",
+      "antwoord_latex": "F(x) = -\\tfrac{3}{4}\\cos(4x) + c",
+      "integrand": "6 * sin(2*x) * cos(2*x)",
+      "primitieve": "-(3/4)*cos(4*x)",
+      "stappen": [
+        "Alleen deel 2 van de driedeling speelt hier: bereken de goede integraal. Eerst het product herschrijven, de factor $6$ gaat mee.",
+        "$6\\sin(2x)\\cos(2x) = 6 \\cdot \\tfrac{1}{2}\\sin(4x) = 3\\sin(4x)$.",
+        "Bij $3\\sin(4x)$ is de kern $4x$, dus deel door $4$: een primitieve is $-\\tfrac{3}{4}\\cos(4x)$.",
+        "$F(x) = -\\tfrac{3}{4}\\cos(4x) + c$. Controle: de afgeleide is $3\\sin(4x) = 6\\sin(2x)\\cos(2x)$."
+      ]
+    },
+    {
+      "nummer": "pr-7",
+      "cluster": "h12b_product",
+      "niveau": 3,
+      "latex": "Primitiveer $f(x) = \\sin(2x)\\cos(2x) + \\cos^{2}(x)$.",
+      "antwoord_latex": "F(x) = \\tfrac{1}{2}x + \\tfrac{1}{4}\\sin(2x) - \\tfrac{1}{8}\\cos(4x) + c",
+      "integrand": "sin(2*x)*cos(2*x) + cos(x)^2",
+      "primitieve": "x/2 + sin(2*x)/4 - cos(4*x)/8",
+      "stappen": [
+        "Alleen deel 2 van de driedeling speelt hier: bereken de goede integraal. Twee stukken: een product en een kwadraat. Herschrijf elk stuk met zijn eigen formule.",
+        "$\\sin(2x)\\cos(2x) = \\tfrac{1}{2}\\sin(4x)$ en $\\cos^{2}(x) = \\tfrac{1}{2} + \\tfrac{1}{2}\\cos(2x)$. Dus $f(x) = \\tfrac{1}{2} + \\tfrac{1}{2}\\cos(2x) + \\tfrac{1}{2}\\sin(4x)$.",
+        "Primitiveer term voor term: $\\tfrac{1}{2}x + \\tfrac{1}{4}\\sin(2x) - \\tfrac{1}{8}\\cos(4x)$.",
+        "$F(x) = \\tfrac{1}{2}x + \\tfrac{1}{4}\\sin(2x) - \\tfrac{1}{8}\\cos(4x) + c$. Controle: differentieer $F$ en je krijgt $f$ terug."
+      ]
+    },
+    {
+      "nummer": "pr-8",
+      "cluster": "h12b_product",
+      "niveau": 3,
+      "latex": "Primitiveer $h(x) = 4\\sin(3x)\\cos(3x) - \\sin^{2}(x)$.",
+      "antwoord_latex": "H(x) = -\\tfrac{1}{2}x - \\tfrac{1}{3}\\cos(6x) + \\tfrac{1}{4}\\sin(2x) + c",
+      "integrand": "4 * sin(3*x) * cos(3*x) - sin(x)^2",
+      "primitieve": "-x/2 - cos(6*x)/3 + sin(2*x)/4",
+      "stappen": [
+        "Alleen deel 2 van de driedeling speelt hier: bereken de goede integraal. Herschrijf het product en het kwadraat apart, en trek ze daarna van elkaar af.",
+        "$4\\sin(3x)\\cos(3x) = 2\\sin(6x)$ en $\\sin^{2}(x) = \\tfrac{1}{2} - \\tfrac{1}{2}\\cos(2x)$. Dus $h(x) = 2\\sin(6x) - \\tfrac{1}{2} + \\tfrac{1}{2}\\cos(2x)$.",
+        "Een primitieve van $2\\sin(6x)$ is $-\\tfrac{1}{3}\\cos(6x)$. Een primitieve van $-\\tfrac{1}{2}$ is $-\\tfrac{1}{2}x$. Een primitieve van $\\tfrac{1}{2}\\cos(2x)$ is $\\tfrac{1}{4}\\sin(2x)$.",
+        "$H(x) = -\\tfrac{1}{2}x - \\tfrac{1}{3}\\cos(6x) + \\tfrac{1}{4}\\sin(2x) + c$. Controle: differentieer $H$ en je krijgt $h$ terug."
+      ]
+    },
+    {
+      "nummer": "be-1",
+      "cluster": "h12b_bepaald",
+      "niveau": 1,
+      "latex": "Bereken exact $\\displaystyle\\int_{0}^{\\frac{1}{2}\\pi} \\cos^{2}(x)\\,\\mathrm{d}x$.",
+      "antwoord_latex": "\\dfrac{1}{4}\\pi",
+      "integrand": "cos(x)^2",
+      "primitieve": "x/2 + sin(2*x)/4",
+      "domein": [
+        0,
+        2
+      ],
+      "grenzen": [
+        0,
+        1.5707963267948966
+      ],
+      "waarde": "pi/4",
+      "stappen": [
+        "Alleen deel 2 van de driedeling speelt hier: bereken de goede integraal. Eerst een primitieve zoeken, daarna de grenzen invullen. Het antwoord blijft exact.",
+        "$\\cos^{2}(x) = \\tfrac{1}{2} + \\tfrac{1}{2}\\cos(2x)$.",
+        "Een primitieve is $F(x) = \\tfrac{1}{2}x + \\tfrac{1}{4}\\sin(2x)$. De integratieconstante laat je weg.",
+        "$\\left[\\tfrac{1}{2}x + \\tfrac{1}{4}\\sin(2x)\\right]_{0}^{\\frac{1}{2}\\pi} = \\tfrac{1}{4}\\pi - 0 = \\tfrac{1}{4}\\pi$."
+      ]
+    },
+    {
+      "nummer": "be-2",
+      "cluster": "h12b_bepaald",
+      "niveau": 1,
+      "latex": "Bereken exact $\\displaystyle\\int_{0}^{\\frac{1}{4}\\pi} \\sin(2x)\\cos(2x)\\,\\mathrm{d}x$.",
+      "antwoord_latex": "\\dfrac{1}{4}",
+      "integrand": "sin(2*x) * cos(2*x)",
+      "primitieve": "-cos(4*x)/8",
+      "domein": [
+        0,
+        1
+      ],
+      "grenzen": [
+        0,
+        0.7853981633974483
+      ],
+      "waarde": "1/4",
+      "stappen": [
+        "Alleen deel 2 van de driedeling speelt hier: bereken de goede integraal. Eerst het product herschrijven, dan primitiveren, dan de grenzen invullen.",
+        "$\\sin(2x)\\cos(2x) = \\tfrac{1}{2}\\sin(4x)$.",
+        "Een primitieve is $F(x) = -\\tfrac{1}{8}\\cos(4x)$.",
+        "$F\\left(\\tfrac{1}{4}\\pi\\right) - F(0) = -\\tfrac{1}{8}\\cos(\\pi) - \\left(-\\tfrac{1}{8}\\cos(0)\\right) = \\tfrac{1}{8} + \\tfrac{1}{8} = \\tfrac{1}{4}$."
+      ]
+    },
+    {
+      "nummer": "be-3",
+      "cluster": "h12b_bepaald",
+      "niveau": 1,
+      "latex": "Bereken exact $\\displaystyle\\int_{0}^{\\pi} \\sin^{2}(x)\\,\\mathrm{d}x$.",
+      "antwoord_latex": "\\dfrac{1}{2}\\pi",
+      "integrand": "sin(x)^2",
+      "primitieve": "x/2 - sin(2*x)/4",
+      "domein": [
+        0,
+        4
+      ],
+      "grenzen": [
+        0,
+        3.141592653589793
+      ],
+      "waarde": "pi/2",
+      "stappen": [
+        "Alleen deel 2 van de driedeling speelt hier: bereken de goede integraal. Herschrijf het kwadraat, primitiveer, en vul de grenzen in.",
+        "$\\sin^{2}(x) = \\tfrac{1}{2} - \\tfrac{1}{2}\\cos(2x)$.",
+        "Een primitieve is $F(x) = \\tfrac{1}{2}x - \\tfrac{1}{4}\\sin(2x)$.",
+        "$F(\\pi) - F(0) = \\tfrac{1}{2}\\pi - 0 = \\tfrac{1}{2}\\pi$."
+      ]
+    },
+    {
+      "nummer": "be-4",
+      "cluster": "h12b_bepaald",
+      "niveau": 2,
+      "latex": "Bereken exact $\\displaystyle\\int_{0}^{\\frac{1}{2}\\pi} \\left(2 - \\tfrac{1}{2}\\sin^{2}(x)\\right)\\,\\mathrm{d}x$.",
+      "antwoord_latex": "\\dfrac{7}{8}\\pi",
+      "integrand": "2 - (1/2)*sin(x)^2",
+      "primitieve": "(7/4)*x + sin(2*x)/8",
+      "domein": [
+        0,
+        2
+      ],
+      "grenzen": [
+        0,
+        1.5707963267948966
+      ],
+      "waarde": "(7/8)*pi",
+      "stappen": [
+        "Alleen deel 2 van de driedeling speelt hier: bereken de goede integraal. Eerst het kwadraat herschrijven, zodat je losse termen overhoudt.",
+        "$\\sin^{2}(x) = \\tfrac{1}{2} - \\tfrac{1}{2}\\cos(2x)$, dus $\\tfrac{1}{2}\\sin^{2}(x) = \\tfrac{1}{4} - \\tfrac{1}{4}\\cos(2x)$. De integrand wordt $2 - \\tfrac{1}{4} + \\tfrac{1}{4}\\cos(2x) = \\tfrac{7}{4} + \\tfrac{1}{4}\\cos(2x)$.",
+        "Een primitieve is $F(x) = \\tfrac{7}{4}x + \\tfrac{1}{8}\\sin(2x)$.",
+        "$F\\left(\\tfrac{1}{2}\\pi\\right) - F(0) = \\tfrac{7}{8}\\pi$."
+      ]
+    },
+    {
+      "nummer": "be-5",
+      "cluster": "h12b_bepaald",
+      "niveau": 2,
+      "latex": "Bereken exact $\\displaystyle\\int_{0}^{\\frac{1}{6}\\pi} \\sin^{2}(3x)\\,\\mathrm{d}x$.",
+      "antwoord_latex": "\\dfrac{1}{12}\\pi",
+      "integrand": "sin(3*x)^2",
+      "primitieve": "x/2 - sin(6*x)/12",
+      "domein": [
+        0,
+        1
+      ],
+      "grenzen": [
+        0,
+        0.5235987755982988
+      ],
+      "waarde": "pi/12",
+      "stappen": [
+        "Alleen deel 2 van de driedeling speelt hier: bereken de goede integraal. De hoek in het kwadraat is $3x$. Die verdubbelt naar $6x$.",
+        "$\\sin^{2}(3x) = \\tfrac{1}{2} - \\tfrac{1}{2}\\cos(6x)$.",
+        "Een primitieve is $F(x) = \\tfrac{1}{2}x - \\tfrac{1}{12}\\sin(6x)$.",
+        "$F\\left(\\tfrac{1}{6}\\pi\\right) - F(0) = \\tfrac{1}{12}\\pi - \\sin(\\pi)/12 = \\tfrac{1}{12}\\pi$."
+      ]
+    },
+    {
+      "nummer": "be-6",
+      "cluster": "h12b_bepaald",
+      "niveau": 2,
+      "latex": "Bereken exact $\\displaystyle\\int_{0}^{\\pi} \\cos^{2}\\left(\\tfrac{1}{2}x\\right)\\,\\mathrm{d}x$.",
+      "antwoord_latex": "\\dfrac{1}{2}\\pi",
+      "integrand": "cos(x/2)^2",
+      "primitieve": "x/2 + sin(x)/2",
+      "domein": [
+        0,
+        4
+      ],
+      "grenzen": [
+        0,
+        3.141592653589793
+      ],
+      "waarde": "pi/2",
+      "stappen": [
+        "Alleen deel 2 van de driedeling speelt hier: bereken de goede integraal. Twee keer de hoek $\\tfrac{1}{2}x$ is $x$.",
+        "$\\cos^{2}\\left(\\tfrac{1}{2}x\\right) = \\tfrac{1}{2} + \\tfrac{1}{2}\\cos(x)$.",
+        "Een primitieve is $F(x) = \\tfrac{1}{2}x + \\tfrac{1}{2}\\sin(x)$.",
+        "$F(\\pi) - F(0) = \\tfrac{1}{2}\\pi$."
+      ]
+    },
+    {
+      "nummer": "be-7",
+      "cluster": "h12b_bepaald",
+      "niveau": 3,
+      "latex": "Bereken exact $\\displaystyle\\int_{0}^{\\frac{1}{2}\\pi} \\left(\\sin^{2}(x) + \\sin(x)\\cos(x)\\right)\\,\\mathrm{d}x$.",
+      "antwoord_latex": "\\dfrac{1}{4}\\pi + \\dfrac{1}{2}",
+      "integrand": "sin(x)^2 + sin(x)*cos(x)",
+      "primitieve": "x/2 - sin(2*x)/4 - cos(2*x)/4",
+      "domein": [
+        0,
+        2
+      ],
+      "grenzen": [
+        0,
+        1.5707963267948966
+      ],
+      "waarde": "pi/4 + 1/2",
+      "stappen": [
+        "Alleen deel 2 van de driedeling speelt hier: bereken de goede integraal. Herschrijf het kwadraat en het product apart.",
+        "$\\sin^{2}(x) = \\tfrac{1}{2} - \\tfrac{1}{2}\\cos(2x)$ en $\\sin(x)\\cos(x) = \\tfrac{1}{2}\\sin(2x)$.",
+        "Een primitieve is $F(x) = \\tfrac{1}{2}x - \\tfrac{1}{4}\\sin(2x) - \\tfrac{1}{4}\\cos(2x)$.",
+        "$F\\left(\\tfrac{1}{2}\\pi\\right) = \\tfrac{1}{4}\\pi + \\tfrac{1}{4}$ en $F(0) = -\\tfrac{1}{4}$. Het verschil is $\\tfrac{1}{4}\\pi + \\tfrac{1}{2}$."
+      ]
+    },
+    {
+      "nummer": "be-8",
+      "cluster": "h12b_bepaald",
+      "niveau": 3,
+      "latex": "Bereken exact $\\displaystyle\\int_{\\frac{1}{4}\\pi}^{\\frac{1}{2}\\pi} \\left(4\\cos^{2}(x) - 1\\right)\\,\\mathrm{d}x$.",
+      "antwoord_latex": "\\dfrac{1}{4}\\pi - 1",
+      "integrand": "4 * cos(x)^2 - 1",
+      "primitieve": "x + sin(2*x)",
+      "domein": [
+        0.5,
+        2
+      ],
+      "grenzen": [
+        0.7853981633974483,
+        1.5707963267948966
+      ],
+      "waarde": "pi/4 - 1",
+      "stappen": [
+        "Alleen deel 2 van de driedeling speelt hier: bereken de goede integraal. Herschrijf het kwadraat voordat je de constante $1$ eraf haalt.",
+        "$4\\cos^{2}(x) = 2 + 2\\cos(2x)$, dus de integrand is $1 + 2\\cos(2x)$.",
+        "Een primitieve is $F(x) = x + \\sin(2x)$.",
+        "$F\\left(\\tfrac{1}{2}\\pi\\right) = \\tfrac{1}{2}\\pi$ en $F\\left(\\tfrac{1}{4}\\pi\\right) = \\tfrac{1}{4}\\pi + 1$. Het verschil is $\\tfrac{1}{4}\\pi - 1$."
+      ]
+    },
+    {
+      "nummer": "to-1",
+      "cluster": "h12b_toepassing",
+      "niveau": 1,
+      "latex": "Het vlakdeel $V$ wordt ingesloten door de grafiek van $f(x) = \\cos^{2}(x)$, de $x$-as en de lijnen $x = 0$ en $x = \\tfrac{1}{2}\\pi$. Bereken exact de oppervlakte van $V$.",
+      "antwoord_latex": "\\dfrac{1}{4}\\pi",
+      "integrand": "cos(x)^2",
+      "primitieve": "x/2 + sin(2*x)/4",
+      "domein": [
+        0,
+        2
+      ],
+      "grenzen": [
+        0,
+        1.5707963267948966
+      ],
+      "waarde": "pi/4",
+      "stappen": [
+        "Hier spelen deel 1 en deel 2 van de driedeling: eerst het verhaal vertalen naar een integraal, dan die integraal exact uitrekenen. Op $[0, \\tfrac{1}{2}\\pi]$ is $\\cos^{2}(x) \\ge 0$, dus de oppervlakte is de integraal zelf.",
+        "$O(V) = \\displaystyle\\int_{0}^{\\frac{1}{2}\\pi} \\cos^{2}(x)\\,\\mathrm{d}x$ en $\\cos^{2}(x) = \\tfrac{1}{2} + \\tfrac{1}{2}\\cos(2x)$.",
+        "Een primitieve is $F(x) = \\tfrac{1}{2}x + \\tfrac{1}{4}\\sin(2x)$.",
+        "$F\\left(\\tfrac{1}{2}\\pi\\right) - F(0) = \\tfrac{1}{4}\\pi$. De oppervlakte is $\\tfrac{1}{4}\\pi$."
+      ]
+    },
+    {
+      "nummer": "to-2",
+      "cluster": "h12b_toepassing",
+      "niveau": 1,
+      "latex": "Het vlakdeel $V$ wordt ingesloten door de grafiek van $f(x) = \\sin(x)\\cos(x)$, de $x$-as en de lijnen $x = 0$ en $x = \\tfrac{1}{2}\\pi$. Bereken exact de oppervlakte van $V$.",
+      "antwoord_latex": "\\dfrac{1}{2}",
+      "integrand": "sin(x) * cos(x)",
+      "primitieve": "-cos(2*x)/4",
+      "domein": [
+        0,
+        2
+      ],
+      "grenzen": [
+        0,
+        1.5707963267948966
+      ],
+      "waarde": "1/2",
+      "stappen": [
+        "Hier spelen deel 1 en deel 2 van de driedeling: eerst het verhaal vertalen naar een integraal, dan die integraal exact uitrekenen. Op $[0, \\tfrac{1}{2}\\pi]$ zijn sinus en cosinus allebei positief, dus $f(x) \\ge 0$ en de oppervlakte is de integraal.",
+        "$O(V) = \\displaystyle\\int_{0}^{\\frac{1}{2}\\pi} \\sin(x)\\cos(x)\\,\\mathrm{d}x$ en $\\sin(x)\\cos(x) = \\tfrac{1}{2}\\sin(2x)$.",
+        "Een primitieve is $F(x) = -\\tfrac{1}{4}\\cos(2x)$.",
+        "$F\\left(\\tfrac{1}{2}\\pi\\right) - F(0) = \\tfrac{1}{4} - \\left(-\\tfrac{1}{4}\\right) = \\tfrac{1}{2}$. De oppervlakte is $\\tfrac{1}{2}$."
+      ]
+    },
+    {
+      "nummer": "to-3",
+      "cluster": "h12b_toepassing",
+      "niveau": 1,
+      "latex": "Het vlakdeel $V$ wordt ingesloten door de grafiek van $f(x) = 2\\sin(x)\\cos(x)$ en de $x$-as op het domein $[0, \\tfrac{1}{2}\\pi]$. Bereken exact de oppervlakte van $V$.",
+      "antwoord_latex": "1",
+      "integrand": "2 * sin(x) * cos(x)",
+      "primitieve": "-cos(2*x)/2",
+      "domein": [
+        0,
+        2
+      ],
+      "grenzen": [
+        0,
+        1.5707963267948966
+      ],
+      "waarde": "1",
+      "stappen": [
+        "Hier spelen deel 1 en deel 2 van de driedeling: eerst het verhaal vertalen naar een integraal, dan die integraal exact uitrekenen. Op dit domein is $f(x) = \\sin(2x) \\ge 0$, dus de oppervlakte is de integraal.",
+        "$2\\sin(x)\\cos(x) = \\sin(2x)$, dus $O(V) = \\displaystyle\\int_{0}^{\\frac{1}{2}\\pi} \\sin(2x)\\,\\mathrm{d}x$.",
+        "Een primitieve is $F(x) = -\\tfrac{1}{2}\\cos(2x)$.",
+        "$F\\left(\\tfrac{1}{2}\\pi\\right) - F(0) = \\tfrac{1}{2} - \\left(-\\tfrac{1}{2}\\right) = 1$. De oppervlakte is $1$."
+      ]
+    },
+    {
+      "nummer": "to-4",
+      "cluster": "h12b_toepassing",
+      "niveau": 2,
+      "latex": "Het vlakdeel $V$ wordt ingesloten door de grafiek van $f(x) = \\sin(x)$ en de $x$-as op het domein $[0, \\pi]$. Het lichaam $L$ ontstaat als $V$ wentelt om de $x$-as. Bereken exact de inhoud van $L$.",
+      "antwoord_latex": "\\dfrac{1}{2}\\pi^{2}",
+      "integrand": "pi * sin(x)^2",
+      "primitieve": "pi * (x/2 - sin(2*x)/4)",
+      "domein": [
+        0,
+        4
+      ],
+      "grenzen": [
+        0,
+        3.141592653589793
+      ],
+      "waarde": "(1/2)*pi^2",
+      "stappen": [
+        "Hier spelen deel 1 en deel 2 van de driedeling: eerst het verhaal vertalen naar een integraal, dan die integraal exact uitrekenen. De inhoud bij wentelen om de $x$-as is $\\pi$ keer de integraal van het kwadraat van $f$. Op $[0, \\pi]$ ligt de grafiek boven de $x$-as.",
+        "$I(L) = \\pi \\displaystyle\\int_{0}^{\\pi} \\sin^{2}(x)\\,\\mathrm{d}x$ en $\\sin^{2}(x) = \\tfrac{1}{2} - \\tfrac{1}{2}\\cos(2x)$.",
+        "Een primitieve van de integrand is $F(x) = \\pi\\left(\\tfrac{1}{2}x - \\tfrac{1}{4}\\sin(2x)\\right)$.",
+        "$F(\\pi) - F(0) = \\pi \\cdot \\tfrac{1}{2}\\pi = \\tfrac{1}{2}\\pi^{2}$. De inhoud is $\\tfrac{1}{2}\\pi^{2}$."
+      ]
+    },
+    {
+      "nummer": "to-5",
+      "cluster": "h12b_toepassing",
+      "niveau": 2,
+      "latex": "Het vlakdeel $V$ wordt ingesloten door de grafiek van $f(x) = \\sin^{2}(x) + \\tfrac{1}{2}$ en de $x$-as op het domein $[0, \\pi]$. Bereken exact de oppervlakte van $V$.",
+      "antwoord_latex": "\\pi",
+      "integrand": "sin(x)^2 + 1/2",
+      "primitieve": "x - sin(2*x)/4",
+      "domein": [
+        0,
+        4
+      ],
+      "grenzen": [
+        0,
+        3.141592653589793
+      ],
+      "waarde": "pi",
+      "stappen": [
+        "Hier spelen deel 1 en deel 2 van de driedeling: eerst het verhaal vertalen naar een integraal, dan die integraal exact uitrekenen. $f(x) \\ge \\tfrac{1}{2}$ op het hele domein, dus de oppervlakte is de integraal.",
+        "$\\sin^{2}(x) = \\tfrac{1}{2} - \\tfrac{1}{2}\\cos(2x)$, dus $f(x) = 1 - \\tfrac{1}{2}\\cos(2x)$ en $O(V) = \\displaystyle\\int_{0}^{\\pi} \\left(1 - \\tfrac{1}{2}\\cos(2x)\\right)\\,\\mathrm{d}x$.",
+        "Een primitieve is $F(x) = x - \\tfrac{1}{4}\\sin(2x)$.",
+        "$F(\\pi) - F(0) = \\pi$. De oppervlakte is $\\pi$."
+      ]
+    },
+    {
+      "nummer": "to-6",
+      "cluster": "h12b_toepassing",
+      "niveau": 2,
+      "latex": "Het vlakdeel $V$ wordt ingesloten door de grafiek van $f(x) = \\cos(x)$ en de $x$-as op het domein $[0, \\tfrac{1}{2}\\pi]$. Het lichaam $L$ ontstaat als $V$ wentelt om de $x$-as. Bereken exact de inhoud van $L$.",
+      "antwoord_latex": "\\dfrac{1}{4}\\pi^{2}",
+      "integrand": "pi * cos(x)^2",
+      "primitieve": "pi * (x/2 + sin(2*x)/4)",
+      "domein": [
+        0,
+        2
+      ],
+      "grenzen": [
+        0,
+        1.5707963267948966
+      ],
+      "waarde": "(1/4)*pi^2",
+      "stappen": [
+        "Hier spelen deel 1 en deel 2 van de driedeling: eerst het verhaal vertalen naar een integraal, dan die integraal exact uitrekenen. De inhoud is $\\pi$ keer de integraal van $\\cos^{2}(x)$. Op dit domein ligt de grafiek boven de $x$-as.",
+        "$I(L) = \\pi \\displaystyle\\int_{0}^{\\frac{1}{2}\\pi} \\cos^{2}(x)\\,\\mathrm{d}x$ en $\\cos^{2}(x) = \\tfrac{1}{2} + \\tfrac{1}{2}\\cos(2x)$.",
+        "Een primitieve van de integrand is $F(x) = \\pi\\left(\\tfrac{1}{2}x + \\tfrac{1}{4}\\sin(2x)\\right)$.",
+        "$F\\left(\\tfrac{1}{2}\\pi\\right) - F(0) = \\pi \\cdot \\tfrac{1}{4}\\pi = \\tfrac{1}{4}\\pi^{2}$. De inhoud is $\\tfrac{1}{4}\\pi^{2}$."
+      ]
+    },
+    {
+      "nummer": "to-7",
+      "cluster": "h12b_toepassing",
+      "niveau": 3,
+      "latex": "Voor elke $p > 0$ sluit de grafiek van $f(x) = p\\sin(x)\\cos(x)$ met de $x$-as op $[0, \\tfrac{1}{2}\\pi]$ een vlakdeel $V_p$ in. Bereken exact de waarde van $p$ waarvoor de oppervlakte van $V_p$ gelijk is aan $3$.",
+      "antwoord_latex": "p = 6",
+      "integrand": "sin(x) * cos(x)",
+      "primitieve": "-cos(2*x)/4",
+      "stappen": [
+        "Hier spelen alle drie de delen: het vlakdeel wordt een integraal, die reken je exact uit, en met die uitkomst vind je $p$.",
+        "Op $[0, \\tfrac{1}{2}\\pi]$ is $\\sin(x)\\cos(x) \\ge 0$. Dus $O(V_p) = \\displaystyle\\int_{0}^{\\frac{1}{2}\\pi} p\\sin(x)\\cos(x)\\,\\mathrm{d}x$ en $\\sin(x)\\cos(x) = \\tfrac{1}{2}\\sin(2x)$.",
+        "Een primitieve van $\\tfrac{1}{2}\\sin(2x)$ is $-\\tfrac{1}{4}\\cos(2x)$. Zonder de $p$ is de integraal van $0$ tot $\\tfrac{1}{2}\\pi$ gelijk aan $\\tfrac{1}{2}$. Dus $O(V_p) = \\tfrac{1}{2}p$.",
+        "Deel 3: $\\tfrac{1}{2}p = 3$, dus $p = 6$."
+      ]
+    },
+    {
+      "nummer": "to-8",
+      "cluster": "h12b_toepassing",
+      "niveau": 3,
+      "latex": "Het vlakdeel $V$ wordt ingesloten door de grafiek van $f(x) = \\sin(2x)$ en de $x$-as op het domein $[0, \\tfrac{1}{2}\\pi]$. Het lichaam $L$ ontstaat als $V$ wentelt om de $x$-as. Bereken exact de inhoud van $L$.",
+      "antwoord_latex": "\\dfrac{1}{4}\\pi^{2}",
+      "integrand": "pi * sin(2*x)^2",
+      "primitieve": "pi * (x/2 - sin(4*x)/8)",
+      "domein": [
+        0,
+        2
+      ],
+      "grenzen": [
+        0,
+        1.5707963267948966
+      ],
+      "waarde": "(1/4)*pi^2",
+      "stappen": [
+        "Hier spelen deel 1 en deel 2 van de driedeling: eerst het verhaal vertalen naar een integraal, dan die integraal exact uitrekenen. De inhoud is $\\pi$ keer de integraal van $\\sin^{2}(2x)$. Op $[0, \\tfrac{1}{2}\\pi]$ is $\\sin(2x) \\ge 0$.",
+        "$I(L) = \\pi \\displaystyle\\int_{0}^{\\frac{1}{2}\\pi} \\sin^{2}(2x)\\,\\mathrm{d}x$ en $\\sin^{2}(2x) = \\tfrac{1}{2} - \\tfrac{1}{2}\\cos(4x)$.",
+        "Een primitieve van de integrand is $F(x) = \\pi\\left(\\tfrac{1}{2}x - \\tfrac{1}{8}\\sin(4x)\\right)$.",
+        "$F\\left(\\tfrac{1}{2}\\pi\\right) - F(0) = \\pi \\cdot \\tfrac{1}{4}\\pi = \\tfrac{1}{4}\\pi^{2}$. De inhoud is $\\tfrac{1}{4}\\pi^{2}$."
+      ]
+    }
+  ]
+}

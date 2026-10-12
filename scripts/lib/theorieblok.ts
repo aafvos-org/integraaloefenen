@@ -19,13 +19,16 @@ export function voegTheorieblokToe(
     blockTitle: string
     blockOrder: number
     topics: string[]
+    /** Hoofdstuk-slug. Standaard `k`, omdat de eerdere blokken daar horen. */
+    chapterSlug?: string
   },
 ): string {
+  const hoofdstuk = opt.chapterSlug ?? 'k'
   const kop = `-- 1b. Paragraaf en theorieblok
 INSERT INTO public.paragraphs (chapter_id, site, slug, label, title, order_index)
 SELECT c.id, 'integralen', '${opt.paragraphSlug}', '${opt.paragraphLabel}', '${opt.paragraphTitle}', ${opt.paragraphOrder}
 FROM public.chapters c
-WHERE c.slug = 'k' AND c.site = 'integralen'
+WHERE c.slug = '${hoofdstuk}' AND c.site = 'integralen'
 ON CONFLICT (slug) DO NOTHING;
 
 INSERT INTO public.theory_blocks (paragraph_id, site, slug, letter, title, order_index)
