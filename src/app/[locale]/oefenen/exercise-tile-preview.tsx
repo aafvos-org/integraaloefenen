@@ -11,7 +11,7 @@ export function ExerciseTileMathPreview({
   const src = latex_body ?? ''
   return (
     <div
-      className="pointer-events-none mt-2 max-h-[5rem] overflow-hidden text-left [&_.katex-html]:tracking-tight"
+      className="pointer-events-none mt-2 max-h-[5rem] max-w-full overflow-hidden text-left [&_.katex]:max-w-full [&_.katex-html]:tracking-tight"
       aria-hidden
     >
       <div className="font-serif text-sm leading-snug text-text">

@@ -39,12 +39,12 @@ function TileGrid({
         const tileHref = `${baseHref}&q=${encodeURIComponent(tile.questionId)}`
         const active = activeQuestionId === tile.questionId
         return (
-          <li key={tile.questionId}>
+          <li key={tile.questionId} className="min-w-0">
             <Link
               href={tileHref as '/oefenen'}
               prefetch={false}
               className={cn(
-                'block min-h-[6.75rem] rounded-xl border px-3 py-3 transition',
+                'block min-h-[6.75rem] min-w-0 overflow-hidden rounded-xl border px-3 py-3 transition',
                 active &&
                   'ring-2 ring-accent ring-offset-2 ring-offset-[var(--color-bg)]',
                 tile.lastCorrect === true &&
