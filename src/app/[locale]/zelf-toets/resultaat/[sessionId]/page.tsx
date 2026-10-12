@@ -5,6 +5,7 @@ import { redirect } from 'next/navigation'
 import { Math as TeX, RichMath } from '@/components/math'
 import { Card, cn } from '@/components/ui'
 import { loadTestResults } from '@/lib/practice/custom-test'
+import { linkNaToets } from '@/lib/practice/zelf-toets-indeling'
 import { createClient } from '@/lib/supabase/server'
 
 export async function generateMetadata({
@@ -70,7 +71,9 @@ export default async function ZelfToetsResultaatPage({
             <div className="flex flex-wrap items-baseline justify-between gap-2 border-b border-border pb-2">
               <div>
                 <p className="text-xs font-medium uppercase tracking-wider text-text-muted">
-                  {group.topicTitle}
+                  {group.blockLabel
+                    ? `${group.blockLabel} · ${group.topicTitle}`
+                    : group.topicTitle}
                 </p>
                 <h2 className="mt-0.5 font-serif text-lg text-text">
                   {group.clusterTitle}
@@ -133,10 +136,10 @@ export default async function ZelfToetsResultaatPage({
               ))}
             </ol>
 
-            {group.correct < group.total && group.chapterSlug && (
+            {group.correct < group.total && (group.blockSlug || group.topicSlug) && (
               <p className="mt-3 text-xs">
                 <Link
-                  href={`/oefenen?chapter=${encodeURIComponent(group.chapterSlug)}&topic=${encodeURIComponent(group.topicSlug)}&cluster=${encodeURIComponent(group.clusterSlug)}`}
+                  href={linkNaToets(group)}
                   className="font-medium text-accent hover:underline"
                 >
                   {t('drillLink')} →

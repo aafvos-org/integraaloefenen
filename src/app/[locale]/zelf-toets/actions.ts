@@ -36,7 +36,7 @@ export async function createCustomTestAction(
   if (!user) redirect(`/${locale}/inloggen`)
 
   if (!Array.isArray(payload.clusterIds) || payload.clusterIds.length === 0) {
-    return { error: 'Kies minstens één onderwerp.' }
+    return { error: 'Kies minstens één theorieblok.' }
   }
 
   if (!VALID_SOURCES.includes(payload.source)) {
