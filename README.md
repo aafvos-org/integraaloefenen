@@ -25,7 +25,6 @@ code die er niet meer is — volg ze niet.
 | AI         | Google Gemini (nakijken van antwoorden)           |
 | Wiskunde   | KaTeX                                             |
 | Mail       | Resend                                            |
-| Statistiek | PostHog                                           |
 | Hosting    | Cloudflare Workers via OpenNext (`@opennextjs/cloudflare`) |
 
 ---
@@ -46,7 +45,7 @@ cp .env.local.example .env.local
 
 In `.env.local.example` staat per sleutel waar je hem vandaan haalt en wat er
 misgaat als hij leeg blijft. Om de site lokaal te zien heb je genoeg aan de
-Supabase-sleutels; mail, Gemini en PostHog mogen leeg blijven.
+Supabase-sleutels; mail en Gemini mogen leeg blijven.
 
 `.env*` en `.dev.vars*` staan in `.gitignore` en blijven daar. Geheimen voor
 de live site staan als Worker-secrets in Cloudflare, nooit in deze repo.

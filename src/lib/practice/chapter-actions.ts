@@ -1,12 +1,18 @@
 'use server'
 
-import type { OefenFoutSoort } from '@/lib/analytics/oefenen'
 import { checkWrongAnswerNew } from '@/lib/ai/check-answer-new'
 import { createClient, createServiceRoleClient } from '@/lib/supabase/server'
 
 import { answersMatch } from './engine'
 import { progressAfterCorrect, progressAfterIncorrect } from './progress'
 import { timeSpentSecVoorOpslag } from './time-spent'
+
+/** Vaste categorie bij een mislukt antwoord. Geen vrije fouttekst: die kan een antwoord of e-mailadres bevatten. */
+export type OefenFoutSoort =
+  | 'niet_ingelogd'
+  | 'vraag_niet_gevonden'
+  | 'opslaan_mislukt'
+  | 'serveractie_mislukt'
 
 type DB = Awaited<ReturnType<typeof createClient>>
 
@@ -190,31 +196,6 @@ export async function flagQuestionNewAction(
   }
 
   return { ok: true }
-}
-
-/**
- * Id van de lopende oefensessie voor dit cluster, of null als er nog geen is.
- * Leest alleen: een sessie ontstaat pas bij het eerste antwoord.
- */
-export async function huidigeSessieIdAction(clusterId: string): Promise<string | null> {
-  const supabase = await createClient()
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
-  if (!user) return null
-
-  const { data } = await supabase
-    .from('user_sessions_new')
-    .select('id')
-    .eq('user_id', user.id)
-    .eq('cluster_id', clusterId)
-    .is('ended_at', null)
-    .gte('started_at', sessionWindowStart())
-    .order('started_at', { ascending: false })
-    .limit(1)
-    .maybeSingle()
-
-  return data?.id ?? null
 }
 
 function sessionWindowStart(): string {

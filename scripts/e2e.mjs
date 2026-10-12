@@ -64,7 +64,6 @@ const env = {
   // Geen echte Gemini en geen statistieken in de tests.
   AI_CHECK_MODE: 'stub',
   GEMINI_API_KEY: '',
-  NEXT_PUBLIC_POSTHOG_KEY: '',
   // En geen echte mail: wat de site zelf verstuurt (welkomstmail, seintje,
   // vraag, video-verzoek) gaat naar de testpostbus. De lege RESEND_API_KEY is
   // het vangnet daaronder: raakt die schakelaar ooit kwijt, dan mislukt het

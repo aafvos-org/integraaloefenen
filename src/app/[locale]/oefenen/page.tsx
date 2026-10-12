@@ -167,7 +167,6 @@ export default async function OefenenPage({ searchParams }: PageProps) {
       initialTiles={initialTiles}
       allTiles={allTiles}
       question={question}
-      vraagNietGevonden={Boolean(qParam) && !question}
       labels={{
         chapterLabel: t('chapterLabel'),
         h1: t('h1'),

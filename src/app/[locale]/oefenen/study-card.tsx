@@ -15,11 +15,6 @@ import {
 import { insertAtCursor, toLatexPreview } from '@/lib/practice/input'
 import { antwoordPrefix, opdrachtSleutel } from '@/lib/practice/opdracht'
 import { MASTERY_THRESHOLD } from '@/lib/practice/progress'
-import {
-  oefenFoutProps,
-  type OefenEventNaam,
-  type OefenEventProps,
-} from '@/lib/analytics/oefenen'
 import type { UitlegVideo } from '@/lib/videos'
 
 import { MathKeyboard } from '@/components/math-keyboard'
@@ -59,7 +54,6 @@ export function StudyCard({
   questionNumber,
   video,
   onAnswered,
-  track,
 }: {
   question: StudyQuestion
   steps: Step[]
@@ -67,8 +61,7 @@ export function StudyCard({
   questionNumber?: number
   /** Uitlegvideo over dit onderwerp, als die er is. */
   video?: UitlegVideo | null
-  onAnswered?: (questionId: string, isCorrect: boolean, sessionId: string) => void
-  track?: (naam: OefenEventNaam, extra?: OefenEventProps) => void
+  onAnswered?: (questionId: string, isCorrect: boolean) => void
 }) {
   const router = useRouter()
   const t = useTranslations('PracticeCard')
@@ -80,7 +73,6 @@ export function StudyCard({
   const [revealed, setRevealed] = useState(false)
   const inputRef = useRef<HTMLInputElement | null>(null)
   const feedbackRef = useRef<HTMLDivElement | null>(null)
-  const attemptsRef = useRef(0)
   const shownAtRef = useRef(0)
   // Wat er gevraagd wordt en hoe de antwoordregel begint, allebei afgeleid
   // uit de opgave zelf. Zie src/lib/practice/opdracht.ts.
@@ -157,7 +149,6 @@ export function StudyCard({
 
     setSubmitting(true)
     const submitted = answer
-    const poging = ++attemptsRef.current
     const seconden = Math.round((Date.now() - shownAtRef.current) / 1000)
     startTransition(async () => {
       let result: StudyResult
@@ -165,25 +156,21 @@ export function StudyCard({
         result = await submitStudyAnswerAction(question.id, submitted, seconden)
       } catch {
         setSubmitting(false)
-        track?.('fout_opgetreden', oefenFoutProps('nakijken', 'serveractie_mislukt'))
         setState({ phase: 'input', error: t('genericError') })
         return
       }
       setSubmitting(false)
       if (result.kind === 'error') {
-        track?.('fout_opgetreden', oefenFoutProps('nakijken', result.soort))
         setState({ phase: 'input', error: result.message })
         return
       }
-      const goed = result.kind === 'correct'
-      track?.('antwoord_ingediend', { goed, poging, seconden, sessie_id: result.sessionId })
       if (result.kind === 'correct') {
-        onAnswered?.(question.id, true, result.sessionId)
+        onAnswered?.(question.id, true)
         setLastAttempt(submitted)
         setState({ phase: 'correct', streak: result.streak, mastered: result.mastered })
         return
       }
-      onAnswered?.(question.id, false, result.sessionId)
+      onAnswered?.(question.id, false)
       setLastAttempt(submitted)
       setState({
         phase: 'wrong',
@@ -383,14 +370,7 @@ export function StudyCard({
           <WrongFeedback
             steps={steps}
             revealed={revealed}
-            onReveal={() => {
-              setRevealed(true)
-              track?.('hint_of_stap_bekeken', {
-                stap: steps.length > 0 ? 'stappenplan' : 'antwoord',
-                aantal_stappen: steps.length,
-                poging: attemptsRef.current,
-              })
-            }}
+            onReveal={() => setRevealed(true)}
             onNext={next}
             onRetry={retry}
             pending={pending}
