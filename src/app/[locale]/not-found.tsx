@@ -1,6 +1,14 @@
+import type { Metadata } from 'next'
 import { getTranslations } from 'next-intl/server'
 
+import { SITE_CONFIG } from '@/config/site'
 import { Link } from '@/i18n/navigation'
+
+// absolute, anders plakt de titel-sjabloon van de taallayout het domein er
+// nog een keer achter. Zelfde tekst als src/app/not-found.tsx.
+export const metadata: Metadata = {
+  title: { absolute: `Pagina niet gevonden · ${SITE_CONFIG.domain}` },
+}
 
 export default async function NotFound() {
   const t = await getTranslations('NotFound')
