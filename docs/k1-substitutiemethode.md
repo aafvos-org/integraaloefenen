@@ -250,26 +250,25 @@ fase). Eerst wipe van oude `site='integralen'`-H11-content via aparte migration.
 
 ## 5. De theoriepagina
 
-Afgeleiden heeft `/theorie` met `METHODE` (`methode.ts` + `methode-schema.tsx`).
-Integralen: `src/content/theory/integralen.ts` heeft nu `METHODE = null` en
-lege overview — daardoor valt de UI terug op oude kaarten.
+De oude methode-pagina (het stappenschema van de afgeleiden-site) is weg.
+Aaf heeft op 12 oktober 2026 gekozen om die niet te vullen voor integralen.
+`methode-schema.tsx`, de tak die alleen liep als `METHODE` gevuld was, de
+bijbehorende vertaalsleutels en de afgeleiden-types (`RegelId` en zo) staan
+niet meer in de code.
 
-**Doel na deze spec:**
+`/theorie` toont de kaarten uit `THEORY_OVERVIEW` in
+`src/content/theory/integralen.ts`. Nieuwe uitleg hoort daar, als hoofdstuk
+met kaarten en een stappenplan, niet als een teruggezet schema.
 
-1. `METHODE` vullen vanuit §1 (stappenkaart + herkenregels voor \(u\)).
-2. Per topic (§2) een blok: regel/herkenning, één uitgewerkt voorbeeld in
-   Stap 0–7, link naar oefenen.
-3. Zelfde formuleringen op theoriekaart, oefen-hint en `question_steps_new`.
-
-Deep-links en i18n-overrides (`messages/overrides/integralen.*`) blijven; alleen
-inhoud vullen.
+De formuleringen op de theoriekaart, de oefen-hint en `question_steps_new`
+blijven hetzelfde.
 
 ---
 
 ## 6. Volgorde van uitvoeren
 
 1. Deze spec reviewen en stapnummering **bevriezen**.
-2. `integralen.ts` / theorie-UI vullen vanuit §1–§5 (geen wipe nodig).
+2. Theorie vullen in `integralen.ts` als kaarten (zie §5), niet als methode-schema.
 3. Wipe-migration: alle content met `site = 'integralen'` (H11) — na backup.
 4. `scripts/k1-content.ts` + migration: chapter `k`, topics/clusters/vragen/stappen.
 5. Check-agent: eindantwoord vs oplossingen-PDF **én** “volgt Stap 0–7?”.
