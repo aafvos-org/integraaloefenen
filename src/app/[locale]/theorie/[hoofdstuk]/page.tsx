@@ -5,6 +5,7 @@ import { routing } from '@/i18n/routing'
 import { eigenPagina } from '@/lib/seo'
 import { THEORY_OVERVIEW } from '@/lib/theory'
 
+import { hoofdstukOmschrijving } from '../hoofdstuk-omschrijving'
 import { TheorieClient, type TheorieChapter } from '../theorie-client'
 import { TheorieLayout } from '../theorie-layout'
 import { kaartLabels, layoutLabels, stripChapterCode, theorieNavItems } from '../theorie-shared'
@@ -29,8 +30,8 @@ export async function generateMetadata({ params }: { params: Params }) {
   return eigenPagina({
     locale,
     pad: `/theorie/${hoofdstuk}`,
-    titel: kaart ? `${kaart.title} · ${t('eyebrow')}` : t('title'),
-    omschrijving: t('description'),
+    titel: `${kaart.title} · ${t('eyebrow')}`,
+    omschrijving: hoofdstukOmschrijving(kaart.title, kaart.intro),
   })
 }
 
