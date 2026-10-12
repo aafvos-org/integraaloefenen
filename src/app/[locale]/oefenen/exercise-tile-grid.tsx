@@ -6,6 +6,7 @@ import type { NewExerciseTile } from '@/lib/practice/chapter-overview'
 import { ExerciseTileMathPreview } from './exercise-tile-preview'
 
 export type TileSubSection = {
+  id?: string
   label: string              // cluster name — empty string = no heading
   tiles: NewExerciseTile[]
 }
@@ -100,14 +101,14 @@ export function ExerciseTileGrid({
   return (
     <section className="mt-6" aria-label={labels.heading}>
       {sections.map((section, si) => (
-        <div key={si} id={section.id} className={cn('scroll-mt-4', si > 0 && 'mt-10')}>
+        <div key={si} id={section.id} className={cn('scroll-mt-28 lg:scroll-mt-4', si > 0 && 'mt-10')}>
           {section.label && (
             <h3 className="mt-6 font-serif text-lg text-text">
               {section.label}
             </h3>
           )}
           {section.subSections.map((sub, ci) => (
-            <div key={ci} className={ci > 0 || section.label ? 'mt-5' : ''}>
+            <div key={ci} id={sub.id} className={cn('scroll-mt-28 lg:scroll-mt-4', ci > 0 || section.label ? 'mt-5' : '')}>
               {sub.label && (
                 <p className="text-xs font-medium uppercase tracking-wider text-text-muted">
                   {sub.label}

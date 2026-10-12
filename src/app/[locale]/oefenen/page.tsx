@@ -4,11 +4,18 @@ import { redirect } from 'next/navigation'
 import {
   loadAllTopics,
   loadClustersForTopics,
+  loadParagraphs,
+  loadTheoryBlocks,
   loadTilesForClusters,
   loadQuestionNew,
   type ClusterInfo,
   type TopicCategory,
 } from '@/lib/practice/chapter-overview'
+import {
+  clusterIdsVoorSelectie,
+  losSelectieOp,
+  oefenIndeling,
+} from '@/lib/practice/oefenen-indeling'
 import { getChapters, getCurrentUser } from '@/lib/supabase/request-cache'
 import { createClient } from '@/lib/supabase/server'
 
@@ -52,11 +59,17 @@ type PageProps = {
     chapter?: string
     topic?: string
     cluster?: string
+    blok?: string
     q?: string
   }>
 }
 
-export default async function OefenenPage({ searchParams }: PageProps) {
+export default async function OefenenPage(props: PageProps) {
+  if (oefenIndeling() === 'onderwerp') return <OnderwerpPagina {...props} />
+  return <BlokPagina {...props} />
+}
+
+async function OnderwerpPagina({ searchParams }: PageProps) {
   const supabase = await createClient()
   const locale = await getLocale()
   const user = await getCurrentUser()
@@ -149,6 +162,7 @@ export default async function OefenenPage({ searchParams }: PageProps) {
 
   return (
     <OefenenClient
+      indeling="onderwerp"
       key={activeCategory}
       chapters={visibleChapters}
       allTopics={allTopics}
@@ -176,6 +190,86 @@ export default async function OefenenPage({ searchParams }: PageProps) {
         questionsNav: t('questionsNav'),
         collapseSidebar: t('collapseSidebar'),
         expandSidebar: t('expandSidebar'),
+      }}
+    />
+  )
+}
+
+async function BlokPagina({ searchParams }: PageProps) {
+  const supabase = await createClient()
+  const locale = await getLocale()
+  const user = await getCurrentUser()
+  if (!user) redirect(`/${locale}/inloggen`)
+
+  const params = (await searchParams) ?? {}
+  const adres = {
+    blok: params.blok?.trim() || null,
+    topic: params.topic?.trim() || null,
+    cluster: params.cluster?.trim() || null,
+    chapter: params.chapter?.trim() || null,
+  }
+  const qParam = params.q?.trim() ?? null
+
+  const [t, chapters, allTopics, paragraphs, blocks] = await Promise.all([
+    getTranslations('FreeExercise'),
+    getChapters(),
+    loadAllTopics(supabase),
+    loadParagraphs(supabase),
+    loadTheoryBlocks(supabase),
+  ])
+
+  const allClusters = await loadClustersForTopics(
+    supabase,
+    allTopics.map((topic) => topic.id),
+  )
+  const allClusterIds = chapters.flatMap((ch) =>
+    allTopics
+      .filter((topic) => topic.chapter_id === ch.id)
+      .flatMap((topic) =>
+        allClusters.filter((cl) => cl.topic_id === topic.id).map((cl) => cl.id),
+      ),
+  )
+  const allTiles = await loadTilesForClusters(supabase, allClusterIds)
+
+  const data = { chapters, paragraphs, blocks, topics: allTopics, clusters: allClusters, tiles: allTiles }
+  const selectie = losSelectieOp(adres, data)
+  const scope = new Set(
+    selectie ? clusterIdsVoorSelectie(selectie, allTopics, allClusters) : [],
+  )
+  const question =
+    qParam && allTiles.some((tile) => tile.questionId === qParam && scope.has(tile.clusterId))
+      ? await loadQuestionNew(supabase, qParam)
+      : null
+
+  return (
+    <OefenenClient
+      indeling="blok"
+      chapters={chapters}
+      paragraphs={paragraphs}
+      blocks={blocks}
+      allTopics={allTopics}
+      allClusters={allClusters}
+      adres={adres}
+      allTiles={allTiles}
+      question={question}
+      labels={{
+        chapterLabel: t('chapterLabel'),
+        h1: t('h1'),
+        difficultyHint: t('difficultyHint'),
+        tilesHeading: t('tilesHeading'),
+        tileLastCorrect: t('tileLastCorrect'),
+        tileLastWrong: t('tileLastWrong'),
+        tileNotTried: t('tileNotTried'),
+        tileExercise: t('tileExercise'),
+        backToAll: t('backToAll'),
+        noExercises: t('noExercises'),
+        questionsNav: t('questionsNav'),
+        collapseSidebar: t('collapseSidebar'),
+        expandSidebar: t('expandSidebar'),
+        oudeOpgaven: 'Oude opgaven',
+        nogGeenOpgaven: 'nog geen opgaven',
+        kiesOnderdeel: 'Kies een onderdeel',
+        sluiten: 'Sluiten',
       }}
     />
   )
