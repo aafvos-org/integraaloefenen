@@ -13,15 +13,20 @@ type Key = {
    * invoegen op die plek te zetten (wordt verwijderd uit de ingevoegde tekst).
    */
   insert: string
-  /** A11y-label voor screen readers */
+  /** Korte uitleg als je er met de muis op blijft staan */
   title: string
+  /**
+   * Naam voor de schermlezer. Moet de zichtbare tekst bevatten, anders meldt
+   * Lighthouse label-content-name-mismatch.
+   */
+  ariaLabel: string
   /** Extra tailwind klassen */
   className?: string
 }
 
 const KEYS: Key[] = [
-  { label: 'xⁿ', insert: '^(|)', title: 'macht' },
-  { label: '√', insert: 'sqrt(|)', title: 'wortel' },
+  { label: 'xⁿ', insert: '^(|)', title: 'macht', ariaLabel: 'xⁿ, macht' },
+  { label: '√', insert: 'sqrt(|)', title: 'wortel', ariaLabel: '√, wortel' },
   {
     label: (
       <span className="flex flex-col items-center font-serif italic leading-none">
@@ -32,8 +37,9 @@ const KEYS: Key[] = [
     ),
     insert: '(|)/()',
     title: 'breuk',
+    ariaLabel: 'a b, breuk',
   },
-  { label: 'π', insert: 'pi', title: 'pi' },
+  { label: 'π', insert: 'pi', title: 'pi', ariaLabel: 'π, pi' },
 ]
 
 export function MathKeyboard({
@@ -58,7 +64,7 @@ export function MathKeyboard({
           onClick={() => onInsert(k.insert)}
           disabled={disabled}
           title={k.title}
-          aria-label={k.title}
+          aria-label={k.ariaLabel}
           className={cn(
             'h-9 min-w-9 rounded-md border border-border bg-surface px-2.5 font-mono text-sm text-text shadow-sm transition hover:border-accent hover:bg-accent-light disabled:opacity-50 sm:h-10 sm:min-w-10 sm:px-3 sm:text-base',
             k.className,
@@ -73,7 +79,7 @@ export function MathKeyboard({
           type="button"
           onClick={() => setShowHelp((v) => !v)}
           title="Uitleg over machten typen"
-          aria-label="Uitleg over machten typen"
+          aria-label="?, uitleg over machten typen"
           aria-expanded={showHelp}
           className={cn(
             'h-9 rounded-md border border-border bg-surface px-2.5 text-sm font-medium text-text-muted shadow-sm transition hover:border-accent hover:bg-accent-light hover:text-text sm:h-10 sm:px-3',
