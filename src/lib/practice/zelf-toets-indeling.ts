@@ -1,4 +1,4 @@
-import { verbergBlok } from '@/lib/practice/oefenen-indeling'
+import { vergelijkHoofdstukVolgorde, verbergBlok } from '@/lib/practice/oefenen-indeling'
 
 /**
  * De zelf-toets kiest per theorieblok. Een blok is de vragen van alle
@@ -127,7 +127,7 @@ export function bouwZelfToetsBoom(data: ZelfToetsIndelingInvoer): ToetsHoofdstuk
 
   const hoofdstukken: ToetsHoofdstuk[] = []
 
-  for (const chapter of [...data.chapters].sort((a, b) => a.order_index - b.order_index)) {
+  for (const chapter of [...data.chapters].sort(vergelijkHoofdstukVolgorde)) {
     const topics = data.topics
       .filter((topic) => topic.chapter_id === chapter.id)
       .sort((a, b) => a.order_index - b.order_index)

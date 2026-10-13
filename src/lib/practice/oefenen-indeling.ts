@@ -93,6 +93,18 @@ type IndelingData = {
 
 const legeGroep: Groep = { topicSlug: null, clusterSlug: null }
 
+/**
+ * Zelfde volgorde als het boek. H11 en H12 hebben allebei volgorde 11;
+ * de slug zet H11 dan vóór H12.
+ */
+export function vergelijkHoofdstukVolgorde(
+  a: { order_index: number; slug: string },
+  b: { order_index: number; slug: string },
+): number {
+  if (a.order_index !== b.order_index) return a.order_index - b.order_index
+  return a.slug.localeCompare(b.slug, 'nl')
+}
+
 /** K.0 A hoort bij afgeleiden en staat niet in deze zijbalk. */
 export function verbergBlok(paragraphSlug: string, letter: string): boolean {
   return paragraphSlug === 'k0' && letter.toUpperCase() === 'A'
@@ -131,10 +143,11 @@ export function bouwBlokBoom(data: IndelingData): BlokBoom {
 
   const hoofdstukken: HoofdstukNode[] = []
   const oudeOpgaven: ChapterInfo[] = []
-  for (const chapter of [...data.chapters].sort((a, b) => a.order_index - b.order_index)) {
+  for (const chapter of [...data.chapters].sort(vergelijkHoofdstukVolgorde)) {
     const paragrafen = paragraphsByChapter.get(chapter.id) ?? []
+    // Geen paragrafen (zoals H11) hoort toch op zijn plek in de lijst.
     if (paragrafen.length === 0) {
-      oudeOpgaven.push(chapter)
+      hoofdstukken.push({ chapter, paragrafen: [] })
       continue
     }
     hoofdstukken.push({
@@ -264,7 +277,12 @@ export function losSelectieOp(adres: Adres, data: IndelingData): Selectie | null
 
   const pad = eersteBlok(data)
   if (pad) return { soort: 'blok', ...pad, groep: legeGroep }
-  const oud = bouwBlokBoom(data).oudeOpgaven[0]
+  const boom = bouwBlokBoom(data)
+  const zonderParagraaf = boom.hoofdstukken.find((h) => h.paragrafen.length === 0)
+  if (zonderParagraaf) {
+    return { soort: 'hoofdstuk', chapter: zonderParagraaf.chapter, groep: legeGroep }
+  }
+  const oud = boom.oudeOpgaven[0]
   if (oud) return { soort: 'hoofdstuk', chapter: oud, groep: legeGroep }
   return null
 }

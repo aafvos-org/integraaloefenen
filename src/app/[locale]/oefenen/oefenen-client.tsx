@@ -855,6 +855,38 @@ function BlokWeergave({
       <div>
         <ul className="space-y-0.5">
           {boom.hoofdstukken.map((h) => {
+            if (h.paragrafen.length === 0) {
+              const actief =
+                selectie?.soort === 'hoofdstuk' && selectie.chapter.id === h.chapter.id
+              return (
+                <li key={h.chapter.id}>
+                  <button
+                    type="button"
+                    onClick={() =>
+                      gaNaar({
+                        blok: null,
+                        topic: null,
+                        cluster: null,
+                        chapter: h.chapter.slug,
+                      })
+                    }
+                    aria-current={actief ? 'true' : undefined}
+                    className={
+                      actief
+                        ? 'flex min-h-11 w-full items-center gap-2 rounded-md px-3 py-2 text-left text-sm font-semibold text-accent'
+                        : 'flex min-h-11 w-full items-center gap-2 rounded-md px-3 py-2 text-left text-sm font-medium text-text hover:bg-surface-2'
+                    }
+                  >
+                    <span className="size-3 shrink-0" aria-hidden />
+                    <span className="min-w-0 break-words">
+                      <span className="font-mono font-semibold">{h.chapter.slug.toUpperCase()}</span>
+                      {' – '}
+                      {titelZonderCode(h.chapter.slug, h.chapter.title)}
+                    </span>
+                  </button>
+                </li>
+              )
+            }
             const open = openHoofdstukken.has(h.chapter.id)
             return (
               <li key={h.chapter.id}>

@@ -184,6 +184,7 @@ describe('zelf-toets per theorieblok', () => {
     expect(letters).toEqual(['A'])
     expect(clusterIdsVanHoofdstuk(k)).not.toContain('c-k0a_diff')
 
+    expect(boom.map((item) => item.slug)).toEqual(['h11', 'k'])
     const h11 = boom.find((item) => item.slug === 'h11')!
     expect(h11.paragrafen).toEqual([])
     expect(h11.losseOnderwerpen.map((item) => item.title)).toEqual(['Polynoom-integralen'])

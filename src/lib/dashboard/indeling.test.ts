@@ -19,6 +19,12 @@ const hoofdstukH = {
   title: 'H11 — Primitiveren en integralen',
   order_index: 11,
 }
+const hoofdstuk12 = {
+  id: 'c12',
+  slug: 'h12',
+  title: 'H12 — Goniometrische formules',
+  order_index: 11,
+}
 
 const k0 = {
   id: 'p0',
@@ -35,6 +41,14 @@ const k1 = {
   label: 'K.1',
   title: 'De substitutiemethode',
   order_index: 2,
+}
+const p12 = {
+  id: 'p12',
+  chapter_id: 'c12',
+  slug: 'h122',
+  label: '12.2',
+  title: 'Formules bij symmetrie en primitiveren',
+  order_index: 1,
 }
 
 const blokK0a = {
@@ -69,6 +83,14 @@ const blokLeeg = {
   title: 'Nog leeg',
   order_index: 9,
 }
+const blok12 = {
+  id: 'b12',
+  paragraph_id: 'p12',
+  slug: 'h12b',
+  letter: 'B',
+  title: 'Primitiveren met verdubbelingsformules',
+  order_index: 1,
+}
 
 function topic(
   slug: string,
@@ -93,6 +115,7 @@ const voorkennis = topic('k0b_basis', 'Standaardprimitieven', 'ck', 'b0b', 1)
 const verborgen = topic('k0a_diff', 'Differentiëren', 'ck', 'b0a', 0)
 const los = topic('k_los', 'Nog zonder blok', 'ck', null, 8)
 const oud = topic('h11_machten', 'Polynoom-integralen', 'ch', null, 1)
+const sinus = topic('h12b_sin', 'Sinus kwadraat', 'c12', 'b12', 1)
 
 function cluster(slug: string, topicId: string, order: number) {
   return { id: `c-${slug}`, topic_id: topicId, order_index: order }
@@ -133,25 +156,35 @@ const voortgang: VoortgangRij[] = [
 
 function indeling() {
   return bouwDashboardIndeling({
-    chapters: [hoofdstukH, hoofdstukK],
-    paragraphs: [k1, k0],
-    blocks: [blokK1a, blokK0a, blokLeeg, blokK0b],
-    topics: [oud, los, verborgen, kern, ketting, voorkennis],
+    chapters: [hoofdstukK, hoofdstuk12, hoofdstukH],
+    paragraphs: [k1, p12, k0],
+    blocks: [blokK1a, blok12, blokK0a, blokLeeg, blokK0b],
+    topics: [oud, sinus, los, verborgen, kern, ketting, voorkennis],
     clusters,
     voortgang,
   })
 }
 
+function hoofdstuk(slug: string) {
+  return indeling().hoofdstukken.find((h) => h.slug === slug)!
+}
+
 describe('dashboard per theorieblok', () => {
-  it('zet K bovenaan en H11 onder oude opgaven', () => {
+  it('zet H11 vóór H12 in de lijst, niet onder oude opgaven', () => {
     const boom = indeling()
-    expect(boom.hoofdstukken.map((h) => h.slug)).toEqual(['k'])
-    expect(boom.oudeOpgaven.map((h) => h.slug)).toEqual(['h11'])
-    expect(boom.hoofdstukken[0]!.paragrafen.map((p) => p.label)).toEqual(['K.0', 'K.1'])
+    expect(boom.hoofdstukken.map((h) => h.slug)).toEqual(['h11', 'h12', 'k'])
+    expect(boom.oudeOpgaven).toEqual([])
+    const h11 = boom.hoofdstukken.find((h) => h.slug === 'h11')!
+    expect(h11.paragrafen).toEqual([])
+    expect(h11.losseOnderwerpen.map((o) => o.title)).toEqual(['Polynoom-integralen'])
+    expect(boom.hoofdstukken.find((h) => h.slug === 'k')!.paragrafen.map((p) => p.label)).toEqual([
+      'K.0',
+      'K.1',
+    ])
   })
 
   it('toont K.0 A niet, en houdt die cluster wel in het hoofdstukpercentage', () => {
-    const k = indeling().hoofdstukken[0]!
+    const k = hoofdstuk('k')
     const letters = k.paragrafen.find((p) => p.label === 'K.0')!.blokken.map((b) => b.letter)
     expect(letters).toEqual(['B'])
     expect(k.clusters.map((c) => c.id)).toContain('c-diff')
@@ -163,8 +196,7 @@ describe('dashboard per theorieblok', () => {
   })
 
   it('telt de onderwerpen van een blok op tot één percentage', () => {
-    const blok = indeling()
-      .hoofdstukken[0]!.paragrafen.find((p) => p.label === 'K.1')!
+    const blok = hoofdstuk('k').paragrafen.find((p) => p.label === 'K.1')!
       .blokken.find((b) => b.slug === 'k1a')!
     // beheerst telt als 1, 1 van 2 goed telt als 0,5 → 1,5 / 2 = 75%
     expect(weegClusters(blok.clusters)).toMatchObject({ mastered: 1, total: 2, pct: 75 })
@@ -172,7 +204,7 @@ describe('dashboard per theorieblok', () => {
   })
 
   it('houdt het hoofdstukpercentage gelijk aan de som van alle clusters', () => {
-    const k = indeling().hoofdstukken[0]!
+    const k = hoofdstuk('k')
     const voor = weegClusters(k.clusters)
     const inBlokken = k.paragrafen.flatMap((p) => p.blokken.flatMap((b) => b.clusters))
     const inLos = k.losseOnderwerpen.flatMap((o) => o.clusters)
@@ -186,23 +218,22 @@ describe('dashboard per theorieblok', () => {
   })
 
   it('laat een blok zonder opgaven staan zonder het percentage te veranderen', () => {
-    const leeg = indeling()
-      .hoofdstukken[0]!.paragrafen.find((p) => p.label === 'K.1')!
+    const leeg = hoofdstuk('k').paragrafen.find((p) => p.label === 'K.1')!
       .blokken.find((b) => b.slug === 'k1z')
     expect(leeg?.heeftOpgaven).toBe(false)
     expect(leeg?.clusters).toEqual([])
   })
 
   it('houdt een onderwerp zonder blok zichtbaar', () => {
-    const losse = indeling().hoofdstukken[0]!.losseOnderwerpen
+    const losse = hoofdstuk('k').losseOnderwerpen
     expect(losse.map((o) => o.slug)).toEqual(['k_los'])
     expect(weegClusters(losse[0]!.clusters).pct).toBe(25)
   })
 
-  it('houdt de oude opgaven op hetzelfde percentage', () => {
-    const h11 = indeling().oudeOpgaven[0]!
-    expect(h11.onderwerpen.map((o) => o.title)).toEqual(['Polynoom-integralen'])
-    expect(weegClusters(h11.onderwerpen[0]!.clusters)).toMatchObject({
+  it('houdt de opgaven van H11 op hetzelfde percentage', () => {
+    const h11 = hoofdstuk('h11')
+    expect(h11.losseOnderwerpen.map((o) => o.title)).toEqual(['Polynoom-integralen'])
+    expect(weegClusters(h11.clusters)).toMatchObject({
       mastered: 1,
       total: 1,
       pct: 100,

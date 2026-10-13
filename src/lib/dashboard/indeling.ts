@@ -1,4 +1,4 @@
-import { verbergBlok } from '@/lib/practice/oefenen-indeling'
+import { vergelijkHoofdstukVolgorde, verbergBlok } from '@/lib/practice/oefenen-indeling'
 
 /**
  * Voortgang op het dashboard: per hoofdstuk, paragraaf en theorieblok.
@@ -185,7 +185,7 @@ export function bouwDashboardIndeling(input: {
   const hoofdstukken: NieuwHoofdstuk[] = []
   const oudeOpgaven: OudHoofdstuk[] = []
 
-  for (const chapter of [...input.chapters].sort((a, b) => a.order_index - b.order_index)) {
+  for (const chapter of [...input.chapters].sort(vergelijkHoofdstukVolgorde)) {
     const topics = input.topics
       .filter((topic) => topic.chapter_id === chapter.id)
       .sort((a, b) => a.order_index - b.order_index)
@@ -237,6 +237,18 @@ export function bouwDashboardIndeling(input: {
           }),
       }))
       .filter((paragraph) => paragraph.blokken.length > 0)
+
+    if (paragraphs.length === 0) {
+      hoofdstukken.push({
+        id: chapter.id,
+        slug: chapter.slug,
+        title: chapter.title,
+        paragrafen: [],
+        clusters: topics.flatMap((topic) => clustersVan(topic.id)),
+        losseOnderwerpen: topics.map((topic) => onderwerpRij(topic, chapter.slug)),
+      })
+      continue
+    }
 
     if (paragrafen.length === 0) {
       oudeOpgaven.push({

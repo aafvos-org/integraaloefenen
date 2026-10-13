@@ -29,6 +29,13 @@ const hoofdstukH: ChapterInfo = {
   book_part: 3,
   order_index: 11,
 }
+const hoofdstuk12: ChapterInfo = {
+  id: 'c12',
+  slug: 'h12',
+  title: 'H12 — Goniometrische formules',
+  book_part: 3,
+  order_index: 11,
+}
 
 const k0: ParagraphInfo = {
   id: 'p0',
@@ -45,6 +52,14 @@ const k1: ParagraphInfo = {
   label: 'K.1',
   title: 'De substitutiemethode',
   order_index: 2,
+}
+const p12: ParagraphInfo = {
+  id: 'p12',
+  chapter_id: 'c12',
+  slug: 'h122',
+  label: '12.2',
+  title: 'Formules bij symmetrie en primitiveren',
+  order_index: 1,
 }
 
 const blokK0a: TheoryBlockInfo = {
@@ -78,6 +93,14 @@ const blokLeeg: TheoryBlockInfo = {
   letter: 'Z',
   title: 'Nog leeg',
   order_index: 9,
+}
+const blok12: TheoryBlockInfo = {
+  id: 'b12',
+  paragraph_id: 'p12',
+  slug: 'h12b',
+  letter: 'B',
+  title: 'Primitiveren met verdubbelingsformules',
+  order_index: 1,
 }
 
 function topic(
@@ -154,9 +177,9 @@ const tiles = [
 ]
 
 const data = {
-  chapters: [hoofdstukH, hoofdstukK],
-  paragraphs: [k1, k0],
-  blocks: [blokK1a, blokK0a, blokLeeg, blokK0b],
+  chapters: [hoofdstukK, hoofdstuk12, hoofdstukH],
+  paragraphs: [k1, p12, k0],
+  blocks: [blokK1a, blok12, blokK0a, blokLeeg, blokK0b],
   topics: [oppervlakte, oud, kern, ketting, voorkennis],
   clusters,
   tiles,
@@ -167,27 +190,39 @@ describe('indeling per theorieblok', () => {
     expect(oefenIndeling()).toBe('blok')
   })
 
-  it('zet K.0 tot K.3 bovenaan en H11 onder oude opgaven', () => {
+  it('zet H11 vóór H12 in de lijst, niet onder oude opgaven', () => {
     const boom = bouwBlokBoom(data)
-    expect(boom.hoofdstukken.map((h) => h.chapter.slug)).toEqual(['k'])
-    expect(boom.oudeOpgaven.map((c) => c.slug)).toEqual(['h11'])
-    const labels = boom.hoofdstukken[0]!.paragrafen.map((p) => p.label)
+    expect(boom.hoofdstukken.map((h) => h.chapter.slug)).toEqual(['h11', 'h12', 'k'])
+    expect(boom.oudeOpgaven).toEqual([])
+    expect(boom.hoofdstukken.find((h) => h.chapter.slug === 'h11')!.paragrafen).toEqual([])
+    const labels = boom.hoofdstukken
+      .find((h) => h.chapter.slug === 'k')!
+      .paragrafen.map((p) => p.label)
     expect(labels).toEqual(['K.0', 'K.1'])
-    expect(labels).not.toContain('H11')
   })
 
   it('toont K.0 A niet', () => {
-    const letters = bouwBlokBoom(data)
-      .hoofdstukken[0]!.paragrafen.find((p) => p.slug === 'k0')!
-      .blokken.map((b) => b.letter)
+    const k = bouwBlokBoom(data).hoofdstukken.find((h) => h.chapter.slug === 'k')!
+    const letters = k.paragrafen.find((p) => p.slug === 'k0')!.blokken.map((b) => b.letter)
     expect(letters).toEqual(['B'])
   })
 
   it('maakt een blok zonder opgaven niet kiesbaar', () => {
-    const leeg = bouwBlokBoom(data)
-      .hoofdstukken[0]!.paragrafen.find((p) => p.slug === 'k1')!
-      .blokken.find((b) => b.slug === 'k1z')
+    const k = bouwBlokBoom(data).hoofdstukken.find((h) => h.chapter.slug === 'k')!
+    const leeg = k.paragrafen.find((p) => p.slug === 'k1')!.blokken.find((b) => b.slug === 'k1z')
     expect(leeg?.heeftOpgaven).toBe(false)
+  })
+
+  it('opent H11 als hoofdstuk en houdt de opgaven bij elkaar', () => {
+    const sel = losSelectieOp(
+      { blok: null, topic: null, cluster: null, chapter: 'h11' },
+      data,
+    )
+    expect(sel?.soort).toBe('hoofdstuk')
+    if (sel?.soort !== 'hoofdstuk') return
+    expect(sel.chapter.slug).toBe('h11')
+    const kopjes = kopjesVoorSelectie(sel, data.topics, data.clusters, data.tiles)
+    expect(kopjes.map((k) => k.label)).toEqual(['Polynoom-integralen'])
   })
 
   it('zet kettingregel en oppervlakte in één lijst bij K.1 A', () => {
