@@ -3,6 +3,7 @@ import { getLocale, getTranslations } from 'next-intl/server'
 import { SITE_CONFIG } from '@/config/site'
 import { leermiddel } from '@/lib/gestructureerde-gegevens'
 import { eigenPagina } from '@/lib/seo'
+import { VOORBEELDOPGAVEN } from '@/content/theory/voorbeeldopgaven'
 import { THEORY_OVERVIEW } from '@/lib/theory'
 
 import { TheorieClient, type TheorieChapter } from './theorie-client'
@@ -40,6 +41,7 @@ export default async function TheoriePage() {
     stappenplan: ch.stappenplan,
     practiceLabel: t('practiceLink', { topic: stripChapterCode(ch.title) }),
     cards: ch.cards,
+    voorbeelden: VOORBEELDOPGAVEN[ch.slug],
   }))
   return (
     <>

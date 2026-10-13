@@ -5,6 +5,7 @@ import { Fragment, useRef, useState } from 'react'
 import { Link } from '@/i18n/navigation'
 import { Math as TeX, RichMath } from '@/components/math'
 import { cn } from '@/components/ui'
+import type { Voorbeeldopgave } from '@/content/theory/voorbeeldopgaven'
 import type { OverviewCard, Stappenplan } from '@/lib/theory'
 
 import { leesbareTekst, leesbareWiskunde } from './leesbare-tekst'
@@ -17,6 +18,7 @@ export type TheorieChapter = {
   /** Vooraf op de server geformatteerd, bv. "Oefen De afgeleide functie →" */
   practiceLabel: string
   cards: OverviewCard[]
+  voorbeelden?: Voorbeeldopgave[]
 }
 
 type Labels = {
@@ -316,6 +318,10 @@ export function TheorieClient({
                     )
                   })}
                 </div>
+
+                {ch.voorbeelden && ch.voorbeelden.length > 0 && (
+                  <Voorbeeldopgaven opgaven={ch.voorbeelden} />
+                )}
               </section>
             )
           })}
@@ -517,6 +523,59 @@ function KaartTekst({ card, labels }: { card: OverviewCard; labels: Labels }) {
 }
 
 /* ── Eén theoriekaart ───────────────────────────────────────────────────── */
+
+function Voorbeeldopgaven({ opgaven }: { opgaven: Voorbeeldopgave[] }) {
+  return (
+    <section className="mt-8" aria-labelledby="voorbeeldopgaven">
+      <h2 id="voorbeeldopgaven" className="font-serif text-xl text-text">
+        Voorbeeldopgaven
+      </h2>
+      <p className="mt-1 text-sm text-text-muted">
+        Drie vaste opgaven. Je hoeft niets in te vullen.
+      </p>
+      <ol className="mt-4 space-y-4">
+        {opgaven.map((opgave, i) => (
+          <li key={opgave.bron} className="rounded-xl border border-border bg-surface px-4 py-4 sm:px-5">
+            <p className="text-sm font-medium text-text-muted">Opgave {i + 1}</p>
+            <div className="mt-1 overflow-x-auto text-text">
+              <RichMath source={opgave.opgave} />
+            </div>
+            <p className="sr-only">{leesbareTekst(opgave.opgave)}</p>
+            <details className="mt-3">
+              <summary className="flex min-h-11 cursor-pointer list-none items-center self-start rounded-full border border-border px-4 text-sm text-text-muted [&::-webkit-details-marker]:hidden">
+                Toon de stappen
+              </summary>
+              <ol className="mt-3 space-y-2 text-sm leading-relaxed text-text">
+                {opgave.stappen.map((stap, si) => (
+                  <li key={si} className="flex items-start gap-2">
+                    <span className="min-w-[1.1rem] shrink-0 font-semibold tabular-nums text-accent">
+                      {si + 1}.
+                    </span>
+                    <span>
+                      <RichMath source={stap} />
+                      <span className="sr-only">{leesbareTekst(stap)}</span>
+                    </span>
+                  </li>
+                ))}
+              </ol>
+            </details>
+            <p className="mt-3 overflow-x-auto text-sm text-text">
+              <span className="font-medium">Antwoord: </span>
+              <RichMath source={opgave.antwoord} />
+              <span className="sr-only">{leesbareTekst(opgave.antwoord)}</span>
+            </p>
+          </li>
+        ))}
+      </ol>
+      <Link
+        href="/inloggen"
+        className="mt-5 inline-flex min-h-11 items-center rounded-full bg-accent px-5 text-sm font-medium text-white"
+      >
+        Zelf oefenen
+      </Link>
+    </section>
+  )
+}
 
 function TheoryCard({
   chapterSlug,

@@ -5,6 +5,7 @@ import { SITE_CONFIG } from '@/config/site'
 import { routing } from '@/i18n/routing'
 import { leermiddel } from '@/lib/gestructureerde-gegevens'
 import { eigenPagina } from '@/lib/seo'
+import { VOORBEELDOPGAVEN } from '@/content/theory/voorbeeldopgaven'
 import { THEORY_OVERVIEW } from '@/lib/theory'
 
 import { hoofdstukOmschrijving } from '../hoofdstuk-omschrijving'
@@ -51,6 +52,7 @@ export default async function HoofdstukPage({ params }: { params: Params }) {
     stappenplan: kaart.stappenplan,
     practiceLabel: t('practiceLink', { topic: stripChapterCode(kaart.title) }),
     cards: kaart.cards,
+    voorbeelden: VOORBEELDOPGAVEN[kaart.slug],
   }
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? `https://${SITE_CONFIG.domain}`
   const gegevens = leermiddel({
