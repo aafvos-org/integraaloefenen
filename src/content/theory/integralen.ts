@@ -290,6 +290,7 @@ export const THEORY_OVERVIEW: OverviewChapter[] = [
   },
   {
     slug: 'k3',
+    code: 'K.3',
     title: 'K.3 — Cyclometrische functies',
     intro: 'Elke integraal hier wordt $\\arctan$ of $\\arcsin$. De noemer zegt welke van de twee.',
     oefenlinks: [
