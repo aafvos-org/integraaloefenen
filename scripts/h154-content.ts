@@ -1365,7 +1365,7 @@ for (const q of VRAGEN) controleer(q)
 
 const H154: AdditiveChapter = {
   chapterSlug: 'h15',
-  chapterTitle: 'H15 — Afgeleiden en primitieven',
+  chapterTitle: 'H15 — Oppervlakte en inhoud',
   bookPart: 4,
   chapterOrder: 15,
   site: 'integralen',
