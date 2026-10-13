@@ -45,3 +45,14 @@ describe('leesbare wiskunde', () => {
     expect(over).toEqual([])
   })
 })
+
+describe('oefenlinks van K.3', () => {
+  it('wijst naar de blokken k3a, k3b en k3c, niet naar chapter=k3', () => {
+    const k3 = THEORY_OVERVIEW.find((ch) => ch.slug === 'k3')
+    expect(k3?.oefenlinks?.map((link) => link.href)).toEqual([
+      '/oefenen?blok=k3a',
+      '/oefenen?blok=k3b',
+      '/oefenen?blok=k3c',
+    ])
+  })
+})

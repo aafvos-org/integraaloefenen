@@ -160,6 +160,11 @@ export const THEORY_OVERVIEW: OverviewChapter[] = [
     slug: 'k3',
     title: 'K.3 — Cyclometrische functies',
     intro: 'Elke integraal hier wordt $\\arctan$ of $\\arcsin$. De noemer zegt welke van de twee.',
+    oefenlinks: [
+      { label: 'Oefen K.3 A', href: '/oefenen?blok=k3a' },
+      { label: 'Oefen K.3 B', href: '/oefenen?blok=k3b' },
+      { label: 'Oefen K.3 C', href: '/oefenen?blok=k3c' },
+    ],
     stappenplan: {
       intro: 'Tik de vorm aan die bij jouw integraal past; je springt dan naar de stappen.',
       herken: [
