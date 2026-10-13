@@ -102,7 +102,8 @@ const VRAGEN: AdditiveQ[] = [
     latex: r`Primitiveer: $f(x) = \tan(4x)$`,
     antwoordLatex: r`F(x) = -\tfrac{1}{4}\ln|\cos(4x)| + c`,
     antwoord: '-ln|cos(4x)|/4 + c',
-    alts: ['-1/4 ln|cos(4x)| + c', '-0,25ln|cos(4x)| + c', '-ln(cos(4x))/4 + c'],
+    // Zonder absolute-waardestrepen is `-ln(cos(4x))/4 + c` niet overal gelijk (INT-188).
+    alts: ['-1/4 ln|cos(4x)| + c', '-0,25ln|cos(4x)| + c'],
     integrand: 'tan(4 * x)',
     primitieve: '-ln(cos(4 * x)) / 4',
     domein: [-0.35, 0.35],
@@ -121,7 +122,8 @@ const VRAGEN: AdditiveQ[] = [
     latex: r`Primitiveer: $f(x) = \tan\left(\tfrac{1}{2}x\right)$`,
     antwoordLatex: r`F(x) = -2\ln\left|\cos\left(\tfrac{1}{2}x\right)\right| + c`,
     antwoord: '-2ln|cos(1/2 x)| + c',
-    alts: ['-2ln|cos(0,5x)| + c', '-2ln|cos(x/2)| + c', '-2ln(cos(x/2)) + c'],
+    // Zonder absolute-waardestrepen is `-2ln(cos(x/2)) + c` niet overal gelijk (INT-188).
+    alts: ['-2ln|cos(0,5x)| + c', '-2ln|cos(x/2)| + c'],
     integrand: 'tan(x / 2)',
     primitieve: '-2 * ln(cos(x / 2))',
     steps: substitueer({

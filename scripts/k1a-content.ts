@@ -114,7 +114,8 @@ const VRAGEN: AdditiveQ[] = [
     latex: r`Vul in: $\cos(3x)\,\mathrm{d}x = \mathrm{d}(\ldots - 1)$`,
     antwoordLatex: r`\tfrac{1}{3}\sin(3x)`,
     antwoord: 'sin(3x)/3',
-    alts: ['1/3sin(3x)', '0,333sin(3x)'],
+    // `0,333sin(3x)` is een afronding, geen exacte schrijfwijze (INT-188).
+    alts: ['1/3sin(3x)'],
     integrand: 'cos(3 * x)',
     primitieve: 'sin(3 * x) / 3',
     steps: differentiaal({
@@ -251,7 +252,7 @@ const VRAGEN: AdditiveQ[] = [
     latex: r`Voor precies één waarde van $a$ lukt het primitiveren met de omgekeerde kettingregel: $f(x) = \dfrac{ax + 5}{x^{2} + 5x + 1}$. Bepaal die $a$ en primitiveer $f$.`,
     antwoordLatex: r`F(x) = \ln|x^{2} + 5x + 1| + c`,
     antwoord: 'ln|x^2 + 5x + 1| + c',
-    alts: ['ln(x^2 + 5x + 1) + c'],
+    // Geen alternatief zonder absolute-waardestrepen: de kern kan negatief zijn (INT-188).
     integrand: '(2 * x + 5) / (x^2 + 5 * x + 1)',
     primitieve: 'ln(x^2 + 5 * x + 1)',
     domein: [0.5, 3],

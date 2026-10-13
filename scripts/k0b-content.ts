@@ -354,7 +354,8 @@ const VRAGEN: AdditiveQ[] = [
     latex: r`f(x) = \ln\left(\dfrac{x^{2}}{3}\right)`,
     antwoordLatex: r`F(x) = x\ln\left(\dfrac{x^{2}}{3}\right) - 2x + c`,
     antwoord: 'x ln(x^2/3) - 2x + c',
-    alts: ['2x ln(x) - x ln(3) - 2x + c'],
+    // Geen alternatief `2x ln(x) - x ln(3) - 2x + c`: ln(x) geldt alleen voor x > 0,
+    // het modelantwoord ook voor x < 0 (INT-188).
     integrand: 'ln(x^2/3)',
     primitieve: 'x * ln(x^2/3) - 2 * x',
     domein: [0.2, 3],
@@ -538,7 +539,8 @@ const VRAGEN: AdditiveQ[] = [
     latex: r`f(x) = \dfrac{4}{3x + 2}`,
     antwoordLatex: r`F(x) = \tfrac{4}{3}\ln|3x + 2| + c`,
     antwoord: '4ln|3x + 2|/3 + c',
-    alts: ['4/3 ln(3x + 2) + c', '1 1/3 ln|3x+2| + c'],
+    // Zonder absolute-waardestrepen is `4/3 ln(3x + 2) + c` niet overal gelijk (INT-188).
+    alts: ['1 1/3 ln|3x+2| + c'],
     integrand: '4 / (3 * x + 2)',
     primitieve: '4 * ln(3 * x + 2) / 3',
     domein: [0, 3],
@@ -576,7 +578,7 @@ const VRAGEN: AdditiveQ[] = [
     latex: r`f(x) = \dfrac{6}{5 - 2x}`,
     antwoordLatex: r`F(x) = -3\ln|5 - 2x| + c`,
     antwoord: '-3ln|5 - 2x| + c',
-    alts: ['-3ln(5 - 2x) + c'],
+    // Geen alternatief zonder absolute-waardestrepen: de kern 5 - 2x kan negatief zijn (INT-188).
     integrand: '6 / (5 - 2 * x)',
     primitieve: '-3 * ln(5 - 2 * x)',
     domein: [-2, 2],
