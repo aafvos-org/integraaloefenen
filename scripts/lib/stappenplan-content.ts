@@ -518,6 +518,12 @@ export type AdditiveQ = {
   domein?: [number, number]
   grenzen?: [number, number]
   waarde?: string | number
+  /**
+   * Vaste `order_index` in het cluster. Zonder dit veld nummert de generator
+   * zelf, op niveau. Bij aanvullen op bestaande vragen zet je hier 7, 8, …
+   * zodat de nieuwe vragen achter de oude komen.
+   */
+  volgorde?: number
 }
 
 export type AdditiveChapter = {
@@ -537,6 +543,17 @@ export type AdditiveChapter = {
   topics: Array<{ slug: string; title: string; order: number; category: TopicCategory }>
   clusters: ClusterDef[]
   questions: AdditiveQ[]
+  /**
+   * Verwacht totaal aantal vragen in het cluster ná deze migratie, inclusief
+   * vragen uit een eerdere migratie. Zonder dit veld verwacht de controle
+   * precies de vragen uit deze migratie.
+   */
+  verwachtAantal?: Record<string, number>
+  /**
+   * Tel bij de stapcontrole alleen de stappen van de vragen in deze migratie.
+   * Nodig als de topics al stappen hebben uit een eerdere migratie.
+   */
+  alleenEigenStappen?: boolean
 }
 
 /** Dollar-quote met een eigen tag, zodat backslashes en aanhalingstekens niets stuk maken. */
@@ -551,8 +568,8 @@ function orderPerCluster(c: AdditiveChapter): Map<AdditiveQ, number> {
   for (const cl of c.clusters) {
     c.questions
       .filter((q) => q.cluster === cl.slug)
-      .sort((a, b) => a.level - b.level)
-      .forEach((q, i) => order.set(q, i + 1))
+      .sort((a, b) => a.level - b.level || (a.volgorde ?? 0) - (b.volgorde ?? 0))
+      .forEach((q, i) => order.set(q, q.volgorde ?? i + 1))
   }
   return order
 }
@@ -746,19 +763,45 @@ export function generateAdditiveMigration(c: AdditiveChapter): string {
   w(`DECLARE n int;`)
   w(`BEGIN`)
   for (const cl of c.clusters) {
-    const aantal = c.questions.filter((x) => x.cluster === cl.slug).length
+    const aantal = c.verwachtAantal?.[cl.slug] ?? c.questions.filter((x) => x.cluster === cl.slug).length
     w(`  SELECT count(*) INTO n FROM public.questions_new WHERE cluster_id = ${clusterRef(cl.topic, cl.slug)};`)
     w(`  IF n <> ${aantal} THEN RAISE EXCEPTION 'Cluster ${cl.slug} hoort ${aantal} vragen te hebben, gevonden %', n; END IF;`)
   }
   // Tellen per topic van déze migratie, niet per hoofdstuk: in hetzelfde
   // hoofdstuk staan ook de topics van eerdere migraties, en die moeten niet
   // meetellen — anders klopt het getal niet meer zodra er een blok bij komt.
-  const eigenTopics = c.topics.map((t) => `'${t.slug}'`).join(', ')
-  w(`  SELECT count(*) INTO n FROM public.question_steps_new s`)
-  w(`  JOIN public.questions_new vr ON vr.id = s.question_id`)
-  w(`  JOIN public.topics_new t ON t.id = vr.topic_id`)
-  w(`  WHERE t.site = ${site} AND t.slug IN (${eigenTopics});`)
-  w(`  IF n <> ${c.questions.length * 4} THEN RAISE EXCEPTION 'Deze topics horen samen ${c.questions.length * 4} stappen te hebben, gevonden %', n; END IF;`)
+  // Bij aanvullen (`alleenEigenStappen`) tellen we alleen de stappen van de
+  // nieuwe opgaven: de topics hebben al stappen uit een eerdere migratie.
+  const verwachtStappen = c.questions.length * 4
+  if (c.alleenEigenStappen) {
+    w(`  SELECT count(*) INTO n FROM public.question_steps_new s`)
+    w(`  JOIN public.questions_new vr ON vr.id = s.question_id`)
+    w(`  JOIN public.topic_clusters_new cl ON cl.id = vr.cluster_id`)
+    w(`  JOIN public.topics_new t ON t.id = vr.topic_id`)
+    w(`  JOIN (VALUES`)
+    w(
+      c.questions
+        .map((x) => {
+          const cl = clusterOf(x.cluster)
+          return `    ('${cl.topic}', '${cl.slug}', ${q(x.latex)})`
+        })
+        .join(',\n'),
+    )
+    w(`  ) AS v(topic_slug, cluster_slug, latex_body)`)
+    w(`    ON t.slug = v.topic_slug AND t.site = ${site}`)
+    w(`   AND cl.slug = v.cluster_slug AND cl.topic_id = t.id`)
+    w(`   AND vr.latex_body = v.latex_body;`)
+  } else {
+    const eigenTopics = c.topics.map((t) => `'${t.slug}'`).join(', ')
+    w(`  SELECT count(*) INTO n FROM public.question_steps_new s`)
+    w(`  JOIN public.questions_new vr ON vr.id = s.question_id`)
+    w(`  JOIN public.topics_new t ON t.id = vr.topic_id`)
+    w(`  WHERE t.site = ${site} AND t.slug IN (${eigenTopics});`)
+  }
+  const stapMelding = c.alleenEigenStappen
+    ? `Deze vragen horen samen ${verwachtStappen} stappen te hebben`
+    : `Deze topics horen samen ${verwachtStappen} stappen te hebben`
+  w(`  IF n <> ${verwachtStappen} THEN RAISE EXCEPTION '${stapMelding}, gevonden %', n; END IF;`)
   w(`END $do$;`)
   w()
   w(`COMMIT;`)
