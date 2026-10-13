@@ -71,10 +71,11 @@ jobs:
   e2e:
     name: Weg van een leerling
     runs-on: ubuntu-latest
-    # Normaal duurt deze job drie à vier minuten. Hangt er een stap (het
-    # installeren van de browser kan vastlopen), dan stopt GitHub er na twaalf
-    # minuten mee in plaats van na zes uur.
-    timeout-minutes: 12
+    # Normaal duurt deze job drie à vier minuten. De teststap mag vijftien
+    # minuten (zie hieronder). Samen met het installeren van de browser en
+    # het starten van Supabase is vijfentwintig minuten de bovengrens: blijft
+    # er iets hangen, dan stopt GitHub daar in plaats van na zes uur.
+    timeout-minutes: 25
     steps:
       - uses: actions/checkout@v5
 
@@ -182,9 +183,15 @@ jobs:
           node scripts/ci-supabase-kaal.mjs
           npx supabase start -x imgproxy,postgres-meta
 
+      # Een geslaagde run is ongeveer drie minuten. Valt een test om, dan
+      # wacht die op zijn eigen tijdslimiet en probeert hij het nog eens.
+      # Een paar van die pogingen passen niet in zeven minuten: de stap werd
+      # dan afgekapt terwijl de laatste tests nog liepen, en de foutmelding
+      # kwam niet in het log. Vijftien minuten is genoeg om de hele reeks af
+      # te maken, ook met die extra pogingen.
       - name: Weg van een leerling nalopen
         if: ${{ steps.nodig.outputs.draaien == 'ja' }}
-        timeout-minutes: 7
+        timeout-minutes: 15
         run: npm run test:e2e
 
       - name: Uitslag bewaren
