@@ -46,6 +46,15 @@ describe('leesbare wiskunde', () => {
   })
 })
 
+describe('oefenlinks van inhoud', () => {
+  it('wijst naar wentelen om de x-as', () => {
+    const inhoud = THEORY_OVERVIEW.find((ch) => ch.slug === 'inhoud')
+    expect(inhoud?.oefenlinks?.map((link) => link.href)).toEqual([
+      '/oefenen?blok=h15c&cluster=h15c_xas',
+    ])
+  })
+})
+
 describe('oefenlinks van oppervlakte', () => {
   it('wijst naar de oppervlakte-oefening bij substitutie en bij partieel integreren', () => {
     const opp = THEORY_OVERVIEW.find((ch) => ch.slug === 'oppervlakte')

@@ -18,8 +18,9 @@
  * Bij K.3 staan de stappen per route alleen in de kaarten; `stappenplan.regels`
  * is daar leeg gelaten omdat die tabel ze verdubbelde. De substitutiemethode
  * en partieel integreren hebben elk één route, dus daar staat het vaste plan
- * (stap 1–3) wél in die tabel. Oppervlakte is een toepassing, geen rekenmethode:
- * stap 0 kiest welk vlakdeel het is, en stap 2 wijst naar die twee methodes.
+ * (stap 1–3) wél in die tabel. Oppervlakte en inhoud zijn toepassingen, geen
+ * rekenmethode: stap 0 kiest welk vlakdeel of lichaam het is, en stap 2 wijst
+ * naar die twee methodes. Inhoud gaat alleen over wentelen om de x-as.
  */
 
 import type { ClusterTheory, OverviewChapter } from './types'
@@ -445,6 +446,165 @@ export const THEORY_OVERVIEW: OverviewChapter[] = [
         ],
         notes: [
           'Deel 3 is de vergelijking. Een logaritme haal je weg door beide kanten als macht van $e$ te lezen: uit $\\ln(A)=\\ln(B)$ volgt $A=B$.',
+        ],
+      },
+    ],
+  },
+  {
+    slug: 'inhoud',
+    code: 'Inh',
+    title: 'Inhoud',
+    intro:
+      'Een vlakdeel wentelt om de $x$-as en wordt een lichaam. Eerst maak je van het verhaaltje een integraal: $\\pi$ keer het kwadraat van de grafiek. Daarna reken je die uit, met de substitutiemethode of met partieel integreren.',
+    oefenlinks: [
+      { label: 'Oefen wentelen om de x-as', href: '/oefenen?blok=h15c&cluster=h15c_xas' },
+    ],
+    stappenplan: {
+      stap0Titel: 'Stap 0 · Welk lichaam is dit?',
+      intro: 'Tik het lichaam aan dat bij jouw opgave past. Daarna doe je stap 1, 2 en 3.',
+      herken: [
+        {
+          groep: 'De grafiek en de $x$-as',
+          schil: 'De grenzen staan in de opgave. De inhoud is $\\pi$ keer het kwadraat.',
+          voorbeeld: '\\pi\\int_{0}^{1} x e^{x}\\,dx',
+          regel: 'Grenzen',
+          kaart: 'inh_grenzen',
+        },
+        {
+          groep: 'De grafiek en de $x$-as',
+          schil: 'De grafiek ligt onder de $x$-as. Je zet geen min voor de integraal.',
+          voorbeeld: '\\pi\\int_{0}^{2}(x-2)^{2}\\,dx',
+          regel: 'Onder',
+          kaart: 'inh_onder',
+        },
+        {
+          groep: 'Twee grafieken',
+          schil: 'Eerst elk kwadraat, dan het verschil. De verste grafiek min de dichtste.',
+          voorbeeld: '\\pi\\int_{0}^{4}\\left(x-\\tfrac{1}{4}x^{2}\\right)\\,dx',
+          regel: 'Verschil',
+          kaart: 'inh_twee',
+        },
+        {
+          groep: 'De inhoud is gegeven',
+          schil: 'Je moet de grens $p$ uitrekenen.',
+          voorbeeld: '\\pi\\int_{0}^{p}\\frac{2x}{x^{2}+1}\\,dx=\\pi\\ln(5)',
+          regel: 'Vergelijking',
+          kaart: 'inh_p',
+        },
+      ],
+      regels: [
+        {
+          regel: 'Inhoud',
+          formule: 'I(L)=\\pi\\int_{a}^{b}(f(x))^{2}\\,dx',
+          stap1:
+            'Schrijf $\\pi$ keer de integraal van het kwadraat. Ligt de grafiek onder de $x$-as, dan zet je geen min ervoor: het kwadraat is al positief. Bij twee grafieken kwadrateer je elke grafiek apart. De verste van de $x$-as min de dichtste.',
+          stap2:
+            'Primitiveer het kwadraat. Is het een veelterm, dan doe je dat term voor term. Staat de afgeleide van een kern ernaast, dan is het de substitutiemethode. Is het een product van twee factoren, dan is het partieel integreren.',
+          stap3:
+            'Vul de grenzen in. De inhoud is een positief exact getal, met $\\pi$. Vraagt de opgave om $p$, los de vergelijking exact op. Zet geen $+c$.',
+        },
+      ],
+      slot: 'Een inhoud is een positief getal. Het kwadraat van een verschil is iets anders dan het verschil van de kwadraten. Rond niet af.',
+    },
+    cards: [
+      {
+        id: 'inh_grenzen',
+        groep: 'Deel 1 · Van verhaaltje naar integraal',
+        title: 'De grenzen staan in de opgave',
+        breed: true,
+        herkenpunt: 'I(L)=\\pi\\int_{a}^{b}(f(x))^{2}\\,dx',
+        formula: 'I(L)=\\pi\\int_{a}^{b}(f(x))^{2}\\,dx',
+        answerNote: 'Een inhoud is een positief exact getal, met $\\pi$, zonder $+c$.',
+        examples: [
+          {
+            problem:
+              'f(x)=e^{x/2}\\sqrt{x}:\\ \\text{inhoud als het vlakdeel tussen de grafiek, de }x\\text{-as en }x=1\\text{ om de }x\\text{-as wentelt}',
+            answer: '\\pi',
+            steps: [
+              'Deel 1 — de grafiek snijdt de $x$-as bij $x=0$, want $\\sqrt{x}=0$. Tussen $0$ en $1$ zijn $e^{x/2}$ en $\\sqrt{x}$ allebei nul of positief. De inhoud is $I(L)=\\pi\\displaystyle\\int_{0}^{1}\\left(e^{x/2}\\sqrt{x}\\right)^{2}\\,dx$.',
+              'Deel 2 — het kwadraat is $x e^{x}$. Een veelterm maal een e-macht: partieel integreren. Neem $g(x)=x$ en $h\'(x)=e^{x}$. Dan is $g\'(x)=1$ en $h(x)=e^{x}$.',
+              'De regel geeft $x e^{x}-\\displaystyle\\int e^{x}\\,dx=(x-1)e^{x}$. Terugdifferentiëren: $e^{x}+(x-1)e^{x}=x e^{x}$.',
+              'Deel 3 — $\\pi\\bigl[(x-1)e^{x}\\bigr]_{0}^{1}=\\pi\\bigl(0-(-1)\\bigr)=\\pi$.',
+            ],
+          },
+        ],
+        notes: [
+          'Noemt de opgave maar één lijn, bijvoorbeeld $x=1$? De andere grens is dan het punt waar de grafiek de $x$-as snijdt.',
+          '$\\pi$ blijft voor de integraal staan. Je primitiveert alleen het kwadraat.',
+        ],
+      },
+      {
+        id: 'inh_onder',
+        groep: 'Deel 1 · Van verhaaltje naar integraal',
+        title: 'De grafiek ligt onder de $x$-as',
+        breed: true,
+        herkenpunt: 'I(L)=\\pi\\int_{a}^{b}(f(x))^{2}\\,dx',
+        formula: 'I(L)=\\pi\\int_{a}^{b}(f(x))^{2}\\,dx',
+        answerNote: 'Een inhoud is een positief exact getal, met $\\pi$, zonder $+c$.',
+        examples: [
+          {
+            problem:
+              'f(x)=x-2:\\ \\text{inhoud als het vlakdeel tussen de grafiek, de }x\\text{-as en de }y\\text{-as om de }x\\text{-as wentelt}',
+            answer: '\\tfrac{8}{3}\\pi',
+            steps: [
+              'Deel 1 — $f(x)=x-2$ snijdt de $x$-as bij $x=2$. De $y$-as is de lijn $x=0$. Tussen $0$ en $2$ is $x-2$ negatief, dus de grafiek ligt onder de $x$-as. De straal is de afstand tot de $x$-as. Die kwadrateer je, zonder min ervoor. $I(L)=\\pi\\displaystyle\\int_{0}^{2}(x-2)^{2}\\,dx$.',
+              'Deel 2 — $(x-2)^{2}=x^{2}-4x+4$. Een primitieve van het kwadraat is $\\tfrac{1}{3}x^{3}-2x^{2}+4x$. Terugdifferentiëren geeft $x^{2}-4x+4$.',
+              'Deel 3 — $\\bigl[\\tfrac{1}{3}x^{3}-2x^{2}+4x\\bigr]_{0}^{2}=\\tfrac{8}{3}-8+8=\\tfrac{8}{3}$. De inhoud is $\\tfrac{8}{3}\\pi$.',
+              'Controle: het lichaam is een kegel met straal $2$ en hoogte $2$. De inhoud van een kegel is $\\tfrac{1}{3}\\pi r^{2} h=\\tfrac{1}{3}\\pi\\cdot 4\\cdot 2=\\tfrac{8}{3}\\pi$.',
+            ],
+          },
+        ],
+        notes: [
+          'Je zet geen min voor de integraal. Het kwadraat van een negatief getal is positief, en een inhoud is dat ook.',
+        ],
+      },
+      {
+        id: 'inh_twee',
+        groep: 'Deel 1 · Van verhaaltje naar integraal',
+        title: 'Tussen twee grafieken',
+        breed: true,
+        herkenpunt: 'I(L)=\\pi\\int_{a}^{b}\\left((h(x))^{2}-(f(x))^{2}\\right)\\,dx',
+        formula: 'I(L)=\\pi\\int_{a}^{b}\\left((h(x))^{2}-(f(x))^{2}\\right)\\,dx',
+        answerNote: 'Een inhoud is een positief exact getal, met $\\pi$, zonder $+c$.',
+        examples: [
+          {
+            problem:
+              'f(x)=\\frac{x}{2},\\ h(x)=\\sqrt{x}:\\ \\text{inhoud als het vlakdeel tussen de grafieken om de }x\\text{-as wentelt}',
+            answer: '\\tfrac{8}{3}\\pi',
+            steps: [
+              'Deel 1 — snijpunten: $\\sqrt{x}=\\dfrac{x}{2}$. Kwadrateren geeft $x=\\dfrac{x^{2}}{4}$, dus $x^{2}-4x=0$ en $x=0$ of $x=4$. Beide voldoen. Bij $x=1$ is $h(1)=1$ en $f(1)=\\tfrac{1}{2}$, dus $h$ ligt verder van de $x$-as. De inhoud is $\\pi$ keer de integraal van $(\\sqrt{x})^{2}-\\left(\\dfrac{x}{2}\\right)^{2}$, van $0$ tot $4$.',
+              'Deel 2 — $(\\sqrt{x})^{2}=x$ en $\\left(\\dfrac{x}{2}\\right)^{2}=\\dfrac{x^{2}}{4}$. De integrand is $x-\\dfrac{x^{2}}{4}$. Een primitieve is $\\tfrac{1}{2}x^{2}-\\dfrac{1}{12}x^{3}$. Terugdifferentiëren geeft $x-\\dfrac{x^{2}}{4}$.',
+              'Deel 3 — $\\bigl[\\tfrac{1}{2}x^{2}-\\tfrac{1}{12}x^{3}\\bigr]_{0}^{4}=8-\\tfrac{64}{12}=8-\\tfrac{16}{3}=\\tfrac{8}{3}$. De inhoud is $\\tfrac{8}{3}\\pi$.',
+            ],
+          },
+        ],
+        notes: [
+          'Eerst de snijpunten. Daartussen vul je één $x$-waarde in om te zien welke grafiek verder van de $x$-as ligt.',
+          'Je kwadrateert elke grafiek apart en trekt daarna af. $\\left(\\sqrt{x}-\\tfrac{x}{2}\\right)^{2}$ is een andere integrand.',
+        ],
+      },
+      {
+        id: 'inh_p',
+        groep: 'Deel 3 · Gebruik de uitkomst',
+        title: 'De inhoud is gegeven, zoek $p$',
+        breed: true,
+        herkenpunt: '\\pi\\int_{0}^{p}(f(x))^{2}\\,dx=\\pi\\ln(5)',
+        formula: '\\pi\\int_{0}^{p}\\frac{2x}{x^{2}+1}\\,dx=\\pi\\ln(5)',
+        answerNote: 'Je geeft $p$ exact, niet afgerond.',
+        examples: [
+          {
+            problem:
+              'f(x)=\\sqrt{\\frac{2x}{x^{2}+1}},\\ I(L)=\\pi\\ln(5),\\ p>0,\\ \\text{tussen de grafiek, de }x\\text{-as en }x=p',
+            answer: 'p=2',
+            steps: [
+              'Deel 1 — vanaf $x=0$ is de breuk onder de wortel nul of positief. De grafiek snijdt de $x$-as bij $x=0$. De inhoud tot $x=p$ is $\\pi\\displaystyle\\int_{0}^{p}\\dfrac{2x}{x^{2}+1}\\,dx$, en die moet $\\pi\\ln(5)$ worden.',
+              'Deel 2 — de kern is $g(x)=x^{2}+1$ en de teller is $g\'(x)=2x$. Dat is de substitutiemethode: een primitieve van de integrand is $\\ln(x^{2}+1)$. Terugdifferentiëren geeft $\\dfrac{2x}{x^{2}+1}$.',
+              'Deel 3 — $\\pi\\bigl[\\ln(x^{2}+1)\\bigr]_{0}^{p}=\\pi\\ln(p^{2}+1)$. Uit $\\pi\\ln(p^{2}+1)=\\pi\\ln(5)$ volgt $p^{2}+1=5$, dus $p^{2}=4$. Omdat $p>0$ is $p=2$.',
+            ],
+          },
+        ],
+        notes: [
+          '$\\pi$ staat aan beide kanten en valt weg. Uit $\\ln(A)=\\ln(B)$ volgt $A=B$.',
         ],
       },
     ],
