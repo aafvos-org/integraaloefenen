@@ -18,7 +18,8 @@
  * Bij K.3 staan de stappen per route alleen in de kaarten; `stappenplan.regels`
  * is daar leeg gelaten omdat die tabel ze verdubbelde. De substitutiemethode
  * en partieel integreren hebben elk één route, dus daar staat het vaste plan
- * (stap 1–3) wél in die tabel.
+ * (stap 1–3) wél in die tabel. Oppervlakte is een toepassing, geen rekenmethode:
+ * stap 0 kiest welk vlakdeel het is, en stap 2 wijst naar die twee methodes.
  */
 
 import type { ClusterTheory, OverviewChapter } from './types'
@@ -284,6 +285,166 @@ export const THEORY_OVERVIEW: OverviewChapter[] = [
         notes: [
           'Houd in de tweede ronde dezelfde soort factor aan: steeds de e-macht of de gonio primitiveren, steeds de veelterm differentiëren.',
           'Bij een e-macht maal een sinus of een cosinus wordt geen van beide factoren eenvoudiger. Na twee rondes met dezelfde keuze komt de oorspronkelijke integraal terug. Noem hem $I$ en los de vergelijking op.',
+        ],
+      },
+    ],
+  },
+  {
+    slug: 'oppervlakte',
+    code: 'Opp',
+    title: 'Oppervlakte',
+    intro:
+      'Eerst maak je van het verhaaltje een integraal. Daarna reken je die uit, met de substitutiemethode of met partieel integreren.',
+    oefenlinks: [
+      { label: 'Oefen met substitutie', href: '/oefenen?blok=k1b&cluster=k1b_opp_p' },
+      { label: 'Oefen met partieel integreren', href: '/oefenen?blok=k2a&cluster=k2a_opp' },
+    ],
+    stappenplan: {
+      stap0Titel: 'Stap 0 · Welk vlakdeel is dit?',
+      intro: 'Tik het vlakdeel aan dat bij jouw opgave past. Daarna doe je stap 1, 2 en 3.',
+      herken: [
+        {
+          groep: 'De grafiek en de $x$-as',
+          schil: 'De grafiek ligt boven de $x$-as, tussen twee grenzen.',
+          voorbeeld: '\\int_{0}^{1} 4x(x^2+1)^2\\,dx',
+          regel: 'Boven',
+          kaart: 'opp_boven',
+        },
+        {
+          groep: 'De grafiek en de $x$-as',
+          schil: 'De grafiek ligt onder de $x$-as. De integraal is dan negatief.',
+          voorbeeld: '-\\int_{0}^{1}(x-1)e^{x}\\,dx',
+          regel: 'Onder',
+          kaart: 'opp_onder',
+        },
+        {
+          groep: 'Twee grafieken',
+          schil: 'Het vlakdeel zit tussen twee grafieken. Eerst de snijpunten.',
+          voorbeeld: '\\int_{a}^{b}(h(x)-f(x))\\,dx',
+          regel: 'Verschil',
+          kaart: 'opp_twee',
+        },
+        {
+          groep: 'De oppervlakte is gegeven',
+          schil: 'Je moet de grens $p$ uitrekenen.',
+          voorbeeld: '\\int_{0}^{p}\\frac{2x}{x^2+1}\\,dx=\\ln(5)',
+          regel: 'Vergelijking',
+          kaart: 'opp_p',
+        },
+      ],
+      regels: [
+        {
+          regel: 'Oppervlakte',
+          formule: 'O(V)=\\int_{a}^{b} f(x)\\,dx',
+          stap1:
+            'Schrijf de integraal. Ligt de grafiek boven de $x$-as, dan is dat $\\int_a^b f(x)\\,dx$. Ligt hij eronder, dan zet je er een min voor. Bij twee grafieken zoek je eerst de snijpunten en neem je boven min onder.',
+          stap2:
+            'Primitiveer. Staat de afgeleide van een kern ernaast, dan is het de substitutiemethode. Is het een product van twee factoren, dan is het partieel integreren.',
+          stap3:
+            'Vul de grenzen in. Is de uitkomst negatief, dan is de oppervlakte het tegengestelde. Vraagt de opgave om $p$, los de vergelijking exact op. Zet geen $+c$.',
+        },
+      ],
+      slot: 'Een oppervlakte is een positief getal. De integraal zelf mag negatief zijn; dan neem je het tegengestelde. Rond niet af.',
+    },
+    cards: [
+      {
+        id: 'opp_boven',
+        groep: 'Deel 1 · Van verhaaltje naar integraal',
+        title: 'De grafiek ligt boven de $x$-as',
+        breed: true,
+        herkenpunt: 'O(V)=\\int_{a}^{b} f(x)\\,dx',
+        formula: 'O(V)=\\int_{a}^{b} f(x)\\,dx',
+        answerNote: 'Een oppervlakte is een positief exact getal, zonder $+c$.',
+        examples: [
+          {
+            problem:
+              'f(x)=4x(x^2+1)^2:\\ \\text{oppervlakte tussen de grafiek, de }x\\text{-as en }x=1',
+            answer: '\\tfrac{14}{3}',
+            steps: [
+              'Deel 1 — de grafiek snijdt de $x$-as bij $x=0$ en ligt tussen $0$ en $1$ erboven, want $4x$ en $(x^2+1)^2$ zijn daar allebei nul of positief. De oppervlakte is $O(V)=\\displaystyle\\int_{0}^{1} 4x(x^2+1)^2\\,dx$.',
+              'Deel 2 — de kern is $g(x)=x^2+1$, dus $g\'(x)=2x$. Er staat $4x=2\\cdot g\'(x)$. Dat is de substitutiemethode: $\\displaystyle\\int 2g^2\\,dg=\\tfrac{2}{3}g^3$.',
+              'Een primitieve is $F(x)=\\tfrac{2}{3}(x^2+1)^3$. Terugdifferentiëren: $\\tfrac{2}{3}\\cdot 3(x^2+1)^2\\cdot 2x=4x(x^2+1)^2$.',
+              'Deel 3 — $F(1)-F(0)=\\tfrac{2}{3}\\cdot 8-\\tfrac{2}{3}\\cdot 1=\\tfrac{16}{3}-\\tfrac{2}{3}=\\tfrac{14}{3}$.',
+            ],
+          },
+        ],
+        notes: [
+          'Noemt de opgave maar één lijn, bijvoorbeeld $x=1$? De andere grens is dan het nulpunt op de $x$-as.',
+        ],
+      },
+      {
+        id: 'opp_onder',
+        groep: 'Deel 1 · Van verhaaltje naar integraal',
+        title: 'De grafiek ligt onder de $x$-as',
+        breed: true,
+        herkenpunt: 'O(V)=-\\int_{a}^{b} f(x)\\,dx',
+        formula: 'O(V)=-\\int_{a}^{b} f(x)\\,dx',
+        answerNote: 'Een oppervlakte is een positief exact getal, zonder $+c$.',
+        examples: [
+          {
+            problem:
+              'f(x)=(x-1)e^{x}:\\ \\text{oppervlakte tussen de grafiek, de }x\\text{-as en de }y\\text{-as}',
+            answer: 'e-2',
+            steps: [
+              'Deel 1 — $e^{x}$ is nooit nul, dus het nulpunt is $x=1$. De $y$-as is de lijn $x=0$. Tussen $0$ en $1$ is $x-1$ negatief, dus de grafiek ligt onder de $x$-as. De oppervlakte is $-\\displaystyle\\int_{0}^{1}(x-1)e^{x}\\,dx$.',
+              'Deel 2 — een veelterm maal een e-macht: partieel integreren. Neem $g(x)=x-1$ en $h\'(x)=e^{x}$. Dan is $g\'(x)=1$ en $h(x)=e^{x}$.',
+              'De regel geeft $(x-1)e^{x}-\\displaystyle\\int e^{x}\\,dx=(x-2)e^{x}$. Terugdifferentiëren: $e^{x}+(x-2)e^{x}=(x-1)e^{x}$.',
+              'Deel 3 — $\\bigl[(x-2)e^{x}\\bigr]_{0}^{1}=-e-(-2)=2-e$. Dat is negatief. De oppervlakte is het tegengestelde: $e-2$.',
+            ],
+          },
+        ],
+        notes: [
+          'Een integraal onder de $x$-as komt negatief uit. De oppervlakte is dat getal zonder het minteken.',
+        ],
+      },
+      {
+        id: 'opp_twee',
+        groep: 'Deel 1 · Van verhaaltje naar integraal',
+        title: 'Tussen twee grafieken',
+        breed: true,
+        herkenpunt: 'O(V)=\\int_{a}^{b}(h(x)-f(x))\\,dx',
+        formula: 'O(V)=\\int_{a}^{b}(\\text{boven}-\\text{onder})\\,dx',
+        answerNote: 'Een oppervlakte is een positief exact getal, zonder $+c$.',
+        examples: [
+          {
+            problem:
+              'f(x)=\\frac{\\ln^2(x)}{x},\\ h(x)=\\frac{1}{x}:\\ \\text{oppervlakte tussen de grafieken}',
+            answer: '\\tfrac{4}{3}',
+            steps: [
+              'Deel 1 — beide functies bestaan alleen voor $x>0$. Snijpunten: $\\dfrac{\\ln^2(x)}{x}=\\dfrac{1}{x}$ geeft $\\ln^2(x)=1$, dus $\\ln(x)=1$ of $\\ln(x)=-1$, en $x=e$ of $x=e^{-1}$. Bij $x=1$ is $f(1)=0$ en $h(1)=1$, dus $h$ ligt erboven. De oppervlakte is de integraal van $\\dfrac{1}{x}-\\dfrac{\\ln^2(x)}{x}$, van $x=e^{-1}$ tot $x=e$.',
+              'Deel 2 — haal $\\dfrac{1}{x}$ voorop: $\\left(1-\\ln^2(x)\\right)\\cdot\\dfrac{1}{x}$. De kern is $g(x)=\\ln(x)$ met $g\'(x)=\\dfrac{1}{x}$. Dat is de substitutiemethode.',
+              '$\\displaystyle\\int(1-g^2)\\,dg=g-\\tfrac{1}{3}g^3$. Bij $x=e^{-1}$ hoort $g=-1$, bij $x=e$ hoort $g=1$.',
+              'Deel 3 — $\\left[g-\\tfrac{1}{3}g^3\\right]_{-1}^{1}=\\left(1-\\tfrac{1}{3}\\right)-\\left(-1+\\tfrac{1}{3}\\right)=\\tfrac{2}{3}-\\left(-\\tfrac{2}{3}\\right)=\\tfrac{4}{3}$.',
+            ],
+          },
+        ],
+        notes: [
+          'Eerst de snijpunten. Daartussen vul je één $x$-waarde in om te zien welke grafiek boven ligt.',
+        ],
+      },
+      {
+        id: 'opp_p',
+        groep: 'Deel 3 · Gebruik de uitkomst',
+        title: 'De oppervlakte is gegeven, zoek $p$',
+        breed: true,
+        herkenpunt: '\\int_{0}^{p} f(x)\\,dx=\\ln(5)',
+        formula: '\\int_{0}^{p} f(x)\\,dx=\\ln(5)',
+        answerNote: 'Je geeft $p$ exact, niet afgerond.',
+        examples: [
+          {
+            problem:
+              'f(x)=\\frac{2x}{x^2+1},\\ O(V)=\\ln(5),\\ p>0,\\ \\text{tussen de grafiek, de }x\\text{-as en }x=p',
+            answer: 'p=2',
+            steps: [
+              'Deel 1 — de grafiek snijdt de $x$-as bij $x=0$ en ligt voor $x>0$ erboven. De oppervlakte is $\\displaystyle\\int_{0}^{p}\\dfrac{2x}{x^2+1}\\,dx$, en die moet $\\ln(5)$ worden.',
+              'Deel 2 — de kern is $g(x)=x^2+1$ en de teller is $g\'(x)=2x$. Substitutiemethode: $F(x)=\\ln(x^2+1)$. Terugdifferentiëren geeft $\\dfrac{2x}{x^2+1}$.',
+              'Deel 3 — $\\left[\\ln(x^2+1)\\right]_{0}^{p}=\\ln(p^2+1)-\\ln(1)=\\ln(p^2+1)$.',
+              'Uit $\\ln(p^2+1)=\\ln(5)$ volgt $p^2+1=5$, dus $p^2=4$. Omdat $p>0$ is $p=2$.',
+            ],
+          },
+        ],
+        notes: [
+          'Deel 3 is de vergelijking. Een logaritme haal je weg door beide kanten als macht van $e$ te lezen: uit $\\ln(A)=\\ln(B)$ volgt $A=B$.',
         ],
       },
     ],

@@ -46,6 +46,16 @@ describe('leesbare wiskunde', () => {
   })
 })
 
+describe('oefenlinks van oppervlakte', () => {
+  it('wijst naar de oppervlakte-oefening bij substitutie en bij partieel integreren', () => {
+    const opp = THEORY_OVERVIEW.find((ch) => ch.slug === 'oppervlakte')
+    expect(opp?.oefenlinks?.map((link) => link.href)).toEqual([
+      '/oefenen?blok=k1b&cluster=k1b_opp_p',
+      '/oefenen?blok=k2a&cluster=k2a_opp',
+    ])
+  })
+})
+
 describe('oefenlinks van K.2', () => {
   it('wijst naar de blokken k2a en k2b', () => {
     const k2 = THEORY_OVERVIEW.find((ch) => ch.slug === 'partieel-integreren')
