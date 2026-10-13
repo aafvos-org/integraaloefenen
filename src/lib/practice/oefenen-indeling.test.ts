@@ -58,7 +58,7 @@ const p12: ParagraphInfo = {
   chapter_id: 'c12',
   slug: 'h122',
   label: '12.2',
-  title: 'Formules bij symmetrie en primitiveren',
+  title: 'Verdubbelingsformules en primitiveren',
   order_index: 1,
 }
 

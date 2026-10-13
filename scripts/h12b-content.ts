@@ -678,7 +678,7 @@ const sql = voegTheorieblokToe(generateAdditiveMigration(H12B), {
   chapterSlug: 'h12',
   paragraphSlug: 'h12-2',
   paragraphLabel: '12.2',
-  paragraphTitle: 'Formules bij symmetrie en primitiveren',
+  paragraphTitle: 'Verdubbelingsformules en primitiveren',
   paragraphOrder: 1,
   blockSlug: 'h12b',
   blockLetter: 'B',
