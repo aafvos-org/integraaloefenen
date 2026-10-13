@@ -1,4 +1,6 @@
 -- =============================================================================
+-- Nummer 0063: 0062 hoort al bij de examentraining over de waarde van p.
+--
 -- Paragraaf 12.2 heet "Verdubbelingsformules en primitiveren".
 --
 -- Het boek noemt ook symmetrie, maar dat blok staat niet op deze site.
