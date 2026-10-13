@@ -23,7 +23,9 @@ type AnswerRow = {
   time_spent_sec: number | null
 }
 
-type QueryResult = { data: unknown; error: null }
+type DbFout = { code: string; message: string }
+
+type QueryResult = { data: unknown; error: DbFout | null }
 
 /** De opgave in de nepdatabase: f(x) = x^2, dus F(x) = 1/3x^3 + c. */
 const QUESTION = {
@@ -38,6 +40,10 @@ const QUESTION = {
 let progress: ProgressRow
 let answers: AnswerRow[]
 let aiSaysCorrect: boolean
+/** Nep-databasefout bij het wegschrijven van een antwoord. */
+let antwoordOpslaanFout: DbFout | null
+/** Nep-databasefout bij het melden van een vraag. */
+let vraagMeldenFout: DbFout | null
 
 function freshProgress(correctStreak: number, totalAnswered: number): ProgressRow {
   return {
@@ -65,6 +71,7 @@ function from(table: string) {
 
     if (table === 'session_answers_new') {
       if (op === 'insert') {
+        if (antwoordOpslaanFout) return { data: null, error: antwoordOpslaanFout }
         const row: AnswerRow = {
           id: `a${answers.length + 1}`,
           user_answer: String(values.user_answer),
@@ -82,6 +89,10 @@ function from(table: string) {
     if (table === 'user_progress_new') {
       if (op === 'update') Object.assign(progress, values)
       return { data: { ...progress }, error: null }
+    }
+
+    if (table === 'question_flags_new' && op === 'insert' && vraagMeldenFout) {
+      return { data: null, error: vraagMeldenFout }
     }
 
     return { data: null, error: null }
@@ -133,13 +144,18 @@ vi.mock('@/lib/ai/check-answer-new', () => ({
   }),
 }))
 
-const { submitStudyAnswerAction } = await import('./chapter-actions')
+const { flagQuestionNewAction, submitStudyAnswerAction } = await import('./chapter-actions')
+
+const RAUWE_DATABASEFOUT =
+  'new row violates row-level security policy for table "session_answers_new"'
 
 describe('submitStudyAnswerAction', () => {
   beforeEach(() => {
     progress = freshProgress(2, 2)
     answers = []
     aiSaysCorrect = false
+    antwoordOpslaanFout = null
+    vraagMeldenFout = null
   })
 
   it('zet de reeks één omhoog bij een goed antwoord', async () => {
@@ -237,5 +253,44 @@ describe('submitStudyAnswerAction', () => {
 
     expect(goed).toMatchObject({ kind: 'correct', streak: 1, mastered: true })
     expect(progress.status).toBe('mastered')
+  })
+
+  it('stuurt een databasefout niet mee naar de browser', async () => {
+    antwoordOpslaanFout = { code: '42501', message: RAUWE_DATABASEFOUT }
+    const log = vi.spyOn(console, 'error').mockImplementation(() => {})
+
+    const result = await submitStudyAnswerAction('q1', '1/3x^3 + c')
+
+    expect(result).toEqual({
+      kind: 'error',
+      soort: 'opslaan_mislukt',
+      message: 'Opslaan lukte niet. Probeer het nog een keer.',
+    })
+    expect(JSON.stringify(result)).not.toContain(RAUWE_DATABASEFOUT)
+    expect(answers).toHaveLength(0)
+    expect(log.mock.calls.flat().join(' ')).toContain(RAUWE_DATABASEFOUT)
+    log.mockRestore()
+  })
+})
+
+describe('flagQuestionNewAction', () => {
+  beforeEach(() => {
+    antwoordOpslaanFout = null
+    vraagMeldenFout = null
+  })
+
+  it('stuurt een databasefout niet mee naar de browser', async () => {
+    vraagMeldenFout = { code: '42501', message: RAUWE_DATABASEFOUT }
+    const log = vi.spyOn(console, 'error').mockImplementation(() => {})
+
+    const result = await flagQuestionNewAction('q1', 'de uitwerking klopt niet')
+
+    expect(result).toEqual({
+      ok: false,
+      error: 'Melden lukte niet. Probeer het nog een keer.',
+    })
+    expect(JSON.stringify(result)).not.toContain(RAUWE_DATABASEFOUT)
+    expect(log.mock.calls.flat().join(' ')).toContain(RAUWE_DATABASEFOUT)
+    log.mockRestore()
   })
 })

@@ -14,6 +14,12 @@ export type OefenFoutSoort =
   | 'opslaan_mislukt'
   | 'serveractie_mislukt'
 
+/** Wat de leerling ziet als het antwoord niet op de database uitkomt. */
+const OPSLAAN_MISLUKT = 'Opslaan lukte niet. Probeer het nog een keer.'
+
+/** Wat de leerling ziet als het melden van een vraag niet lukt. */
+const MELDEN_MISLUKT = 'Melden lukte niet. Probeer het nog een keer.'
+
 type DB = Awaited<ReturnType<typeof createClient>>
 
 export type StudyResult =
@@ -94,10 +100,16 @@ export async function submitStudyAnswerAction(
     .single()
 
   if (answerError || !answerRow) {
+    // De leerling ziet een vaste zin. De technische tekst blijft in het serverlog.
+    console.error(
+      '[oefenen] antwoord opslaan mislukt',
+      answerError?.code ?? 'geen code',
+      answerError?.message ?? 'geen rij terug',
+    )
     return {
       kind: 'error',
       soort: 'opslaan_mislukt',
-      message: answerError?.message ?? 'Kon antwoord niet opslaan.',
+      message: OPSLAAN_MISLUKT,
     }
   }
 
@@ -192,7 +204,8 @@ export async function flagQuestionNewAction(
     if (error.code === '23505' || error.message.toLowerCase().includes('unique')) {
       return { ok: true }
     }
-    return { ok: false, error: error.message }
+    console.error('[oefenen] vraag melden mislukt', error.code, error.message)
+    return { ok: false, error: MELDEN_MISLUKT }
   }
 
   return { ok: true }

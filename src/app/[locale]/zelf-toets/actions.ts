@@ -17,6 +17,9 @@ import { createClient, createServiceRoleClient } from '@/lib/supabase/server'
 const MAX_QUESTIONS = 50
 const VALID_SOURCES: QuestionSource[] = ['new', 'all', 'wrong']
 
+/** Wat de leerling ziet als het antwoord niet op de database uitkomt. */
+const OPSLAAN_MISLUKT = 'Opslaan lukte niet. Probeer het nog een keer.'
+
 export type CreateTestPayload = {
   clusterIds: string[]
   count: number
@@ -153,7 +156,13 @@ export async function submitCustomTestAnswerAction(
     .select('id')
     .single()
   if (answerErr || !answerRow) {
-    return { kind: 'error', message: answerErr?.message ?? 'Kon antwoord niet opslaan.' }
+    // De leerling ziet een vaste zin. De technische tekst blijft in het serverlog.
+    console.error(
+      '[zelf-toets] antwoord opslaan mislukt',
+      answerErr?.code ?? 'geen code',
+      answerErr?.message ?? 'geen rij terug',
+    )
+    return { kind: 'error', message: OPSLAAN_MISLUKT }
   }
 
   // For wrong answers, ask the AI if it's actually a valid alternative

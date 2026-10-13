@@ -15,7 +15,9 @@ type AnswerRow = {
   time_spent_sec: number | null
 }
 
-type QueryResult = { data: unknown; error: null; count?: number }
+type DbFout = { code: string; message: string }
+
+type QueryResult = { data: unknown; error: DbFout | null; count?: number }
 
 /** De opgave in de nepdatabase: f(x) = x^2, dus F(x) = 1/3x^3 + c. */
 const QUESTION = {
@@ -33,6 +35,8 @@ const SESSION = {
 }
 
 let answers: AnswerRow[]
+/** Nep-databasefout bij het wegschrijven van een antwoord. */
+let antwoordOpslaanFout: DbFout | null
 
 /** Minimale nabootsing van de query-builder van Supabase. */
 function from(table: string) {
@@ -47,6 +51,7 @@ function from(table: string) {
 
     if (table === 'session_answers_new') {
       if (op === 'insert') {
+        if (antwoordOpslaanFout) return { data: null, error: antwoordOpslaanFout }
         const row: AnswerRow = {
           id: `a${answers.length + 1}`,
           user_answer: String(values.user_answer),
@@ -120,9 +125,13 @@ vi.mock('@/lib/ai/check-answer-new', () => ({
 
 const { submitCustomTestAnswerAction } = await import('./actions')
 
+const RAUWE_DATABASEFOUT =
+  'new row violates row-level security policy for table "session_answers_new"'
+
 describe('submitCustomTestAnswerAction', () => {
   beforeEach(() => {
     answers = []
+    antwoordOpslaanFout = null
   })
 
   it('slaat de meegegeven seconden op bij het antwoord', async () => {
@@ -142,5 +151,21 @@ describe('submitCustomTestAnswerAction', () => {
     await submitCustomTestAnswerAction('s1', 'q1', '1/3x^3 + c', -30)
 
     expect(answers[0].time_spent_sec).toBeNull()
+  })
+
+  it('stuurt een databasefout niet mee naar de browser', async () => {
+    antwoordOpslaanFout = { code: '42501', message: RAUWE_DATABASEFOUT }
+    const log = vi.spyOn(console, 'error').mockImplementation(() => {})
+
+    const result = await submitCustomTestAnswerAction('s1', 'q1', '1/3x^3 + c', 9)
+
+    expect(result).toEqual({
+      kind: 'error',
+      message: 'Opslaan lukte niet. Probeer het nog een keer.',
+    })
+    expect(JSON.stringify(result)).not.toContain(RAUWE_DATABASEFOUT)
+    expect(answers).toHaveLength(0)
+    expect(log.mock.calls.flat().join(' ')).toContain(RAUWE_DATABASEFOUT)
+    log.mockRestore()
   })
 })
