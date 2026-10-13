@@ -13,6 +13,7 @@ export const MET_TAAL = [
   'inloggen',
   'instellingen',
   'oefenen',
+  'privacy',
   'registreren',
   'theorie',
   'uitleg-videos',
@@ -28,7 +29,7 @@ export const ZONDER_TAAL = ['admin', 'api', 'auth', 'uitloggen'] as const
 
 // OPENBAAR is wat een leerling zonder inloggen kan lezen, en dus het enige wat
 // een zoekmachine in de index hoort te zetten. sitemap.ts loopt deze lijst af.
-export const OPENBAAR = ['hoe-het-werkt', 'theorie', 'uitleg-videos'] as const
+export const OPENBAAR = ['hoe-het-werkt', 'privacy', 'theorie', 'uitleg-videos'] as const
 
 /**
  * De rest van MET_TAAL: persoonlijke pagina's en in-/uitlogformulieren. Die

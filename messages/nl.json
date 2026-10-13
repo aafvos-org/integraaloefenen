@@ -21,6 +21,10 @@
     "feedback": "Feedback sturen",
     "videos": "Uitlegvideo's"
   },
+  "Footer": {
+    "brand": "__BRAND__",
+    "privacy": "Privacy"
+  },
   "Home": {
     "eyebrow": "Wiskunde B · VWO 4 / 5 / 6",
     "h1Start": "Afgeleide oefenen voor",
@@ -191,7 +195,8 @@
     "toLoginLabel": "Naar inlogpagina",
     "forgotPassword": "Wachtwoord vergeten?",
     "showPassword": "Toon",
-    "hidePassword": "Verberg"
+    "hidePassword": "Verberg",
+    "privacyNote": "In de <privacy>privacyverklaring</privacy> lees je welke gegevens we bewaren."
   },
   "ForgotPassword": {
     "title": "Wachtwoord vergeten",
@@ -486,5 +491,50 @@
     "title": "Deze pagina bestaat niet",
     "body": "Misschien is het adres verkeerd getypt, of werkt de link niet meer. Geen probleem: je kunt zo weer verder met oefenen.",
     "cta": "Naar de startpagina"
+  },
+  "Privacy": {
+    "title": "Privacy",
+    "description": "Welke gegevens IntegraalOefenen bewaart, waarom, hoe lang, en hoe je je account laat verwijderen.",
+    "eyebrow": "Privacy",
+    "h1": "Wat we van je bewaren",
+    "intro": "IntegraalOefenen is een oefensite voor integreren en primitiveren, voor leerlingen van het vwo. Hier lees je welke gegevens we bewaren, waarom, en hoe je ze laat verwijderen. Dit is ook voor je ouders of voogd.",
+    "accountH2": "Je account",
+    "accountLead": "Maak je een account, dan bewaren we dit:",
+    "account1": "Je e-mailadres. Daarmee log je in, en daarheen sturen we de bevestigingsmail en de welkomstmail.",
+    "account2": "Je wachtwoord, versleuteld. Wij kunnen het niet teruglezen.",
+    "account3": "Een gebruikersnaam, als je die invult. Die kun je later nog wijzigen.",
+    "accountNot": "We vragen niet naar je achternaam, je school of je klas.",
+    "practiceH2": "Wat je oefent",
+    "practiceLead": "Zodra je oefent, bewaren we:",
+    "practice1": "Welke opgave je maakte en het antwoord dat je intypte.",
+    "practice2": "Of het goed was, hoeveel tips je gebruikte, en hoe lang je erover deed.",
+    "practice3": "Wanneer je begon en wanneer je stopte.",
+    "practiceWhy": "Zo kun je je voortgang zien, en kunnen we bij een fout uitleggen waar het misging.",
+    "flag": "Meld je dat een opgave niet klopt, dan bewaren we ook wie dat meldde en wat je erbij schreef. Zo kunnen we de opgave nakijken.",
+    "aiH2": "Uitleg bij een fout antwoord",
+    "aiBody": "Is je antwoord fout en kennen we die fout nog niet, dan sturen we de opgave en jouw antwoord naar Google (de dienst heet Gemini). Die schrijft de uitleg. Je naam en je e-mailadres gaan niet mee.",
+    "aiCache": "Dat foute antwoord bewaren we daarna zonder je naam. Krijgt een andere leerling dezelfde fout, dan kunnen we dezelfde uitleg geven zonder het opnieuw te vragen.",
+    "mailH2": "Berichten en foto's",
+    "mailBody": "Stuur je een vraag voor een uitlegvideo, feedback, of een vraag aan Aaf, dan gaat dat per e-mail naar degene die de site bijhoudt. Een foto van een opgave uit je boek mag mee. Die foto slaan we niet op in de site: hij zit alleen in die e-mail.",
+    "mailResend": "De mails verstuurt de dienst Resend. De site zelf bewaart ze niet. Bij een nieuw account krijgt degene die de site bijhoudt ook een seintje, met je e-mailadres en je gebruikersnaam.",
+    "visitH2": "Bezoeken en cookies",
+    "analytics": "Cloudflare Web Analytics telt hoeveel mensen de site bezoeken. Die dienst gebruikt geen cookies en slaat geen persoonsgegevens op.",
+    "cookie": "Om ingelogd te blijven zet de site één cookie. Zonder die cookie zou je bij elke pagina opnieuw moeten inloggen. Er zijn geen reclamecookies en we volgen niet wat je buiten deze site doet.",
+    "host": "De site zelf draait bij Cloudflare.",
+    "keepH2": "Hoe lang",
+    "keepBody": "We bewaren je account en je oefengegevens zolang je account bestaat. Er is geen automatische einddatum.",
+    "deleteH2": "Je account laten verwijderen",
+    "deleteBody": "Wil je je account weg, en alles wat daarbij hoort (antwoorden, tijden en meldingen)? Log in en stuur een bericht via <feedback>Feedback</feedback>. Schrijf erbij dat je je account wilt laten verwijderen.",
+    "deleteParent": "Een ouder of voogd mag dat ook vragen. Dat gaat via het account van de leerling, omdat we alleen zo zeker weten om welk account het gaat.",
+    "deleteAfter": "We halen dan het account, de antwoorden en de tijden weg. Een fout antwoord dat we zonder naam bewaren om de uitleg te kunnen hergebruiken, kunnen we niet meer aan jou koppelen. Dat blijft staan als losse wiskunde.",
+    "whoH2": "Wie erbij kan",
+    "whoLead": "Je gegevens verkopen we niet, en er staat geen reclame op de site. Hier komen ze langs:",
+    "who1": "Jijzelf, op je eigen voortgang.",
+    "who2": "Degene die de site bijhoudt, om de site te laten werken en je vragen te beantwoorden.",
+    "who3": "Supabase bewaart het account en de oefengegevens.",
+    "who4": "Resend verstuurt de mails.",
+    "who5": "Google (Gemini) krijgt alleen een foute opgave en het antwoord, zonder je naam.",
+    "who6": "Cloudflare laat de site draaien en telt bezoeken zonder persoonsgegevens.",
+    "updated": "Bijgewerkt op 12 oktober 2026."
   }
 }

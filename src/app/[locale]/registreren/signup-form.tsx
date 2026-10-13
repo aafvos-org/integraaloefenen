@@ -79,6 +79,19 @@ export function SignupForm() {
         </p>
       )}
 
+      <p className="text-center text-sm leading-relaxed text-text-muted">
+        {t.rich('privacyNote', {
+          privacy: (stuk) => (
+            <Link
+              href="/privacy"
+              className="inline-flex min-h-11 items-center font-medium text-accent underline-offset-2 hover:underline"
+            >
+              {stuk}
+            </Link>
+          ),
+        })}
+      </p>
+
       <SubmitButton />
 
       <p className="pt-1 text-center text-sm text-text-muted">

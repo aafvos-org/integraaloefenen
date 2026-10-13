@@ -33,6 +33,7 @@ function openbarePaden(): Array<{
     })),
     { pad: '/uitleg-videos', changeFrequency: 'monthly', priority: 0.7 },
     { pad: '/hoe-het-werkt', changeFrequency: 'monthly', priority: 0.6 },
+    { pad: '/privacy', changeFrequency: 'monthly', priority: 0.4 },
   ]
 }
 
