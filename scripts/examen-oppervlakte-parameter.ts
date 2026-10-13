@@ -10,7 +10,7 @@
  *
  * Schrijft:
  *   • content/hoofdstuk-examen/oppervlakte-parameter.json
- *   • supabase/migrations/0062_examen_oppervlakte_parameter.sql
+ *   • supabase/migrations/0064_examen_oppervlakte_parameter.sql
  */
 import { mkdirSync, writeFileSync } from 'node:fs'
 import path from 'node:path'
@@ -261,7 +261,7 @@ const EXAMEN: AdditiveChapter = {
   bookPart: 5,
   chapterOrder: 16,
   site: 'integralen',
-  migrationFile: '0062_examen_oppervlakte_parameter.sql',
+  migrationFile: '0064_examen_oppervlakte_parameter.sql',
   headerTitle: 'Examentraining — bereken p bij een oppervlakte',
   sourceScript: 'scripts/examen-oppervlakte-parameter.ts',
   headerNotes: [

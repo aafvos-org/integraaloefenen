@@ -8,7 +8,7 @@
  *
  * Schrijft:
  *   • content/hoofdstuk-examen/oppervlakte-grenzen-zelf.json
- *   • supabase/migrations/0060_examen_oppervlakte_grenzen_zelf.sql
+ *   • supabase/migrations/0062_examen_oppervlakte_grenzen_zelf.sql
  */
 import { mkdirSync, writeFileSync } from 'node:fs'
 import path from 'node:path'
@@ -246,7 +246,7 @@ const EXAMEN: AdditiveChapter = {
   bookPart: 5,
   chapterOrder: 16,
   site: 'integralen',
-  migrationFile: '0060_examen_oppervlakte_grenzen_zelf.sql',
+  migrationFile: '0062_examen_oppervlakte_grenzen_zelf.sql',
   headerTitle: 'Examentraining — oppervlakte, grenzen zelf vinden',
   sourceScript: 'scripts/examen-oppervlakte-grenzen.ts',
   headerNotes: [

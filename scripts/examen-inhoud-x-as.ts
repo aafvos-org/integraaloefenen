@@ -9,7 +9,7 @@
  *
  * Schrijft:
  *   • content/hoofdstuk-examen/inhoud-om-de-x-as.json
- *   • supabase/migrations/0063_examen_inhoud_x_as.sql
+ *   • supabase/migrations/0066_examen_inhoud_x_as.sql
  */
 import { mkdirSync, writeFileSync } from 'node:fs'
 import path from 'node:path'
@@ -252,7 +252,7 @@ const EXAMEN: AdditiveChapter = {
   bookPart: 5,
   chapterOrder: 16,
   site: 'integralen',
-  migrationFile: '0063_examen_inhoud_x_as.sql',
+  migrationFile: '0066_examen_inhoud_x_as.sql',
   headerTitle: 'Examentraining — inhoud om de x-as',
   sourceScript: 'scripts/examen-inhoud-x-as.ts',
   headerNotes: [

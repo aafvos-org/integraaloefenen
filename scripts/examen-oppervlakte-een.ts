@@ -7,7 +7,7 @@
  *
  * Schrijft:
  *   • content/hoofdstuk-examen/oppervlakte-een-grafiek.json
- *   • supabase/migrations/0058_examen_oppervlakte_een_grafiek.sql
+ *   • supabase/migrations/0059_examen_oppervlakte_een_grafiek.sql
  */
 import { mkdirSync, writeFileSync } from 'node:fs'
 import path from 'node:path'
@@ -243,7 +243,7 @@ const EXAMEN: AdditiveChapter = {
   bookPart: 5,
   chapterOrder: 16,
   site: 'integralen',
-  migrationFile: '0058_examen_oppervlakte_een_grafiek.sql',
+  migrationFile: '0059_examen_oppervlakte_een_grafiek.sql',
   headerTitle: 'Examentraining — oppervlakte van één grafiek',
   sourceScript: 'scripts/examen-oppervlakte-een.ts',
   headerNotes: [
