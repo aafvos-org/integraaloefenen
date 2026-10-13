@@ -315,7 +315,9 @@
     "regel2": "Wentel je het vlakdeel om de x-as, dan is de inhoud π keer de integraal van y in het kwadraat.",
     "regel3": "Wentel je het vlakdeel om de y-as, dan is de inhoud π keer de integraal van x in het kwadraat.",
     "regel4": "Staan de grenzen niet in de vraag, bepaal dan eerst de snijpunten.",
-    "geenOpgaven": "Er staan hier nog geen opgaven."
+    "geenOpgaven": "Er staan hier nog geen opgaven.",
+    "kiesOpgave": "Kies een opgave. Je antwoord is de exacte oppervlakte.",
+    "terug": "Alle opgaven"
   },
   "FreeExercise": {
     "title": "Oefenen",

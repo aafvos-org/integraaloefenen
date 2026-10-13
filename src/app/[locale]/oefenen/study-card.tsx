@@ -183,7 +183,7 @@ export function StudyCard({
   }
 
   return (
-    <div className="rounded-2xl border border-border bg-surface p-6 shadow-sm">
+    <div className="min-w-0 overflow-x-auto rounded-2xl border border-border bg-surface p-4 shadow-sm sm:p-6">
       <div className="mb-4 flex items-center justify-between gap-2">
         <div className="flex items-center gap-2">
           {questionNumber != null && (
@@ -208,7 +208,7 @@ export function StudyCard({
         {opdracht && (
           <p className="mb-1 text-sm font-medium text-text-muted">{t(opdracht)}</p>
         )}
-        <div className="font-serif text-2xl leading-snug text-text">
+        <div className="min-w-0 overflow-x-auto font-serif text-xl leading-snug text-text sm:text-2xl">
           {question.latex_body?.includes('$') ? (
             <RichMath source={question.latex_body} />
           ) : (

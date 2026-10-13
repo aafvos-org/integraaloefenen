@@ -7,6 +7,7 @@
 import type { SupabaseClient } from '@supabase/supabase-js'
 
 import { SITE } from '@/config/site'
+import { EXAMEN_HOOFDSTUK } from '@/lib/practice/examentraining'
 import type { Database } from '@/lib/supabase/types'
 
 type DB = SupabaseClient<Database>
@@ -155,7 +156,9 @@ export async function loadConfigData(db: DB, userId: string): Promise<ConfigData
   })
 
   return {
-    chapters: (chapters ?? []) as ConfigChapter[],
+    chapters: ((chapters ?? []) as ConfigChapter[]).filter(
+      (hoofdstuk) => hoofdstuk.slug !== EXAMEN_HOOFDSTUK,
+    ),
     paragraphs: (paragraphs ?? []) as ConfigParagraph[],
     blocks: (blocks ?? []) as ConfigBlock[],
     topics: (topics ?? []) as ConfigTopic[],

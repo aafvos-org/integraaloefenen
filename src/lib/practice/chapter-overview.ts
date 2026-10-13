@@ -1,6 +1,7 @@
 import type { SupabaseClient } from '@supabase/supabase-js'
 
 import { SITE } from '@/config/site'
+import { EXAMEN_HOOFDSTUK } from '@/lib/practice/examentraining'
 import type { Database } from '@/lib/supabase/types'
 
 type DB = SupabaseClient<Database>
@@ -89,7 +90,8 @@ export async function loadChapters(db: DB): Promise<ChapterInfo[]> {
     .eq('site', SITE)
     .order('order_index')
   if (error) throw new Error(error.message)
-  return (data ?? []) as ChapterInfo[]
+  // Examentraining is een eigen pagina, geen hoofdstuk onder Oefenen.
+  return ((data ?? []) as ChapterInfo[]).filter((hoofdstuk) => hoofdstuk.slug !== EXAMEN_HOOFDSTUK)
 }
 
 export async function loadAllTopics(db: DB): Promise<TopicInfo[]> {
