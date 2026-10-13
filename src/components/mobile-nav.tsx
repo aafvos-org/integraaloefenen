@@ -56,6 +56,8 @@ export function MobileNav({
                   {username && (
                     <p className="px-3 py-1.5 text-xs text-text-muted truncate">{username}</p>
                   )}
+                  <NavLink href={`/${locale}/instellingen`} onClick={() => setOpen(false)}>{t('settings')}</NavLink>
+                  <NavLink href={`/${locale}/feedback`} onClick={() => setOpen(false)}>{t('feedback')}</NavLink>
                   <form action="/uitloggen" method="post">
                     <button
                       type="submit"
