@@ -46,6 +46,16 @@ describe('leesbare wiskunde', () => {
   })
 })
 
+describe('oefenlinks van K.2', () => {
+  it('wijst naar de blokken k2a en k2b', () => {
+    const k2 = THEORY_OVERVIEW.find((ch) => ch.slug === 'partieel-integreren')
+    expect(k2?.oefenlinks?.map((link) => link.href)).toEqual([
+      '/oefenen?blok=k2a',
+      '/oefenen?blok=k2b',
+    ])
+  })
+})
+
 describe('oefenlinks van K.3', () => {
   it('wijst naar de blokken k3a, k3b en k3c, niet naar chapter=k3', () => {
     const k3 = THEORY_OVERVIEW.find((ch) => ch.slug === 'k3')

@@ -17,7 +17,8 @@
  * De driedeling staat als groepskop boven de kaarten, niet als hoofdstuk.
  * Bij K.3 staan de stappen per route alleen in de kaarten; `stappenplan.regels`
  * is daar leeg gelaten omdat die tabel ze verdubbelde. De substitutiemethode
- * heeft één route, dus daar staat het vaste plan (stap 1–3) wél in die tabel.
+ * en partieel integreren hebben elk één route, dus daar staat het vaste plan
+ * (stap 1–3) wél in die tabel.
  */
 
 import type { ClusterTheory, OverviewChapter } from './types'
@@ -152,6 +153,137 @@ export const THEORY_OVERVIEW: OverviewChapter[] = [
         notes: [
           'Deel 1 is het zinnetje uit de opgave omzetten naar een integraal. Deel 2 is de substitutie. Deel 3 is de grenzen invullen en het antwoord exact laten staan.',
           'Bij een kale "primitiveer" of "bereken exact" sla je deel 1 over. Deel 3 is dan alleen: $+c$ zetten, of de grenzen invullen.',
+        ],
+      },
+    ],
+  },
+  {
+    slug: 'partieel-integreren',
+    code: 'K.2',
+    title: 'K.2 — Partieel integreren',
+    intro:
+      'Je ziet een product van twee factoren. Eén factor differentieer je, de andere primitiveer je. Eén ronde oefen je in K.2 A, twee rondes in K.2 B.',
+    oefenlinks: [
+      { label: 'Oefen K.2 A', href: '/oefenen?blok=k2a' },
+      { label: 'Oefen K.2 B', href: '/oefenen?blok=k2b' },
+    ],
+    stappenplan: {
+      stap0Titel: 'Stap 0 · Welke vorm is dit?',
+      intro: 'Tik de vorm aan die bij jouw integraal past. Daarna doe je stap 1, 2 en 3.',
+      herken: [
+        {
+          groep: 'Eén ronde is genoeg',
+          schil: 'Een veelterm maal een sinus, een cosinus of een e-macht.',
+          voorbeeld: '\\int x\\sin(2x)\\,dx',
+          regel: 'Eén ronde',
+          kaart: 'par_een',
+        },
+        {
+          groep: 'Eén ronde is genoeg',
+          schil: 'Een logaritme, of een veelterm maal een logaritme.',
+          voorbeeld: '\\int x\\ln(x)\\,dx',
+          regel: 'Logaritme',
+          kaart: 'par_ln',
+        },
+        {
+          groep: 'Je moet nog een keer',
+          schil: 'Een kwadraat maal een e-macht of een gonio.',
+          voorbeeld: '\\int x^2 e^{3x}\\,dx',
+          regel: 'Twee rondes',
+          kaart: 'par_twee',
+        },
+        {
+          groep: 'Je moet nog een keer',
+          schil: 'Een e-macht maal een sinus of een cosinus. De integraal komt terug.',
+          voorbeeld: '\\int e^{x}\\sin(x)\\,dx',
+          regel: 'Twee rondes',
+          kaart: 'par_twee',
+        },
+      ],
+      regels: [
+        {
+          regel: 'Partieel',
+          formule: '\\int g(x)\\cdot h\'(x)\\,dx = g(x)\\cdot h(x)-\\int h(x)\\cdot g\'(x)\\,dx',
+          stap1: 'Noem de factor die je differentieert $g$ en de factor die je primitiveert $h\'$. Bepaal $g\'$ en $h$.',
+          stap2: 'Vul de regel in. De integraal die overblijft moet makkelijker zijn dan waar je mee begon.',
+          stap3: 'Reken die integraal uit. Is het nog een product, doe dan nog een ronde met dezelfde keuze. Zet $+c$ en differentieer ter controle.',
+        },
+      ],
+      slot: 'Wordt de nieuwe integraal juist moeilijker? Dan staan $g$ en $h\'$ verkeerd om. Begin opnieuw met de andere keuze. Een getal mag je naar voren halen.',
+    },
+    cards: [
+      {
+        id: 'par_een',
+        groep: 'Deel 2 · Bereken de integraal',
+        title: 'Een veelterm maal een gonio of een e-macht',
+        herkenpunt: '\\int x\\sin(2x)\\,dx',
+        formula: '\\int g(x)\\cdot h\'(x)\\,dx = g(x)\\cdot h(x)-\\int h(x)\\cdot g\'(x)\\,dx',
+        answerNote: 'Een primitieve eindigt op $+c$.',
+        examples: [
+          {
+            problem: '\\int x\\sin(2x)\\,dx',
+            answer: '-\\tfrac12 x\\cos(2x)+\\tfrac14\\sin(2x)+c',
+            stappenplan: true,
+            steps: [
+              'Alleen deel 2: de opgave vraagt een primitieve. De buitenste schil is een veelterm maal een sinus.',
+              'De veelterm wordt eenvoudiger als je hem differentieert, de sinus niet. Dus $g(x)=x$ en $h\'(x)=\\sin(2x)$. Dan is $g\'(x)=1$ en $h(x)=-\\tfrac12\\cos(2x)$.',
+              'De regel geeft $-\\tfrac12 x\\cos(2x)-\\displaystyle\\int -\\tfrac12\\cos(2x)\\,dx$. Twee mintekens worden een plus: $-\\tfrac12 x\\cos(2x)+\\tfrac12\\displaystyle\\int\\cos(2x)\\,dx$.',
+              '$\\displaystyle\\int\\cos(2x)\\,dx=\\tfrac12\\sin(2x)$, dus $\\tfrac12\\cdot\\tfrac12\\sin(2x)=\\tfrac14\\sin(2x)$. Het antwoord is $-\\tfrac12 x\\cos(2x)+\\tfrac14\\sin(2x)+c$. Terugdifferentiëren: $-\\tfrac12\\cos(2x)+x\\sin(2x)+\\tfrac12\\cos(2x)=x\\sin(2x)$.',
+            ],
+          },
+        ],
+        notes: [
+          'Een veelterm differentieer je. Een sinus, een cosinus of een e-macht primitiveer je.',
+        ],
+      },
+      {
+        id: 'par_ln',
+        groep: 'Deel 2 · Bereken de integraal',
+        title: 'Een logaritme',
+        herkenpunt: '\\int x\\ln(x)\\,dx',
+        formula: '\\int g(x)\\cdot h\'(x)\\,dx = g(x)\\cdot h(x)-\\int h(x)\\cdot g\'(x)\\,dx',
+        answerNote: 'Een primitieve eindigt op $+c$. Het domein is $x>0$.',
+        examples: [
+          {
+            problem: '\\int x\\ln(x)\\,dx',
+            answer: '\\tfrac12 x^2\\ln(x)-\\tfrac14 x^2+c',
+            stappenplan: true,
+            steps: [
+              'Alleen deel 2. De buitenste schil is een veelterm maal een logaritme. Een $\\ln$ kun je niet zomaar primitiveren, wel differentiëren.',
+              'Dus $g(x)=\\ln(x)$ en $h\'(x)=x$. Dan is $g\'(x)=\\dfrac{1}{x}$ en $h(x)=\\tfrac12 x^2$.',
+              'De regel geeft $\\tfrac12 x^2\\ln(x)-\\displaystyle\\int \\tfrac12 x^2\\cdot\\dfrac{1}{x}\\,dx=\\tfrac12 x^2\\ln(x)-\\tfrac12\\displaystyle\\int x\\,dx$.',
+              'Dat is $\\tfrac12 x^2\\ln(x)-\\tfrac14 x^2+c$. Terugdifferentiëren: $x\\ln(x)+\\tfrac12 x-\\tfrac12 x=x\\ln(x)$.',
+            ],
+          },
+        ],
+        notes: [
+          'Staat er alleen een $\\ln$, zonder factor ervoor? Schrijf hem als $1\\cdot\\ln(x)$ en primitiveer de $1$.',
+        ],
+      },
+      {
+        id: 'par_twee',
+        groep: 'Deel 2 · Bereken de integraal',
+        title: 'Twee rondes',
+        breed: true,
+        herkenpunt: '\\int x^2 e^{3x}\\,dx',
+        formula: '\\int g(x)\\cdot h\'(x)\\,dx = g(x)\\cdot h(x)-\\int h(x)\\cdot g\'(x)\\,dx',
+        answerNote: 'Een primitieve eindigt op $+c$.',
+        examples: [
+          {
+            problem: '\\int x^2 e^{3x}\\,dx',
+            answer: '\\tfrac13 x^2 e^{3x}-\\tfrac29 x e^{3x}+\\tfrac{2}{27} e^{3x}+c',
+            stappenplan: true,
+            steps: [
+              'Alleen deel 2. De buitenste schil is een kwadraat maal een e-macht. Eén ronde haalt de graad maar één omlaag, dus je doet het twee keer.',
+              'Eerste ronde: $g(x)=x^2$ en $h\'(x)=e^{3x}$. Dan is $g\'(x)=2x$ en $h(x)=\\tfrac13 e^{3x}$.',
+              'Dat geeft $\\tfrac13 x^2 e^{3x}-\\tfrac23\\displaystyle\\int x e^{3x}\\,dx$. Zelfde keuze nog een keer: nu is $g(x)=x$, dus $\\displaystyle\\int x e^{3x}\\,dx=\\tfrac13 x e^{3x}-\\tfrac19 e^{3x}$.',
+              'Invullen: $\\tfrac13 x^2 e^{3x}-\\tfrac23\\left(\\tfrac13 x e^{3x}-\\tfrac19 e^{3x}\\right)+c=\\tfrac13 x^2 e^{3x}-\\tfrac29 x e^{3x}+\\tfrac{2}{27} e^{3x}+c$. Terugdifferentiëren van het eerste stuk geeft $x^2 e^{3x}+\\tfrac23 x e^{3x}$, van het tweede $-\\tfrac23 x e^{3x}-\\tfrac29 e^{3x}$, van het derde $\\tfrac29 e^{3x}$. Samen blijft $x^2 e^{3x}$.',
+            ],
+          },
+        ],
+        notes: [
+          'Houd in de tweede ronde dezelfde soort factor aan: steeds de e-macht of de gonio primitiveren, steeds de veelterm differentiëren.',
+          'Bij een e-macht maal een sinus of een cosinus wordt geen van beide factoren eenvoudiger. Na twee rondes met dezelfde keuze komt de oorspronkelijke integraal terug. Noem hem $I$ en los de vergelijking op.',
         ],
       },
     ],
