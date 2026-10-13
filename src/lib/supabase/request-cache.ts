@@ -1,7 +1,9 @@
+import { cookies } from 'next/headers'
 import { cache } from 'react'
 
 import { loadChapters, type ChapterInfo } from '@/lib/practice/chapter-overview'
 
+import { heeftInlogsessie } from './sessie-cookie'
 import { createClient } from './server'
 
 /**
@@ -18,6 +20,9 @@ import { createClient } from './server'
  */
 
 export const getCurrentUser = cache(async () => {
+  const jar = await cookies()
+  if (!heeftInlogsessie(jar.getAll())) return null
+
   const supabase = await createClient()
   const {
     data: { user },

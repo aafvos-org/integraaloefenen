@@ -2,7 +2,7 @@ import { getTranslations, getLocale } from 'next-intl/server'
 import { Link } from '@/i18n/navigation'
 import { redirect } from 'next/navigation'
 
-import { createClient } from '@/lib/supabase/server'
+import { getCurrentUser } from '@/lib/supabase/request-cache'
 
 import { BevestigingsMelding } from './bevestigings-melding'
 import { HerstelMelding } from './herstel-melding'
@@ -28,11 +28,8 @@ export default async function LoginPage({
     herstel?: string
   }>
 }) {
-  const supabase = await createClient()
   const locale = await getLocale()
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
+  const user = await getCurrentUser()
 
   if (user) {
     redirect(`/${locale}/dashboard`)

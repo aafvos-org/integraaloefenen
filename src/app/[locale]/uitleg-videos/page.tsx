@@ -2,6 +2,7 @@ import { getTranslations } from 'next-intl/server'
 
 import { SITE } from '@/config/site'
 import { eigenPagina } from '@/lib/seo'
+import { getCurrentUser } from '@/lib/supabase/request-cache'
 import { createClient } from '@/lib/supabase/server'
 import { getUitlegVideos } from '@/lib/videos'
 
@@ -67,13 +68,11 @@ export default async function UitlegVideosPage({ params, searchParams }: PagePro
   const activeVideo =
     videos.find((v) => v.slug === search.video?.trim()) ?? videos[0] ?? null
 
-  const supabase = await createClient()
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
+  const user = await getCurrentUser()
 
   let vragen: OefenVraag[] = []
   if (user && activeVideo && activeVideo.clusterIds.length > 0) {
+    const supabase = await createClient()
     const { data } = await supabase
       .from('questions_new')
       .select('id, cluster_id, difficulty, latex_body')

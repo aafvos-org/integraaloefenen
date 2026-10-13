@@ -4,9 +4,20 @@ import { NextResponse, type NextRequest } from 'next/server'
 import { ACHTER_INLOG } from '@/i18n/paths'
 import { routing } from '@/i18n/routing'
 
+import { heeftInlogsessie } from './sessie-cookie'
 import type { Database } from './types'
 
 export async function updateSession(request: NextRequest) {
+  const path = request.nextUrl.pathname
+
+  // Geen sessiecookie: Supabase niet bellen. Die ronde hield elke openbare
+  // pagina een seconde tegen, ook voor wie alleen komt lezen.
+  if (!heeftInlogsessie(request.cookies.getAll())) {
+    const taal = taalVanBeschermdPad(path)
+    if (taal) return naarInloggen(request, taal)
+    return NextResponse.next({ request })
+  }
+
   let supabaseResponse = NextResponse.next({ request })
 
   const supabase = createServerClient<Database>(
@@ -44,8 +55,6 @@ export async function updateSession(request: NextRequest) {
     }
   }
 
-  const path = request.nextUrl.pathname
-
   if (path.startsWith('/admin')) {
     if (!user) {
       return naarInloggen(request, routing.defaultLocale)
@@ -64,13 +73,11 @@ export async function updateSession(request: NextRequest) {
     }
   }
 
-  // De rest van de site hangt onder een taal: /nl/dashboard. Next.js past de
-  // doorverwijzingen uit next.config.ts toe vóórdat deze code draait, dus hier
-  // staat de taal er altijd al voor. Pel hem eraf om te vergelijken en zet hem
-  // bij een doorverwijzing weer terug.
-  const taalEnRest = splitsTaal(path)
-  if (!user && taalEnRest && achterInlog(taalEnRest.rest)) {
-    return naarInloggen(request, taalEnRest.taal)
+  // /nl/dashboard heeft de taal vooraan. /dashboard nog niet: de rewrite in
+  // next.config.ts komt pas ná de middleware. Beide moeten hier dicht.
+  const taal = taalVanBeschermdPad(path)
+  if (!user && taal) {
+    return naarInloggen(request, taal)
   }
 
   return supabaseResponse
@@ -89,6 +96,20 @@ const TAAL_VOORAAN = new RegExp(`^/(${routing.locales.join('|')})(?:/(.*))?$`)
 function achterInlog(rest: string): boolean {
   const eerste = rest.split('/')[0]
   return (ACHTER_INLOG as readonly string[]).includes(eerste)
+}
+
+/**
+ * De taal voor de inlogpagina als dit pad achter de poort zit, anders niks.
+ * `/nl/oefenen` en `/oefenen` geven allebei `nl`.
+ */
+function taalVanBeschermdPad(path: string): string | null {
+  if (path === '/admin' || path.startsWith('/admin/')) return routing.defaultLocale
+  const taalEnRest = splitsTaal(path)
+  if (taalEnRest) {
+    return achterInlog(taalEnRest.rest) ? taalEnRest.taal : null
+  }
+  const rest = path.startsWith('/') ? path.slice(1) : path
+  return achterInlog(rest) ? routing.defaultLocale : null
 }
 
 function naarInloggen(request: NextRequest, taal: string) {

@@ -15,8 +15,8 @@ export default function robots(): MetadataRoute.Robots {
   // src/i18n/paths.ts, zodat een nieuwe pagina hier niet vergeten wordt.
   //
   // Elk afgeschermd pad staat er twee keer in: één keer met de taal vooraan
-  // (/nl/oefenen, de echte pagina) en één keer zonder (/oefenen, de oude link
-  // die next.config.ts doorstuurt). Zonder de eerste blokkeert robots.txt niets
+  // (/nl/oefenen, de echte pagina) en één keer zonder (/oefenen, dezelfde
+  // pagina zonder /nl/ ervoor). Zonder de eerste blokkeert robots.txt niets
   // van wat er werkelijk staat; zonder de tweede loopt een zoekmachine telkens
   // tegen een doorverwijzing aan.
   const disallow = [

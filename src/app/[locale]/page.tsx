@@ -5,7 +5,7 @@ import { redirect } from 'next/navigation'
 import { SITE_CONFIG } from '@/config/site'
 import { startpaginaGegevens } from '@/lib/gestructureerde-gegevens'
 import { eigenPagina } from '@/lib/seo'
-import { createClient } from '@/lib/supabase/server'
+import { getCurrentUser } from '@/lib/supabase/request-cache'
 
 import { HomeDemo } from './home-demo'
 
@@ -26,11 +26,8 @@ export async function generateMetadata({
 }
 
 export default async function HomePage() {
-  const supabase = await createClient()
   const locale = await getLocale()
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
+  const user = await getCurrentUser()
 
   if (user) {
     redirect(`/${locale}/dashboard`)

@@ -1,9 +1,10 @@
 // De twee soorten paden op de site, op één plek.
 //
 // MET_TAAL staat onder src/app/[locale]/ en heeft dus de taal vooraan:
-// /nl/oefenen. Wie /oefenen typt of bewaart, stuurt next.config.ts door naar
-// /nl/oefenen. Vergeet je een pagina hier, dan leest Next.js de eerste map als
-// taal, herkent die niet en geeft een 404 (src/app/[locale]/layout.tsx).
+// /nl/oefenen. Wie /oefenen typt of bewaart, krijgt via next.config.ts dezelfde
+// pagina, zonder extra doorverwijzing. Vergeet je een pagina hier, dan leest
+// Next.js de eerste map als taal, herkent die niet en geeft een 404
+// (src/app/[locale]/layout.tsx).
 // paths.test.ts vergelijkt deze lijst met de mappen op schijf, zodat een
 // nieuwe pagina niet stil kan blijven liggen.
 export const MET_TAAL = [

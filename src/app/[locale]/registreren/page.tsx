@@ -2,7 +2,7 @@ import { getTranslations, getLocale } from 'next-intl/server'
 import { Link } from '@/i18n/navigation'
 import { redirect } from 'next/navigation'
 
-import { createClient } from '@/lib/supabase/server'
+import { getCurrentUser } from '@/lib/supabase/request-cache'
 
 import { SignupForm } from './signup-form'
 
@@ -17,11 +17,8 @@ export async function generateMetadata({
 }
 
 export default async function SignupPage() {
-  const supabase = await createClient()
   const locale = await getLocale()
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
+  const user = await getCurrentUser()
 
   if (user) {
     redirect(`/${locale}/dashboard`)
