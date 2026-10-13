@@ -380,7 +380,7 @@
       "cluster": "k3c_oppervlakte",
       "niveau": 3,
       "latex": "Het vlakdeel $V_p$ wordt ingesloten door de grafiek van $f(x) = \\dfrac{4}{\\sqrt{25 - x^{2}}}$, de $x$-as en de lijnen $x = 0$ en $x = p$ met $0 < p < 5$. Bereken exact de waarde van $p$ waarvoor $O(V_p) = \\pi$.",
-      "antwoord_latex": "p = 2\\tfrac{1}{2}\\sqrt{2}",
+      "antwoord_latex": "p = \\tfrac{5}{2}\\sqrt{2}",
       "integrand": "4 / sqrt(25 - x^2)",
       "primitieve": "4 * asin(x / 5)",
       "domein": [
@@ -391,7 +391,7 @@
         "Hier spelen alle drie de delen van de driedeling: eerst het verhaaltje vertalen naar een integraal (deel 1), dan die integraal berekenen (deel 2), en daarna nog iets doen met de uitkomst (deel 3). Deel 1: $O(V_p) = \\displaystyle\\int_{0}^{p} \\dfrac{4}{\\sqrt{25 - x^{2}}}\\,\\mathrm{d}x$. De bovengrens is nu een letter; verder verandert er niets. De voorwaarde $p < 5$ staat erbij omdat $f$ buiten $\\langle-5, 5\\rangle$ niet bestaat.",
         "Haal de $5$ buiten de wortel: $\\sqrt{25 - x^{2}} = 5\\sqrt{1 - \\left(\\tfrac{1}{5}x\\right)^{2}}$. De integrand wordt $\\dfrac{\\tfrac{4}{5}}{\\sqrt{1 - \\left(\\frac{1}{5}x\\right)^{2}}}$, met kern $\\tfrac{1}{5}x$ en $a = \\tfrac{1}{5}$.",
         "Deel 2: delen door $\\tfrac{1}{5}$ is vermenigvuldigen met $5$, dus $F(x) = \\tfrac{4}{5} \\cdot 5\\arcsin\\left(\\tfrac{1}{5}x\\right) = 4\\arcsin\\left(\\tfrac{1}{5}x\\right)$. Omdat $\\arcsin(0) = 0$ is $O(V_p) = 4\\arcsin\\left(\\tfrac{1}{5}p\\right)$.",
-        "Deel 3: de vergelijking oplossen. $4\\arcsin\\left(\\tfrac{1}{5}p\\right) = \\pi$ geeft $\\arcsin\\left(\\tfrac{1}{5}p\\right) = \\tfrac{1}{4}\\pi$. Die hoek ligt tussen $-\\tfrac{1}{2}\\pi$ en $\\tfrac{1}{2}\\pi$, dus er is een oplossing: $\\tfrac{1}{5}p = \\sin\\left(\\tfrac{1}{4}\\pi\\right) = \\tfrac{1}{2}\\sqrt{2}$, dus $p = 2\\tfrac{1}{2}\\sqrt{2} \\approx 3{,}54$. Dat is inderdaad kleiner dan $5$."
+        "Deel 3: de vergelijking oplossen. $4\\arcsin\\left(\\tfrac{1}{5}p\\right) = \\pi$ geeft $\\arcsin\\left(\\tfrac{1}{5}p\\right) = \\tfrac{1}{4}\\pi$. Die hoek ligt tussen $-\\tfrac{1}{2}\\pi$ en $\\tfrac{1}{2}\\pi$, dus er is een oplossing: $\\tfrac{1}{5}p = \\sin\\left(\\tfrac{1}{4}\\pi\\right) = \\tfrac{1}{2}\\sqrt{2}$, dus $p = \\tfrac{5}{2}\\sqrt{2} \\approx 3{,}54$. Dat is inderdaad kleiner dan $5$."
       ]
     }
   ]
