@@ -252,6 +252,10 @@ export function TheorieClient({
           {chapters.map((ch) => {
             const { code, short } = splitTitle(ch.title)
             const Kop = eigenKop ? 'h1' : 'h2'
+            // Op een losse pagina is de hoofdstuktitel h1, dus de kaarten
+            // daaronder zijn h2. Op het overzicht is de titel h2 en blijven
+            // de kaarten h3. Anders slaat een kop een niveau over.
+            const KaartKop = eigenKop ? 'h2' : 'h3'
             return (
               <section
                 key={ch.slug}
@@ -307,6 +311,7 @@ export function TheorieClient({
                     chapterSlug={ch.slug}
                     plan={ch.stappenplan}
                     labels={labels}
+                    Kop={KaartKop}
                     onKies={(cardId) => kiesKaart(ch.slug, cardId)}
                   />
                 )}
@@ -318,9 +323,9 @@ export function TheorieClient({
                     return (
                       <Fragment key={card.id}>
                         {groepskop && (
-                          <h3 className="mt-4 text-xs font-semibold uppercase tracking-wider text-text-muted first:mt-0 md:col-span-2">
+                          <KaartKop className="mt-4 text-xs font-semibold uppercase tracking-wider text-text-muted first:mt-0 md:col-span-2">
                             <RichMath source={groepskop} />
-                          </h3>
+                          </KaartKop>
                         )}
                         <TheoryCard
                           chapterSlug={ch.slug}
@@ -328,6 +333,7 @@ export function TheorieClient({
                           open={openCards.has(`${ch.slug}/${card.id}`)}
                           onToggle={() => toggleCard(`${ch.slug}/${card.id}`)}
                           labels={labels}
+                          Kop={KaartKop}
                         />
                       </Fragment>
                     )
@@ -352,11 +358,13 @@ function StappenplanKaart({
   chapterSlug,
   plan,
   labels,
+  Kop,
   onKies,
 }: {
   chapterSlug: string
   plan: Stappenplan
   labels: Labels
+  Kop: 'h2' | 'h3'
   onKies: (cardId: string) => void
 }) {
   // Rijen onder hun groepskop bundelen: één kader per antwoord op stap 0,
@@ -374,7 +382,7 @@ function StappenplanKaart({
       className="mt-6 scroll-mt-4 rounded-xl border border-accent/40 bg-accent-light/40"
     >
       <div className="px-4 py-4 sm:px-5">
-        <h3 className="font-serif text-lg text-text">{plan.stap0Titel ?? labels.stap0Title}</h3>
+        <Kop className="font-serif text-lg text-text">{plan.stap0Titel ?? labels.stap0Title}</Kop>
         <p className="mt-1 text-sm leading-relaxed text-text-muted">
           <RichMath source={plan.intro} />
         </p>
@@ -598,12 +606,14 @@ function TheoryCard({
   open,
   onToggle,
   labels,
+  Kop,
 }: {
   chapterSlug: string
   card: OverviewCard
   open: boolean
   onToggle: () => void
   labels: Labels
+  Kop: 'h2' | 'h3'
 }) {
   // Alles wat uitwerking is zit in het uitklapdeel: formule, antwoordvorm en
   // tabel horen daar ook bij. Dicht toont een kaart alleen waaraan je hem herkent.
@@ -633,9 +643,9 @@ function TheoryCard({
           className="group flex w-full min-w-0 items-center justify-between gap-3 rounded-t-xl px-4 py-4 text-left sm:px-5"
         >
           <span className="min-w-0">
-            <h3 className="font-serif text-lg leading-snug text-text">
+            <Kop className="font-serif text-lg leading-snug text-text">
               <RichMath source={card.title} />
-            </h3>
+            </Kop>
             {card.herkenpunt && (
               <span className="mt-1 block min-w-0 overflow-x-auto text-text-muted">
                 <TeX tex={card.herkenpunt} />
@@ -659,9 +669,9 @@ function TheoryCard({
         </button>
       ) : (
         <div className="px-4 py-4 sm:px-5">
-          <h3 className="font-serif text-lg leading-snug text-text">
+          <Kop className="font-serif text-lg leading-snug text-text">
             <RichMath source={card.title} />
-          </h3>
+          </Kop>
         </div>
       )}
 
