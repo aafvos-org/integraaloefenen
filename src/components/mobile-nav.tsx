@@ -46,6 +46,7 @@ export function MobileNav({
                 <NavLink href={`/${locale}/theorie`} onClick={() => setOpen(false)}>{t('theory')}</NavLink>
                 <NavLink href={`/${locale}/uitleg-videos`} onClick={() => setOpen(false)}>{t('videos')}</NavLink>
                 <NavLink href={`/${locale}/oefenen`} onClick={() => setOpen(false)}>{t('freeExercise')}</NavLink>
+                <NavLink href={`/${locale}/examentraining`} onClick={() => setOpen(false)}>{t('examentraining')}</NavLink>
                 <NavLink href={`/${locale}/zelf-toets`} onClick={() => setOpen(false)}>{t('zelfToets')}</NavLink>
                 <NavLink href={`/${locale}/dashboard`} onClick={() => setOpen(false)}>{t('dashboard')}</NavLink>
                 {role === 'admin' && (

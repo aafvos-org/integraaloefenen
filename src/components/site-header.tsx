@@ -54,6 +54,17 @@ function IconPlayCircle() {
   )
 }
 
+function IconExamen() {
+  return (
+    <svg className="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+      <path d="M14 3v4a1 1 0 0 0 1 1h4" />
+      <path d="M17 21H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7l5 5v11a2 2 0 0 1-2 2z" />
+      <path d="M9 13h6" />
+      <path d="M9 17h4" />
+    </svg>
+  )
+}
+
 function IconChart() {
   return (
     <svg className="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
@@ -139,6 +150,13 @@ export async function SiteHeader({ locale }: { locale: string }) {
                 items={oefenenItems}
                 dataTour="oefenen"
               />
+              <Link
+                href={`/${locale}/examentraining`}
+                className="flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-md px-3 py-1.5 text-text-muted hover:bg-surface-2 hover:text-text"
+              >
+                <IconExamen />
+                {t('examentraining')}
+              </Link>
               <Link
                 href={`/${locale}/zelf-toets`}
                 data-tour="zelftoets"

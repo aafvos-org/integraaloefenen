@@ -19,7 +19,8 @@
     "signedInAs": "Ingelogd als",
     "settings": "Instellingen",
     "feedback": "Feedback sturen",
-    "videos": "Uitlegvideo's"
+    "videos": "Uitlegvideo's",
+    "examentraining": "Examentraining"
   },
   "Footer": {
     "brand": "__BRAND__",
@@ -306,6 +307,15 @@
     "retryButton": "Opnieuw proberen",
     "genericError": "Er ging iets mis.",
     "hasVideo": "Uitlegvideo"
+  },
+  "Examentraining": {
+    "title": "Examentraining",
+    "h1": "Examentraining",
+    "regel1": "De oppervlakte van een vlakdeel is een integraal. Tussen de grafiek en de x-as is dat de integraal van f. Tussen twee grafieken is dat de integraal van het verschil. Ligt de grafiek onder de x-as, dan neem je de uitkomst positief.",
+    "regel2": "Wentel je het vlakdeel om de x-as, dan is de inhoud π keer de integraal van y in het kwadraat.",
+    "regel3": "Wentel je het vlakdeel om de y-as, dan is de inhoud π keer de integraal van x in het kwadraat.",
+    "regel4": "Staan de grenzen niet in de vraag, bepaal dan eerst de snijpunten.",
+    "geenOpgaven": "Er staan hier nog geen opgaven."
   },
   "FreeExercise": {
     "title": "Oefenen",

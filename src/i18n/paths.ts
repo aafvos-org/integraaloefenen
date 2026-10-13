@@ -8,6 +8,7 @@
 // nieuwe pagina niet stil kan blijven liggen.
 export const MET_TAAL = [
   'dashboard',
+  'examentraining',
   'feedback',
   'hoe-het-werkt',
   'inloggen',
@@ -56,6 +57,7 @@ export const AFGESCHERMD: readonly string[] = MET_TAAL.filter(
 // redirect(...)` doen, zodat de twee niet uit elkaar kunnen lopen.
 export const ACHTER_INLOG = [
   'dashboard',
+  'examentraining',
   'feedback',
   'instellingen',
   'oefenen',
