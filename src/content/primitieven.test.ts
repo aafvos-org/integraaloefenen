@@ -241,11 +241,22 @@ const CONTENT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../.
 
 type Vragenbestand = { pad: string; vragen: Vraag[] }
 
+/**
+ * Numerieke vragen hebben geen primitieve om te differentiëren. Die staan in
+ * een bestand met `"soort": "numeriek"` en worden nagekeken door
+ * `h11-numeriek.test.ts`.
+ */
+function isNumeriekBestand(naam: string): boolean {
+  const rauw = JSON.parse(readFileSync(path.join(CONTENT, naam), 'utf8')) as { soort?: unknown }
+  return rauw.soort === 'numeriek'
+}
+
 function zoekBestanden(): string[] {
   if (!existsSync(CONTENT)) return []
   return readdirSync(CONTENT, { recursive: true, encoding: 'utf8' })
     .filter((naam) => naam.endsWith('.json') && naam.startsWith('hoofdstuk-'))
     .map((naam) => naam.split(path.sep).join('/'))
+    .filter((naam) => !isNumeriekBestand(naam))
     .sort()
 }
 

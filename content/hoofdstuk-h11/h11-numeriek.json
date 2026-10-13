@@ -1,0 +1,183 @@
+{
+  "hoofdstuk": "H11",
+  "soort": "numeriek",
+  "onderdeel": "Integralen numeriek berekenen (eigen vragen)",
+  "vragen": [
+    {
+      "nummer": "n1",
+      "cluster": "h11_numeriek_afronden",
+      "niveau": 1,
+      "decimalen": 2,
+      "integrand": "exp(x^2)",
+      "grenzen": [
+        0,
+        1
+      ],
+      "ruwe": 1.46265175,
+      "benadering": "1{,}46265",
+      "antwoord": "1,46",
+      "antwoord_latex": "1{,}46",
+      "latex": "Benader $\\int_{0}^{1} e^{x^{2}}\\,dx$. Rond af op twee decimalen.",
+      "stappen": [
+        "Deel 2 en deel 3: de integraal staat er al. Een primitieve kun je hier niet uitrekenen. Benader de integraal met de grafische rekenmachine en rond af op twee decimalen.",
+        "Zet in de grafische rekenmachine de integraal $\\int_{0}^{1} e^{x^{2}}\\,dx$.",
+        "De rekenmachine geeft ongeveer $1{,}46265$.",
+        "Het derde cijfer achter de komma is $2$. Dat is kleiner dan $5$, dus het tweede cijfer achter de komma, $6$, blijft staan. Op twee decimalen is het antwoord $1{,}46$."
+      ]
+    },
+    {
+      "nummer": "n2",
+      "cluster": "h11_numeriek_afronden",
+      "niveau": 1,
+      "decimalen": 2,
+      "integrand": "sqrt(1+x^3)",
+      "grenzen": [
+        0,
+        1
+      ],
+      "ruwe": 1.11144797,
+      "benadering": "1{,}11145",
+      "antwoord": "1,11",
+      "antwoord_latex": "1{,}11",
+      "latex": "Benader $\\int_{0}^{1} \\sqrt{1 + x^{3}}\\,dx$. Rond af op twee decimalen.",
+      "stappen": [
+        "Deel 2 en deel 3: de integraal staat er al. Een primitieve kun je hier niet uitrekenen. Benader de integraal met de grafische rekenmachine en rond af op twee decimalen.",
+        "Zet in de grafische rekenmachine de integraal $\\int_{0}^{1} \\sqrt{1 + x^{3}}\\,dx$.",
+        "De rekenmachine geeft ongeveer $1{,}11145$.",
+        "Het derde cijfer achter de komma is $1$. Dat is kleiner dan $5$, dus het tweede cijfer achter de komma, $1$, blijft staan. Op twee decimalen is het antwoord $1{,}11$."
+      ]
+    },
+    {
+      "nummer": "n3",
+      "cluster": "h11_numeriek_afronden",
+      "niveau": 1,
+      "decimalen": 2,
+      "integrand": "exp(-x^2)",
+      "grenzen": [
+        0,
+        1
+      ],
+      "ruwe": 0.74682413,
+      "benadering": "0{,}74682",
+      "antwoord": "0,75",
+      "antwoord_latex": "0{,}75",
+      "latex": "Benader $\\int_{0}^{1} e^{-x^{2}}\\,dx$. Rond af op twee decimalen.",
+      "stappen": [
+        "Deel 2 en deel 3: de integraal staat er al. Een primitieve kun je hier niet uitrekenen. Benader de integraal met de grafische rekenmachine en rond af op twee decimalen.",
+        "Zet in de grafische rekenmachine de integraal $\\int_{0}^{1} e^{-x^{2}}\\,dx$.",
+        "De rekenmachine geeft ongeveer $0{,}74682$.",
+        "Het derde cijfer achter de komma is $6$. Dat is $5$ of groter, dus het tweede cijfer achter de komma, $4$, gaat één omhoog. Op twee decimalen is het antwoord $0{,}75$."
+      ]
+    },
+    {
+      "nummer": "n4",
+      "cluster": "h11_numeriek_afronden",
+      "niveau": 2,
+      "decimalen": 2,
+      "integrand": "sin(x^2)",
+      "grenzen": [
+        0,
+        1
+      ],
+      "ruwe": 0.3102683,
+      "benadering": "0{,}31027",
+      "antwoord": "0,31",
+      "antwoord_latex": "0{,}31",
+      "latex": "Benader $\\int_{0}^{1} \\sin(x^{2})\\,dx$. Rond af op twee decimalen.",
+      "stappen": [
+        "Deel 2 en deel 3: de integraal staat er al. Een primitieve kun je hier niet uitrekenen. Benader de integraal met de grafische rekenmachine en rond af op twee decimalen.",
+        "Zet in de grafische rekenmachine de integraal $\\int_{0}^{1} \\sin(x^{2})\\,dx$.",
+        "De rekenmachine geeft ongeveer $0{,}31027$.",
+        "Het derde cijfer achter de komma is $0$. Dat is kleiner dan $5$, dus het tweede cijfer achter de komma, $1$, blijft staan. Op twee decimalen is het antwoord $0{,}31$."
+      ]
+    },
+    {
+      "nummer": "n5",
+      "cluster": "h11_numeriek_afronden",
+      "niveau": 2,
+      "decimalen": 2,
+      "integrand": "sqrt(1+x^4)",
+      "grenzen": [
+        0,
+        1
+      ],
+      "ruwe": 1.08942941,
+      "benadering": "1{,}08943",
+      "antwoord": "1,09",
+      "antwoord_latex": "1{,}09",
+      "latex": "Benader $\\int_{0}^{1} \\sqrt{1 + x^{4}}\\,dx$. Rond af op twee decimalen.",
+      "stappen": [
+        "Deel 2 en deel 3: de integraal staat er al. Een primitieve kun je hier niet uitrekenen. Benader de integraal met de grafische rekenmachine en rond af op twee decimalen.",
+        "Zet in de grafische rekenmachine de integraal $\\int_{0}^{1} \\sqrt{1 + x^{4}}\\,dx$.",
+        "De rekenmachine geeft ongeveer $1{,}08943$.",
+        "Het derde cijfer achter de komma is $9$. Dat is $5$ of groter, dus het tweede cijfer achter de komma, $8$, gaat één omhoog. Op twee decimalen is het antwoord $1{,}09$."
+      ]
+    },
+    {
+      "nummer": "n6",
+      "cluster": "h11_numeriek_afronden",
+      "niveau": 2,
+      "decimalen": 2,
+      "integrand": "1/ln(x)",
+      "grenzen": [
+        2,
+        4
+      ],
+      "ruwe": 1.92242131,
+      "benadering": "1{,}92242",
+      "antwoord": "1,92",
+      "antwoord_latex": "1{,}92",
+      "latex": "Benader $\\int_{2}^{4} \\dfrac{1}{\\ln(x)}\\,dx$. Rond af op twee decimalen.",
+      "stappen": [
+        "Deel 2 en deel 3: de integraal staat er al. Een primitieve kun je hier niet uitrekenen. Benader de integraal met de grafische rekenmachine en rond af op twee decimalen.",
+        "Zet in de grafische rekenmachine de integraal $\\int_{2}^{4} \\dfrac{1}{\\ln(x)}\\,dx$.",
+        "De rekenmachine geeft ongeveer $1{,}92242$.",
+        "Het derde cijfer achter de komma is $2$. Dat is kleiner dan $5$, dus het tweede cijfer achter de komma, $2$, blijft staan. Op twee decimalen is het antwoord $1{,}92$."
+      ]
+    },
+    {
+      "nummer": "n7",
+      "cluster": "h11_numeriek_afronden",
+      "niveau": 3,
+      "decimalen": 2,
+      "integrand": "sqrt(1+x^3)",
+      "grenzen": [
+        0,
+        2
+      ],
+      "ruwe": 3.24130926,
+      "benadering": "3{,}24131",
+      "antwoord": "3,24",
+      "antwoord_latex": "3{,}24",
+      "latex": "Gegeven is $f(x) = \\sqrt{1 + x^{3}}$. Het vlakdeel $V$ wordt ingesloten door de grafiek van $f$, de $x$-as en de lijnen $x = 0$ en $x = 2$. Benader de oppervlakte van $V$. Rond af op twee decimalen.",
+      "stappen": [
+        "Alle drie de delen. $\\sqrt{1 + x^{3}}$ is overal positief, dus de grafiek ligt boven de $x$-as. De oppervlakte is de integraal van $f$ van $0$ tot $2$. Die reken je niet exact uit: benader met de grafische rekenmachine en rond af.",
+        "$O(V) = \\int_{0}^{2} \\sqrt{1 + x^{3}}\\,dx$. Zet die integraal in de rekenmachine.",
+        "De rekenmachine geeft ongeveer $3{,}24131$.",
+        "Het derde cijfer achter de komma is $1$. Dat is kleiner dan $5$, dus het tweede cijfer achter de komma, $4$, blijft staan. De oppervlakte is $3{,}24$."
+      ]
+    },
+    {
+      "nummer": "n8",
+      "cluster": "h11_numeriek_afronden",
+      "niveau": 3,
+      "decimalen": 2,
+      "integrand": "exp(x^2)-1",
+      "grenzen": [
+        0,
+        1
+      ],
+      "ruwe": 0.46265175,
+      "benadering": "0{,}46265",
+      "antwoord": "0,46",
+      "antwoord_latex": "0{,}46",
+      "latex": "Gegeven zijn $f(x) = e^{x^{2}}$ en $g(x) = 1$. Benader de oppervlakte van het vlakdeel dat de grafieken van $f$ en $g$ insluiten op het interval $[0, 1]$. Rond af op twee decimalen.",
+      "stappen": [
+        "Alle drie de delen. Op $[0, 1]$ is $e^{x^{2}} \\ge 1$, en op $(0, 1]$ ligt $f$ boven $g$. De oppervlakte is de integraal van $f - g$. Die benader je met de rekenmachine en je rondt af.",
+        "$O = \\int_{0}^{1} \\left(e^{x^{2}} - 1\\right)\\,dx$. Zet die integraal in de rekenmachine.",
+        "De rekenmachine geeft ongeveer $0{,}46265$.",
+        "Het derde cijfer achter de komma is $2$. Dat is kleiner dan $5$, dus het tweede cijfer achter de komma, $6$, blijft staan. De oppervlakte is $0{,}46$."
+      ]
+    }
+  ]
+}
