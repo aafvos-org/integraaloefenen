@@ -51,6 +51,7 @@ export default async function HoofdstukPage({ params }: { params: Params }) {
     intro: kaart.intro,
     stappenplan: kaart.stappenplan,
     practiceLabel: t('practiceLink', { topic: stripChapterCode(kaart.title) }),
+    oefenlinks: kaart.oefenlinks,
     cards: kaart.cards,
     voorbeelden: VOORBEELDOPGAVEN[kaart.slug],
   }

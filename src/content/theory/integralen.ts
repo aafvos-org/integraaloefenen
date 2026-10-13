@@ -15,8 +15,9 @@
  * Volgorde volgt de leerlijn van de leerling: opgave → welke vorm is dit?
  * (de keuzehulp van stap 0) → één route → stappen → terug naar de opgave.
  * De driedeling staat als groepskop boven de kaarten, niet als hoofdstuk.
- * De stappen per route staan alleen in de kaarten zelf; `stappenplan.regels`
- * is bewust leeg gelaten omdat die tabel ze verdubbelde.
+ * Bij K.3 staan de stappen per route alleen in de kaarten; `stappenplan.regels`
+ * is daar leeg gelaten omdat die tabel ze verdubbelde. De substitutiemethode
+ * heeft één route, dus daar staat het vaste plan (stap 1–3) wél in die tabel.
  */
 
 import type { ClusterTheory, OverviewChapter } from './types'
@@ -31,6 +32,130 @@ export const TOPIC_FORMULA: Record<string, string> = {}
 export const TOPIC_INTROS: Record<string, string> = {}
 
 export const THEORY_OVERVIEW: OverviewChapter[] = [
+  {
+    slug: 'substitutiemethode',
+    code: 'K.1',
+    title: 'K.1 — De substitutiemethode',
+    intro:
+      'Je ziet een binnenfunctie $g$ en zijn afgeleide $g\'$ naast elkaar. Dan primitiveer je alleen de buitenkant $f$. De basis oefen je in K.1 A, de toepassingen in K.1 B.',
+    oefenlinks: [
+      { label: 'Oefen K.1 A', href: '/oefenen?blok=k1a' },
+      { label: 'Oefen K.1 B', href: '/oefenen?blok=k1b' },
+    ],
+    stappenplan: {
+      stap0Titel: 'Stap 0 · Welke vorm is dit?',
+      intro: 'Tik de vorm aan die bij jouw integraal past. Daarna doe je stap 1, 2 en 3.',
+      herken: [
+        {
+          groep: 'De afgeleide staat al naast de binnenfunctie',
+          schil: 'Een macht, met een factor met $x$ ervoor.',
+          voorbeeld: '\\int 10x(2x^2-1)^4\\,dx',
+          regel: 'Macht',
+          kaart: 'sub_macht',
+        },
+        {
+          groep: 'De afgeleide staat al naast de binnenfunctie',
+          schil: 'De teller is de afgeleide van de noemer.',
+          voorbeeld: '\\int \\frac{3x^2+2}{x^3+2x}\\,dx',
+          regel: 'Breuk',
+          kaart: 'sub_breuk',
+        },
+        {
+          groep: 'Eerst een verhaaltje, dan dezelfde truc',
+          schil: 'Oppervlakte tussen de grafiek, de $x$-as en twee lijnen.',
+          voorbeeld: '\\int_{0}^{1} 6x\\,e^{x^2+1}\\,dx',
+          regel: 'Verhaaltje',
+          kaart: 'sub_verhaal',
+        },
+      ],
+      regels: [
+        {
+          regel: 'Substitutie',
+          formule: '\\int f(g(x))\\cdot g\'(x)\\,dx = F(g(x))+c',
+          stap1: 'Kies de kern $g$ en bereken $g\'$.',
+          stap2: 'Schrijf de factor ervoor als een getal maal $g\'$. Dan is $g\'\\,dx$ hetzelfde als $d(g)$.',
+          stap3: 'Primitiveer alleen de buitenkant $f$ naar $g$. Schrijf $g$ terug, zet $+c$ en differentieer ter controle.',
+        },
+      ],
+      slot: 'Past de factor niet bij $g\'$? Dan hoort deze integraal niet bij de substitutiemethode. Een getal mag je naar voren halen; een factor waar nog $x$ in zit, niet.',
+    },
+    cards: [
+      {
+        id: 'sub_macht',
+        groep: 'Deel 2 · Bereken de integraal',
+        title: 'Een macht van de kern',
+        herkenpunt: '\\int f(g)\\cdot g\'\\,dx',
+        formula: '\\int f(g(x))\\cdot g\'(x)\\,dx = F(g(x))+c',
+        answerNote: 'Een primitieve eindigt op $+c$.',
+        examples: [
+          {
+            problem: '\\int 10x(2x^2-1)^4\\,dx',
+            answer: '\\tfrac12(2x^2-1)^5+c',
+            stappenplan: true,
+            steps: [
+              'Alleen deel 2: de opgave vraagt een primitieve. De buitenste schil is een macht, en ervoor staat een factor met $x$.',
+              'De kern is $g(x)=2x^2-1$. Dan is $g\'(x)=4x$. De buitenkant is $f(g)=g^4$.',
+              '$10x$ is $\\tfrac52$ keer $4x$, dus $\\tfrac52$ keer $g\'(x)$. De integraal wordt $\\tfrac52\\int g^4\\,dg$.',
+              '$\\tfrac52\\cdot\\tfrac15 g^5+c=\\tfrac12(2x^2-1)^5+c$. Terugdifferentiëren geeft $\\tfrac12\\cdot 5(2x^2-1)^4\\cdot 4x=10x(2x^2-1)^4$.',
+            ],
+          },
+        ],
+        notes: [
+          'De kern $g$ is wat ín de macht staat, niet de macht zelf.',
+        ],
+      },
+      {
+        id: 'sub_breuk',
+        groep: 'Deel 2 · Bereken de integraal',
+        title: 'De afgeleide gedeeld door de kern',
+        herkenpunt: '\\int \\frac{g\'}{g}\\,dx',
+        formula: '\\int \\frac{g\'(x)}{g(x)}\\,dx = \\ln|g(x)|+c',
+        answerNote: 'De strepen van de absolute waarde horen erbij, want een logaritme wil een positief getal.',
+        examples: [
+          {
+            problem: '\\int \\frac{3x^2+2}{x^3+2x}\\,dx',
+            answer: '\\ln|x^3+2x|+c',
+            stappenplan: true,
+            steps: [
+              'Alleen deel 2. De buitenste schil is een breuk: in de teller staat precies de afgeleide van de noemer.',
+              'De kern is $g(x)=x^3+2x$. Dan is $g\'(x)=3x^2+2$. De buitenkant is $f(g)=\\dfrac{1}{g}$.',
+              'De teller is precies $g\'(x)$, dus de integraal is $\\displaystyle\\int \\dfrac{1}{g}\\,dg$.',
+              'Dat is $\\ln|g|+c=\\ln|x^3+2x|+c$. Terugdifferentiëren geeft $\\dfrac{3x^2+2}{x^3+2x}$.',
+            ],
+          },
+        ],
+        notes: [
+          'Staat er een extra getal in de teller, bijvoorbeeld $6x^2$ terwijl $g\'=3x^2$? Haal dat getal naar voren en ga daarna hetzelfde te werk.',
+        ],
+      },
+      {
+        id: 'sub_verhaal',
+        groep: 'Deel 1 en 3 · Van verhaaltje naar antwoord',
+        title: 'Er staat een verhaaltje in plaats van een kale integraal',
+        breed: true,
+        herkenpunt: 'O(V)=\\int_{a}^{b} f(x)\\,dx',
+        formula: 'O(V)=\\int_{a}^{b} f(x)\\,dx',
+        answerNote: 'Bij een oppervlakte geef je een exact getal, zonder $+c$.',
+        examples: [
+          {
+            problem: '\\int_{0}^{1} 6x\\,e^{x^2+1}\\,dx',
+            answer: '3e(e-1)',
+            steps: [
+              'Deel 1 — het vlakdeel tussen de grafiek, de $x$-as en de lijnen $x=0$ en $x=1$ is $O(V)=\\displaystyle\\int_{0}^{1} 6x\\,e^{x^2+1}\\,dx$. Op dat stuk is $f(x)$ nul of positief.',
+              'Deel 2, stap 1 — de kern is $g(x)=x^2+1$, want die staat in de exponent. Dan is $g\'(x)=2x$.',
+              'Deel 2, stap 2 — $6x=3\\cdot 2x$, dus $3$ keer $g\'(x)$. De integraal wordt $3\\displaystyle\\int e^{g}\\,dg$.',
+              'Deel 2, stap 3 — een primitieve is $F(x)=3e^{x^2+1}$. Terugdifferentiëren: $3e^{x^2+1}\\cdot 2x=6x\\,e^{x^2+1}$.',
+              'Deel 3 — $F(1)-F(0)=3e^{2}-3e=3e(e-1)$.',
+            ],
+          },
+        ],
+        notes: [
+          'Deel 1 is het zinnetje uit de opgave omzetten naar een integraal. Deel 2 is de substitutie. Deel 3 is de grenzen invullen en het antwoord exact laten staan.',
+          'Bij een kale "primitiveer" of "bereken exact" sla je deel 1 over. Deel 3 is dan alleen: $+c$ zetten, of de grenzen invullen.',
+        ],
+      },
+    ],
+  },
   {
     slug: 'k3',
     title: 'K.3 — Cyclometrische functies',

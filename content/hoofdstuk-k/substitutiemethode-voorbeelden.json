@@ -1,0 +1,26 @@
+{
+  "hoofdstuk": "K",
+  "onderdeel": "Voorbeelden op de openbare pagina over de substitutiemethode. Geen oefenvragen.",
+  "vragen": [
+    {
+      "nummer": "macht",
+      "integrand": "10 * x * (2 * x^2 - 1)^4",
+      "primitieve": "(1/2) * (2 * x^2 - 1)^5",
+      "domein": [-2, 2]
+    },
+    {
+      "nummer": "breuk",
+      "integrand": "(3 * x^2 + 2) / (x^3 + 2 * x)",
+      "primitieve": "ln(abs(x^3 + 2 * x))",
+      "domein": [0.4, 2.2]
+    },
+    {
+      "nummer": "oppervlakte",
+      "integrand": "6 * x * e^(x^2 + 1)",
+      "primitieve": "3 * e^(x^2 + 1)",
+      "domein": [-1.5, 1.5],
+      "grenzen": [0, 1],
+      "waarde": "3 * e * (e - 1)"
+    }
+  ]
+}

@@ -54,10 +54,19 @@ export type HerkenRij = {
 /** Het vaste stappenplan van een hoofdstuk: stap 0 (herkennen) + stap 1–3 per regel. */
 export type Stappenplan = {
   intro: string
+  /** Kop van stap 0. Weglaten = de standaardkop uit de vertalingen. */
+  stap0Titel?: string
   herken: HerkenRij[]
   /** Weglaten als de stappen al in de kaarten zelf staan; scheelt een tweede tabel. */
   regels?: Array<{ regel: string; formule: string; stap1: string; stap2: string; stap3: string }>
   slot?: string
+}
+
+/** Knop naar een oefenblok, bijvoorbeeld K.1 A. */
+export type Oefenlink = {
+  label: string
+  /** Pad onder de taal, bijvoorbeeld `/oefenen?blok=k1a`. */
+  href: string
 }
 
 /** Zelftest-item: welke regel pak je bij deze functie? */
@@ -75,6 +84,8 @@ export type OverviewCard = {
   herkenpunt?: string
   /** topics_new.slug — koppelt de kaart aan een oefen-topic (knop "Oefen dit onderdeel") */
   topicSlug?: string
+  /** Volle breedte, voor een kaart met een lang voorbeeld. */
+  breed?: boolean
   formula?: string // hoofdformule (LaTeX, display mode)
   /** Afspraak over de vorm van het antwoord, één zin; mag `$...$` bevatten */
   answerNote?: string
@@ -90,8 +101,12 @@ export type OverviewCard = {
 export type OverviewChapter = {
   slug: string
   title: string
+  /** Korte code in de navigatie, bijvoorbeeld "K.1". Anders de slug in hoofdletters. */
+  code?: string
   /** Eén zin onder de hoofdstuktitel */
   intro?: string
   stappenplan?: Stappenplan
+  /** Knoppen naar oefenen. Anders één link op het hoofdstuk zelf. */
+  oefenlinks?: Oefenlink[]
   cards: OverviewCard[]
 }

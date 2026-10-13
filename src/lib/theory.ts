@@ -10,6 +10,7 @@ import * as integralen from '@/content/theory/integralen'
 
 export type {
   ClusterTheory,
+  Oefenlink,
   OverviewExample,
   OverviewTable,
   OverviewCard,
@@ -28,7 +29,7 @@ export const THEORY_OVERVIEW = integralen.THEORY_OVERVIEW
 export const THEORIE_HOOFDSTUKKEN: Array<{ slug: string; code: string; title: string }> = THEORY_OVERVIEW.map(
   (ch) => ({
     slug: ch.slug,
-    code: ch.slug.toUpperCase(),
+    code: ch.code ?? ch.slug.toUpperCase(),
     // "H2 — …" en "K.3 — …" worden beide tot de kale titel teruggebracht
     title: ch.title.replace(/^[A-Z]\.?\d+(?:\.\d+)?\s*[—–-]\s*/, ''),
   }),

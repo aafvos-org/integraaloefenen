@@ -6,7 +6,7 @@ import { Link } from '@/i18n/navigation'
 import { Math as TeX, RichMath } from '@/components/math'
 import { cn } from '@/components/ui'
 import type { Voorbeeldopgave } from '@/content/theory/voorbeeldopgaven'
-import type { OverviewCard, Stappenplan } from '@/lib/theory'
+import type { Oefenlink, OverviewCard, Stappenplan } from '@/lib/theory'
 
 import { leesbareTekst, leesbareWiskunde } from './leesbare-tekst'
 
@@ -17,6 +17,7 @@ export type TheorieChapter = {
   stappenplan?: Stappenplan
   /** Vooraf op de server geformatteerd, bv. "Oefen De afgeleide functie →" */
   practiceLabel: string
+  oefenlinks?: Oefenlink[]
   cards: OverviewCard[]
   voorbeelden?: Voorbeeldopgave[]
 }
@@ -273,12 +274,26 @@ export function TheorieClient({
                     )}
                     {short}
                   </Kop>
-                  <Link
-                    href={`/oefenen?chapter=${encodeURIComponent(ch.slug)}` as '/oefenen'}
-                    className="text-sm font-medium text-accent underline-offset-2 hover:underline"
-                  >
-                    {ch.practiceLabel}
-                  </Link>
+                  {ch.oefenlinks && ch.oefenlinks.length > 0 ? (
+                    <div className="flex flex-wrap gap-2">
+                      {ch.oefenlinks.map((link) => (
+                        <Link
+                          key={link.href}
+                          href={link.href as '/oefenen'}
+                          className="inline-flex min-h-11 items-center rounded-full bg-accent px-4 text-sm font-medium text-white"
+                        >
+                          {link.label}
+                        </Link>
+                      ))}
+                    </div>
+                  ) : (
+                    <Link
+                      href={`/oefenen?chapter=${encodeURIComponent(ch.slug)}` as '/oefenen'}
+                      className="text-sm font-medium text-accent underline-offset-2 hover:underline"
+                    >
+                      {ch.practiceLabel}
+                    </Link>
+                  )}
                 </div>
 
                 {ch.intro && (
@@ -359,7 +374,7 @@ function StappenplanKaart({
       className="mt-6 scroll-mt-4 rounded-xl border border-accent/40 bg-accent-light/40"
     >
       <div className="px-4 py-4 sm:px-5">
-        <h3 className="font-serif text-lg text-text">{labels.stap0Title}</h3>
+        <h3 className="font-serif text-lg text-text">{plan.stap0Titel ?? labels.stap0Title}</h3>
         <p className="mt-1 text-sm leading-relaxed text-text-muted">
           <RichMath source={plan.intro} />
         </p>
@@ -606,7 +621,7 @@ function TheoryCard({
       id={`kaart-${chapterSlug}-${card.id}`}
       className={cn(
         'flex min-w-0 scroll-mt-4 flex-col rounded-xl border border-border bg-surface',
-        card.topicSlug && 'md:col-span-2',
+        (card.topicSlug || card.breed) && 'md:col-span-2',
       )}
     >
       {expandable ? (
