@@ -31,6 +31,7 @@ function openbarePaden(): Array<{
       changeFrequency: 'monthly' as const,
       priority: 0.7,
     })),
+    { pad: '/examen-integralen', changeFrequency: 'monthly', priority: 0.7 },
     { pad: '/uitleg-videos', changeFrequency: 'monthly', priority: 0.7 },
     { pad: '/hoe-het-werkt', changeFrequency: 'monthly', priority: 0.6 },
     { pad: '/privacy', changeFrequency: 'monthly', priority: 0.4 },
@@ -45,6 +46,7 @@ function openbarePaden(): Array<{
 const LAATST_GEWIJZIGD: Record<string, string> = {
   '': '2026-10-14',
   '/theorie': '2026-10-14',
+  '/examen-integralen': '2026-10-14',
   '/uitleg-videos': '2026-10-13',
   '/hoe-het-werkt': '2026-10-10',
   '/privacy': '2026-10-13',

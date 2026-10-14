@@ -321,6 +321,25 @@
     "kiesOpgave": "Kies een opgave. Je antwoord is de exacte oppervlakte.",
     "terug": "Alle opgaven"
   },
+  "ExamenUitleg": {
+    "title": "Examentraining integralen",
+    "description": "Oefen oppervlakte en inhoud voor het examen wiskunde B vwo. De opgaven staan achter een gratis account. Het examen is op vrijdag 28 mei 2027.",
+    "eyebrow": "Wiskunde B · vwo",
+    "h1": "Examentraining integralen",
+    "intro": "Het centraal examen wiskunde B vwo is op vrijdag 28 mei 2027, van 13.30 tot 16.30 uur. Hier oefen je de integraalopgaven die daarbij horen. Het zijn onze eigen opgaven, in de stijl van het examen.",
+    "examenbladVoor": "De officiële opgaven en het rooster staan op",
+    "examenbladLink": "Examenblad: wiskunde B vwo 2027",
+    "watH2": "Wat je oefent",
+    "punt1": "De oppervlakte van een vlakdeel. Tussen de grafiek van f en de x-as is dat de integraal van f. Tussen twee grafieken is dat de integraal van het verschil. Ligt de grafiek onder de x-as, dan neem je de uitkomst positief.",
+    "punt2": "De inhoud als je dat vlakdeel om de x-as wentelt: π keer de integraal van het kwadraat van f.",
+    "punt3": "De inhoud als je het vlakdeel om de y-as wentelt: π keer de integraal van het kwadraat van x.",
+    "punt4": "De grenzen. Geeft de vraag ze niet, dan bepaal je eerst de snijpunten.",
+    "opgavenH2": "De opgaven",
+    "opgaven": "De opgaven zelf staan achter een gratis account, zodat je antwoorden en je voortgang bewaard blijven.",
+    "ctaRegister": "Gratis account aanmaken",
+    "ctaLogin": "Ik heb al een account",
+    "ctaOpgaven": "Naar de opgaven"
+  },
   "FreeExercise": {
     "title": "Oefenen",
     "h1": "Oefenen",

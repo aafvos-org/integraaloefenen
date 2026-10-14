@@ -72,6 +72,7 @@ export function MobileNav({
               <>
                 <NavLink href={`/${locale}/theorie`} onClick={() => setOpen(false)}>{t('theory')}</NavLink>
                 <NavLink href={`/${locale}/uitleg-videos`} onClick={() => setOpen(false)}>{t('videos')}</NavLink>
+                <NavLink href={`/${locale}/examen-integralen`} onClick={() => setOpen(false)}>{t('examentraining')}</NavLink>
                 <NavLink href={`/${locale}/inloggen`} onClick={() => setOpen(false)}>{t('login')}</NavLink>
                 <NavLink href={`/${locale}/registreren`} onClick={() => setOpen(false)}>{t('register')}</NavLink>
               </>

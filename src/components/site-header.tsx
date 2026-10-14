@@ -198,6 +198,13 @@ export async function SiteHeader({ locale }: { locale: string }) {
               {theorieDropdown}
               {videosLink}
               <Link
+                href={`/${locale}/examen-integralen`}
+                className="flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-md px-3 py-1.5 text-text-muted hover:bg-surface-2 hover:text-text"
+              >
+                <IconExamen />
+                {t('examentraining')}
+              </Link>
+              <Link
                 href={`/${locale}/inloggen`}
                 className="rounded-md px-3 py-1.5 text-text-muted hover:bg-surface-2 hover:text-text"
               >

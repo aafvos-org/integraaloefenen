@@ -73,6 +73,12 @@ describe('sitemap.xml', () => {
     }
   })
 
+  it('noemt elke openbare pagina', () => {
+    for (const pad of OPENBAAR) {
+      expect(inSitemap()).toContain(`/${TAAL}/${pad}`)
+    }
+  })
+
   it('noemt elk theorie-hoofdstuk', () => {
     for (const h of THEORIE_HOOFDSTUKKEN) {
       expect(inSitemap()).toContain(`/${TAAL}/theorie/${h.slug}`)
