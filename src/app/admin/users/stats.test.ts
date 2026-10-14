@@ -181,8 +181,16 @@ describe('fetchAllAuthUsers', () => {
 
 describe('buildUserRows', () => {
   function profiel(id: string, createdAt: string | null): ProfileRow {
-    return { id, username: id, role: 'student', created_at: createdAt }
+    return { id, username: id, role: 'student', created_at: createdAt, bron: null }
   }
+
+  it('houdt de bron bij het profiel', () => {
+    const rows = buildUserRows(
+      [{ ...profiel('via-youtube', '2026-10-09T08:00:00.000Z'), bron: 'youtube' }],
+      [],
+    )
+    expect(rows[0]?.bron).toBe('youtube')
+  })
 
   it('toont de laatste keer inloggen, ook als er nog geen antwoord is', () => {
     const rows = buildUserRows(

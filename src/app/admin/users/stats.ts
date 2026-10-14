@@ -117,6 +117,8 @@ export type ProfileRow = {
   username: string | null
   role: string
   created_at: string | null
+  /** docent, youtube, klas of forum. Leeg als de aanmeldlink die niet had. */
+  bron: string | null
 }
 
 /** Eén regel in de tabel: het profiel plus wat Auth erover weet. */

@@ -1,3 +1,4 @@
+import { leesBron } from '@/lib/bron'
 import { createServiceRoleClient } from '@/lib/supabase/server'
 import { Badge, Card } from '@/components/ui'
 
@@ -28,7 +29,7 @@ export default async function UsersPage() {
     fetchAllRows<ProfileRow>(async (from, to) => {
       const { data, error } = await admin
         .from('profiles')
-        .select('id, username, role, created_at')
+        .select('id, username, role, created_at, bron')
         .order('created_at', { ascending: false })
         .order('id', { ascending: true })
         .range(from, to)
@@ -81,6 +82,7 @@ export default async function UsersPage() {
               <th className="px-4 py-2 font-medium">Gemasterde clusters</th>
               <th className="px-4 py-2 font-medium">Antwoorden</th>
               <th className="px-4 py-2 font-medium">% correct</th>
+              <th className="px-4 py-2 font-medium">Bron</th>
               <th className="px-4 py-2 font-medium">Aangemeld</th>
               <th className="px-4 py-2 font-medium">Laatst ingelogd</th>
               <th className="px-4 py-2 font-medium">Laatste antwoord</th>
@@ -95,6 +97,7 @@ export default async function UsersPage() {
                   ? Math.round((stats.correct / stats.total) * 100)
                   : null
               const setRole = setUserRole.bind(null, p.id)
+              const bron = leesBron(p.bron)
               return (
                 <tr key={p.id} className="align-top">
                   <td className="px-4 py-2">
@@ -143,6 +146,7 @@ export default async function UsersPage() {
                       `${pct}%`
                     )}
                   </td>
+                  <td className="px-4 py-2 text-text-muted">{bron ?? ''}</td>
                   <td className="whitespace-nowrap px-4 py-2 text-xs text-text-muted">
                     {formatMoment(p.signedUpAt) ?? '—'}
                   </td>
@@ -158,7 +162,7 @@ export default async function UsersPage() {
             {users.length === 0 && (
               <tr>
                 <td
-                  colSpan={10}
+                  colSpan={11}
                   className="px-4 py-10 text-center text-text-muted"
                 >
                   Nog geen gebruikers.
