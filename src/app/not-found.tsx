@@ -3,11 +3,9 @@ import Link from 'next/link'
 
 import { getTranslations } from 'next-intl/server'
 
-import { SITE_CONFIG } from '@/config/site'
+import { nietGevondenMetadata } from '@/lib/niet-gevonden'
 
-export const metadata: Metadata = {
-  title: `Pagina niet gevonden · ${SITE_CONFIG.domain}`,
-}
+export const metadata: Metadata = nietGevondenMetadata
 
 // De paden buiten de taalmappen (zoals /leerpad of /bestaat-niet) eindigen
 // hier. De pagina's onder /nl/ krijgen hun eigen Nederlandse versie uit

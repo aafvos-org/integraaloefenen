@@ -15,8 +15,10 @@ import { kaartLabels, layoutLabels, stripChapterCode, theorieNavItems } from '..
 
 type Params = Promise<{ locale: string; hoofdstuk: string }>
 
-// Alleen bestaande hoofdstukken. Een verzonnen slug (dynamicParams = false)
-// krijgt 404, nog vóór metadata, zodat er geen canonical naar die slug komt.
+// Alleen bestaande hoofdstukken. Een verzonnen slug krijgt hier ook notFound(),
+// maar op de live site begint theorie/loading.tsx al met streamen en blijft de
+// status dan 200. De middleware stuurt zo'n adres daarom eerst weg
+// (herschrijfVerzonnenTheorie), nog vóór deze pagina.
 export const dynamicParams = false
 
 export function generateStaticParams() {

@@ -2,6 +2,7 @@ import { NextResponse, type NextRequest } from 'next/server'
 
 import { ZONDER_TAAL } from '@/i18n/paths'
 import { routing } from '@/i18n/routing'
+import { herschrijfVerzonnenTheorie } from '@/lib/theorie-slugs'
 import { updateSession } from '@/lib/supabase/middleware'
 
 // Deze pagina's hangen niet onder een taal in de URL. Een oude link als
@@ -11,6 +12,13 @@ const MET_TAAL_ERVOOR = new RegExp(
 )
 
 export async function middleware(request: NextRequest) {
+  const verzonnenTheorie = herschrijfVerzonnenTheorie(request.nextUrl.pathname)
+  if (verzonnenTheorie) {
+    const url = request.nextUrl.clone()
+    url.pathname = verzonnenTheorie
+    return NextResponse.rewrite(url)
+  }
+
   const metTaalErvoor = request.nextUrl.pathname.match(MET_TAAL_ERVOOR)
   if (metTaalErvoor) {
     const url = request.nextUrl.clone()
