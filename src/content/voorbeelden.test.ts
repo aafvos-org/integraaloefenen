@@ -1,7 +1,7 @@
 import { derivative, isComplex, parse, type MathNode } from 'mathjs'
 import { describe, expect, it } from 'vitest'
 
-import { oefenPad, VOORBEELDEN, vindVoorbeeld, type Voorbeeld } from './voorbeelden'
+import { oefenPad, proefPad, VOORBEELDEN, vindVoorbeeld, type Voorbeeld } from './voorbeelden'
 
 const AANTAL_PUNTEN = 13
 const MINIMAAL_BRUIKBAAR = 3
@@ -137,6 +137,9 @@ describe('antwoordpagina’s', () => {
       expect(pad, voorbeeld.slug).toContain('van=voorbeeld')
       expect(pad, voorbeeld.slug).toContain(`blok=${voorbeeld.blok}`)
       expect(pad, voorbeeld.slug).toContain(`cluster=${voorbeeld.cluster}`)
+      expect(proefPad(voorbeeld), voorbeeld.slug).toBe(
+        `/proberen/${voorbeeld.theorie.split('/').pop()}`,
+      )
     }
   })
 

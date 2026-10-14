@@ -280,6 +280,7 @@ export function TheorieClient({
                     {short}
                   </Kop>
                   <div className="flex w-full min-w-0 flex-col items-stretch gap-2 sm:w-auto sm:flex-row sm:flex-wrap sm:items-center">
+                    <ProberenKnop slug={ch.slug} />
                     <DeelKnop
                       pad={
                         eigenKop
@@ -287,26 +288,26 @@ export function TheorieClient({
                           : `/nl/theorie/${ch.slug}`
                       }
                     />
-                  {ch.oefenlinks && ch.oefenlinks.length > 0 ? (
-                    <div className="flex flex-wrap gap-2">
-                      {ch.oefenlinks.map((link) => (
-                        <Link
-                          key={link.href}
-                          href={link.href as '/oefenen'}
-                          className="inline-flex min-h-11 items-center rounded-full bg-accent px-4 text-sm font-medium text-white"
-                        >
-                          {link.label}
-                        </Link>
-                      ))}
-                    </div>
-                  ) : (
-                    <Link
-                      href={`/oefenen?chapter=${encodeURIComponent(ch.slug)}` as '/oefenen'}
-                      className="text-sm font-medium text-accent underline-offset-2 hover:underline"
-                    >
-                      {ch.practiceLabel}
-                    </Link>
-                  )}
+                    {ch.oefenlinks && ch.oefenlinks.length > 0 ? (
+                      <div className="flex flex-wrap gap-2">
+                        {ch.oefenlinks.map((link) => (
+                          <Link
+                            key={link.href}
+                            href={link.href as '/oefenen'}
+                            className="inline-flex min-h-11 items-center rounded-full border border-border px-4 text-sm font-medium text-text"
+                          >
+                            {link.label}
+                          </Link>
+                        ))}
+                      </div>
+                    ) : (
+                      <Link
+                        href={`/oefenen?chapter=${encodeURIComponent(ch.slug)}` as '/oefenen'}
+                        className="inline-flex min-h-11 items-center text-sm font-medium text-accent underline-offset-2 hover:underline"
+                      >
+                        {ch.practiceLabel}
+                      </Link>
+                    )}
                   </div>
                 </div>
 
@@ -352,6 +353,7 @@ export function TheorieClient({
 
                 {ch.voorbeelden && ch.voorbeelden.length > 0 && (
                   <Voorbeeldopgaven
+                    chapterSlug={ch.slug}
                     opgaven={ch.voorbeelden}
                     deelPad={`/nl/theorie/${ch.slug}#voorbeeldopgaven`}
                   />
@@ -560,10 +562,23 @@ function KaartTekst({ card, labels }: { card: OverviewCard; labels: Labels }) {
 
 /* ── Eén theoriekaart ───────────────────────────────────────────────────── */
 
+function ProberenKnop({ slug }: { slug: string }) {
+  return (
+    <Link
+      href={`/proberen/${slug}` as '/proberen'}
+      className="inline-flex min-h-11 items-center rounded-full bg-accent px-4 text-sm font-medium text-white"
+    >
+      Probeer 3 sommen
+    </Link>
+  )
+}
+
 function Voorbeeldopgaven({
+  chapterSlug,
   opgaven,
   deelPad,
 }: {
+  chapterSlug: string
   opgaven: Voorbeeldopgave[]
   deelPad?: string
 }) {
@@ -612,12 +627,9 @@ function Voorbeeldopgaven({
           </li>
         ))}
       </ol>
-      <Link
-        href="/inloggen"
-        className="mt-5 inline-flex min-h-11 items-center rounded-full bg-accent px-5 text-sm font-medium text-white"
-      >
-        Zelf oefenen
-      </Link>
+      <div className="mt-5">
+        <ProberenKnop slug={chapterSlug} />
+      </div>
     </section>
   )
 }

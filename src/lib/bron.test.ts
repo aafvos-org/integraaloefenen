@@ -9,7 +9,7 @@ import {
 } from './bron'
 
 describe('leesBron', () => {
-  it('herkent de vier vaste woorden', () => {
+  it('herkent de vaste woorden', () => {
     for (const bron of BRONNEN) {
       expect(leesBron(bron)).toBe(bron)
     }
@@ -56,7 +56,7 @@ describe('padNaarAanmelden', () => {
 })
 
 describe('scriptDatBronOnthoudt', () => {
-  it('noemt alleen de vier woorden en zet geen cookie', () => {
+  it('noemt elk toegestaan woord en zet geen cookie', () => {
     const script = scriptDatBronOnthoudt()
     for (const bron of BRONNEN) expect(script).toContain(bron)
     expect(script).toContain('sessionStorage')

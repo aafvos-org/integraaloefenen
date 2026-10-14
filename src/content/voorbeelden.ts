@@ -9,6 +9,8 @@
  * Geen boekopgaven. Functies heten f, g en h.
  */
 
+import { THEORIE_SLUGS } from '@/lib/theorie-slugs'
+
 export type Voorbeeld = {
   /** Stuk achter /nl/voorbeeld/ */
   slug: string
@@ -51,6 +53,13 @@ export function oefenPad(voorbeeld: Voorbeeld): string {
     van: 'voorbeeld',
   })
   return `/oefenen?${params.toString()}`
+}
+
+/** Drie proefopgaven van het bijbehorende theoriehoofdstuk, zonder account. */
+export function proefPad(voorbeeld: Voorbeeld): string | null {
+  const slug = voorbeeld.theorie.split('/').filter(Boolean).pop() ?? ''
+  if (!(THEORIE_SLUGS as readonly string[]).includes(slug)) return null
+  return `/proberen/${slug}`
 }
 
 export function vindVoorbeeld(slug: string): Voorbeeld | undefined {

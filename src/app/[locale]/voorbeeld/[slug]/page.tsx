@@ -4,7 +4,7 @@ import { getTranslations } from 'next-intl/server'
 import { leesbareTekst, leesbareWiskunde } from '@/app/[locale]/theorie/leesbare-tekst'
 import { Math, RichMath } from '@/components/math'
 import { SITE_CONFIG } from '@/config/site'
-import { oefenPad, vindVoorbeeld, VOORBEELDEN } from '@/content/voorbeelden'
+import { oefenPad, proefPad, vindVoorbeeld, VOORBEELDEN } from '@/content/voorbeelden'
 import { Link } from '@/i18n/navigation'
 import { routing } from '@/i18n/routing'
 import { voorbeeldGegevens } from '@/lib/gestructureerde-gegevens'
@@ -38,6 +38,7 @@ export default async function VoorbeeldPagina({ params }: { params: Params }) {
   if (!voorbeeld) notFound()
 
   const t = await getTranslations('Voorbeeld')
+  const proef = proefPad(voorbeeld)
   const antwoordTekst = leesbareWiskunde(voorbeeld.antwoordLatex)
   const stappenTekst = voorbeeld.stappen.map((stap) => leesbareTekst(stap))
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? `https://${SITE_CONFIG.domain}`
@@ -103,10 +104,18 @@ export default async function VoorbeeldPagina({ params }: { params: Params }) {
         </p>
       </section>
 
-      <p className="mt-10">
+      <p className="mt-10 flex flex-wrap gap-2">
+        {proef && (
+          <Link
+            href={proef as '/proberen'}
+            className="inline-flex min-h-11 items-center rounded-lg bg-accent px-5 py-3 text-white shadow-sm hover:bg-accent/90"
+          >
+            Probeer 3 sommen
+          </Link>
+        )}
         <Link
           href={oefenPad(voorbeeld) as '/oefenen'}
-          className="inline-flex min-h-11 items-center rounded-lg bg-accent px-5 py-3 text-white shadow-sm hover:bg-accent/90"
+          className="inline-flex min-h-11 items-center rounded-lg border border-border bg-surface px-5 py-3 text-text hover:bg-surface-2"
         >
           {t('oefenen')}
         </Link>

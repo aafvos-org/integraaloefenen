@@ -117,7 +117,7 @@ function taalVanBeschermdPad(path: string): string | null {
 }
 
 /**
- * Geeft `?van=` door aan de pagina, als het een van de vier vaste woorden is.
+ * Geeft `?van=` door aan de pagina, als het een van de vaste woorden is.
  * Een meegestuurd kopje van de browser zelf telt niet: alleen de link.
  * Geen cookie.
  */

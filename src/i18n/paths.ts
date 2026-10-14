@@ -17,6 +17,7 @@ export const MET_TAAL = [
   'instellingen',
   'oefenen',
   'privacy',
+  'proberen',
   'registreren',
   'theorie',
   'uitleg-videos',
