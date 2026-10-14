@@ -3,6 +3,7 @@ import { describe, expect, it } from 'vitest'
 import {
   bouwDashboardIndeling,
   hrefVoorBlok,
+  kiesBijnaBeheerst,
   weegClusters,
   type VoortgangRij,
 } from '@/lib/dashboard/indeling'
@@ -252,5 +253,73 @@ describe('dashboard per theorieblok', () => {
     const blok = boom.hoofdstukken[0]!.paragrafen[0]!.blokken[0]!
     expect(weegClusters(blok.clusters).mastered).toBe(0)
     expect(weegClusters(blok.clusters).pct).toBe(100)
+  })
+})
+
+describe('kiesBijnaBeheerst', () => {
+  const chapters = [{ id: 'ck', slug: 'k' }]
+  const topics = [
+    { id: 't1', slug: 'k1a_kern', title: 'De kern', chapter_id: 'ck' },
+    { id: 't2', slug: 'k1a_ketting', title: 'Ketting', chapter_id: 'ck' },
+  ]
+  const clusterLijst = [
+    { id: 'c1', slug: 'k1a-kern', title: 'k1a-kern — De kern herkennen', topic_id: 't1' },
+    { id: 'c2', slug: 'ketting', title: 'Kettingregel', topic_id: 't2' },
+  ]
+
+  function voortgang(
+    clusterId: string,
+    streak: number,
+    answered: number,
+    status = 'in_progress',
+    skipped = false,
+  ): VoortgangRij {
+    return {
+      cluster_id: clusterId,
+      status,
+      total_answered: answered,
+      total_correct: streak,
+      is_skipped: skipped,
+      correct_streak: streak,
+    }
+  }
+
+  it('kiest de hoogste reeks en haalt de boekcode uit de naam', () => {
+    const keuze = kiesBijnaBeheerst({
+      chapters,
+      topics,
+      clusters: clusterLijst,
+      voortgang: [voortgang('c1', 2, 2), voortgang('c2', 1, 9)],
+    })
+    expect(keuze).toEqual({
+      naam: 'De kern herkennen',
+      href: '/oefenen?chapter=k&topic=k1a_kern',
+      reeks: 2,
+    })
+  })
+
+  it('kiest bij gelijke reeks het onderdeel met de meeste antwoorden', () => {
+    const keuze = kiesBijnaBeheerst({
+      chapters,
+      topics,
+      clusters: clusterLijst,
+      voortgang: [voortgang('c1', 1, 2), voortgang('c2', 1, 5)],
+    })
+    expect(keuze?.naam).toBe('Kettingregel')
+    expect(keuze?.reeks).toBe(1)
+  })
+
+  it('slaat beheerst, reeks 0 en een lege lijst over', () => {
+    expect(
+      kiesBijnaBeheerst({
+        chapters,
+        topics,
+        clusters: clusterLijst,
+        voortgang: [voortgang('c1', 2, 4, 'mastered'), voortgang('c2', 0, 3)],
+      }),
+    ).toBeNull()
+    expect(
+      kiesBijnaBeheerst({ chapters, topics, clusters: clusterLijst, voortgang: [] }),
+    ).toBeNull()
   })
 })

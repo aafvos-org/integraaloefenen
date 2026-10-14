@@ -22,6 +22,67 @@ export type VoortgangRij = {
   total_answered: number | null
   total_correct: number | null
   is_skipped: boolean | null
+  correct_streak?: number | null
+}
+
+/** Onderdeel met 1 of 2 goed op rij, nog niet beheerst. */
+export type BijnaBeheerst = {
+  naam: string
+  href: string
+  reeks: 1 | 2
+}
+
+export function titelZonderCode(slug: string, title: string): string {
+  const code = slug.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+  const rest = title.replace(new RegExp(`^${code}\\s*[—–-]\\s*`, 'i'), '')
+  return rest || title
+}
+
+/**
+ * Eén onderdeel om naar terug te komen: hoogste reeks (1 of 2), bij gelijkspel
+ * de meeste antwoorden. Beheerst of overgeslagen telt niet.
+ */
+export function kiesBijnaBeheerst(input: {
+  chapters: { id: string; slug: string }[]
+  topics: { id: string; slug: string; title: string; chapter_id: string }[]
+  clusters: { id: string; slug: string; title: string; topic_id: string }[]
+  voortgang: VoortgangRij[]
+}): BijnaBeheerst | null {
+  const chapterSlug = new Map(input.chapters.map((c) => [c.id, c.slug]))
+  const topicById = new Map(input.topics.map((t) => [t.id, t]))
+  const clusterById = new Map(input.clusters.map((c) => [c.id, c]))
+
+  let beste: { reeks: 1 | 2; antwoorden: number; naam: string; href: string } | null = null
+
+  for (const rij of input.voortgang) {
+    const reeks = rij.correct_streak ?? 0
+    if (reeks !== 1 && reeks !== 2) continue
+    if (rij.status === 'mastered' || rij.is_skipped === true) continue
+
+    const cluster = clusterById.get(rij.cluster_id)
+    if (!cluster) continue
+    const topic = topicById.get(cluster.topic_id)
+    if (!topic) continue
+    const hoofdstuk = chapterSlug.get(topic.chapter_id)
+    if (!hoofdstuk) continue
+
+    const antwoorden = rij.total_answered ?? 0
+    const wint =
+      !beste ||
+      reeks > beste.reeks ||
+      (reeks === beste.reeks && antwoorden > beste.antwoorden)
+    if (!wint) continue
+
+    beste = {
+      reeks,
+      antwoorden,
+      naam: titelZonderCode(cluster.slug, cluster.title),
+      href: hrefVoorOnderwerp(hoofdstuk, topic.slug),
+    }
+  }
+
+  if (!beste) return null
+  return { naam: beste.naam, href: beste.href, reeks: beste.reeks }
 }
 
 export type BlokRij = {

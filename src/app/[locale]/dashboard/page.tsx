@@ -2,7 +2,8 @@ import { getTranslations, getLocale } from 'next-intl/server'
 import { redirect } from 'next/navigation'
 
 import { SITE } from '@/config/site'
-import { bouwDashboardIndeling } from '@/lib/dashboard/indeling'
+import { Link } from '@/i18n/navigation'
+import { bouwDashboardIndeling, kiesBijnaBeheerst } from '@/lib/dashboard/indeling'
 import {
   getChapters,
   getCurrentProfile,
@@ -73,7 +74,7 @@ export default async function DashboardPage() {
         .order('order_index'),
       supabase
         .from('user_progress_new')
-        .select('cluster_id, status, total_answered, total_correct, is_skipped')
+        .select('cluster_id, status, total_answered, total_correct, is_skipped, correct_streak')
         .eq('user_id', user.id),
       supabase
         .from('user_sessions_new')
@@ -126,6 +127,13 @@ export default async function DashboardPage() {
     else break
   }
 
+  const bijna = kiesBijnaBeheerst({
+    chapters: chapters ?? [],
+    topics: topics ?? [],
+    clusters: clusters ?? [],
+    voortgang: progressRows ?? [],
+  })
+
   const indeling = bouwDashboardIndeling({
     chapters: chapters ?? [],
     paragraphs: paragraphsRes.data ?? [],
@@ -144,6 +152,19 @@ export default async function DashboardPage() {
             : t('progressTitle')}
         </h1>
       </div>
+
+      {bijna && (
+        <p className="mb-4">
+          <Link
+            href={bijna.href}
+            className="inline-flex min-h-11 items-center text-sm text-accent underline-offset-2 hover:underline"
+          >
+            {bijna.reeks === 2
+              ? t('almostOne', { onderdeel: bijna.naam })
+              : t('almostTwo', { onderdeel: bijna.naam })}
+          </Link>
+        </p>
+      )}
 
       <DashboardGrid
         indeling={indeling}

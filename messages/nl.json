@@ -231,7 +231,9 @@
     "questionsSub": "totaal beantwoord",
     "perChapterTitle": "Voortgang per hoofdstuk",
     "oudeOpgaven": "Oude opgaven",
-    "nogGeenOpgaven": "nog geen opgaven"
+    "nogGeenOpgaven": "nog geen opgaven",
+    "almostOne": "Nog één goed, dan beheers je {onderdeel}.",
+    "almostTwo": "Nog twee goed, dan beheers je {onderdeel}."
   },
   "HomeDemo": {
     "eyebrow": "Probeer direct",
