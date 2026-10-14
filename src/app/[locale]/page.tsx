@@ -10,6 +10,8 @@ import { startpaginaGegevens } from '@/lib/gestructureerde-gegevens'
 import { eigenPagina } from '@/lib/seo'
 import { getCurrentUser } from '@/lib/supabase/request-cache'
 
+import { AfgeleideVerwijzing } from '@/components/afgeleide-verwijzing'
+
 import { HomeDemo } from './home-demo'
 
 export async function generateMetadata({
@@ -104,6 +106,9 @@ export default async function HomePage({
             </Link>
           </div>
           <p className="mt-3 text-sm text-text-muted">{t('tagline')}</p>
+          <p className="mt-2">
+            <AfgeleideVerwijzing className="inline-flex min-h-11 items-center text-sm font-medium text-accent underline-offset-2 hover:underline" />
+          </p>
         </section>
 
         <HomeDemo aanmelden={aanmelden} />

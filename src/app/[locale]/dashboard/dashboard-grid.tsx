@@ -3,6 +3,7 @@
 import { useMemo } from 'react'
 import { useTranslations } from 'next-intl'
 
+import { AfgeleideVerwijzing } from '@/components/afgeleide-verwijzing'
 import { cn } from '@/components/ui'
 import { VraagForm, type VraagLabels } from '@/components/vraag-form'
 
@@ -39,6 +40,15 @@ export function DashboardGrid({
   )
   const { mastered, total, pct: pctOverall } = weegClusters(allClusters)
   const pctAccuracy = totalAnswered > 0 ? Math.round((totalCorrect / totalAnswered) * 100) : 0
+  const hoofdstukBeheerst = [
+    ...indeling.hoofdstukken.map((hoofdstuk) => hoofdstuk.clusters),
+    ...indeling.oudeOpgaven.map((hoofdstuk) =>
+      hoofdstuk.onderwerpen.flatMap((onderwerp) => onderwerp.clusters),
+    ),
+  ].some((clusters) => {
+    const stand = weegClusters(clusters)
+    return stand.total > 0 && stand.mastered === stand.total
+  })
 
   return (
     <>
@@ -78,6 +88,11 @@ export function DashboardGrid({
 
         {/* Rechts: direct een vraag kunnen stellen */}
         <div className="space-y-3">
+          {hoofdstukBeheerst && (
+            <div className="rounded-2xl border border-border bg-surface p-4">
+              <AfgeleideVerwijzing className="inline-flex min-h-11 items-center text-sm font-medium text-accent underline-offset-2 hover:underline" />
+            </div>
+          )}
           <div className="rounded-2xl border border-accent/30 bg-accent-light/40 p-4">
             <p className="font-serif text-base text-text">{vraagTitel}</p>
             <p className="mt-0.5 text-xs text-text-muted">{vraagIntro}</p>
