@@ -8,6 +8,12 @@
 		"directory": ".open-next/assets",
 		"binding": "ASSETS"
 	},
+	// Workers Builds roept `opennextjs-cloudflare deploy` niet aan. Zonder de
+	// kopie hierna staan de vooraf gebouwde pagina's niet in de statische
+	// bestanden, en geeft een theoriehoofdstuk 404.
+	"build": {
+		"command": "npm run cf:build"
+	},
 	"observability": {
 		"enabled": true
 	}

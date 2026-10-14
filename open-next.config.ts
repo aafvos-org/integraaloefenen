@@ -6,4 +6,7 @@ import staticAssetsIncrementalCache from '@opennextjs/cloudflare/overrides/incre
 // Pagina's achter de inlog blijven per bezoek; die staan hier niet in.
 export default defineCloudflareConfig({
   incrementalCache: staticAssetsIncrementalCache,
+  // Zonder dit leest de Worker de klaargezette pagina's niet, en geeft een
+  // theoriehoofdstuk 404. Partial Prerendering gebruiken we niet.
+  enableCacheInterception: true,
 })
