@@ -35,10 +35,12 @@ export default function RootLayout({
       lang="nl"
       className={`${dmSans.variable} ${dmSerif.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col bg-bg text-text">{children}</body>
-      <Script id="onthoud-bron" strategy="beforeInteractive">
-        {scriptDatBronOnthoudt()}
-      </Script>
+      <body className="min-h-full flex flex-col bg-bg text-text">
+        {children}
+        <Script id="onthoud-bron" strategy="beforeInteractive">
+          {scriptDatBronOnthoudt()}
+        </Script>
+      </body>
       {beaconToken ? (
         <Script
           src="https://static.cloudflareinsights.com/beacon.min.js"
