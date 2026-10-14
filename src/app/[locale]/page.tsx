@@ -80,6 +80,19 @@ export default async function HomePage({
           </p>
           <p className="mx-auto mt-4 max-w-xl text-sm leading-relaxed text-text-muted">
             {t.rich('subLead', {
+              primitieve: (stuk) => (
+                <TheorieLink href={'/theorie/primitieve' as '/theorie'}>{stuk}</TheorieLink>
+              ),
+              substitutie: (stuk) => (
+                <TheorieLink href={'/theorie/substitutiemethode' as '/theorie'}>
+                  {stuk}
+                </TheorieLink>
+              ),
+              partieel: (stuk) => (
+                <TheorieLink href={'/theorie/partieel-integreren' as '/theorie'}>
+                  {stuk}
+                </TheorieLink>
+              ),
               howItWorks: () => (
                 <Link
                   href="/hoe-het-werkt"
