@@ -2,6 +2,7 @@ import { getTranslations, getLocale } from 'next-intl/server'
 import { Link } from '@/i18n/navigation'
 import { redirect } from 'next/navigation'
 
+import { GoogleBlok } from '@/components/google-blok'
 import { leesBron, padNaarAanmelden } from '@/lib/bron'
 import { getCurrentUser } from '@/lib/supabase/request-cache'
 
@@ -52,6 +53,7 @@ export default async function LoginPage({
       {(callbackError || herstelFout) && <HerstelMelding kapot={herstelFout} />}
 
       <div className="mt-8 rounded-xl border border-border bg-surface p-6">
+        <GoogleBlok volgende={`/${locale}/dashboard`} bron={leesBron(van)} />
         <LoginForm />
       </div>
 

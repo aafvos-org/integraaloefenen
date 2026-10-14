@@ -11,14 +11,39 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 /** Lukt het inwisselen van de code voor een sessie? */
 let codeWisseltIn = true
 
+/** Wie er na het inwisselen ingelogd is. `null` is de gewone mail-link. */
+let gebruiker: {
+  id: string
+  app_metadata?: { provider?: string }
+  identities?: { provider?: string }[]
+  user_metadata?: Record<string, unknown>
+} | null = null
+
+/** Naam die al op het profiel staat, of `null` als die er nog niet is. */
+let profielNaam: string | null = null
+
 vi.mock('@/lib/supabase/server', () => ({
   createClient: async () => ({
     auth: {
       exchangeCodeForSession: async () =>
         codeWisseltIn
-          ? { data: { user: null }, error: null }
+          ? { data: { user: gebruiker }, error: null }
           : { data: { user: null }, error: { message: 'code verifier ontbreekt' } },
     },
+    from: () => ({
+      select: () => ({
+        eq: () => ({
+          maybeSingle: async () => ({ data: { username: profielNaam }, error: null }),
+        }),
+      }),
+      update: () => ({
+        eq: () => ({
+          is: () => ({
+            select: async () => ({ data: [{ id: 'u' }], error: null }),
+          }),
+        }),
+      }),
+    }),
   }),
 }))
 
@@ -33,6 +58,8 @@ async function volgDeLink(query: string): Promise<string> {
 
 beforeEach(() => {
   codeWisseltIn = true
+  gebruiker = null
+  profielNaam = null
 })
 
 describe('de link uit de bevestigingsmail', () => {
@@ -108,6 +135,46 @@ describe('andere links naar de callback', () => {
     )
 
     expect(bestemming).toBe(`${ORIGIN}/nl/inloggen?herstel=1`)
+  })
+
+  it('vraagt bij de eerste keer met Google om een gebruikersnaam', async () => {
+    gebruiker = {
+      id: 'google-1',
+      app_metadata: { provider: 'google' },
+      identities: [{ provider: 'google' }],
+      user_metadata: {},
+    }
+
+    const bestemming = await volgDeLink('code=abc')
+
+    expect(bestemming).toBe(`${ORIGIN}/nl/gebruikersnaam?next=%2Fnl%2Fdashboard`)
+  })
+
+  it('slaat die vraag over als het Google-account al een naam heeft', async () => {
+    gebruiker = {
+      id: 'google-1',
+      app_metadata: { provider: 'google' },
+      identities: [{ provider: 'google' }],
+      user_metadata: {},
+    }
+    profielNaam = 'wiskundefan'
+
+    const bestemming = await volgDeLink('code=abc&next=%2Fnl%2Foefenen')
+
+    expect(bestemming).toBe(`${ORIGIN}/nl/oefenen`)
+  })
+
+  it('stuurt een gewoon account niet naar de naam-pagina', async () => {
+    gebruiker = {
+      id: 'mail-1',
+      app_metadata: { provider: 'email' },
+      identities: [{ provider: 'email' }],
+      user_metadata: {},
+    }
+
+    const bestemming = await volgDeLink('code=abc&next=%2Fnl%2Foefenen')
+
+    expect(bestemming).toBe(`${ORIGIN}/nl/oefenen`)
   })
 
   it('stuurt zonder code naar de inlogpagina met een foutmelding', async () => {

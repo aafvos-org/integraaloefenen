@@ -2,6 +2,7 @@ import { getTranslations, getLocale } from 'next-intl/server'
 import { Link } from '@/i18n/navigation'
 import { redirect } from 'next/navigation'
 
+import { GoogleBlok } from '@/components/google-blok'
 import { leesBron } from '@/lib/bron'
 import { getCurrentUser } from '@/lib/supabase/request-cache'
 
@@ -38,6 +39,7 @@ export default async function SignupPage({
       <p className="mt-2 text-sm text-text-muted">{t('subtitle')}</p>
 
       <div className="mt-8 rounded-xl border border-border bg-surface p-6">
+        <GoogleBlok volgende={`/${locale}/oefenen`} bron={bron} />
         <SignupForm bronUitAdres={bron} />
       </div>
 

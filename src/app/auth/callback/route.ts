@@ -1,5 +1,8 @@
 import { NextResponse, type NextRequest } from 'next/server'
+import type { User } from '@supabase/supabase-js'
 
+import { leesBron } from '@/lib/bron'
+import { moetGebruikersnaamVragen, veiligeVolgende } from '@/lib/google-login'
 import { zetGekozenBron } from '@/lib/supabase/bron'
 import { zetGekozenGebruikersnaam } from '@/lib/supabase/gebruikersnaam'
 import { createClient } from '@/lib/supabase/server'
@@ -40,10 +43,26 @@ export async function GET(request: NextRequest) {
     const supabase = await createClient()
     const { data, error } = await supabase.auth.exchangeCodeForSession(code)
     if (!error) {
+      // De bron uit de aanmeldlink (docent, youtube, …) zit bij Google niet
+      // in het account. `van` is hier al in gebruik voor de bevestigingsmail,
+      // dus de knop stuurt hem mee als `bron`.
+      let user = data.user
+      const bronUitLink = leesBron(searchParams.get('bron'))
+      if (user && bronUitLink && !leesBron(user.user_metadata?.bron)) {
+        user = {
+          ...user,
+          user_metadata: { ...user.user_metadata, bron: bronUitLink },
+        }
+      }
       // Gekozen gebruikersnaam en bron van het registreren op het profiel
       // zetten (INT-89, INT-240): bij mailbevestiging kon dat nog niet.
-      await zetGekozenGebruikersnaam(supabase, data.user)
-      await zetGekozenBron(supabase, data.user)
+      await zetGekozenGebruikersnaam(supabase, user)
+      await zetGekozenBron(supabase, user)
+      if (await eersteKeerZonderNaam(supabase, user)) {
+        const url = new URL('/nl/gebruikersnaam', origin)
+        url.searchParams.set('next', veiligeVolgende(next))
+        return NextResponse.redirect(url)
+      }
       return NextResponse.redirect(`${origin}${next}`)
     }
   }
@@ -59,4 +78,27 @@ export async function GET(request: NextRequest) {
     url.searchParams.set('error', 'auth_callback_failed')
   }
   return NextResponse.redirect(url)
+}
+
+/**
+ * Google-account zonder gebruikersnaam: één keer vragen, net als bij
+ * registreren. Lukt het opzoeken niet, dan gaat de leerling gewoon door.
+ */
+async function eersteKeerZonderNaam(
+  supabase: Awaited<ReturnType<typeof createClient>>,
+  user: User | null,
+): Promise<boolean> {
+  if (!moetGebruikersnaamVragen(user, null) || !user) return false
+
+  const { data, error } = await supabase
+    .from('profiles')
+    .select('username')
+    .eq('id', user.id)
+    .maybeSingle()
+
+  if (error) {
+    console.error('[google] kon gebruikersnaam niet lezen:', error.message)
+    return false
+  }
+  return moetGebruikersnaamVragen(user, data?.username)
 }

@@ -217,6 +217,17 @@
     "hidePassword": "Verberg",
     "privacyNote": "In de <privacy>privacyverklaring</privacy> lees je welke gegevens we bewaren."
   },
+  "Google": {
+    "button": "Doorgaan met Google",
+    "pending": "Bezig…",
+    "error": "Aanmelden met Google lukt nu niet. Probeer het opnieuw, of gebruik je e-mailadres.",
+    "of": "of",
+    "nameTitle": "Hoe mogen we je noemen?",
+    "nameSubtitle": "Kies een gebruikersnaam. Dat mag ook leeg blijven; je kunt hem later nog aanpassen bij Instellingen.",
+    "usernameLabel": "Gebruikersnaam (optioneel)",
+    "continue": "Doorgaan",
+    "continuePending": "Bezig…"
+  },
   "ForgotPassword": {
     "title": "Wachtwoord vergeten",
     "h1": "Wachtwoord vergeten",
