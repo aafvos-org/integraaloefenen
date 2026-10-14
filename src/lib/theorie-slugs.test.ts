@@ -15,6 +15,8 @@ describe('herschrijfVerzonnenTheorie', () => {
     expect(herschrijfVerzonnenTheorie('/nl/theorie/k3')).toBeNull()
     expect(herschrijfVerzonnenTheorie('/theorie/k3')).toBeNull()
     expect(herschrijfVerzonnenTheorie('/nl/theorie/substitutiemethode')).toBeNull()
+    expect(herschrijfVerzonnenTheorie('/nl/theorie/primitieve')).toBeNull()
+    expect(herschrijfVerzonnenTheorie('/theorie/primitieve')).toBeNull()
   })
 
   it('laat het overzicht en andere pagina’s met rust', () => {
@@ -28,8 +30,8 @@ describe('herschrijfVerzonnenTheorie', () => {
     expect(herschrijfVerzonnenTheorie('/nl/theorie/bestaat-niet-xyz')).toBe(
       '/pagina-bestaat-niet',
     )
-    expect(herschrijfVerzonnenTheorie('/nl/theorie/primitieve')).toBe('/pagina-bestaat-niet')
-    expect(herschrijfVerzonnenTheorie('/theorie/primitieve')).toBe('/pagina-bestaat-niet')
+    expect(herschrijfVerzonnenTheorie('/nl/theorie/verzonnen-slug')).toBe('/pagina-bestaat-niet')
+    expect(herschrijfVerzonnenTheorie('/theorie/verzonnen-slug')).toBe('/pagina-bestaat-niet')
     expect(herschrijfVerzonnenTheorie('/nl/theorie/bestaat-niet-xyz/')).toBe(
       '/pagina-bestaat-niet',
     )

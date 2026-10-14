@@ -119,9 +119,21 @@ export default async function HomePage() {
             </Link>
           </p>
           <ul className="mt-6 grid gap-3 sm:grid-cols-2">
-            <Onderwerp titel={t('topic1Title')} body={t('topic1Body')} />
-            <Onderwerp titel={t('topic2Title')} body={t('topic2Body')} />
-            <Onderwerp titel={t('topic3Title')} body={t('topic3Body')} />
+            <Onderwerp
+              titel={t('topic1Title')}
+              body={t('topic1Body')}
+              href={'/theorie/primitieve' as '/theorie'}
+            />
+            <Onderwerp
+              titel={t('topic2Title')}
+              body={t('topic2Body')}
+              href={'/theorie/primitieve' as '/theorie'}
+            />
+            <Onderwerp
+              titel={t('topic3Title')}
+              body={t('topic3Body')}
+              href={'/theorie/primitieve' as '/theorie'}
+            />
             <Onderwerp
               titel={t('topic4Title')}
               body={t('topic4Body')}

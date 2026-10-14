@@ -8,6 +8,7 @@ import { routing } from '@/i18n/routing'
  * elk verzoek.
  */
 export const THEORIE_SLUGS = [
+  'primitieve',
   'substitutiemethode',
   'partieel-integreren',
   'oppervlakte',

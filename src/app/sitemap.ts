@@ -43,13 +43,13 @@ function openbarePaden(): Array<{
  * Theoriehoofdstukken delen één inhoudsbestand, dus één datum.
  */
 const LAATST_GEWIJZIGD: Record<string, string> = {
-  '': '2026-10-13',
-  '/theorie': '2026-10-13',
+  '': '2026-10-14',
+  '/theorie': '2026-10-14',
   '/uitleg-videos': '2026-10-13',
   '/hoe-het-werkt': '2026-10-10',
   '/privacy': '2026-10-13',
 }
-const THEORIE_HOOFDSTUK_GEWIJZIGD = '2026-10-13'
+const THEORIE_HOOFDSTUK_GEWIJZIGD = '2026-10-14'
 
 function laatstGewijzigd(pad: string): Date {
   const dag = pad.startsWith('/theorie/')

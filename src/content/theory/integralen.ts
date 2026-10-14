@@ -36,6 +36,216 @@ export const TOPIC_INTROS: Record<string, string> = {}
 
 export const THEORY_OVERVIEW: OverviewChapter[] = [
   {
+    slug: 'primitieve',
+    code: 'Prim',
+    title: 'De primitieve en de standaardintegralen',
+    zoektitel: 'Primitieve functie en standaardintegralen',
+    zoekomschrijving:
+      'Wat een primitieve is, en de standaardintegralen die je paraat moet hebben: machtsregel, somregel, sinus, cosinus, e-macht en 1/x.',
+    intro:
+      'Een primitieve van $f$ is een functie $F$ waarvan de afgeleide weer $f$ is. Je zet $+c$ erbij, want de afgeleide van een constante is $0$. De vormen op deze pagina moet je paraat hebben. Het zijn kale integralen: alleen deel 2 van de driedeling.',
+    oefenlinks: [
+      { label: 'Oefen de standaardprimitieven', href: '/oefenen?blok=k0b' },
+    ],
+    stappenplan: {
+      stap0Titel: 'Stap 0 · Welke vorm is dit?',
+      intro: 'Tik de vorm aan die bij jouw integraal past. Daarna doe je de stappen van die kaart.',
+      herken: [
+        {
+          groep: 'Machten en sommen',
+          schil: 'Een macht van $x$, en de exponent is niet $-1$.',
+          voorbeeld: '\\int 6x^2\\,dx',
+          regel: 'Machtsregel',
+          kaart: 'prim_macht',
+        },
+        {
+          groep: 'Machten en sommen',
+          schil: 'Losse termen met $+$ of $-$ ertussen.',
+          voorbeeld: '\\int (6x+5)\\,dx',
+          regel: 'Somregel',
+          kaart: 'prim_som',
+        },
+        {
+          groep: 'Standaardvormen',
+          schil: 'Een sinus van $x$, eventueel met een getal ervoor.',
+          voorbeeld: '\\int 4\\sin(x)\\,dx',
+          regel: 'Sinus',
+          kaart: 'prim_sin',
+        },
+        {
+          groep: 'Standaardvormen',
+          schil: 'Een cosinus van $x$, eventueel met een getal ervoor.',
+          voorbeeld: '\\int 3\\cos(x)\\,dx',
+          regel: 'Cosinus',
+          kaart: 'prim_cos',
+        },
+        {
+          groep: 'Standaardvormen',
+          schil: 'Een e-macht met exponent $x$.',
+          voorbeeld: '\\int 5e^x\\,dx',
+          regel: 'e-macht',
+          kaart: 'prim_e',
+        },
+        {
+          groep: 'Standaardvormen',
+          schil: 'Een breuk met alleen $x$ in de noemer.',
+          voorbeeld: '\\int \\frac{2}{x}\\,dx',
+          regel: '$1/x$',
+          kaart: 'prim_1x',
+        },
+      ],
+      slot: 'Is de exponent $-1$? Dan is het geen machtsregel, maar $\\ln|x|$. Staat er iets anders dan $x$ in de sinus, de cosinus of de e-macht, zoals $3x$? Dan hoort die integraal nog niet bij deze pagina.',
+    },
+    cards: [
+      {
+        id: 'prim_macht',
+        groep: 'Deel 2 · Machten en sommen',
+        title: 'Machtsregel',
+        herkenpunt: '\\int x^n\\,dx',
+        formula: '\\int x^n\\,dx = \\frac{x^{n+1}}{n+1}+c',
+        answerNote: 'De exponent mag niet $-1$ zijn. Een getal ervoor blijft een getal.',
+        examples: [
+          {
+            problem: '\\int 6x^2\\,dx',
+            answer: '2x^3+c',
+            stappenplan: true,
+            steps: [
+              'Alleen deel 2. De buitenste schil is een macht van $x$, met een getal ervoor.',
+              'De exponent is $2$, en $2$ is niet $-1$. De primitieve van $x^2$ is $\\dfrac{x^3}{3}$.',
+              'Het getal $6$ blijft staan: $6\\cdot\\dfrac{1}{3}x^3=2x^3$.',
+              'Het antwoord is $2x^3+c$. Terugdifferentiëren geeft $6x^2$.',
+            ],
+          },
+          {
+            problem: '\\int \\sqrt{x}\\,dx',
+            answer: '\\tfrac{2}{3}x^{\\frac{3}{2}}+c',
+            steps: [
+              'Schrijf de wortel als een macht: $\\sqrt{x}=x^{\\frac{1}{2}}$. De exponent $\\tfrac{1}{2}$ is niet $-1$.',
+              'De nieuwe exponent is $\\tfrac{1}{2}+1=\\tfrac{3}{2}$. Je deelt door $\\tfrac{3}{2}$, en dat is hetzelfde als keer $\\tfrac{2}{3}$.',
+              'Het antwoord is $\\tfrac{2}{3}x^{\\frac{3}{2}}+c$. Terugdifferentiëren: $\\tfrac{2}{3}\\cdot\\tfrac{3}{2}x^{\\frac{1}{2}}=\\sqrt{x}$.',
+            ],
+          },
+        ],
+        notes: [
+          'Bij exponent $-1$ geldt deze regel niet: $\\displaystyle\\int \\dfrac{1}{x}\\,dx=\\ln|x|+c$.',
+        ],
+      },
+      {
+        id: 'prim_som',
+        groep: 'Deel 2 · Machten en sommen',
+        title: 'Somregel',
+        herkenpunt: '\\int (f+g)\\,dx',
+        formula: '\\int (f(x)+g(x))\\,dx = F(x)+G(x)+c',
+        answerNote: 'Elke term apart. Een minteken blijft bij zijn term.',
+        examples: [
+          {
+            problem: '\\int (6x+5)\\,dx',
+            answer: '3x^2+5x+c',
+            stappenplan: true,
+            steps: [
+              'Alleen deel 2. Twee losse termen met een plus ertussen: primitiveer elke term apart.',
+              '$6x$ is $6x^1$. De machtsregel geeft $6\\cdot\\dfrac{1}{2}x^2=3x^2$.',
+              '$5$ is $5x^0$. De machtsregel geeft $5\\cdot\\dfrac{x}{1}=5x$.',
+              'Samen: $3x^2+5x+c$. Terugdifferentiëren geeft $6x+5$.',
+            ],
+          },
+        ],
+        notes: [
+          'Een constante factor mag naar voren: $\\displaystyle\\int 4f(x)\\,dx=4F(x)+c$.',
+        ],
+      },
+      {
+        id: 'prim_sin',
+        groep: 'Deel 2 · Standaardintegralen',
+        title: 'Sinus',
+        herkenpunt: '\\int \\sin(x)\\,dx',
+        formula: '\\int \\sin(x)\\,dx = -\\cos(x)+c',
+        answerNote: 'Het minteken hoort bij de cosinus.',
+        examples: [
+          {
+            problem: '\\int 4\\sin(x)\\,dx',
+            answer: '-4\\cos(x)+c',
+            stappenplan: true,
+            steps: [
+              'Alleen deel 2. De buitenste schil is $\\sin(x)$, met een getal ervoor.',
+              'Een primitieve van $\\sin(x)$ is $-\\cos(x)$. Het getal $4$ blijft staan.',
+              'Het antwoord is $-4\\cos(x)+c$. Terugdifferentiëren: $-4\\cdot(-\\sin(x))=4\\sin(x)$.',
+            ],
+          },
+        ],
+        notes: [
+          'De afgeleide van $\\cos(x)$ is $-\\sin(x)$. Daarom staat er een min voor de cosinus.',
+        ],
+      },
+      {
+        id: 'prim_cos',
+        groep: 'Deel 2 · Standaardintegralen',
+        title: 'Cosinus',
+        herkenpunt: '\\int \\cos(x)\\,dx',
+        formula: '\\int \\cos(x)\\,dx = \\sin(x)+c',
+        answerNote: 'Hier komt geen minteken bij.',
+        examples: [
+          {
+            problem: '\\int 3\\cos(x)\\,dx',
+            answer: '3\\sin(x)+c',
+            stappenplan: true,
+            steps: [
+              'Alleen deel 2. De buitenste schil is $\\cos(x)$, met een getal ervoor.',
+              'Een primitieve van $\\cos(x)$ is $\\sin(x)$. Het getal $3$ blijft staan.',
+              'Het antwoord is $3\\sin(x)+c$. Terugdifferentiëren geeft $3\\cos(x)$.',
+            ],
+          },
+        ],
+      },
+      {
+        id: 'prim_e',
+        groep: 'Deel 2 · Standaardintegralen',
+        title: 'e-macht',
+        herkenpunt: '\\int e^x\\,dx',
+        formula: '\\int e^x\\,dx = e^x+c',
+        answerNote: 'De e-macht blijft een e-macht. De exponent is hier precies $x$.',
+        examples: [
+          {
+            problem: '\\int 5e^x\\,dx',
+            answer: '5e^x+c',
+            stappenplan: true,
+            steps: [
+              'Alleen deel 2. De buitenste schil is $e^x$, met een getal ervoor.',
+              'Een primitieve van $e^x$ is $e^x$ zelf. Het getal $5$ blijft staan.',
+              'Het antwoord is $5e^x+c$. Terugdifferentiëren geeft $5e^x$.',
+            ],
+          },
+        ],
+        notes: [
+          'De afgeleide van $e^x$ is $e^x$. Daarom verandert deze integraal de vorm niet.',
+        ],
+      },
+      {
+        id: 'prim_1x',
+        groep: 'Deel 2 · Standaardintegralen',
+        title: 'Eén gedeeld door $x$',
+        herkenpunt: '\\int \\frac{1}{x}\\,dx',
+        formula: '\\int \\frac{1}{x}\\,dx = \\ln|x|+c',
+        answerNote: 'De strepen van de absolute waarde horen erbij, want een logaritme wil een positief getal.',
+        examples: [
+          {
+            problem: '\\int \\frac{2}{x}\\,dx',
+            answer: '2\\ln|x|+c',
+            stappenplan: true,
+            steps: [
+              'Alleen deel 2. De noemer is alleen $x$. Dat is de macht $x^{-1}$, en daarvoor geldt de machtsregel niet.',
+              'Een primitieve van $\\dfrac{1}{x}$ is $\\ln|x|$. Het getal $2$ blijft staan.',
+              'Het antwoord is $2\\ln|x|+c$. Terugdifferentiëren geeft $\\dfrac{2}{x}$.',
+            ],
+          },
+        ],
+        notes: [
+          'Op een interval waar $x$ positief is, mag je $\\ln(x)$ schrijven. De strepen dekken ook de negatieve $x$.',
+        ],
+      },
+    ],
+  },
+  {
     slug: 'substitutiemethode',
     code: 'K.1',
     title: 'K.1 — De substitutiemethode',

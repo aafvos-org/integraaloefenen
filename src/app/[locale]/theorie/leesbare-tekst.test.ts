@@ -46,6 +46,14 @@ describe('leesbare wiskunde', () => {
   })
 })
 
+describe('oefenlinks van de primitieve', () => {
+  it('wijst naar de standaardprimitieven', () => {
+    const prim = THEORY_OVERVIEW.find((ch) => ch.slug === 'primitieve')
+    expect(prim?.oefenlinks?.map((link) => link.href)).toEqual(['/oefenen?blok=k0b'])
+    expect(prim?.zoektitel).toBe('Primitieve functie en standaardintegralen')
+  })
+})
+
 describe('oefenlinks van inhoud', () => {
   it('wijst naar wentelen om de x-as', () => {
     const inhoud = THEORY_OVERVIEW.find((ch) => ch.slug === 'inhoud')
