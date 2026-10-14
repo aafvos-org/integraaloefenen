@@ -29,12 +29,25 @@ describe('welkomstmail', () => {
     }
   })
 
-  it('wijst naar de uitlegvideo’s op deze site', () => {
-    const videos = `https://www.${SITE_CONFIG.domain}/nl/uitleg-videos`
-    expect(mail.html).toContain(`href="${videos}"`)
-    expect(mail.tekst).toContain(videos)
-    // Niet naar de andere site, en niet naar een half adres.
-    expect(mail.html).not.toContain('afgeleideoefenen.nl')
+  it('zet de knop op de makkelijkste som van de machtsregel', () => {
+    const metSom = welkomstmail('vraag-1')
+    const som = `https://www.${SITE_CONFIG.domain}/nl/oefenen?blok=k0b&q=vraag-1`
+    expect(metSom.html).toContain('Maak je eerste som')
+    expect(metSom.html).toContain(`href="${som}"`)
+    expect(metSom.tekst).toContain(`Maak je eerste som: ${som}`)
+    expect(metSom.html).not.toContain('Stel je eerste vraag')
+    expect(metSom.html).not.toContain('/nl/uitleg-videos')
+    expect(metSom.html).not.toContain('afgeleideoefenen.nl')
+    // De zin over een vraag insturen blijft tekst, geen knop.
+    expect(metSom.html).toContain('Stuur hem in, dan maak ik er een')
+    expect(metSom.html).toContain('uitlegvideo van.')
+    expect(metSom.html).toContain('Vertel het door aan vrienden.')
+  })
+
+  it('wijst zonder somnummer nog steeds naar het blok van de machtsregel', () => {
+    const blok = `https://www.${SITE_CONFIG.domain}/nl/oefenen?blok=k0b`
+    expect(mail.html).toContain(`href="${blok}"`)
+    expect(mail.html).not.toContain('blok=k0b&q=')
   })
 
   it('heeft een leesbare versie zonder opmaak voor wie geen html krijgt', () => {

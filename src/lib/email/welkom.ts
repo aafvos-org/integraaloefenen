@@ -6,6 +6,11 @@ import { createServiceRoleClient } from '@/lib/supabase/server'
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? `https://www.${SITE_CONFIG.domain}`
 
+/** Theorieblok K.0 B: de standaardprimitieven, te beginnen bij de machtsregel. */
+const MACHTSREGEL_BLOK = 'k0b'
+/** Eerste groep in dat blok: machten, de makkelijkste sommen. */
+const MACHTSREGEL_GROEP = 'k0b_machten_gonio'
+
 export type WelkomResultaat =
   | { verstuurd: true }
   | { verstuurd: false; reden: 'al-verstuurd' | 'niet-bevestigd' | 'geen-adres' | 'fout' }
@@ -16,7 +21,7 @@ export type WelkomResultaat =
  * achtergrond, kaart van 540 px, woordmerk erboven, serif-koppen, groene knop
  * en de formule-knipoog onderaan. Houd ze bij wijzigingen synchroon.
  */
-function html(videosUrl: string): string {
+function html(somUrl: string): string {
   return `
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background: #f7f6f3; padding: 32px 12px;">
   <tr>
@@ -56,9 +61,9 @@ function html(videosUrl: string): string {
 
               <tr>
                 <td align="center" style="padding-bottom: 24px;">
-                  <a href="${videosUrl}"
+                  <a href="${somUrl}"
                      style="display: inline-block; background: #2d6a4f; color: #ffffff !important; text-decoration: none; padding: 14px 32px; border-radius: 10px; font-family: 'DM Sans', Arial, sans-serif; font-size: 15px; font-weight: 600;">
-                    Stel je eerste vraag
+                    Maak je eerste som
                   </a>
                 </td>
               </tr>
@@ -93,12 +98,14 @@ function html(videosUrl: string): string {
 </table>`
 }
 
-function tekst(videosUrl: string): string {
+function tekst(somUrl: string): string {
   return `Je account is klaar.
 
 Leuk dat je er bent.
 
-Loop je vast op een opgave? Stuur hem in, dan maak ik er een uitlegvideo van. Een foto uit je boek mag ook: ${videosUrl}
+Loop je vast op een opgave? Stuur hem in, dan maak ik er een uitlegvideo van. Een foto uit je boek mag ook.
+
+Maak je eerste som: ${somUrl}
 
 Vertel het door aan vrienden. Hoe meer vragen er binnenkomen, hoe meer uitleg er voor iedereen bij komt.
 
@@ -112,20 +119,54 @@ Groeten van Aaf`
  * zonder Resend. In de e2e-controle komt deze mail wél echt aan: met
  * `MAIL_MODE=postbus` levert `verstuurMail` hem af in de testpostbus.
  */
-export function welkomstmail(): {
+/** Adres van de oefenpagina, op het blok van de machtsregel en desgewenst één som. */
+export function eersteSomUrl(vraagId?: string | null): string {
+  const basis = `${SITE_URL}/nl/oefenen?blok=${MACHTSREGEL_BLOK}`
+  if (!vraagId) return basis
+  return `${basis}&q=${encodeURIComponent(vraagId)}`
+}
+
+export function welkomstmail(vraagId?: string | null): {
   van: string
   onderwerp: string
   html: string
   tekst: string
 } {
-  const videosUrl = `${SITE_URL}/nl/uitleg-videos`
+  const somUrl = eersteSomUrl(vraagId)
   return {
     // Merknaam als afzender, geen persoonsnaam: dit is een no-reply-bericht.
     van: afzender(),
     onderwerp: `Welkom bij ${SITE_CONFIG.brand}!`,
-    html: html(videosUrl),
-    tekst: tekst(videosUrl),
+    html: html(somUrl),
+    tekst: tekst(somUrl),
   }
+}
+
+/**
+ * De makkelijkste som in het blok van de machtsregel: laagste moeilijkheid,
+ * en bij gelijke moeilijkheid de eerste in de groep.
+ */
+async function eersteSomId(
+  supabase: ReturnType<typeof createServiceRoleClient>,
+): Promise<string | null> {
+  const { data: groep, error: groepFout } = await supabase
+    .from('topic_clusters_new')
+    .select('id')
+    .eq('slug', MACHTSREGEL_GROEP)
+    .eq('site', 'integralen')
+    .maybeSingle()
+  if (groepFout || !groep) return null
+
+  const { data: vraag, error: vraagFout } = await supabase
+    .from('questions_new')
+    .select('id')
+    .eq('cluster_id', groep.id)
+    .order('difficulty', { ascending: true })
+    .order('order_index', { ascending: true })
+    .limit(1)
+    .maybeSingle()
+  if (vraagFout || !vraag) return null
+  return vraag.id
 }
 
 /**
@@ -189,7 +230,7 @@ export async function stuurWelkomstmail(userId: string): Promise<WelkomResultaat
       user_metadata: { ...user.user_metadata, welcome_sent_at: nu },
     })
 
-    const mail = welkomstmail()
+    const mail = welkomstmail(await eersteSomId(supabase))
     const uitkomst = await verstuurMail({
       van: mail.van,
       aan: user.email,

@@ -132,7 +132,8 @@ test('een nieuwe leerling registreert zich, bevestigt zijn mail en maakt zijn ee
       adres: 'no-reply@integraaloefenen.nl',
     })
     expect(welkom.html).toContain('Je account is klaar.')
-    expect(welkom.html).toContain('Stel je eerste vraag')
+    expect(welkom.html).toContain('Maak je eerste som')
+    expect(welkom.html).toContain('/nl/oefenen?blok=k0b')
   })
 
   await test.step('8. zijn eerste opgave openen en nakijken', async () => {
