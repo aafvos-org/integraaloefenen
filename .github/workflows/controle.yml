@@ -4,9 +4,22 @@ on:
   pull_request:
   push:
     branches: [main]
+    # Alleen tekst: de site verandert niet, en na een merge wacht niemand
+    # meer op deze controle. Op een pull request mag de workflow niet zo
+    # wegblijven. Een verplichte controle die nooit start blijft op "wachten"
+    # staan, en dan kan er niet gemerged worden. Daar slaat elke job het
+    # zware werk zelf over en eindigt groen.
+    paths-ignore:
+      - "**/*.md"
+      - "docs/**"
+  schedule:
+    # Elke nacht om 02:15 UTC (04:15 in de zomertijd, 03:15 in de winter).
+    # De browsercontrole draait dan één keer over main, niet na elke merge.
+    - cron: "15 2 * * *"
 
 concurrency:
-  group: controle-${{ github.workflow }}-${{ github.ref }}
+  # De nachtelijke run en een push naar main mogen elkaar niet afkappen.
+  group: controle-${{ github.workflow }}-${{ github.event_name }}-${{ github.ref }}
   cancel-in-progress: true
 
 permissions:
@@ -16,13 +29,25 @@ jobs:
   lint-en-types:
     name: Lint en types
     runs-on: ubuntu-latest
-    # Normaal is deze job in ruim een minuut klaar. Blijft er iets hangen, dan
-    # kappen we er na vijf minuten mee in plaats van zes uur te wachten.
+    # Inclusief de tests hieronder meestal ruim binnen twee minuten. Blijft
+    # er iets hangen, dan kappen we na vijf minuten in plaats van zes uur.
     timeout-minutes: 5
     steps:
       - uses: actions/checkout@v5
 
+      - name: Kijken of de controle nodig is
+        id: nodig
+        env:
+          GEBEURTENIS: ${{ github.event_name }}
+          BASIS: ${{ github.event.pull_request.base.sha }}
+        run: bash scripts/ci-alleen-tekst.sh
+
+      - name: Overgeslagen
+        if: steps.nodig.outputs.draaien != 'ja'
+        run: echo "Alleen tekst gewijzigd — lint, types en tests blijven hetzelfde."
+
       - uses: actions/setup-node@v5
+        if: steps.nodig.outputs.draaien == 'ja'
         with:
           # Node 24, niet lager. package-lock.json is door npm 11 geschreven;
           # npm 10 (dat bij Node 22 zit) rekent de boom opnieuw uit en weigert
@@ -31,36 +56,38 @@ jobs:
           cache: npm
 
       - name: Pakketten installeren
+        if: steps.nodig.outputs.draaien == 'ja'
         run: npm ci
 
       - name: Lint
+        if: steps.nodig.outputs.draaien == 'ja'
         run: npm run lint -- --max-warnings=0
 
       - name: Types controleren
+        if: steps.nodig.outputs.draaien == 'ja'
         run: npx tsc --noEmit
 
-  # De rekenregels zonder browser en zonder database: het nakijken van
-  # antwoorden, de voortgangsregel en de grens van de neppe AI-controle.
+      # De verplichte controle heet "Tests". Het werk zit in deze job, na
+      # dezelfde installatie, zodat npm ci niet twee keer draait. De job
+      # hieronder geeft alleen die naam door.
+      - name: Tests draaien
+        if: steps.nodig.outputs.draaien == 'ja'
+        run: npm test
+
   tests:
     name: Tests
+    needs: lint-en-types
+    if: ${{ !cancelled() }}
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 2
     steps:
-      - uses: actions/checkout@v5
-
-      - uses: actions/setup-node@v5
-        with:
-          # Node 24, niet lager. package-lock.json is door npm 11 geschreven;
-          # npm 10 (dat bij Node 22 zit) rekent de boom opnieuw uit en weigert
-          # hem dan met "Missing: esbuild@... from lock file".
-          node-version: 24
-          cache: npm
-
-      - name: Pakketten installeren
-        run: npm ci
-
-      - name: Tests draaien
-        run: npm test
+      - name: Uitslag doorgeven
+        run: |
+          if [ "${{ needs.lint-en-types.result }}" != "success" ]; then
+            echo "::error::Lint, types of de tests zijn niet geslaagd. De uitvoer staat bij de controle Lint en types."
+            exit 1
+          fi
+          echo "Lint, types en tests zijn geslaagd, na één keer installeren."
 
   # Loopt de weg van een leerling na in een echte browser: registreren →
   # bevestigingsmail → inloggen → oefenen → antwoord nakijken → voortgang op
@@ -68,18 +95,39 @@ jobs:
   # wegwerp-Supabase in Docker (inclusief testpostbus voor de mail) en een
   # neppe AI-controle, zodat deze controle nooit aan de echte database, aan
   # Gemini of aan een echte mailbox komt.
+  #
+  # Niet na een push naar main. Die controle was op de pull request al groen,
+  # en hij kost ongeveer zeven minuten. 's Nachts draait hij wel, op main.
   e2e:
     name: Weg van een leerling
+    if: github.event_name != 'push'
     runs-on: ubuntu-latest
-    # Normaal duurt deze job drie à vier minuten. De teststap mag vijftien
+    # Normaal duurt deze job ruim zes minuten. De teststap mag vijftien
     # minuten (zie hieronder). Samen met het installeren van de browser en
     # het starten van Supabase is vijfentwintig minuten de bovengrens: blijft
     # er iets hangen, dan stopt GitHub daar in plaats van na zes uur.
+    # Die bovengrens kost geen minuten zolang de job op tijd klaar is.
     timeout-minutes: 25
     steps:
       - uses: actions/checkout@v5
 
+      # Verandert er in een pull request alleen tekst (README, docs), dan
+      # hoeft de browser er niet doorheen. De job blijft wel bestaan en
+      # eindigt groen: hij is verplicht, en een workflow die helemaal niet
+      # start blijft op "in afwachting" staan.
+      - name: Kijken of de tests nodig zijn
+        id: nodig
+        env:
+          GEBEURTENIS: ${{ github.event_name }}
+          BASIS: ${{ github.event.pull_request.base.sha }}
+        run: bash scripts/ci-alleen-tekst.sh
+
+      - name: Overgeslagen
+        if: steps.nodig.outputs.draaien != 'ja'
+        run: echo "Alleen tekst gewijzigd — de weg van een leerling blijft hetzelfde."
+
       - uses: actions/setup-node@v5
+        if: steps.nodig.outputs.draaien == 'ja'
         with:
           # Node 24, niet lager. package-lock.json is door npm 11 geschreven;
           # npm 10 (dat bij Node 22 zit) rekent de boom opnieuw uit en weigert
@@ -87,61 +135,22 @@ jobs:
           node-version: 24
           cache: npm
 
-      # Verandert er in een pull request alleen tekst (README, docs), dan
-      # hoeft de browser er niet doorheen. De job blijft wel bestaan en
-      # eindigt groen: hij is verplicht op `main`, en een job die helemaal
-      # niet draait blijft daar op "in afwachting" staan.
-      - name: Kijken of de tests nodig zijn
-        id: nodig
-        env:
-          BASIS: ${{ github.event.pull_request.base.sha }}
-        run: |
-          set -euo pipefail
-          if [ "${{ github.event_name }}" != "pull_request" ]; then
-            echo "Geen pull request: altijd nalopen."
-            echo "draaien=ja" >> "$GITHUB_OUTPUT"
-            exit 0
-          fi
-
-          git fetch --no-tags --depth=1 origin "$BASIS"
-          gewijzigd=$(git diff --name-only "$BASIS" HEAD)
-          echo "Gewijzigde bestanden:"
-          echo "$gewijzigd"
-
-          if [ -z "$gewijzigd" ]; then
-            echo "Geen lijst met wijzigingen: voor de zekerheid toch nalopen."
-            echo "draaien=ja" >> "$GITHUB_OUTPUT"
-            exit 0
-          fi
-
-          # Blijft er na de tekstbestanden iets over, dan moet de browser erdoor.
-          rest=$(printf '%s\n' "$gewijzigd" | grep -vE '(\.md$|^docs/)' || true)
-          if [ -n "$rest" ]; then
-            echo "draaien=ja" >> "$GITHUB_OUTPUT"
-          else
-            echo "draaien=nee" >> "$GITHUB_OUTPUT"
-          fi
-
-      - name: Overgeslagen
-        if: ${{ steps.nodig.outputs.draaien != 'ja' }}
-        run: echo "Alleen tekst gewijzigd — de weg van een leerling blijft hetzelfde."
-
       - name: Pakketten installeren
-        if: ${{ steps.nodig.outputs.draaien == 'ja' }}
+        if: steps.nodig.outputs.draaien == 'ja'
         run: npm ci
 
       # De browser (± 100 MB) hoeft niet bij elke run opnieuw gedownload te
       # worden. De sleutel is de Playwright-versie uit package-lock.json:
       # bij elke nieuwe versie hoort een nieuwe browser.
       - name: Playwright-versie opzoeken
-        if: ${{ steps.nodig.outputs.draaien == 'ja' }}
+        if: steps.nodig.outputs.draaien == 'ja'
         id: playwright
         run: |
           versie=$(node -p "require('./package-lock.json').packages['node_modules/playwright-core'].version")
           echo "versie=$versie" >> "$GITHUB_OUTPUT"
 
       - name: Bewaarde browser terughalen
-        if: ${{ steps.nodig.outputs.draaien == 'ja' }}
+        if: steps.nodig.outputs.draaien == 'ja'
         id: browser-opslag
         uses: actions/cache@v4
         with:
@@ -152,7 +161,7 @@ jobs:
       # Mislukt het of blijft het hangen, dan proberen we het één keer
       # opnieuw: dat is meestal een hapering bij de download.
       - name: Browser installeren
-        if: ${{ steps.nodig.outputs.draaien == 'ja' }}
+        if: steps.nodig.outputs.draaien == 'ja'
         timeout-minutes: 3
         env:
           UIT_OPSLAG: ${{ steps.browser-opslag.outputs.cache-hit }}
@@ -176,21 +185,25 @@ jobs:
       # in de config uit; dat scheelt meer dan `start -x`, want uitgezette
       # onderdelen worden ook niet gedownload. De config van je eigen computer
       # blijft ongemoeid: dit draait alleen hier.
+      #
+      # De images zelf (ongeveer dertig seconden) slaan we niet op. Ze zijn
+      # samen ruim een gigabyte; terugzetten uit de opslag duurt minstens zo
+      # lang als opnieuw ophalen.
       - name: Lokale Supabase starten
-        if: ${{ steps.nodig.outputs.draaien == 'ja' }}
+        if: steps.nodig.outputs.draaien == 'ja'
         timeout-minutes: 4
         run: |
           node scripts/ci-supabase-kaal.mjs
           npx supabase start -x imgproxy,postgres-meta
 
-      # Een geslaagde run is ongeveer drie minuten. Valt een test om, dan
-      # wacht die op zijn eigen tijdslimiet en probeert hij het nog eens.
-      # Een paar van die pogingen passen niet in zeven minuten: de stap werd
-      # dan afgekapt terwijl de laatste tests nog liepen, en de foutmelding
-      # kwam niet in het log. Vijftien minuten is genoeg om de hele reeks af
-      # te maken, ook met die extra pogingen.
+      # Een geslaagde run is ongeveer vier minuten voor de tests zelf. Valt
+      # een test om, dan wacht die op zijn eigen tijdslimiet en probeert hij
+      # het nog eens. Een paar van die pogingen passen niet in zeven minuten:
+      # de stap werd dan afgekapt terwijl de laatste tests nog liepen, en de
+      # foutmelding kwam niet in het log. Vijftien minuten is genoeg om de
+      # hele reeks af te maken, ook met die extra pogingen.
       - name: Weg van een leerling nalopen
-        if: ${{ steps.nodig.outputs.draaien == 'ja' }}
+        if: steps.nodig.outputs.draaien == 'ja'
         timeout-minutes: 15
         run: npm run test:e2e
 
