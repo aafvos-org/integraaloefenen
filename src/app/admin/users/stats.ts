@@ -117,7 +117,7 @@ export type ProfileRow = {
   username: string | null
   role: string
   created_at: string | null
-  /** docent, youtube, klas, forum of proberen. Leeg als de aanmeldlink die niet had. */
+  /** docent, youtube, klas, forum, proberen of voorbeeld. Leeg als de aanmeldlink die niet had. */
   bron: string | null
 }
 

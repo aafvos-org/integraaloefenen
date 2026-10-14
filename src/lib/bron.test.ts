@@ -1,3 +1,6 @@
+import { readdirSync, readFileSync } from 'node:fs'
+import { join } from 'node:path'
+
 import { describe, expect, it } from 'vitest'
 
 import {
@@ -17,6 +20,21 @@ describe('leesBron', () => {
 
   it('negeert hoofdletters en spaties', () => {
     expect(leesBron('  YouTube ')).toBe('youtube')
+  })
+
+  it('laat de database precies dezelfde woorden toe', () => {
+    const map = join(process.cwd(), 'supabase/migrations')
+    const bestanden = readdirSync(map)
+      .filter((naam) => naam.endsWith('.sql'))
+      .sort()
+    let laatste = ''
+    for (const naam of bestanden) {
+      const sql = readFileSync(join(map, naam), 'utf8')
+      const match = sql.match(/bron in \(([^)]+)\)/)
+      if (match) laatste = match[1]
+    }
+    const woorden = [...laatste.matchAll(/'([^']+)'/g)].map((treffer) => treffer[1])
+    expect(woorden).toEqual([...BRONNEN])
   })
 
   it('negeert onbekende waarden, ook die van de bevestigingsmail', () => {

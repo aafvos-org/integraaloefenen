@@ -134,9 +134,13 @@ function verderMetBron(request: NextRequest) {
 
 function naarInloggen(request: NextRequest, taal: string) {
   const url = request.nextUrl.clone()
+  const bron = leesBron(url.searchParams.get('van'))
   url.pathname = `/${taal}/inloggen`
   // Zonder dit neemt de inlogpagina de zoekwoorden van de vorige pagina over,
-  // en toont `?error=` uit een oude URL ineens een foutmelding.
+  // en toont `?error=` uit een oude URL ineens een foutmelding. Een toegestane
+  // herkomst blijft wel staan, anders vergeet een account via een
+  // antwoordpagina waar het vandaan kwam.
   url.search = ''
+  if (bron) url.searchParams.set('van', bron)
   return NextResponse.redirect(url)
 }
