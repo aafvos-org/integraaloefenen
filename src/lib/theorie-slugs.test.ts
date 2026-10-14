@@ -20,6 +20,7 @@ describe('herschrijfVerzonnenTheorie', () => {
   })
 
   it('laat het overzicht en andere pagina’s met rust', () => {
+    expect(herschrijfVerzonnenTheorie('/nl/theorie/opengraph-image')).toBeNull()
     expect(herschrijfVerzonnenTheorie('/nl/theorie')).toBeNull()
     expect(herschrijfVerzonnenTheorie('/theorie')).toBeNull()
     expect(herschrijfVerzonnenTheorie('/nl/dit-pad-bestaat-niet')).toBeNull()

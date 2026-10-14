@@ -5,6 +5,7 @@ import { Fragment, useRef, useState } from 'react'
 import { Link } from '@/i18n/navigation'
 import { Math as TeX, RichMath } from '@/components/math'
 import { cn } from '@/components/ui'
+import { DeelKnop } from '@/components/deel-knop'
 import type { Voorbeeldopgave } from '@/content/theory/voorbeeldopgaven'
 import type { Oefenlink, OverviewCard, Stappenplan } from '@/lib/theory'
 
@@ -262,7 +263,7 @@ export function TheorieClient({
                 id={`hoofdstuk-${ch.slug}`}
                 className="scroll-mt-4"
               >
-                <div className="mt-20 flex flex-wrap items-end justify-between gap-2 border-b border-border pb-3 first:mt-0">
+                <div className="mt-20 flex flex-col gap-3 border-b border-border pb-3 first:mt-0 sm:flex-row sm:flex-wrap sm:items-end sm:justify-between">
                   <Kop
                     className={
                       eigenKop
@@ -278,6 +279,14 @@ export function TheorieClient({
                     )}
                     {short}
                   </Kop>
+                  <div className="flex w-full min-w-0 flex-col items-stretch gap-2 sm:w-auto sm:flex-row sm:flex-wrap sm:items-center">
+                    <DeelKnop
+                      pad={
+                        eigenKop
+                          ? undefined
+                          : `/nl/theorie/${ch.slug}`
+                      }
+                    />
                   {ch.oefenlinks && ch.oefenlinks.length > 0 ? (
                     <div className="flex flex-wrap gap-2">
                       {ch.oefenlinks.map((link) => (
@@ -298,6 +307,7 @@ export function TheorieClient({
                       {ch.practiceLabel}
                     </Link>
                   )}
+                  </div>
                 </div>
 
                 {ch.intro && (
@@ -341,7 +351,10 @@ export function TheorieClient({
                 </div>
 
                 {ch.voorbeelden && ch.voorbeelden.length > 0 && (
-                  <Voorbeeldopgaven opgaven={ch.voorbeelden} />
+                  <Voorbeeldopgaven
+                    opgaven={ch.voorbeelden}
+                    deelPad={`/nl/theorie/${ch.slug}#voorbeeldopgaven`}
+                  />
                 )}
               </section>
             )
@@ -547,12 +560,21 @@ function KaartTekst({ card, labels }: { card: OverviewCard; labels: Labels }) {
 
 /* ── Eén theoriekaart ───────────────────────────────────────────────────── */
 
-function Voorbeeldopgaven({ opgaven }: { opgaven: Voorbeeldopgave[] }) {
+function Voorbeeldopgaven({
+  opgaven,
+  deelPad,
+}: {
+  opgaven: Voorbeeldopgave[]
+  deelPad?: string
+}) {
   return (
     <section className="mt-8" aria-labelledby="voorbeeldopgaven">
-      <h2 id="voorbeeldopgaven" className="font-serif text-xl text-text">
-        Voorbeeldopgaven
-      </h2>
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <h2 id="voorbeeldopgaven" className="font-serif text-xl text-text">
+          Voorbeeldopgaven
+        </h2>
+        <DeelKnop pad={deelPad} />
+      </div>
       <p className="mt-1 text-sm text-text-muted">
         Drie vaste opgaven. Je hoeft niets in te vullen.
       </p>

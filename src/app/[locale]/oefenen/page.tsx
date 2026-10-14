@@ -19,6 +19,8 @@ import {
 import { getChapters, getCurrentUser } from '@/lib/supabase/request-cache'
 import { createClient } from '@/lib/supabase/server'
 
+import { eigenPagina } from '@/lib/seo'
+
 import { OefenenClient } from './oefenen-client'
 
 const CATEGORY_ORDER: TopicCategory[] = [
@@ -50,7 +52,12 @@ export async function generateMetadata({
 }) {
   const { locale } = await params
   const t = await getTranslations({ locale, namespace: 'FreeExercise' })
-  return { title: t('title') }
+  return eigenPagina({
+    locale,
+    pad: '/oefenen',
+    titel: t('title'),
+    omschrijving: 'Oefen primitiveren en integralen voor wiskunde B. Kies een hoofdstuk en stuur de link naar een klasgenoot.',
+  })
 }
 
 type PageProps = {

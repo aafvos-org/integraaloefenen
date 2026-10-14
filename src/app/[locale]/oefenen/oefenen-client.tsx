@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from 'react'
 
+import { DeelKnop } from '@/components/deel-knop'
 import { Link, useRouter } from '@/i18n/navigation'
 import { Card, cn } from '@/components/ui'
 import type {
@@ -1281,6 +1282,12 @@ function Chevron({ open }: { open: boolean }) {
 }
 
 export function OefenenClient(props: (Props & { indeling: 'onderwerp' }) | BlokProps) {
-  if (props.indeling === 'blok') return <BlokWeergave {...props} />
-  return <OnderwerpWeergave {...props} />
+  return (
+    <div>
+      <div className="flex justify-end border-b border-border bg-surface px-4 py-2">
+        <DeelKnop />
+      </div>
+      {props.indeling === 'blok' ? <BlokWeergave {...props} /> : <OnderwerpWeergave {...props} />}
+    </div>
+  )
 }

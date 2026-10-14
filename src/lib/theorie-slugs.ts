@@ -33,6 +33,8 @@ export function herschrijfVerzonnenTheorie(pathname: string): string | null {
   const match = pathname.match(THEORIE_ADRES)
   if (!match) return null
   const slug = decodeURIComponent(match[2])
+  // Het WhatsApp-plaatje staat op /theorie/opengraph-image, niet op een hoofdstuk.
+  if (slug === 'opengraph-image' || slug.startsWith('opengraph-image.')) return null
   if ((THEORIE_SLUGS as readonly string[]).includes(slug)) return null
   return '/pagina-bestaat-niet'
 }

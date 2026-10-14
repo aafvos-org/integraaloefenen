@@ -11,6 +11,9 @@ import type { Database } from './types'
 export async function updateSession(request: NextRequest) {
   const path = request.nextUrl.pathname
 
+  // WhatsApp haalt het plaatje op zonder inlogsessie. De oefenpagina zelf blijft dicht.
+  if (path.includes('/opengraph-image')) return verderMetBron(request)
+
   // Geen sessiecookie: Supabase niet bellen. Die ronde hield elke openbare
   // pagina een seconde tegen, ook voor wie alleen komt lezen.
   if (!heeftInlogsessie(request.cookies.getAll())) {
