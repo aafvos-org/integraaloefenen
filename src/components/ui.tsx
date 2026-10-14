@@ -15,7 +15,7 @@ export function Button({
     <button
       {...props}
       className={cn(
-        'inline-flex items-center justify-center rounded-md px-3 py-1.5 text-sm font-medium transition disabled:cursor-not-allowed disabled:opacity-60',
+        'inline-flex min-h-11 items-center justify-center rounded-md px-3 py-1.5 text-sm font-medium transition disabled:cursor-not-allowed disabled:opacity-60',
         variant === 'primary' &&
           'bg-accent text-white shadow-sm hover:bg-accent/90',
         variant === 'secondary' &&
