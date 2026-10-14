@@ -44,6 +44,14 @@ let aiGooit: boolean
 let aiAanroepen: number
 /** Nep-databasefout bij het wegschrijven van een antwoord. */
 let antwoordOpslaanFout: DbFout | null
+/** Nep-databasefout bij het aanmaken van een sessie. */
+let sessieAanmakenFout: DbFout | null
+/** Geen voortgangsrij: de actie probeert er een aan te maken. */
+let geenVoortgang: boolean
+/** Nep-databasefout bij het aanmaken van de voortgang. */
+let voortgangAanmakenFout: DbFout | null
+/** Nep-databasefout bij het bijwerken van de voortgang. */
+let voortgangBijwerkenFout: DbFout | null
 /** Nep-databasefout bij het melden van een vraag. */
 let vraagMeldenFout: DbFout | null
 
@@ -67,6 +75,9 @@ function from(table: string) {
     if (table === 'questions_new') return { data: QUESTION, error: null }
 
     if (table === 'user_sessions_new') {
+      if (op === 'insert' && sessieAanmakenFout) {
+        return { data: null, error: sessieAanmakenFout }
+      }
       // Geen open sessie: de actie maakt er een aan.
       return { data: op === 'insert' ? { id: 's1' } : null, error: null }
     }
@@ -89,7 +100,14 @@ function from(table: string) {
     }
 
     if (table === 'user_progress_new') {
-      if (op === 'update') Object.assign(progress, values)
+      if (op === 'select' && geenVoortgang) return { data: null, error: null }
+      if (op === 'insert' && voortgangAanmakenFout) {
+        return { data: null, error: voortgangAanmakenFout }
+      }
+      if (op === 'update') {
+        if (voortgangBijwerkenFout) return { data: null, error: voortgangBijwerkenFout }
+        Object.assign(progress, values)
+      }
       return { data: { ...progress }, error: null }
     }
 
@@ -163,6 +181,10 @@ describe('submitStudyAnswerAction', () => {
     aiGooit = false
     aiAanroepen = 0
     antwoordOpslaanFout = null
+    sessieAanmakenFout = null
+    geenVoortgang = false
+    voortgangAanmakenFout = null
+    voortgangBijwerkenFout = null
     vraagMeldenFout = null
   })
 
@@ -305,6 +327,67 @@ describe('submitStudyAnswerAction', () => {
     expect(JSON.stringify(result)).not.toContain(RAUWE_DATABASEFOUT)
     expect(answers).toHaveLength(0)
     expect(log.mock.calls.flat().join(' ')).toContain(RAUWE_DATABASEFOUT)
+    log.mockRestore()
+  })
+
+  it('stuurt een databasefout bij het aanmaken van de sessie niet mee naar de browser', async () => {
+    sessieAanmakenFout = {
+      code: '42501',
+      message: 'new row violates row-level security policy for table "user_sessions_new"',
+    }
+    const log = vi.spyOn(console, 'error').mockImplementation(() => {})
+
+    const result = await submitStudyAnswerAction('q1', '1/3x^3 + c')
+
+    expect(result).toEqual({
+      kind: 'error',
+      soort: 'opslaan_mislukt',
+      message: 'Opslaan lukte niet. Probeer het nog een keer.',
+    })
+    expect(JSON.stringify(result)).not.toContain('user_sessions_new')
+    expect(answers).toHaveLength(0)
+    expect(log.mock.calls.flat().join(' ')).toContain('user_sessions_new')
+    log.mockRestore()
+  })
+
+  it('stuurt een databasefout bij het aanmaken van de voortgang niet mee naar de browser', async () => {
+    geenVoortgang = true
+    voortgangAanmakenFout = {
+      code: '42501',
+      message: 'new row violates row-level security policy for table "user_progress_new"',
+    }
+    const log = vi.spyOn(console, 'error').mockImplementation(() => {})
+
+    const result = await submitStudyAnswerAction('q1', '1/3x^3 + c')
+
+    expect(result).toEqual({
+      kind: 'error',
+      soort: 'opslaan_mislukt',
+      message: 'Opslaan lukte niet. Probeer het nog een keer.',
+    })
+    expect(JSON.stringify(result)).not.toContain('user_progress_new')
+    expect(log.mock.calls.flat().join(' ')).toContain('user_progress_new')
+    log.mockRestore()
+  })
+
+  it('stuurt een databasefout bij het bijwerken van de voortgang niet mee naar de browser', async () => {
+    voortgangBijwerkenFout = {
+      code: '42501',
+      message: 'permission denied for table user_progress_new',
+    }
+    const log = vi.spyOn(console, 'error').mockImplementation(() => {})
+    const reeksVoor = progress.correct_streak
+
+    const result = await submitStudyAnswerAction('q1', '1/3x^3 + c')
+
+    expect(result).toEqual({
+      kind: 'error',
+      soort: 'opslaan_mislukt',
+      message: 'Opslaan lukte niet. Probeer het nog een keer.',
+    })
+    expect(JSON.stringify(result)).not.toContain('permission denied')
+    expect(progress.correct_streak).toBe(reeksVoor)
+    expect(log.mock.calls.flat().join(' ')).toContain('permission denied')
     log.mockRestore()
   })
 })

@@ -74,6 +74,9 @@ export async function submitStudyAnswerAction(
     question.topic_id,
     question.cluster_id,
   )
+  if (!sessionId) {
+    return { kind: 'error', soort: 'opslaan_mislukt', message: OPSLAAN_MISLUKT }
+  }
 
   const { data: answerRow, error: answerError } = await supabase
     .from('session_answers_new')
@@ -108,6 +111,9 @@ export async function submitStudyAnswerAction(
     question.cluster_id,
     isCorrect,
   )
+  if (!progress) {
+    return { kind: 'error', soort: 'opslaan_mislukt', message: OPSLAAN_MISLUKT }
+  }
 
   if (isCorrect) {
     return {
@@ -168,7 +174,7 @@ async function getOrCreateSession(
   userId: string,
   topicId: string,
   clusterId: string,
-): Promise<string> {
+): Promise<string | null> {
   const { data: existing } = await db
     .from('user_sessions_new')
     .select('id')
@@ -187,7 +193,15 @@ async function getOrCreateSession(
     .insert({ user_id: userId, topic_id: topicId, cluster_id: clusterId })
     .select('id')
     .single()
-  if (error) throw new Error(error.message)
+  if (error || !created) {
+    // De leerling ziet een vaste zin. De technische tekst blijft in het serverlog.
+    console.error(
+      '[oefenen] sessie aanmaken mislukt',
+      error?.code ?? 'geen code',
+      error?.message ?? 'geen rij terug',
+    )
+    return null
+  }
   return created.id
 }
 
@@ -211,7 +225,14 @@ async function getOrCreateProgress(
     .insert({ user_id: userId, topic_id: topicId, cluster_id: clusterId, status: 'in_progress' })
     .select('*')
     .single()
-  if (error) throw new Error(error.message)
+  if (error || !created) {
+    console.error(
+      '[oefenen] voortgang aanmaken mislukt',
+      error?.code ?? 'geen code',
+      error?.message ?? 'geen rij terug',
+    )
+    return null
+  }
   return created
 }
 
@@ -224,6 +245,7 @@ async function applyProgress(
   isCorrect: boolean,
 ) {
   const p = await getOrCreateProgress(db, userId, topicId, clusterId)
+  if (!p) return null
   const next = isCorrect ? progressAfterCorrect(p) : progressAfterIncorrect(p)
 
   const { data, error } = await db
@@ -232,6 +254,13 @@ async function applyProgress(
     .eq('id', p.id)
     .select('*')
     .single()
-  if (error) throw new Error(error.message)
+  if (error || !data) {
+    console.error(
+      '[oefenen] voortgang bijwerken mislukt',
+      error?.code ?? 'geen code',
+      error?.message ?? 'geen rij terug',
+    )
+    return null
+  }
   return data
 }
