@@ -37,7 +37,7 @@ const KEYS: Key[] = [
     ),
     insert: '(|)/()',
     title: 'breuk',
-    ariaLabel: 'a b, breuk',
+    ariaLabel: 'ab, breuk',
   },
   { label: 'π', insert: 'pi', title: 'pi', ariaLabel: 'π, pi' },
 ]
