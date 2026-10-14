@@ -79,8 +79,26 @@
     "faq4A": "Nee. Jij kiest een hoofdstuk en een opgave. Is je antwoord fout, dan legt de site uit waar het misging. Daarna kies je zelf de volgende opgave.",
     "faq5Q": "Volgt de site Getal & Ruimte?",
     "faq5A": "Ja. Notatie, volgorde van onderwerpen en moeilijkheidsopbouw volgen Getal & Ruimte. Gebruik je een andere methode (bijvoorbeeld Moderne Wiskunde of Wageningse Methode)? Ook dan werkt de site prima, want differentiëren is differentiëren.",
+    "voorbeeldenH2": "Veelgezochte primitieven",
+    "voorbeeldenIntro": "Een korte pagina per functie: het antwoord bovenaan, daarna de uitwerking.",
+    "voorbeeldenLink": "Alle dertig primitieven",
     "faq6Q": "Helpt dit voor het eindexamen?",
     "faq6A": "Zeker. Afgeleiden zijn de basis voor grote onderdelen van het VWO wiskunde B examen (extremen, raaklijnen, dynamische modellen). Door hier vlot in te worden maak je op het examen sneller en met minder fouten de andere onderdelen."
+  },
+  "Voorbeeld": {
+    "eyebrow": "Voorbeelden",
+    "overzichtTitel": "Primitieven opzoeken",
+    "overzichtOmschrijving": "De primitieve van 1/x, ln(x), sin²(x), e^(2x) en 26 andere veelgezochte functies, met uitwerking.",
+    "overzichtKop": "Primitieven waar je op zoekt",
+    "overzichtIntro": "Elke pagina geeft meteen het antwoord, daarna vier stappen, en een knop naar sommen van hetzelfde soort.",
+    "antwoord": "Antwoord",
+    "antwoordZin": "Het antwoord is",
+    "uitwerking": "Uitwerking",
+    "stap": "Stap {n}",
+    "fout": "Veelgemaakte fout",
+    "oefenen": "Oefen dit soort sommen",
+    "verwant": "Zie ook",
+    "theorie": "Lees de theorie"
   },
   "HoeHetWerkt": {
     "title": "Hoe het werkt",

@@ -55,3 +55,48 @@ export function leermiddel({
     inLanguage: 'nl',
   }
 }
+
+/**
+ * Kaart voor één antwoordpagina: de vraag met het antwoord (voor het
+ * zoekresultaat) en de vier stappen (voor de uitwerking).
+ */
+export function voorbeeldGegevens({
+  url,
+  vraag,
+  antwoord,
+  stappen,
+}: {
+  url: string
+  vraag: string
+  antwoord: string
+  stappen: string[]
+}) {
+  return {
+    '@context': 'https://schema.org',
+    '@graph': [
+      {
+        '@type': 'FAQPage',
+        url,
+        inLanguage: 'nl',
+        mainEntity: [
+          {
+            '@type': 'Question',
+            name: vraag,
+            acceptedAnswer: { '@type': 'Answer', text: antwoord },
+          },
+        ],
+      },
+      {
+        '@type': 'HowTo',
+        name: vraag,
+        inLanguage: 'nl',
+        step: stappen.map((text, i) => ({
+          '@type': 'HowToStep',
+          position: i + 1,
+          name: `Stap ${i}`,
+          text,
+        })),
+      },
+    ],
+  }
+}

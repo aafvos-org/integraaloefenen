@@ -5,6 +5,7 @@ import { describe, expect, it } from 'vitest'
 
 import { AFGESCHERMD, OPENBAAR, ZONDER_TAAL } from '@/i18n/paths'
 import { routing } from '@/i18n/routing'
+import { VOORBEELDEN } from '@/content/voorbeelden'
 import { THEORIE_HOOFDSTUKKEN } from '@/lib/theory'
 
 import robots from './robots'
@@ -85,6 +86,13 @@ describe('sitemap.xml', () => {
     }
   })
 
+  it('noemt elk voorbeeld', () => {
+    expect(inSitemap()).toContain(`/${TAAL}/voorbeeld`)
+    for (const voorbeeld of VOORBEELDEN) {
+      expect(inSitemap()).toContain(`/${TAAL}/voorbeeld/${voorbeeld.slug}`)
+    }
+  })
+
   it('heeft geen dubbele adressen', () => {
     const paden = inSitemap()
     expect(new Set(paden).size).toBe(paden.length)
@@ -158,5 +166,11 @@ describe('eigen adres en deelkaartje', () => {
     const bron = broncode('theorie', '[hoofdstuk]')
     expect(bron).toMatch(/eigenPagina\(\{\s*locale,/)
     expect(bron).toContain('pad: `/theorie/${hoofdstuk}`,')
+  })
+
+  it('staan op een voorbeeldpagina, met de slug erin', () => {
+    const bron = broncode('voorbeeld', '[slug]')
+    expect(bron).toMatch(/eigenPagina\(\{\s*locale,/)
+    expect(bron).toContain('pad: `/voorbeeld/${slug}`,')
   })
 })

@@ -20,6 +20,7 @@ export const MET_TAAL = [
   'registreren',
   'theorie',
   'uitleg-videos',
+  'voorbeeld',
   'wachtwoord-opnieuw',
   'wachtwoord-vergeten',
   'zelf-toets',
@@ -38,6 +39,7 @@ export const OPENBAAR = [
   'privacy',
   'theorie',
   'uitleg-videos',
+  'voorbeeld',
 ] as const
 
 /**

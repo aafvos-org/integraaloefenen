@@ -4,6 +4,7 @@ import { Link } from '@/i18n/navigation'
 import { redirect } from 'next/navigation'
 
 import { SITE_CONFIG } from '@/config/site'
+import { VOORBEELDEN } from '@/content/voorbeelden'
 import { leesBron, padNaarAanmelden } from '@/lib/bron'
 import { startpaginaGegevens } from '@/lib/gestructureerde-gegevens'
 import { eigenPagina } from '@/lib/seo'
@@ -162,6 +163,31 @@ export default async function HomePage({
               body={t('topic6Body')}
             />
           </ul>
+        </section>
+
+        <section className="mt-20">
+          <h2 className="font-serif text-3xl text-text">{t('voorbeeldenH2')}</h2>
+          <p className="mt-3 text-text-muted">{t('voorbeeldenIntro')}</p>
+          <ul className="mt-6 grid gap-3 sm:grid-cols-2">
+            {VOORBEELDEN.slice(0, 6).map((voorbeeld) => (
+              <li key={voorbeeld.slug}>
+                <Link
+                  href={`/voorbeeld/${voorbeeld.slug}` as '/voorbeeld'}
+                  className="block rounded-xl border border-border bg-surface p-4 font-medium text-text hover:bg-surface-2"
+                >
+                  {voorbeeld.kop}
+                </Link>
+              </li>
+            ))}
+          </ul>
+          <p className="mt-4">
+            <Link
+              href="/voorbeeld"
+              className="inline-flex min-h-11 items-center font-medium text-accent underline underline-offset-2"
+            >
+              {t('voorbeeldenLink')}
+            </Link>
+          </p>
         </section>
 
         <section className="mt-20">

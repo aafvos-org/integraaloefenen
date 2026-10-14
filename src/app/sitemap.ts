@@ -1,6 +1,7 @@
 import type { MetadataRoute } from 'next'
 
 import { SITE_CONFIG } from '@/config/site'
+import { VOORBEELDEN } from '@/content/voorbeelden'
 import { routing } from '@/i18n/routing'
 import { THEORIE_HOOFDSTUKKEN } from '@/lib/theory'
 
@@ -35,6 +36,12 @@ function openbarePaden(): Array<{
     { pad: '/uitleg-videos', changeFrequency: 'monthly', priority: 0.7 },
     { pad: '/hoe-het-werkt', changeFrequency: 'monthly', priority: 0.6 },
     { pad: '/privacy', changeFrequency: 'monthly', priority: 0.4 },
+    { pad: '/voorbeeld', changeFrequency: 'monthly', priority: 0.6 },
+    ...VOORBEELDEN.map((voorbeeld) => ({
+      pad: `/voorbeeld/${voorbeeld.slug}`,
+      changeFrequency: 'monthly' as const,
+      priority: 0.6,
+    })),
   ]
 }
 
@@ -50,13 +57,17 @@ const LAATST_GEWIJZIGD: Record<string, string> = {
   '/uitleg-videos': '2026-10-13',
   '/hoe-het-werkt': '2026-10-10',
   '/privacy': '2026-10-13',
+  '/voorbeeld': '2026-10-14',
 }
 const THEORIE_HOOFDSTUK_GEWIJZIGD = '2026-10-14'
+const VOORBEELD_GEWIJZIGD = '2026-10-14'
 
 function laatstGewijzigd(pad: string): Date {
   const dag = pad.startsWith('/theorie/')
     ? THEORIE_HOOFDSTUK_GEWIJZIGD
-    : LAATST_GEWIJZIGD[pad]
+    : pad.startsWith('/voorbeeld/')
+      ? VOORBEELD_GEWIJZIGD
+      : LAATST_GEWIJZIGD[pad]
   return new Date(`${dag}T00:00:00.000Z`)
 }
 
