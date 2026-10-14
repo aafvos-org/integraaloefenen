@@ -37,11 +37,31 @@ function openbarePaden(): Array<{
   ]
 }
 
+/**
+ * Dag waarop de pagina voor het laatst echt veranderde (UTC).
+ * Geen `new Date()`: dat zette bij elke aanvraag alles op "vandaag".
+ * Theoriehoofdstukken delen één inhoudsbestand, dus één datum.
+ */
+const LAATST_GEWIJZIGD: Record<string, string> = {
+  '': '2026-10-13',
+  '/theorie': '2026-10-13',
+  '/uitleg-videos': '2026-10-13',
+  '/hoe-het-werkt': '2026-10-10',
+  '/privacy': '2026-10-13',
+}
+const THEORIE_HOOFDSTUK_GEWIJZIGD = '2026-10-13'
+
+function laatstGewijzigd(pad: string): Date {
+  const dag = pad.startsWith('/theorie/')
+    ? THEORIE_HOOFDSTUK_GEWIJZIGD
+    : LAATST_GEWIJZIGD[pad]
+  return new Date(`${dag}T00:00:00.000Z`)
+}
+
 export default function sitemap(): MetadataRoute.Sitemap {
-  const now = new Date()
   return openbarePaden().map(({ pad, changeFrequency, priority }) => ({
     url: `${SITE_URL}/${TAAL}${pad}`,
-    lastModified: now,
+    lastModified: laatstGewijzigd(pad),
     changeFrequency,
     priority,
   }))

@@ -83,6 +83,22 @@ describe('sitemap.xml', () => {
     const paden = inSitemap()
     expect(new Set(paden).size).toBe(paden.length)
   })
+
+  it('houdt lastmod vast zolang de inhoud hetzelfde is', () => {
+    const eerste = sitemap().map((item) =>
+      new Date(item.lastModified ?? 0).toISOString(),
+    )
+    const tweede = sitemap().map((item) =>
+      new Date(item.lastModified ?? 0).toISOString(),
+    )
+    expect(tweede).toEqual(eerste)
+    const nu = Date.now()
+    for (const item of sitemap()) {
+      expect(nu - new Date(item.lastModified ?? 0).getTime()).toBeGreaterThan(
+        60_000,
+      )
+    }
+  })
 })
 
 // =====================================================================
