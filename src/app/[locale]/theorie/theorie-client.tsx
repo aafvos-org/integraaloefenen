@@ -138,7 +138,7 @@ export function TheorieClient({
           'nice-scrollbar border-b border-border bg-surface lg:h-full lg:border-b-0 lg:border-r',
           sidebarOpen
             ? 'overflow-x-auto p-4 lg:w-64 lg:overflow-x-visible lg:overflow-y-auto lg:py-8'
-            : 'p-2 lg:w-12 lg:py-4',
+            : 'px-0.5 py-2 lg:w-12 lg:py-4',
         )}
       >
         <div className={sidebarOpen ? 'flex items-center justify-between gap-2' : 'flex justify-center'}>
@@ -153,7 +153,7 @@ export function TheorieClient({
             aria-expanded={sidebarOpen}
             aria-label={sidebarOpen ? labels.collapseSidebar : labels.expandSidebar}
             title={sidebarOpen ? labels.collapseSidebar : labels.expandSidebar}
-            className="rounded-md p-1.5 text-text-muted hover:bg-surface-2 hover:text-text"
+            className="inline-flex size-11 shrink-0 items-center justify-center rounded-md text-text-muted hover:bg-surface-2 hover:text-text"
           >
             <svg
               viewBox="0 0 24 24"
@@ -186,8 +186,8 @@ export function TheorieClient({
                     }}
                     className={
                       active
-                        ? 'flex w-full items-center gap-2 rounded-md bg-accent px-3 py-2 text-sm font-medium text-white'
-                        : 'flex w-full items-center gap-2 rounded-md px-3 py-2 text-sm text-text-muted hover:bg-surface-2 hover:text-text'
+                        ? 'flex min-h-11 w-full items-center gap-2 rounded-md bg-accent px-3 py-2 text-sm font-medium text-white'
+                        : 'flex min-h-11 w-full items-center gap-2 rounded-md px-3 py-2 text-sm text-text-muted hover:bg-surface-2 hover:text-text'
                     }
                   >
                     <span className="min-w-0 break-words text-left">
@@ -208,9 +208,9 @@ export function TheorieClient({
                           <button
                             type="button"
                             onClick={() => scrollToId(`stappenplan-${ch.slug}`)}
-                            className="flex w-full items-start gap-2 rounded-md py-1.5 pl-7 pr-3 text-xs font-medium text-accent hover:text-text"
+                            className="flex min-h-11 w-full items-center gap-2 rounded-md py-2 pl-7 pr-3 text-xs font-medium text-accent hover:text-text"
                           >
-                            <span className="mt-[0.3125rem] size-1.5 shrink-0 rounded-full bg-accent" />
+                            <span className="size-1.5 shrink-0 rounded-full bg-accent" />
                             <span className="min-w-0 break-words text-left">{labels.stappenplanTitle}</span>
                           </button>
                         </li>
@@ -221,9 +221,9 @@ export function TheorieClient({
                             type="button"
                             onClick={() => scrollToId(`kaart-${ch.slug}-${card.id}`)}
                             aria-label={platteTekst(card.title)}
-                            className="flex w-full items-start gap-2 rounded-md py-1.5 pl-7 pr-3 text-xs text-text-muted hover:text-text"
+                            className="flex min-h-11 w-full items-center gap-2 rounded-md py-2 pl-7 pr-3 text-xs text-text-muted hover:text-text"
                           >
-                            <span className="mt-[0.3125rem] size-1.5 shrink-0 rounded-full bg-border" />
+                            <span className="size-1.5 shrink-0 rounded-full bg-border" />
                             <span className="min-w-0 break-words text-left">
                               <RichMath source={card.title} />
                             </span>
