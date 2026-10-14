@@ -4,8 +4,10 @@ import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 import { getLocale } from 'next-intl/server'
 
+import { aanmeldGegevens, leesBron } from '@/lib/bron'
 import { requestOrigin } from '@/lib/request-origin'
 import { authFoutmelding } from '@/lib/supabase/auth-fouten'
+import { zetGekozenBron } from '@/lib/supabase/bron'
 import { zetGekozenGebruikersnaam } from '@/lib/supabase/gebruikersnaam'
 import { createClient } from '@/lib/supabase/server'
 
@@ -23,6 +25,7 @@ export async function signupAction(
   const email = (formData.get('email') ?? '').toString().trim()
   const password = (formData.get('password') ?? '').toString()
   const username = (formData.get('username') ?? '').toString().trim() || null
+  const bron = leesBron(formData.get('van'))
 
   const values = { username: username ?? '', email }
 
@@ -63,7 +66,9 @@ export async function signupAction(
       // net als iemand die zich aanmeldt zonder bevestigingsmail. `van`
       // vertelt de callback dat deze link uit de bevestigingsmail komt.
       emailRedirectTo: `${origin}/auth/callback?next=${encodeURIComponent(`/${locale}/oefenen`)}&van=bevestiging`,
-      data: username ? { username } : undefined,
+      // `van=bevestiging` hoort bij de mail. De bron (youtube, docent, …)
+      // gaat apart mee in het account, niet in die link en niet in een cookie.
+      data: aanmeldGegevens(username, bron),
     },
   })
 
@@ -80,8 +85,9 @@ export async function signupAction(
     }
   }
 
-  // Zonder mailbevestiging is er meteen een sessie: zet de naam nu al.
+  // Zonder mailbevestiging is er meteen een sessie: zet naam en bron nu al.
   await zetGekozenGebruikersnaam(supabase, data.user)
+  await zetGekozenBron(supabase, data.user)
 
   revalidatePath('/', 'layout')
   redirect(`/${locale}/oefenen`)

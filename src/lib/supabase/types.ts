@@ -1,3 +1,5 @@
+import type { Bron } from '@/lib/bron'
+
 /**
  * Types voor de tabellen die de site echt gebruikt.
  *
@@ -20,6 +22,8 @@ export type Database = {
           display_name: string | null
           tour_seen_at: string | null
           created_at: string
+          /** docent, youtube, klas of forum. Leeg als de aanmeldlink die niet had. */
+          bron: Bron | null
         }
         Insert: {
           id: string
@@ -28,6 +32,7 @@ export type Database = {
           display_name?: string | null
           tour_seen_at?: string | null
           created_at?: string
+          bron?: Bron | null
         }
         Update: Partial<Database['public']['Tables']['profiles']['Insert']>
         Relationships: []

@@ -1,18 +1,32 @@
 'use client'
 
-import { useActionState, useState } from 'react'
+import { useActionState, useState, useSyncExternalStore } from 'react'
 import { useFormStatus } from 'react-dom'
 import { useTranslations } from 'next-intl'
 
 import { Link } from '@/i18n/navigation'
+import { bronUitTabblad } from '@/lib/bron'
 import { signupAction, type SignupState } from './actions'
 
 const initialState: SignupState = { error: null, notice: null }
 
-export function SignupForm() {
+/** Bron uit dit tabblad. Op de server is die er niet, na het laden wel. */
+function useBronUitTabblad(): string {
+  return useSyncExternalStore(
+    () => () => {},
+    () => bronUitTabblad() ?? '',
+    () => '',
+  )
+}
+
+export function SignupForm({ bronUitAdres = null }: { bronUitAdres?: string | null }) {
   const [state, formAction] = useActionState(signupAction, initialState)
   const t = useTranslations('Register')
   const [showPassword, setShowPassword] = useState(false)
+  // Het adres van deze pagina gaat voor. Anders de bron die het tabblad
+  // onthield toen de leerling via de link binnenkwam. Geen cookie.
+  const uitTabblad = useBronUitTabblad()
+  const bron = bronUitAdres || uitTabblad
 
   if (state.notice) {
     return (
@@ -35,6 +49,7 @@ export function SignupForm() {
 
   return (
     <form action={formAction} className="space-y-4">
+      <input type="hidden" name="van" value={bron} />
       <Field
         label={t('usernameLabel')}
         name="username"

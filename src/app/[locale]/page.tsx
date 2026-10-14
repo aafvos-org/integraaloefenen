@@ -4,6 +4,7 @@ import { Link } from '@/i18n/navigation'
 import { redirect } from 'next/navigation'
 
 import { SITE_CONFIG } from '@/config/site'
+import { leesBron, padNaarAanmelden } from '@/lib/bron'
 import { startpaginaGegevens } from '@/lib/gestructureerde-gegevens'
 import { eigenPagina } from '@/lib/seo'
 import { getCurrentUser } from '@/lib/supabase/request-cache'
@@ -26,9 +27,14 @@ export async function generateMetadata({
   })
 }
 
-export default async function HomePage() {
+export default async function HomePage({
+  searchParams,
+}: {
+  searchParams: Promise<{ van?: string }>
+}) {
   const locale = await getLocale()
   const user = await getCurrentUser()
+  const aanmelden = padNaarAanmelden('/registreren', leesBron((await searchParams).van))
 
   if (user) {
     redirect(`/${locale}/dashboard`)
@@ -84,7 +90,7 @@ export default async function HomePage() {
 
           <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
             <Link
-              href="/registreren"
+              href={aanmelden}
               className="rounded-lg bg-accent px-5 py-3 text-white shadow-sm hover:bg-accent/90"
             >
               {t('ctaRegister')}
@@ -99,7 +105,7 @@ export default async function HomePage() {
           <p className="mt-3 text-sm text-text-muted">{t('tagline')}</p>
         </section>
 
-        <HomeDemo />
+        <HomeDemo aanmelden={aanmelden} />
 
         <section className="mt-20 grid gap-6 sm:grid-cols-3">
           <Feature title={t('feature1Title')} body={t('feature1Body')} />
@@ -194,7 +200,7 @@ export default async function HomePage() {
           <p className="mx-auto mt-3 max-w-xl text-text-muted">{t('ctaBody')}</p>
           <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
             <Link
-              href="/registreren"
+              href={aanmelden}
               className="rounded-lg bg-accent px-5 py-3 text-white shadow-sm hover:bg-accent/90"
             >
               {t('ctaRegister')}

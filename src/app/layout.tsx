@@ -2,6 +2,8 @@ import type { Metadata } from 'next'
 import { DM_Sans, DM_Serif_Display } from 'next/font/google'
 import Script from 'next/script'
 
+import { scriptDatBronOnthoudt } from '@/lib/bron'
+
 import './globals.css'
 
 const beaconToken = process.env.NEXT_PUBLIC_CF_BEACON_TOKEN
@@ -34,6 +36,9 @@ export default function RootLayout({
       className={`${dmSans.variable} ${dmSerif.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-bg text-text">{children}</body>
+      <Script id="onthoud-bron" strategy="beforeInteractive">
+        {scriptDatBronOnthoudt()}
+      </Script>
       {beaconToken ? (
         <Script
           src="https://static.cloudflareinsights.com/beacon.min.js"

@@ -1,5 +1,6 @@
 import { NextResponse, type NextRequest } from 'next/server'
 
+import { zetGekozenBron } from '@/lib/supabase/bron'
 import { zetGekozenGebruikersnaam } from '@/lib/supabase/gebruikersnaam'
 import { createClient } from '@/lib/supabase/server'
 
@@ -39,9 +40,10 @@ export async function GET(request: NextRequest) {
     const supabase = await createClient()
     const { data, error } = await supabase.auth.exchangeCodeForSession(code)
     if (!error) {
-      // Gekozen gebruikersnaam van het registreren op het profiel zetten
-      // (INT-89): bij mailbevestiging kon dat bij het registreren nog niet.
+      // Gekozen gebruikersnaam en bron van het registreren op het profiel
+      // zetten (INT-89, INT-240): bij mailbevestiging kon dat nog niet.
       await zetGekozenGebruikersnaam(supabase, data.user)
+      await zetGekozenBron(supabase, data.user)
       return NextResponse.redirect(`${origin}${next}`)
     }
   }

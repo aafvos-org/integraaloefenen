@@ -3,6 +3,7 @@ import { NextResponse, type NextRequest } from 'next/server'
 
 import { ACHTER_INLOG } from '@/i18n/paths'
 import { routing } from '@/i18n/routing'
+import { leesBron } from '@/lib/bron'
 
 import { heeftInlogsessie } from './sessie-cookie'
 import type { Database } from './types'
@@ -15,7 +16,7 @@ export async function updateSession(request: NextRequest) {
   if (!heeftInlogsessie(request.cookies.getAll())) {
     const taal = taalVanBeschermdPad(path)
     if (taal) return naarInloggen(request, taal)
-    return NextResponse.next({ request })
+    return verderMetBron(request)
   }
 
   let supabaseResponse = NextResponse.next({ request })
@@ -110,6 +111,22 @@ function taalVanBeschermdPad(path: string): string | null {
   }
   const rest = path.startsWith('/') ? path.slice(1) : path
   return achterInlog(rest) ? routing.defaultLocale : null
+}
+
+/**
+ * Geeft `?van=` door aan de pagina, als het een van de vier vaste woorden is.
+ * Een meegestuurd kopje van de browser zelf telt niet: alleen de link.
+ * Geen cookie.
+ */
+function verderMetBron(request: NextRequest) {
+  const bron = leesBron(request.nextUrl.searchParams.get('van'))
+  const meegestuurd = request.headers.get('x-bron')
+  if (!bron && !meegestuurd) return NextResponse.next({ request })
+
+  const headers = new Headers(request.headers)
+  if (bron) headers.set('x-bron', bron)
+  else headers.delete('x-bron')
+  return NextResponse.next({ request: { headers } })
 }
 
 function naarInloggen(request: NextRequest, taal: string) {

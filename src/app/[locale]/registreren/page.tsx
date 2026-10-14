@@ -2,6 +2,7 @@ import { getTranslations, getLocale } from 'next-intl/server'
 import { Link } from '@/i18n/navigation'
 import { redirect } from 'next/navigation'
 
+import { leesBron } from '@/lib/bron'
 import { getCurrentUser } from '@/lib/supabase/request-cache'
 
 import { SignupForm } from './signup-form'
@@ -16,9 +17,14 @@ export async function generateMetadata({
   return { title: t('title') }
 }
 
-export default async function SignupPage() {
+export default async function SignupPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ van?: string }>
+}) {
   const locale = await getLocale()
   const user = await getCurrentUser()
+  const bron = leesBron((await searchParams).van)
 
   if (user) {
     redirect(`/${locale}/dashboard`)
@@ -32,7 +38,7 @@ export default async function SignupPage() {
       <p className="mt-2 text-sm text-text-muted">{t('subtitle')}</p>
 
       <div className="mt-8 rounded-xl border border-border bg-surface p-6">
-        <SignupForm />
+        <SignupForm bronUitAdres={bron} />
       </div>
 
       <p className="mt-2 text-center text-sm text-text-muted">

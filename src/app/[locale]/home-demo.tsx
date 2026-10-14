@@ -66,7 +66,13 @@ function normalize(s: string): string {
     .replace(/\^{(\d+)}/g, '^$1')
 }
 
-function DemoCard({ difficulty }: { difficulty: Difficulty }) {
+function DemoCard({
+  difficulty,
+  aanmelden,
+}: {
+  difficulty: Difficulty
+  aanmelden: string
+}) {
   const t = useTranslations('HomeDemo')
   const q = QUESTIONS[difficulty]
   const [answer, setAnswer] = useState('')
@@ -187,7 +193,7 @@ function DemoCard({ difficulty }: { difficulty: Difficulty }) {
           <p className="mt-1 text-sm text-accent">{t('correctBody')}</p>
           <div className="mt-4 flex flex-wrap items-center gap-3">
             <Link
-              href="/registreren"
+              href={aanmelden}
               className="rounded-lg bg-accent px-5 py-2.5 font-medium text-white shadow-sm transition hover:bg-accent/90"
             >
               {t('correctCta')}
@@ -241,7 +247,7 @@ function DemoCard({ difficulty }: { difficulty: Difficulty }) {
 
           <div className="mt-4 flex flex-wrap items-center gap-3">
             <Link
-              href="/registreren"
+              href={aanmelden}
               className="rounded-lg bg-accent px-5 py-2.5 font-medium text-white shadow-sm transition hover:bg-accent/90"
             >
               {t('wrongCta')}
@@ -260,7 +266,7 @@ function DemoCard({ difficulty }: { difficulty: Difficulty }) {
   )
 }
 
-export function HomeDemo() {
+export function HomeDemo({ aanmelden }: { aanmelden: string }) {
   const t = useTranslations('HomeDemo')
   const [active, setActive] = useState<Difficulty>('easy')
 
@@ -297,7 +303,7 @@ export function HomeDemo() {
         ))}
       </div>
 
-      <DemoCard key={active} difficulty={active} />
+      <DemoCard key={active} difficulty={active} aanmelden={aanmelden} />
     </section>
   )
 }

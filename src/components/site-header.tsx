@@ -1,6 +1,8 @@
+import { headers } from 'next/headers'
 import { getTranslations } from 'next-intl/server'
 import Link from 'next/link'
 
+import { leesBron, padNaarAanmelden } from '@/lib/bron'
 import {
   getChapters,
   getCurrentProfile,
@@ -91,6 +93,10 @@ export async function SiteHeader({ locale }: { locale: string }) {
   const username = profile?.username ?? null
   const role = profile?.role ?? null
   const tourSeen = profile ? profile.tour_seen_at != null : true
+  const aanmelden = padNaarAanmelden(
+    `/${locale}/registreren`,
+    leesBron((await headers()).get('x-bron')),
+  )
 
   const oefenenItems = chapters.map((ch) => ({
     href: `/${locale}/oefenen?chapter=${encodeURIComponent(ch.slug)}`,
@@ -211,7 +217,7 @@ export async function SiteHeader({ locale }: { locale: string }) {
                 {t('login')}
               </Link>
               <Link
-                href={`/${locale}/registreren`}
+                href={aanmelden}
                 className="ml-1 rounded-md bg-accent px-3 py-1.5 text-white hover:bg-accent/90"
               >
                 {t('register')}
@@ -227,6 +233,7 @@ export async function SiteHeader({ locale }: { locale: string }) {
             isLoggedIn={!!user}
             username={username}
             role={role}
+            registerHref={aanmelden}
           />
         </div>
       </div>

@@ -2,6 +2,7 @@ import { getTranslations, getLocale } from 'next-intl/server'
 import { Link } from '@/i18n/navigation'
 import { redirect } from 'next/navigation'
 
+import { leesBron, padNaarAanmelden } from '@/lib/bron'
 import { getCurrentUser } from '@/lib/supabase/request-cache'
 
 import { BevestigingsMelding } from './bevestigings-melding'
@@ -26,6 +27,7 @@ export default async function LoginPage({
     bevestigd?: string
     linkfout?: string
     herstel?: string
+    van?: string
   }>
 }) {
   const locale = await getLocale()
@@ -36,7 +38,8 @@ export default async function LoginPage({
   }
 
   const t = await getTranslations('Login')
-  const { error, bevestigd, linkfout, herstel } = await searchParams
+  const { error, bevestigd, linkfout, herstel, van } = await searchParams
+  const aanmelden = padNaarAanmelden('/registreren', leesBron(van))
   const callbackError = error === 'auth_callback_failed'
   const herstelFout = herstel === '1'
 
@@ -54,7 +57,7 @@ export default async function LoginPage({
 
       <p className="mt-6 text-center text-sm text-text-muted">
         {t('noAccount')}{' '}
-        <Link href="/registreren" className="font-medium text-accent hover:underline">
+        <Link href={aanmelden} className="font-medium text-accent hover:underline">
           {t('registerLink')}
         </Link>
       </p>
