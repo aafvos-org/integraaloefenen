@@ -21,12 +21,7 @@ const dmSerif = DM_Serif_Display({
 
 export const metadata: Metadata = {
   icons: {
-    icon: [
-      { url: '/favicon.png', type: 'image/png' },
-      { url: '/favicon.svg', type: 'image/svg+xml' },
-      { url: '/favicon.ico' },
-    ],
-    shortcut: ['/favicon.ico'],
+    icon: [{ url: '/favicon.svg', type: 'image/svg+xml' }],
   },
 }
 
