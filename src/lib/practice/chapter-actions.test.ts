@@ -40,6 +40,8 @@ const QUESTION = {
 let progress: ProgressRow
 let answers: AnswerRow[]
 let aiSaysCorrect: boolean
+let aiGooit: boolean
+let aiAanroepen: number
 /** Nep-databasefout bij het wegschrijven van een antwoord. */
 let antwoordOpslaanFout: DbFout | null
 /** Nep-databasefout bij het melden van een vraag. */
@@ -135,13 +137,17 @@ vi.mock('@/lib/supabase/server', () => ({
 }))
 
 vi.mock('@/lib/ai/check-answer-new', () => ({
-  checkWrongAnswerNew: async () => ({
-    errorExplanation: aiSaysCorrect ? '' : 'Je bent de integratieconstante vergeten.',
-    category: null,
-    fromCache: false,
-    isMathematicallyCorrect: aiSaysCorrect,
-    generatedSteps: [],
-  }),
+  checkWrongAnswerNew: async () => {
+    aiAanroepen += 1
+    if (aiGooit) throw new Error('AI niet bereikbaar')
+    return {
+      errorExplanation: aiSaysCorrect ? '' : 'Je bent de integratieconstante vergeten.',
+      category: null,
+      fromCache: false,
+      isMathematicallyCorrect: aiSaysCorrect,
+      generatedSteps: [],
+    }
+  },
 }))
 
 const { flagQuestionNewAction, submitStudyAnswerAction } = await import('./chapter-actions')
@@ -154,6 +160,8 @@ describe('submitStudyAnswerAction', () => {
     progress = freshProgress(2, 2)
     answers = []
     aiSaysCorrect = false
+    aiGooit = false
+    aiAanroepen = 0
     antwoordOpslaanFout = null
     vraagMeldenFout = null
   })
@@ -253,6 +261,34 @@ describe('submitStudyAnswerAction', () => {
 
     expect(goed).toMatchObject({ kind: 'correct', streak: 1, mastered: true })
     expect(progress.status).toBe('mastered')
+  })
+
+  it('telt een andere notatie één keer en laat een mislukte AI het antwoord niet verdwijnen', async () => {
+    // x^3/3 is dezelfde primitieve als 1/3x^3. De AI is stuk; dat mag de
+    // rekenregel niet overschrijven en het antwoord niet laten verdwijnen.
+    aiGooit = true
+    const log = vi.spyOn(console, 'error').mockImplementation(() => {})
+
+    const goed = await submitStudyAnswerAction('q1', 'x^3/3 + c')
+
+    expect(goed).toMatchObject({ kind: 'correct', streak: 3, mastered: true })
+    expect(answers).toHaveLength(1)
+    expect(answers[0].is_correct).toBe(true)
+    expect(answers[0].user_answer).toBe('x^3/3 + c')
+    expect(progress.total_answered).toBe(3)
+    expect(progress.total_correct).toBe(3)
+    expect(aiAanroepen).toBe(0)
+
+    // De rekenregel zegt fout en de AI gooit. Het antwoord blijft één keer
+    // bewaard, als fout — de inzending zelf mislukt niet.
+    const fout = await submitStudyAnswerAction('q1', 'x^2')
+
+    expect(fout).toMatchObject({ kind: 'incorrect' })
+    expect(answers).toHaveLength(2)
+    expect(answers[1].is_correct).toBe(false)
+    expect(answers[1].user_answer).toBe('x^2')
+    expect(aiAanroepen).toBe(1)
+    log.mockRestore()
   })
 
   it('stuurt een databasefout niet mee naar de browser', async () => {

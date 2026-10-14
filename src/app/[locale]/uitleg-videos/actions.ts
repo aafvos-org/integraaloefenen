@@ -7,7 +7,7 @@ import {
   ontvangerAanAaf,
 } from '@/lib/email/adressen'
 import { verstuurMail } from '@/lib/email/versturen'
-import { answersMatch } from '@/lib/practice/engine'
+import { beoordeelAntwoord } from '@/lib/practice/nakijken'
 import { createClient, createServiceRoleClient } from '@/lib/supabase/server'
 
 /** Wat de leerling ziet als het verzoek niet weg kon. */
@@ -186,22 +186,16 @@ export async function checkVideoAnswerAction(
   if (!question) return { kind: 'error', message: 'Vraag niet gevonden.' }
 
   const alts: string[] = question.answer_alternatives ?? []
-  let isCorrect = answersMatch(answer, question.answer, alts)
+  // Zelfde nakijken als oefenen en de zelftoets. Hier blijft het antwoord
+  // niet staan: er is geen sessie, alleen de uitslag voor op het scherm.
+  const beoordeling = await beoordeelAntwoord({
+    leerling: answer,
+    goedAntwoord: question.answer,
+    alternatieven: alts,
+    vraagAi: () => checkWrongAnswerNew(createServiceRoleClient(), question.id, answer),
+  })
 
-  // Fout volgens de tekstmatch? Vraag de AI of het een geldige alternatieve notatie is.
-  if (!isCorrect) {
-    try {
-      const service = createServiceRoleClient()
-      const aiResult = await checkWrongAnswerNew(service, question.id, answer)
-      if (!('error' in aiResult) && aiResult.isMathematicallyCorrect) {
-        isCorrect = true
-      }
-    } catch (e) {
-      console.error('[check-video-answer]', e)
-    }
-  }
-
-  if (isCorrect) return { kind: 'correct' }
+  if (beoordeling.goed) return { kind: 'correct' }
 
   const { data: steps } = await supabase
     .from('question_steps_new')

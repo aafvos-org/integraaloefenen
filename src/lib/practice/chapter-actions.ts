@@ -3,7 +3,7 @@
 import { checkWrongAnswerNew } from '@/lib/ai/check-answer-new'
 import { createClient, createServiceRoleClient } from '@/lib/supabase/server'
 
-import { answersMatch } from './engine'
+import { beoordeelAntwoord } from './nakijken'
 import { progressAfterCorrect, progressAfterIncorrect } from './progress'
 import { timeSpentSecVoorOpslag } from './time-spent'
 
@@ -56,29 +56,17 @@ export async function submitStudyAnswerAction(
 
   const alts: string[] = question.answer_alternatives ?? []
 
-  // Eerst helemaal nakijken, dan pas opslaan. Komt het antwoord niet op de
-  // database uit, dan beslist de AI-controle: die rekent een andere notatie
-  // (bijvoorbeeld x^3/3 in plaats van 1/3x^3) alsnog goed. Pas als de
-  // uitslag vaststaat, gaat er één rij in en gaat de voortgang één keer
-  // omhoog.
-  let isCorrect = answersMatch(userAnswer, question.answer, alts)
-  let errorExplanation: string | null = null
-
-  if (!isCorrect) {
-    // AI-uitleg ophalen (cache-first; schrijfacties gaan via service role)
-    try {
-      const service = createServiceRoleClient()
-      const aiResult = await checkWrongAnswerNew(service, question.id, userAnswer)
-      if ('error' in aiResult) {
-        console.error('[check-answer-new]', aiResult.error)
-      } else {
-        errorExplanation = aiResult.errorExplanation || null
-        isCorrect = aiResult.isMathematicallyCorrect
-      }
-    } catch (e) {
-      console.error('[check-answer-new] unexpected', e)
-    }
-  }
+  // Eerst de rekenregel, dan de AI. Pas als die uitslag vaststaat, gaat er
+  // één rij in en gaat de voortgang één keer omhoog. Een mislukte
+  // AI-aanroep laat de rekenregel staan; het antwoord wordt toch bewaard.
+  const beoordeling = await beoordeelAntwoord({
+    leerling: userAnswer,
+    goedAntwoord: question.answer,
+    alternatieven: alts,
+    vraagAi: () => checkWrongAnswerNew(createServiceRoleClient(), question.id, userAnswer),
+  })
+  const isCorrect = beoordeling.goed
+  const errorExplanation = beoordeling.uitleg
 
   const sessionId = await getOrCreateSession(
     supabase,

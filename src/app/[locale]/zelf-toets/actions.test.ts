@@ -35,8 +35,13 @@ const SESSION = {
 }
 
 let answers: AnswerRow[]
+/** Hoe vaak een rij na het invoegen nog wordt bijgewerkt. */
+let wijzigingen: number
 /** Nep-databasefout bij het wegschrijven van een antwoord. */
 let antwoordOpslaanFout: DbFout | null
+let aiSaysCorrect: boolean
+let aiGooit: boolean
+let aiAanroepen: number
 
 /** Minimale nabootsing van de query-builder van Supabase. */
 function from(table: string) {
@@ -74,6 +79,7 @@ function from(table: string) {
     if (table === 'custom_test_questions') return { data: null, error: null, count: 2 }
     if (table === 'session_answers_new') {
       if (op === 'update') {
+        wijzigingen += 1
         Object.assign(answers[answers.length - 1], values)
         return { data: null, error: null }
       }
@@ -114,13 +120,17 @@ vi.mock('@/lib/supabase/server', () => ({
 }))
 
 vi.mock('@/lib/ai/check-answer-new', () => ({
-  checkWrongAnswerNew: async () => ({
-    errorExplanation: 'Je bent de integratieconstante vergeten.',
-    category: null,
-    fromCache: false,
-    isMathematicallyCorrect: false,
-    generatedSteps: [],
-  }),
+  checkWrongAnswerNew: async () => {
+    aiAanroepen += 1
+    if (aiGooit) throw new Error('AI niet bereikbaar')
+    return {
+      errorExplanation: aiSaysCorrect ? '' : 'Je bent de integratieconstante vergeten.',
+      category: null,
+      fromCache: false,
+      isMathematicallyCorrect: aiSaysCorrect,
+      generatedSteps: [],
+    }
+  },
 }))
 
 const { submitCustomTestAnswerAction } = await import('./actions')
@@ -131,7 +141,11 @@ const RAUWE_DATABASEFOUT =
 describe('submitCustomTestAnswerAction', () => {
   beforeEach(() => {
     answers = []
+    wijzigingen = 0
     antwoordOpslaanFout = null
+    aiSaysCorrect = false
+    aiGooit = false
+    aiAanroepen = 0
   })
 
   it('slaat de meegegeven seconden op bij het antwoord', async () => {
@@ -151,6 +165,46 @@ describe('submitCustomTestAnswerAction', () => {
     await submitCustomTestAnswerAction('s1', 'q1', '1/3x^3 + c', -30)
 
     expect(answers[0].time_spent_sec).toBeNull()
+  })
+
+  it('telt een andere notatie één keer als goed, ook als de AI mislukt', async () => {
+    // x^3/3 is dezelfde primitieve. De AI gooit; het antwoord gaat in één
+    // rij als goed, zonder eerst fout op te slaan en daarna bij te werken.
+    aiGooit = true
+    const log = vi.spyOn(console, 'error').mockImplementation(() => {})
+
+    const goed = await submitCustomTestAnswerAction('s1', 'q1', 'x^3/3 + c')
+
+    expect(goed).toMatchObject({ kind: 'correct' })
+    expect(answers).toHaveLength(1)
+    expect(answers[0].is_correct).toBe(true)
+    expect(wijzigingen).toBe(0)
+    expect(aiAanroepen).toBe(0)
+
+    // De rekenregel zegt fout en de AI gooit. Het antwoord blijft staan.
+    const fout = await submitCustomTestAnswerAction('s1', 'q1', 'x^2')
+
+    expect(fout).toMatchObject({ kind: 'incorrect' })
+    expect(answers).toHaveLength(2)
+    expect(answers[1].user_answer).toBe('x^2')
+    expect(answers[1].is_correct).toBe(false)
+    expect(aiAanroepen).toBe(1)
+    log.mockRestore()
+  })
+
+  it('keurt een notatie die alleen de AI herkent in één rij goed', async () => {
+    // `log` kent de rekenregel niet. De AI zegt dat het klopt; dan hoort
+    // de rij meteen goed te zijn, niet eerst fout en daarna bijgewerkt.
+    aiSaysCorrect = true
+
+    const result = await submitCustomTestAnswerAction('s1', 'q1', 'log(x) + c')
+
+    expect(result).toMatchObject({ kind: 'correct' })
+    expect(answers).toHaveLength(1)
+    expect(answers[0].is_correct).toBe(true)
+    expect(answers[0].user_answer).toBe('log(x) + c')
+    expect(wijzigingen).toBe(0)
+    expect(aiAanroepen).toBe(1)
   })
 
   it('stuurt een databasefout niet mee naar de browser', async () => {

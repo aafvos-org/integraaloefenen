@@ -4,7 +4,7 @@ import { redirect } from 'next/navigation'
 import { getLocale } from 'next-intl/server'
 
 import { checkWrongAnswerNew } from '@/lib/ai/check-answer-new'
-import { answersMatch } from '@/lib/practice/engine'
+import { beoordeelAntwoord } from '@/lib/practice/nakijken'
 import {
   createCustomTest,
   pickQuestionsForTest,
@@ -142,7 +142,16 @@ export async function submitCustomTestAnswerAction(
   if (!question) return { kind: 'error', message: 'Vraag niet gevonden.' }
 
   const alts: string[] = question.answer_alternatives ?? []
-  let isCorrect = answersMatch(userAnswer, question.answer, alts)
+  // Eerst de rekenregel, dan de AI, en pas daarna één rij. Niet eerst fout
+  // opslaan en daarna bijwerken: dan telt een andere notatie twee keer, en
+  // een mislukte AI-aanroep laat een goed antwoord fout staan.
+  const beoordeling = await beoordeelAntwoord({
+    leerling: userAnswer,
+    goedAntwoord: question.answer,
+    alternatieven: alts,
+    vraagAi: () => checkWrongAnswerNew(createServiceRoleClient(), question.id, userAnswer),
+  })
+  const isCorrect = beoordeling.goed
 
   const { data: answerRow, error: answerErr } = await supabase
     .from('session_answers_new')
@@ -163,23 +172,6 @@ export async function submitCustomTestAnswerAction(
       answerErr?.message ?? 'geen rij terug',
     )
     return { kind: 'error', message: OPSLAAN_MISLUKT }
-  }
-
-  // For wrong answers, ask the AI if it's actually a valid alternative
-  if (!isCorrect) {
-    try {
-      const service = createServiceRoleClient()
-      const aiResult = await checkWrongAnswerNew(service, question.id, userAnswer)
-      if (!('error' in aiResult) && aiResult.isMathematicallyCorrect) {
-        await supabase
-          .from('session_answers_new')
-          .update({ is_correct: true })
-          .eq('id', answerRow.id)
-        isCorrect = true
-      }
-    } catch (e) {
-      console.error('[zelf-toets check]', e)
-    }
   }
 
   // Determine if this was the last question
