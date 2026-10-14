@@ -1,6 +1,7 @@
 import { getTranslations } from 'next-intl/server'
 
 import { Link } from '@/i18n/navigation'
+import { zetStatischeTaal } from '@/i18n/statisch'
 import { leesbareWiskunde } from '@/app/[locale]/theorie/leesbare-tekst'
 import { VOORBEELDEN } from '@/content/voorbeelden'
 import { eigenPagina } from '@/lib/seo'
@@ -11,6 +12,7 @@ export async function generateMetadata({
   params: Promise<{ locale: string }>
 }) {
   const { locale } = await params
+  zetStatischeTaal(locale)
   const t = await getTranslations({ locale, namespace: 'Voorbeeld' })
   return eigenPagina({
     locale,
@@ -20,7 +22,13 @@ export async function generateMetadata({
   })
 }
 
-export default async function VoorbeeldenOverzicht() {
+export default async function VoorbeeldenOverzicht({
+  params,
+}: {
+  params: Promise<{ locale: string }>
+}) {
+  const { locale } = await params
+  zetStatischeTaal(locale)
   const t = await getTranslations('Voorbeeld')
 
   return (

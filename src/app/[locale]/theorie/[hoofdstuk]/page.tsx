@@ -1,6 +1,8 @@
 import { notFound } from 'next/navigation'
 import { getTranslations } from 'next-intl/server'
 
+import { zetStatischeTaal } from '@/i18n/statisch'
+
 import { SITE_CONFIG } from '@/config/site'
 import { routing } from '@/i18n/routing'
 import { leermiddel } from '@/lib/gestructureerde-gegevens'
@@ -29,6 +31,7 @@ export function generateStaticParams() {
 
 export async function generateMetadata({ params }: { params: Params }) {
   const { locale, hoofdstuk } = await params
+  zetStatischeTaal(locale)
   const t = await getTranslations({ locale, namespace: 'Theorie' })
   const kaart = THEORY_OVERVIEW.find((ch) => ch.slug === hoofdstuk)
   if (!kaart) notFound()
@@ -43,6 +46,7 @@ export async function generateMetadata({ params }: { params: Params }) {
 
 export default async function HoofdstukPage({ params }: { params: Params }) {
   const { locale, hoofdstuk } = await params
+  zetStatischeTaal(locale)
   const t = await getTranslations('Theorie')
 
   const kaart = THEORY_OVERVIEW.find((ch) => ch.slug === hoofdstuk)

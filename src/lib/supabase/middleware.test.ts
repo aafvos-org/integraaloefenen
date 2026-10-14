@@ -37,4 +37,29 @@ describe('inlogpoort en herkomst', () => {
     expect(naar.pathname).toBe('/nl/inloggen')
     expect(naar.search).toBe('')
   })
+
+  it('laat theorie met een sessiecookie met rust, zonder Supabase', async () => {
+    const verzoekMetCookie = new NextRequest(new URL('/nl/theorie', 'http://localhost'), {
+      headers: { cookie: 'sb-test-auth-token=abc' },
+    })
+    const antwoord = await updateSession(verzoekMetCookie)
+    expect(antwoord.status).toBe(200)
+    expect(antwoord.headers.get('location')).toBeNull()
+  })
+
+  it('stuurt de startpagina met een sessiecookie naar het dashboard', async () => {
+    for (const pad of ['/', '/nl', '/nl/']) {
+      const verzoekMetCookie = new NextRequest(new URL(pad, 'http://localhost'), {
+        headers: { cookie: 'sb-test-auth-token=abc' },
+      })
+      const antwoord = await updateSession(verzoekMetCookie)
+      expect(bestemming(antwoord).pathname).toBe('/nl/dashboard')
+    }
+  })
+
+  it('laat de startpagina zonder cookie staan', async () => {
+    const antwoord = await updateSession(verzoek('/nl'))
+    expect(antwoord.status).toBe(200)
+    expect(antwoord.headers.get('location')).toBeNull()
+  })
 })

@@ -1,4 +1,6 @@
-import { getLocale, getTranslations } from 'next-intl/server'
+import { getTranslations } from 'next-intl/server'
+
+import { zetStatischeTaal } from '@/i18n/statisch'
 
 import { SITE_CONFIG } from '@/config/site'
 import { leermiddel } from '@/lib/gestructureerde-gegevens'
@@ -15,6 +17,7 @@ export async function generateMetadata({
   params: Promise<{ locale: string }>
 }) {
   const { locale } = await params
+  zetStatischeTaal(locale)
   const t = await getTranslations({ locale, namespace: 'Theorie' })
   return eigenPagina({
     locale,
@@ -24,9 +27,14 @@ export async function generateMetadata({
   })
 }
 
-export default async function TheoriePage() {
+export default async function TheoriePage({
+  params,
+}: {
+  params: Promise<{ locale: string }>
+}) {
+  const { locale } = await params
+  zetStatischeTaal(locale)
   const t = await getTranslations('Theorie')
-  const locale = await getLocale()
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? `https://${SITE_CONFIG.domain}`
   const gegevens = leermiddel({
     titel: t('title'),

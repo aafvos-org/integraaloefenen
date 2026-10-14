@@ -1,22 +1,42 @@
-import { headers } from 'next/headers'
-import { getTranslations } from 'next-intl/server'
+'use client'
+
+import { useEffect, useState, useSyncExternalStore } from 'react'
+import { useTranslations } from 'next-intl'
 import Link from 'next/link'
 
-import { leesBron, padNaarAanmelden } from '@/lib/bron'
-import {
-  getChapters,
-  getCurrentProfile,
-  getCurrentUser,
-} from '@/lib/supabase/request-cache'
+import { bronUitTabblad, padNaarAanmelden } from '@/lib/bron'
+import { loadChapters, type ChapterInfo } from '@/lib/practice/chapter-overview'
+import { heeftInlogsessie } from '@/lib/supabase/sessie-cookie'
+import { createClient } from '@/lib/supabase/browser'
 import { THEORIE_HOOFDSTUKKEN } from '@/lib/theory'
 import { MobileNav } from './mobile-nav'
 import { NavDropdown } from './nav-dropdown'
 import { UserMenu } from './user-menu'
 import { WelcomeTour } from './welcome-tour'
 
+/**
+ * De balk staat in de opmaak van élke pagina. Hij mag de server niet naar
+ * cookies of headers laten kijken, anders wordt ook theorie bij elk bezoek
+ * opnieuw gebouwd. De openbare links zitten daarom in de HTML. Alleen als
+ * dit tabblad een inlogcookie heeft, vullen we daarna de ingelogde balk aan.
+ */
+type Sessie = {
+  email: string
+  username: string | null
+  role: string | null
+  tourSeen: boolean
+  chapters: ChapterInfo[]
+}
+
 /** "H2 — De afgeleide functie" → "De afgeleide functie" (code staat al in de badge) */
 function stripChapterCode(title: string): string {
   return title.replace(/^H\d+\s*[—–-]\s*/, '')
+}
+
+function cookiesUitDocument(): { name: string }[] {
+  return document.cookie.split(';').map((deel) => ({
+    name: deel.split('=')[0]?.trim() ?? '',
+  }))
 }
 
 function IconPencil() {
@@ -78,31 +98,59 @@ function IconChart() {
   )
 }
 
-export async function SiteHeader({ locale }: { locale: string }) {
-  const user = await getCurrentUser()
-
-  // Profiel, hoofdstukken en vertalingen hangen niet van elkaar af, en de
-  // eerste twee zijn per request gedeeld met de pagina onder de header — die
-  // vroeg ze eerder nog een keer apart op.
-  const [profile, chapters, t] = await Promise.all([
-    user ? getCurrentProfile() : null,
-    user ? getChapters() : [],
-    getTranslations({ locale, namespace: 'Header' }),
-  ])
-
-  const username = profile?.username ?? null
-  const role = profile?.role ?? null
-  const tourSeen = profile ? profile.tour_seen_at != null : true
-  const aanmelden = padNaarAanmelden(
-    `/${locale}/registreren`,
-    leesBron((await headers()).get('x-bron')),
+function useAanmelden(locale: string): string {
+  const bron = useSyncExternalStore(
+    () => () => {},
+    () => bronUitTabblad(),
+    () => null,
   )
+  return padNaarAanmelden(`/${locale}/registreren`, bron)
+}
 
-  const oefenenItems = chapters.map((ch) => ({
-    href: `/${locale}/oefenen?chapter=${encodeURIComponent(ch.slug)}`,
-    code: ch.slug.toUpperCase(),
-    label: stripChapterCode(ch.title),
-  }))
+export function SiteHeader({ locale }: { locale: string }) {
+  const t = useTranslations('Header')
+  const [sessie, setSessie] = useState<Sessie | null>(null)
+  const aanmelden = useAanmelden(locale)
+
+  useEffect(() => {
+    if (!heeftInlogsessie(cookiesUitDocument())) return
+    let geannuleerd = false
+
+    async function vulIn() {
+      try {
+        const supabase = createClient()
+        const { data } = await supabase.auth.getUser()
+        const user = data.user
+        if (geannuleerd || !user) return
+
+        const [profileRes, chapters] = await Promise.all([
+          supabase
+            .from('profiles')
+            .select('username, role, tour_seen_at')
+            .eq('id', user.id)
+            .maybeSingle(),
+          loadChapters(supabase).catch(() => [] as ChapterInfo[]),
+        ])
+        if (geannuleerd) return
+
+        const profile = profileRes.data
+        setSessie({
+          email: user.email ?? '',
+          username: profile?.username ?? null,
+          role: profile?.role ?? null,
+          tourSeen: profile ? profile.tour_seen_at != null : true,
+          chapters,
+        })
+      } catch {
+        // De openbare balk blijft staan. De pagina zelf is al zichtbaar.
+      }
+    }
+
+    void vulIn()
+    return () => {
+      geannuleerd = true
+    }
+  }, [])
 
   const theorieItems = THEORIE_HOOFDSTUKKEN.map((ch) => ({
     href: `/${locale}/theorie/${ch.slug}`,
@@ -132,6 +180,12 @@ export async function SiteHeader({ locale }: { locale: string }) {
     </Link>
   )
 
+  const oefenenItems = (sessie?.chapters ?? []).map((ch) => ({
+    href: `/${locale}/oefenen?chapter=${encodeURIComponent(ch.slug)}`,
+    code: ch.slug.toUpperCase(),
+    label: stripChapterCode(ch.title),
+  }))
+
   return (
     <>
     <header className="relative sticky top-0 z-30 h-14 border-b border-border bg-surface/85 backdrop-blur">
@@ -144,7 +198,7 @@ export async function SiteHeader({ locale }: { locale: string }) {
         </Link>
 
         <nav className="hidden items-center gap-1 text-sm md:flex">
-          {user ? (
+          {sessie ? (
             <>
               {theorieDropdown}
               {videosLink}
@@ -179,7 +233,7 @@ export async function SiteHeader({ locale }: { locale: string }) {
                 <IconChart />
                 {t('dashboard')}
               </Link>
-              {role === 'admin' && (
+              {sessie.role === 'admin' && (
                 <Link
                   href="/admin"
                   className="shrink-0 whitespace-nowrap rounded-md px-3 py-1.5 text-text-muted hover:bg-surface-2 hover:text-text"
@@ -188,8 +242,8 @@ export async function SiteHeader({ locale }: { locale: string }) {
                 </Link>
               )}
               <UserMenu
-                displayName={username ?? user.email ?? ''}
-                email={user.email ?? ''}
+                displayName={sessie.username ?? sessie.email}
+                email={sessie.email}
                 locale={locale}
                 labels={{
                   signedInAs: t('signedInAs'),
@@ -226,20 +280,18 @@ export async function SiteHeader({ locale }: { locale: string }) {
           )}
         </nav>
 
-        {/* Mobile: hamburger */}
         <div className="flex items-center gap-1 md:hidden">
           <MobileNav
             locale={locale}
-            isLoggedIn={!!user}
-            username={username}
-            role={role}
+            isLoggedIn={!!sessie}
+            username={sessie?.username ?? null}
+            role={sessie?.role ?? null}
             registerHref={aanmelden}
           />
         </div>
       </div>
     </header>
-    {/* Buiten de header: backdrop-blur maakt position:fixed anders relatief aan de header */}
-    {user && <WelcomeTour tourSeen={tourSeen} />}
+    {sessie && <WelcomeTour tourSeen={sessie.tourSeen} />}
     </>
   )
 }

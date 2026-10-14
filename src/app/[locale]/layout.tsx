@@ -7,6 +7,7 @@ import { SiteFooter } from '@/components/site-footer'
 import { SiteHeader } from '@/components/site-header'
 import { SITE_CONFIG } from '@/config/site'
 import { routing } from '@/i18n/routing'
+import { zetStatischeTaal } from '@/i18n/statisch'
 
 export async function generateMetadata({
   params,
@@ -14,6 +15,7 @@ export async function generateMetadata({
   params: Promise<{ locale: string }>
 }): Promise<Metadata> {
   const { locale } = await params
+  zetStatischeTaal(locale)
   const domain = SITE_CONFIG.domain
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? `https://${domain}`
   const t = await getTranslations({ locale, namespace: 'Metadata' })
@@ -63,6 +65,7 @@ export default async function LocaleLayout({
   params: Promise<{ locale: string }>
 }) {
   const { locale } = await params
+  zetStatischeTaal(locale)
   if (!hasLocale(routing.locales, locale)) {
     notFound()
   }

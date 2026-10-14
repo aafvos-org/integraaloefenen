@@ -2,6 +2,8 @@ import type { Metadata } from 'next'
 import { getTranslations } from 'next-intl/server'
 
 import { Link } from '@/i18n/navigation'
+import { routing } from '@/i18n/routing'
+import { zetStatischeTaal } from '@/i18n/statisch'
 import { nietGevondenMetadata } from '@/lib/niet-gevonden'
 
 // absolute titel, anders plakt de titel-sjabloon van de taallayout het domein
@@ -9,6 +11,7 @@ import { nietGevondenMetadata } from '@/lib/niet-gevonden'
 export const metadata: Metadata = nietGevondenMetadata
 
 export default async function NotFound() {
+  zetStatischeTaal(routing.defaultLocale)
   const t = await getTranslations('NotFound')
 
   return (

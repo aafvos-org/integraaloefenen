@@ -1,5 +1,7 @@
 import { getTranslations } from 'next-intl/server'
 
+import { zetStatischeTaal } from '@/i18n/statisch'
+
 import { NewPasswordForm } from './new-password-form'
 
 export async function generateMetadata({
@@ -8,11 +10,18 @@ export async function generateMetadata({
   params: Promise<{ locale: string }>
 }) {
   const { locale } = await params
+  zetStatischeTaal(locale)
   const t = await getTranslations({ locale, namespace: 'NewPassword' })
   return { title: t('title') }
 }
 
-export default async function WachtwoordOpnieuwPage() {
+export default async function WachtwoordOpnieuwPage({
+  params,
+}: {
+  params: Promise<{ locale: string }>
+}) {
+  const { locale } = await params
+  zetStatischeTaal(locale)
   const t = await getTranslations('NewPassword')
 
   return (

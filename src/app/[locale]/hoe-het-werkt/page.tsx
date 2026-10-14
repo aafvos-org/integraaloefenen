@@ -2,6 +2,7 @@ import { getTranslations } from 'next-intl/server'
 import { Link } from '@/i18n/navigation'
 
 import { Card } from '@/components/ui'
+import { zetStatischeTaal } from '@/i18n/statisch'
 import { eigenPagina } from '@/lib/seo'
 
 export async function generateMetadata({
@@ -10,6 +11,7 @@ export async function generateMetadata({
   params: Promise<{ locale: string }>
 }) {
   const { locale } = await params
+  zetStatischeTaal(locale)
   const t = await getTranslations({ locale, namespace: 'HoeHetWerkt' })
   return eigenPagina({
     locale,
@@ -19,7 +21,13 @@ export async function generateMetadata({
   })
 }
 
-export default async function HoeHetWerktPage() {
+export default async function HoeHetWerktPage({
+  params,
+}: {
+  params: Promise<{ locale: string }>
+}) {
+  const { locale } = await params
+  zetStatischeTaal(locale)
   const t = await getTranslations('HoeHetWerkt')
 
   return (

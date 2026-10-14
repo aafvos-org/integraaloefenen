@@ -1,8 +1,9 @@
 import { getTranslations } from 'next-intl/server'
 
-import { Link } from '@/i18n/navigation'
+import { zetStatischeTaal } from '@/i18n/statisch'
 import { eigenPagina } from '@/lib/seo'
-import { getCurrentUser } from '@/lib/supabase/request-cache'
+
+import { ExamenKnoppen } from './examen-knoppen'
 
 /** Officiële pagina van het examen. Geen opgaven overnemen, alleen hierheen linken. */
 const EXAMENBLAD =
@@ -16,6 +17,7 @@ export async function generateMetadata({
   params: Promise<{ locale: string }>
 }) {
   const { locale } = await params
+  zetStatischeTaal(locale)
   const t = await getTranslations({ locale, namespace: 'ExamenUitleg' })
   return eigenPagina({
     locale,
@@ -25,9 +27,14 @@ export async function generateMetadata({
   })
 }
 
-export default async function ExamenIntegralenPage() {
+export default async function ExamenIntegralenPage({
+  params,
+}: {
+  params: Promise<{ locale: string }>
+}) {
+  const { locale } = await params
+  zetStatischeTaal(locale)
   const t = await getTranslations('ExamenUitleg')
-  const user = await getCurrentUser()
 
   return (
     <div className="mx-auto max-w-3xl px-4 py-12">
@@ -66,31 +73,11 @@ export default async function ExamenIntegralenPage() {
       <section className="mt-12">
         <h2 className="font-serif text-2xl text-text">{t('opgavenH2')}</h2>
         <p className="mt-3 text-base leading-relaxed text-text-muted">{t('opgaven')}</p>
-        <div className="mt-6 flex flex-wrap gap-3">
-          {user ? (
-            <Link
-              href="/examentraining"
-              className="inline-flex min-h-11 items-center rounded-lg bg-accent px-5 text-sm font-medium text-white shadow-sm hover:bg-accent/90"
-            >
-              {t('ctaOpgaven')}
-            </Link>
-          ) : (
-            <>
-              <Link
-                href="/registreren"
-                className="inline-flex min-h-11 items-center rounded-lg bg-accent px-5 text-sm font-medium text-white shadow-sm hover:bg-accent/90"
-              >
-                {t('ctaRegister')}
-              </Link>
-              <Link
-                href="/inloggen"
-                className="inline-flex min-h-11 items-center rounded-lg border border-border px-5 text-sm text-text hover:bg-surface-2"
-              >
-                {t('ctaLogin')}
-              </Link>
-            </>
-          )}
-        </div>
+        <ExamenKnoppen
+          ctaOpgaven={t('ctaOpgaven')}
+          ctaRegister={t('ctaRegister')}
+          ctaLogin={t('ctaLogin')}
+        />
       </section>
     </div>
   )

@@ -16,9 +16,19 @@ export async function updateSession(request: NextRequest) {
 
   // Geen sessiecookie: Supabase niet bellen. Die ronde hield elke openbare
   // pagina een seconde tegen, ook voor wie alleen komt lezen.
-  if (!heeftInlogsessie(request.cookies.getAll())) {
-    const taal = taalVanBeschermdPad(path)
+  //
+  // Mét een cookie, maar op een openbare pagina: ook niet bellen. De
+  // inlogcontrole hoort bij oefenen en het dashboard, niet bij theorie.
+  // De startpagina stuurt wel door, anders ziet een ingelogde leerling
+  // de reclamepagina.
+  const ingelogd = heeftInlogsessie(request.cookies.getAll())
+  const taal = taalVanBeschermdPad(path)
+  if (!ingelogd) {
     if (taal) return naarInloggen(request, taal)
+    return verderMetBron(request)
+  }
+  if (!taal) {
+    if (isStartpagina(path)) return naarDashboard(request)
     return verderMetBron(request)
   }
 
@@ -79,8 +89,7 @@ export async function updateSession(request: NextRequest) {
 
   // /nl/dashboard heeft de taal vooraan. /dashboard nog niet: de rewrite in
   // next.config.ts komt pas ná de middleware. Beide moeten hier dicht.
-  const taal = taalVanBeschermdPad(path)
-  if (!user && taal) {
+  if (!user) {
     return naarInloggen(request, taal)
   }
 
@@ -130,6 +139,18 @@ function verderMetBron(request: NextRequest) {
   if (bron) headers.set('x-bron', bron)
   else headers.delete('x-bron')
   return NextResponse.next({ request: { headers } })
+}
+
+/** `/` en `/nl` zijn de startpagina. De rewrite naar /nl komt pas ná de middleware. */
+function isStartpagina(path: string): boolean {
+  return path === '/' || path === '/nl' || path === '/nl/'
+}
+
+function naarDashboard(request: NextRequest) {
+  // Nieuwe URL, niet de binnenkomende klonen: /nl/ zou anders een slash
+  // achter het dashboard plakken.
+  const url = new URL(`/${routing.defaultLocale}/dashboard`, request.url)
+  return NextResponse.redirect(url)
 }
 
 function naarInloggen(request: NextRequest, taal: string) {

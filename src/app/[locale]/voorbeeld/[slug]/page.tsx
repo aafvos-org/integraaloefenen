@@ -7,6 +7,7 @@ import { SITE_CONFIG } from '@/config/site'
 import { oefenPad, proefPad, vindVoorbeeld, VOORBEELDEN } from '@/content/voorbeelden'
 import { Link } from '@/i18n/navigation'
 import { routing } from '@/i18n/routing'
+import { zetStatischeTaal } from '@/i18n/statisch'
 import { voorbeeldGegevens } from '@/lib/gestructureerde-gegevens'
 import { eigenPagina } from '@/lib/seo'
 
@@ -22,6 +23,7 @@ export function generateStaticParams() {
 
 export async function generateMetadata({ params }: { params: Params }) {
   const { locale, slug } = await params
+  zetStatischeTaal(locale)
   const voorbeeld = vindVoorbeeld(slug)
   if (!voorbeeld) notFound()
   return eigenPagina({
@@ -34,6 +36,7 @@ export async function generateMetadata({ params }: { params: Params }) {
 
 export default async function VoorbeeldPagina({ params }: { params: Params }) {
   const { locale, slug } = await params
+  zetStatischeTaal(locale)
   const voorbeeld = vindVoorbeeld(slug)
   if (!voorbeeld) notFound()
 

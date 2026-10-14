@@ -1,14 +1,12 @@
 import type { ReactNode } from 'react'
-import { getTranslations, getLocale } from 'next-intl/server'
+import { getTranslations } from 'next-intl/server'
 import { Link } from '@/i18n/navigation'
-import { redirect } from 'next/navigation'
 
 import { SITE_CONFIG } from '@/config/site'
 import { VOORBEELDEN } from '@/content/voorbeelden'
-import { leesBron, padNaarAanmelden } from '@/lib/bron'
+import { zetStatischeTaal } from '@/i18n/statisch'
 import { startpaginaGegevens } from '@/lib/gestructureerde-gegevens'
 import { eigenPagina } from '@/lib/seo'
-import { getCurrentUser } from '@/lib/supabase/request-cache'
 
 import { AfgeleideVerwijzing } from '@/components/afgeleide-verwijzing'
 
@@ -20,6 +18,7 @@ export async function generateMetadata({
   params: Promise<{ locale: string }>
 }) {
   const { locale } = await params
+  zetStatischeTaal(locale)
   const t = await getTranslations({ locale, namespace: 'Metadata' })
   // De titel in het tabblad komt uit de layout; het kaartje heeft een kortere
   // eigen titel, omdat de sitenaam er toch al los onder staat.
@@ -31,17 +30,15 @@ export async function generateMetadata({
 }
 
 export default async function HomePage({
-  searchParams,
+  params,
 }: {
-  searchParams: Promise<{ van?: string }>
+  params: Promise<{ locale: string }>
 }) {
-  const locale = await getLocale()
-  const user = await getCurrentUser()
-  const aanmelden = padNaarAanmelden('/registreren', leesBron((await searchParams).van))
-
-  if (user) {
-    redirect(`/${locale}/dashboard`)
-  }
+  const { locale } = await params
+  zetStatischeTaal(locale)
+  // Een ingelogde leerling gaat via de middleware naar het dashboard.
+  // De herkomst (?van=) onthoudt het tabblad zelf; die hoeft niet in deze HTML.
+  const aanmelden = '/registreren'
 
   const t = await getTranslations('Home')
 

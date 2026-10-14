@@ -1,6 +1,7 @@
 import { getTranslations } from 'next-intl/server'
 
 import { Link } from '@/i18n/navigation'
+import { zetStatischeTaal } from '@/i18n/statisch'
 
 import { ForgotForm } from './forgot-form'
 
@@ -10,11 +11,18 @@ export async function generateMetadata({
   params: Promise<{ locale: string }>
 }) {
   const { locale } = await params
+  zetStatischeTaal(locale)
   const t = await getTranslations({ locale, namespace: 'ForgotPassword' })
   return { title: t('title') }
 }
 
-export default async function WachtwoordVergetenPage() {
+export default async function WachtwoordVergetenPage({
+  params,
+}: {
+  params: Promise<{ locale: string }>
+}) {
+  const { locale } = await params
+  zetStatischeTaal(locale)
   const t = await getTranslations('ForgotPassword')
 
   return (
