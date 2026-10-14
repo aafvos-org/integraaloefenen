@@ -121,7 +121,11 @@ export async function checkWrongAnswerNew(
           stepsAlreadyExist,
         }),
       )
-  if (!ai.ok) return { error: ai.error }
+  if (!ai.ok) {
+    // Statuscodes, sleutelnamen en HTML horen in het log, niet in het antwoord.
+    console.error('[ai-nakijken]', ai.error)
+    return { error: 'Nakijken lukte niet. Probeer het nog een keer.' }
+  }
 
   const isMathematicallyCorrect = ai.data.is_mathematically_correct === true
   const explanation = isMathematicallyCorrect
