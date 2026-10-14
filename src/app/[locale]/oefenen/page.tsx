@@ -12,6 +12,11 @@ import {
   type TopicCategory,
 } from '@/lib/practice/chapter-overview'
 import {
+  MACHTSREGEL_BLOK,
+  eersteSomVoorLegeLeerling,
+  makkelijksteSomInBlok,
+} from '@/lib/practice/eerste-som'
+import {
   clusterIdsVoorSelectie,
   losSelectieOp,
   oefenIndeling,
@@ -34,6 +39,40 @@ const CATEGORY_LABELS: Record<TopicCategory, string> = {
   integralen: 'Integralen',
   vergelijkingen: 'Vergelijkingen',
   toepassingen: 'Toepassingen',
+}
+
+/**
+ * Of deze leerling al een antwoord heeft opgeslagen.
+ * Een fout telt als "al geoefend", zodat een vaste leerling het keuzescherm niet kwijtraakt.
+ */
+async function heeftAlEenAntwoord(
+  supabase: Awaited<ReturnType<typeof createClient>>,
+  userId: string,
+): Promise<boolean> {
+  const { data: sessies, error: sessieFout } = await supabase
+    .from('user_sessions_new')
+    .select('id')
+    .eq('user_id', userId)
+  if (sessieFout) {
+    console.error('[oefenen] sessies tellen mislukt', sessieFout.code ?? 'geen code')
+    return true
+  }
+  const ids = (sessies ?? []).map((sessie) => sessie.id)
+  if (ids.length === 0) return false
+
+  for (let i = 0; i < ids.length; i += 100) {
+    const { data, error } = await supabase
+      .from('session_answers_new')
+      .select('id')
+      .in('session_id', ids.slice(i, i + 100))
+      .limit(1)
+    if (error) {
+      console.error('[oefenen] antwoorden tellen mislukt', error.code ?? 'geen code')
+      return true
+    }
+    if ((data ?? []).length > 0) return true
+  }
+  return false
 }
 
 function isCategory(v: string | null): v is TopicCategory {
@@ -209,13 +248,16 @@ async function BlokPagina({ searchParams }: PageProps) {
   if (!user) redirect(`/${locale}/inloggen`)
 
   const params = (await searchParams) ?? {}
-  const adres = {
+  const ruwAdres = {
     blok: params.blok?.trim() || null,
     topic: params.topic?.trim() || null,
     cluster: params.cluster?.trim() || null,
     chapter: params.chapter?.trim() || null,
   }
   const qParam = params.q?.trim() ?? null
+  const zelfGekozen = Boolean(
+    ruwAdres.blok || ruwAdres.topic || ruwAdres.cluster || ruwAdres.chapter || qParam,
+  )
 
   const [t, chapters, allTopics, paragraphs, blocks] = await Promise.all([
     getTranslations('FreeExercise'),
@@ -238,14 +280,35 @@ async function BlokPagina({ searchParams }: PageProps) {
   )
   const allTiles = await loadTilesForClusters(supabase, allClusterIds)
 
+  const makkelijksteId = makkelijksteSomInBlok(
+    MACHTSREGEL_BLOK,
+    blocks,
+    allTopics,
+    allClusters,
+    allTiles,
+  )
+  const start =
+    !zelfGekozen && makkelijksteId
+      ? eersteSomVoorLegeLeerling({
+          heeftAntwoord: await heeftAlEenAntwoord(supabase, user.id),
+          zelfGekozen: false,
+          vraagId: makkelijksteId,
+          blokSlug: MACHTSREGEL_BLOK,
+        })
+      : null
+  const adres = start
+    ? { blok: start.blok, topic: null, cluster: null, chapter: null }
+    : ruwAdres
+  const vraagId = start ? start.vraagId : qParam
+
   const data = { chapters, paragraphs, blocks, topics: allTopics, clusters: allClusters, tiles: allTiles }
   const selectie = losSelectieOp(adres, data)
   const scope = new Set(
     selectie ? clusterIdsVoorSelectie(selectie, allTopics, allClusters) : [],
   )
   const question =
-    qParam && allTiles.some((tile) => tile.questionId === qParam && scope.has(tile.clusterId))
-      ? await loadQuestionNew(supabase, qParam)
+    vraagId && allTiles.some((tile) => tile.questionId === vraagId && scope.has(tile.clusterId))
+      ? await loadQuestionNew(supabase, vraagId)
       : null
 
   return (
@@ -259,6 +322,7 @@ async function BlokPagina({ searchParams }: PageProps) {
       adres={adres}
       allTiles={allTiles}
       question={question}
+      toonBeginzin={Boolean(start && question)}
       labels={{
         chapterLabel: t('chapterLabel'),
         h1: t('h1'),
@@ -277,6 +341,7 @@ async function BlokPagina({ searchParams }: PageProps) {
         nogGeenOpgaven: 'nog geen opgaven',
         kiesOnderdeel: 'Kies een onderdeel',
         sluiten: 'Sluiten',
+        beginMetDeze: 'Begin met deze. Links kies je iets anders als je dit al kunt.',
       }}
     />
   )

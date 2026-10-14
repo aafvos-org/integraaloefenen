@@ -680,6 +680,7 @@ type BlokLabels = Labels & {
   nogGeenOpgaven: string
   kiesOnderdeel: string
   sluiten: string
+  beginMetDeze: string
 }
 
 type BlokProps = {
@@ -692,6 +693,7 @@ type BlokProps = {
   adres: Adres
   allTiles: NewExerciseTile[]
   question: Question | null
+  toonBeginzin?: boolean
   labels: BlokLabels
 }
 
@@ -704,10 +706,12 @@ function BlokWeergave({
   adres: adresVanServer,
   allTiles,
   question,
+  toonBeginzin = false,
   labels,
 }: BlokProps) {
   const router = useRouter()
   const [adres, setAdres] = useState(adresVanServer)
+  const [beginWegVoor, setBeginWegVoor] = useState<string | null>(null)
   const [allTilesState, setAllTilesState] = useState(allTiles)
   const [sidebarOpen, setSidebarOpen] = useState(true)
   const [boomOpen, setBoomOpen] = useState(false)
@@ -1169,6 +1173,9 @@ function BlokWeergave({
                       </svg>
                     </Link>
                   </div>
+                  {toonBeginzin && beginWegVoor !== question.id ? (
+                    <p className="mb-5 text-sm text-text">{labels.beginMetDeze}</p>
+                  ) : null}
                   <StudyCard
                     key={question.id}
                     question={question}
@@ -1180,6 +1187,7 @@ function BlokWeergave({
                       (currentIdx >= 0 ? (tiles[currentIdx]?.ordinal ?? undefined) : undefined)
                     }
                     onAnswered={(questionId, isCorrect) => {
+                      setBeginWegVoor(questionId)
                       setAllTilesState((prev) =>
                         prev.map((t) =>
                           t.questionId === questionId ? { ...t, lastCorrect: isCorrect } : t,
