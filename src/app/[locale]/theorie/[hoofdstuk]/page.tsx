@@ -32,11 +32,12 @@ export async function generateMetadata({ params }: { params: Params }) {
   const t = await getTranslations({ locale, namespace: 'Theorie' })
   const kaart = THEORY_OVERVIEW.find((ch) => ch.slug === hoofdstuk)
   if (!kaart) notFound()
+  const zoektitel = kaart.zoektitel ?? kaart.title
   return eigenPagina({
     locale,
     pad: `/theorie/${hoofdstuk}`,
-    titel: `${kaart.title} · ${t('eyebrow')}`,
-    omschrijving: hoofdstukOmschrijving(kaart.title, kaart.intro),
+    titel: `${zoektitel} · ${t('eyebrow')}`,
+    omschrijving: kaart.zoekomschrijving ?? hoofdstukOmschrijving(kaart.title, kaart.intro),
   })
 }
 
@@ -58,10 +59,11 @@ export default async function HoofdstukPage({ params }: { params: Params }) {
     voorbeelden: VOORBEELDOPGAVEN[kaart.slug],
   }
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? `https://${SITE_CONFIG.domain}`
+  const zoektitel = kaart.zoektitel ?? kaart.title
   const gegevens = leermiddel({
-    titel: `${kaart.title} · ${t('eyebrow')}`,
+    titel: `${zoektitel} · ${t('eyebrow')}`,
     url: `${siteUrl}/${locale}/theorie/${hoofdstuk}`,
-    omschrijving: hoofdstukOmschrijving(kaart.title, kaart.intro),
+    omschrijving: kaart.zoekomschrijving ?? hoofdstukOmschrijving(kaart.title, kaart.intro),
   })
 
   return (

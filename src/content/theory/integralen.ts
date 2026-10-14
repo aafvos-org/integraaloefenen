@@ -39,6 +39,9 @@ export const THEORY_OVERVIEW: OverviewChapter[] = [
     slug: 'substitutiemethode',
     code: 'K.1',
     title: 'K.1 — De substitutiemethode',
+    zoektitel: 'Substitutie bij integralen',
+    zoekomschrijving:
+      'Substitutie bij integralen: je ziet een binnenfunctie en zijn afgeleide naast elkaar, en primitiveert alleen de buitenkant.',
     intro:
       'Je ziet een binnenfunctie $g$ en zijn afgeleide $g\'$ naast elkaar. Dan primitiveer je alleen de buitenkant $f$. De basis oefen je in K.1 A, de toepassingen in K.1 B.',
     oefenlinks: [
@@ -163,6 +166,9 @@ export const THEORY_OVERVIEW: OverviewChapter[] = [
     slug: 'partieel-integreren',
     code: 'K.2',
     title: 'K.2 — Partieel integreren',
+    zoektitel: 'Partieel integreren',
+    zoekomschrijving:
+      'Partieel integreren: een product van twee factoren, waarvan je er één differentieert en de andere primitiveert.',
     intro:
       'Je ziet een product van twee factoren. Eén factor differentieer je, de andere primitiveer je. Eén ronde oefen je in K.2 A, twee rondes in K.2 B.',
     oefenlinks: [
@@ -294,6 +300,9 @@ export const THEORY_OVERVIEW: OverviewChapter[] = [
     slug: 'oppervlakte',
     code: 'Opp',
     title: 'Oppervlakte',
+    zoektitel: 'Oppervlakte berekenen met een integraal',
+    zoekomschrijving:
+      'Oppervlakte tussen een grafiek en de x-as, of tussen twee grafieken, omzetten naar een integraal en die uitrekenen.',
     intro:
       'Eerst maak je van het verhaaltje een integraal. Daarna reken je die uit, met de substitutiemethode of met partieel integreren.',
     oefenlinks: [
@@ -454,6 +463,9 @@ export const THEORY_OVERVIEW: OverviewChapter[] = [
     slug: 'inhoud',
     code: 'Inh',
     title: 'Inhoud',
+    zoektitel: 'Inhoud van een omwentelingslichaam',
+    zoekomschrijving:
+      'Inhoud van een lichaam dat ontstaat als een vlakdeel om de x-as wentelt, via een integraal.',
     intro:
       'Een vlakdeel wentelt om de $x$-as en wordt een lichaam. Eerst maak je van het verhaaltje een integraal: $\\pi$ keer het kwadraat van de grafiek. Daarna reken je die uit, met de substitutiemethode of met partieel integreren.',
     oefenlinks: [
@@ -613,6 +625,9 @@ export const THEORY_OVERVIEW: OverviewChapter[] = [
     slug: 'k3',
     code: 'K.3',
     title: 'K.3 — Cyclometrische functies',
+    zoektitel: 'Arcsin en arctan',
+    zoekomschrijving:
+      'Integralen die uitkomen op arcsin of arctan: de noemer zegt welke van de twee.',
     intro: 'Elke integraal hier wordt $\\arctan$ of $\\arcsin$. De noemer zegt welke van de twee.',
     oefenlinks: [
       { label: 'Oefen K.3 A', href: '/oefenen?blok=k3a' },

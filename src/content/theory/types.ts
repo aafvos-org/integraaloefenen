@@ -105,6 +105,10 @@ export type OverviewChapter = {
   code?: string
   /** Eén zin onder de hoofdstuktitel */
   intro?: string
+  /** Titel in het tabblad en voor zoekmachines. De zichtbare kop blijft `title`. */
+  zoektitel?: string
+  /** Meta-omschrijving, zonder boekcode vooraan. */
+  zoekomschrijving?: string
   stappenplan?: Stappenplan
   /** Knoppen naar oefenen. Anders één link op het hoofdstuk zelf. */
   oefenlinks?: Oefenlink[]

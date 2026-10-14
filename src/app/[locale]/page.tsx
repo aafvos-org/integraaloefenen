@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react'
 import { getTranslations, getLocale } from 'next-intl/server'
 import { Link } from '@/i18n/navigation'
 import { redirect } from 'next/navigation'
@@ -118,22 +119,30 @@ export default async function HomePage() {
             </Link>
           </p>
           <ul className="mt-6 grid gap-3 sm:grid-cols-2">
-            {[
-              [t('topic1Title'), t('topic1Body')],
-              [t('topic2Title'), t('topic2Body')],
-              [t('topic3Title'), t('topic3Body')],
-              [t('topic4Title'), t('topic4Body')],
-              [t('topic5Title'), t('topic5Body')],
-              [t('topic6Title'), t('topic6Body')],
-            ].map(([title, body]) => (
-              <li
-                key={title}
-                className="rounded-xl border border-border bg-surface p-4"
-              >
-                <p className="font-medium text-text">{title}</p>
-                <p className="mt-1 text-sm text-text-muted">{body}</p>
-              </li>
-            ))}
+            <Onderwerp titel={t('topic1Title')} body={t('topic1Body')} />
+            <Onderwerp titel={t('topic2Title')} body={t('topic2Body')} />
+            <Onderwerp titel={t('topic3Title')} body={t('topic3Body')} />
+            <Onderwerp
+              titel={t('topic4Title')}
+              body={t('topic4Body')}
+              href={'/theorie/substitutiemethode' as '/theorie'}
+            />
+            <Onderwerp
+              titel={t('topic5Title')}
+              body={t('topic5Body')}
+              href={'/theorie/partieel-integreren' as '/theorie'}
+            />
+            <Onderwerp
+              titel={t.rich('topic6Title', {
+                oppervlakte: (stuk) => (
+                  <TheorieLink href={'/theorie/oppervlakte' as '/theorie'}>{stuk}</TheorieLink>
+                ),
+                inhoud: (stuk) => (
+                  <TheorieLink href={'/theorie/inhoud' as '/theorie'}>{stuk}</TheorieLink>
+                ),
+              })}
+              body={t('topic6Body')}
+            />
           </ul>
         </section>
 
@@ -182,6 +191,42 @@ export default async function HomePage() {
         </section>
       </div>
     </>
+  )
+}
+
+function TheorieLink({
+  href,
+  children,
+}: {
+  href: '/theorie'
+  children: ReactNode
+}) {
+  return (
+    <Link
+      href={href}
+      className="font-medium text-accent underline underline-offset-2"
+    >
+      {children}
+    </Link>
+  )
+}
+
+function Onderwerp({
+  titel,
+  body,
+  href,
+}: {
+  titel: ReactNode
+  body: string
+  href?: '/theorie'
+}) {
+  return (
+    <li className="rounded-xl border border-border bg-surface p-4">
+      <p className="font-medium text-text">
+        {href ? <TheorieLink href={href}>{titel}</TheorieLink> : titel}
+      </p>
+      <p className="mt-1 text-sm text-text-muted">{body}</p>
+    </li>
   )
 }
 
