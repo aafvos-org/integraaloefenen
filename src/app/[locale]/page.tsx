@@ -103,8 +103,14 @@ export default async function HomePage({
 
           <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
             <Link
-              href={aanmelden}
+              href={'/proberen/primitieve' as '/proberen'}
               className="rounded-lg bg-accent px-5 py-3 text-white shadow-sm hover:bg-accent/90"
+            >
+              {t('ctaTry')}
+            </Link>
+            <Link
+              href={aanmelden}
+              className="rounded-lg border border-border bg-surface px-5 py-3 text-text hover:bg-surface-2"
             >
               {t('ctaRegister')}
             </Link>

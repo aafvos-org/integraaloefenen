@@ -1,7 +1,7 @@
 {
   "Metadata": {
     "title": "Integralen oefenen — primitiveren wiskunde B VWO | __DOMAIN__",
-    "description": "Integreren oefenen voor wiskunde B VWO — gratis. Je kiest zelf een hoofdstuk en oefent primitiveren met de machtsregel, somregel, substitutiemethode, e-macht, goniometrie en ln. Ideaal voor het eindexamen.",
+    "description": "Maak drie sommen zonder account. Integreren oefenen voor wiskunde B VWO — gratis. Je kiest zelf een hoofdstuk en oefent primitiveren met de machtsregel, somregel, substitutiemethode, e-macht, goniometrie en ln. Ideaal voor het eindexamen.",
     "ogTitle": "Integralen oefenen — wiskunde B VWO"
   },
   "Header": {
@@ -33,6 +33,7 @@
     "lead": "Je kiest zelf een hoofdstuk en een opgave. Is je antwoord fout, dan legt de site uit waar het misging.",
     "subLead": "Toets over integralen? Begin bij de <primitieve>primitieve</primitieve>, <substitutie>substitutie</substitutie> of <partieel>partieel integreren</partieel>. Je maakt opgaven per hoofdstuk, krijgt bij elke fout uitleg en ziet bij Voortgang precies waar je staat. Klaar voor de toets? Dan stel je bij Zelf-toets je eigen proeftoets samen. <howItWorks>Zo werkt het</howItWorks>.",
     "subLeadLink": "Zo werkt het",
+    "ctaTry": "Probeer drie sommen",
     "ctaRegister": "Gratis account aanmaken",
     "ctaLogin": "Inloggen",
     "tagline": "Volledig gratis · Geen reclame · Volgt Getal & Ruimte",

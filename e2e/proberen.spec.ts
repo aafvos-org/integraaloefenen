@@ -5,6 +5,27 @@ import { expect, test } from '@playwright/test'
  * en stappenplan, en daarna de knop naar registreren. /oefenen blijft dicht.
  */
 
+test('de startpagina begint met drie sommen zonder account @telefoon', async ({ page }) => {
+  await page.goto('/nl')
+  const kop = page.locator('section').first()
+  const proberen = kop.getByRole('link', { name: 'Probeer drie sommen', exact: true })
+  const aanmelden = kop.getByRole('link', { name: 'Gratis account aanmaken', exact: true })
+  const inloggen = kop.getByRole('link', { name: 'Inloggen', exact: true })
+  await expect(proberen).toHaveAttribute('href', /\/proberen\/primitieve$/)
+  const volgorde = await kop.evaluate((el) =>
+    [...el.querySelectorAll('a')].map((a) => a.textContent?.trim() ?? ''),
+  )
+  expect(volgorde.indexOf('Probeer drie sommen')).toBeLessThan(
+    volgorde.indexOf('Gratis account aanmaken'),
+  )
+  expect(volgorde.indexOf('Gratis account aanmaken')).toBeLessThan(volgorde.indexOf('Inloggen'))
+  await expect(aanmelden).toBeVisible()
+  await expect(inloggen).toBeVisible()
+  await proberen.click()
+  await expect(page).toHaveURL(/\/proberen\/primitieve/)
+  await expect(page.getByText('Som 1 van 3')).toBeVisible()
+})
+
 test('drie proefopgaven zonder account, daarna aanmelden @telefoon', async ({ page }) => {
   await page.goto('/nl/theorie/primitieve')
   await page.getByRole('link', { name: 'Probeer 3 sommen' }).click()
