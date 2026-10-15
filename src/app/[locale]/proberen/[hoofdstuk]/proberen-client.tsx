@@ -3,6 +3,7 @@
 import { useRef, useState, type FormEvent } from 'react'
 import { useTranslations } from 'next-intl'
 
+import { DeelKnop } from '@/components/deel-knop'
 import { MathKeyboard } from '@/components/math-keyboard'
 import { Math as TeX, RichMath } from '@/components/math'
 import { Button } from '@/components/ui'
@@ -115,12 +116,18 @@ export function ProberenClient({
             Goed bezig! Maak een gratis account om je voortgang te bewaren en verder te
             oefenen
           </h1>
-          <Link
-            href={aanmelden}
-            className="mt-5 inline-flex min-h-11 items-center rounded-full bg-accent px-5 text-sm font-medium text-white"
-          >
-            Maak een gratis account
-          </Link>
+          <p className="mt-3 text-sm text-text">
+            Je klasgenoot kan dezelfde drie sommen maken zonder account.
+          </p>
+          <div className="mt-5 flex flex-wrap items-center gap-3">
+            <Link
+              href={aanmelden}
+              className="inline-flex min-h-11 items-center rounded-full bg-accent px-5 text-sm font-medium text-white"
+            >
+              Maak een gratis account
+            </Link>
+            <DeelKnop />
+          </div>
         </div>
       </main>
     )

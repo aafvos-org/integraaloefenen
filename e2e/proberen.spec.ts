@@ -60,6 +60,10 @@ test('drie proefopgaven zonder account, daarna aanmelden @telefoon', async ({ pa
     'href',
     /\/registreren\?van=proberen$/,
   )
+  await expect(
+    page.getByText('Je klasgenoot kan dezelfde drie sommen maken zonder account.'),
+  ).toBeVisible()
+  await expect(page.getByRole('button', { name: 'Stuur naar een klasgenoot' })).toBeVisible()
 
   const cookies = await page.context().cookies()
   expect(cookies.some((cookie) => /proberen|volg/i.test(cookie.name))).toBe(false)
