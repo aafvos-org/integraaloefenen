@@ -1,6 +1,7 @@
 'use client'
 
-import { useEffect, useState, useSyncExternalStore } from 'react'
+import { useEffect, useRef, useState, useSyncExternalStore } from 'react'
+import { usePathname } from 'next/navigation'
 import { useTranslations } from 'next-intl'
 import Link from 'next/link'
 
@@ -19,6 +20,9 @@ import { WelcomeTour } from './welcome-tour'
  * cookies of headers laten kijken, anders wordt ook theorie bij elk bezoek
  * opnieuw gebouwd. De openbare links zitten daarom in de HTML. Alleen als
  * dit tabblad een inlogcookie heeft, vullen we daarna de ingelogde balk aan.
+ *
+ * De balk blijft staan bij een paginawissel. Daarom kijken we opnieuw zodra
+ * het adres verandert, en als dit tabblad zelf in- of uitlogt.
  */
 type Sessie = {
   email: string
@@ -109,19 +113,55 @@ function useAanmelden(locale: string): string {
 
 export function SiteHeader({ locale }: { locale: string }) {
   const t = useTranslations('Header')
+  const pathname = usePathname()
   const [sessie, setSessie] = useState<Sessie | null>(null)
+  // Telt op bij SIGNED_IN, zodat de controle hieronder opnieuw draait ook
+  // als het adres hetzelfde blijft.
+  const [opnieuw, setOpnieuw] = useState(0)
   const aanmelden = useAanmelden(locale)
+  // Al ingevuld: een volgende paginawissel hoeft Supabase niet opnieuw te bellen.
+  const ingelogd = useRef(false)
 
   useEffect(() => {
-    if (!heeftInlogsessie(cookiesUitDocument())) return
+    const supabase = createClient()
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((event) => {
+      if (event === 'SIGNED_OUT') {
+        ingelogd.current = false
+        setSessie(null)
+        return
+      }
+      // Niet in dit slot wachten of getUser aanroepen: dat slot is exclusief
+      // en een tweede aanroep kan dan blijven hangen.
+      if (event === 'SIGNED_IN' && !ingelogd.current) {
+        window.setTimeout(() => setOpnieuw((n) => n + 1), 0)
+      }
+    })
+    return () => subscription.unsubscribe()
+  }, [])
+
+  useEffect(() => {
     let geannuleerd = false
 
     async function vulIn() {
+      if (!heeftInlogsessie(cookiesUitDocument())) {
+        ingelogd.current = false
+        if (!geannuleerd) setSessie(null)
+        return
+      }
+      if (ingelogd.current) return
+
       try {
         const supabase = createClient()
         const { data } = await supabase.auth.getUser()
         const user = data.user
-        if (geannuleerd || !user) return
+        if (geannuleerd) return
+        if (!user) {
+          ingelogd.current = false
+          setSessie(null)
+          return
+        }
 
         const [profileRes, chapters] = await Promise.all([
           supabase
@@ -134,6 +174,7 @@ export function SiteHeader({ locale }: { locale: string }) {
         if (geannuleerd) return
 
         const profile = profileRes.data
+        ingelogd.current = true
         setSessie({
           email: user.email ?? '',
           username: profile?.username ?? null,
@@ -150,7 +191,7 @@ export function SiteHeader({ locale }: { locale: string }) {
     return () => {
       geannuleerd = true
     }
-  }, [])
+  }, [pathname, opnieuw])
 
   const theorieItems = THEORIE_HOOFDSTUKKEN.map((ch) => ({
     href: `/${locale}/theorie/${ch.slug}`,
