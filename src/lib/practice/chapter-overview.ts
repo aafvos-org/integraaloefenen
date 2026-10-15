@@ -139,6 +139,35 @@ export async function loadClustersForTopics(
   return (data ?? []) as ClusterInfo[]
 }
 
+/** Alle clusters van deze site, zonder eerst de onderwerp-id's af te wachten. */
+export async function loadAllClusters(db: DB): Promise<ClusterInfo[]> {
+  const { data, error } = await db
+    .from('topic_clusters_new')
+    .select('id, slug, title, topic_id, order_index')
+    .eq('site', SITE)
+    .order('order_index')
+  if (error) throw new Error(error.message)
+  return (data ?? []) as ClusterInfo[]
+}
+
+export type VraagRij = {
+  id: string
+  cluster_id: string
+  difficulty: number
+  order_index: number | null
+  latex_body: string | null
+}
+
+/** Alle opgaven van deze site. De volgorde bepaalt de aanroeper. */
+export async function loadVragenVoorSite(db: DB): Promise<VraagRij[]> {
+  const { data, error } = await db
+    .from('questions_new')
+    .select('id, cluster_id, difficulty, order_index, latex_body')
+    .eq('site', SITE)
+  if (error) throw new Error(error.message)
+  return (data ?? []) as VraagRij[]
+}
+
 export async function loadTilesForClusters(
   db: DB,
   clusterIds: string[],
@@ -150,8 +179,21 @@ export async function loadTilesForClusters(
     .eq('site', SITE)
     .in('cluster_id', clusterIds)
   if (error) throw new Error(error.message)
+  return tegelsVanVragen(db, (data ?? []) as VraagRij[], clusterIds)
+}
 
-  const sorted = (data ?? []).slice().sort((a, b) => {
+/**
+ * Maakt tegels van al opgehaalde opgaven, in de volgorde van `clusterIds`.
+ * De laatste goed/fout-status loopt daarna, in brokken, tegelijk.
+ */
+export async function tegelsVanVragen(
+  db: DB,
+  vragen: VraagRij[],
+  clusterIds: string[],
+): Promise<NewExerciseTile[]> {
+  if (!clusterIds.length) return []
+  const toegestaan = new Set(clusterIds)
+  const sorted = vragen.filter((vraag) => toegestaan.has(vraag.cluster_id)).sort((a, b) => {
     const ai = clusterIds.indexOf(a.cluster_id)
     const bi = clusterIds.indexOf(b.cluster_id)
     if (ai !== bi) return ai - bi
@@ -159,32 +201,10 @@ export async function loadTilesForClusters(
     return (a.order_index ?? 999) - (b.order_index ?? 999)
   })
 
-  // Laatste goed/fout-status per vraag (RLS beperkt tot eigen sessies).
-  // In brokken van 100 id's: alle id's in één .in() maakt de request-URI te lang.
-  const lastCorrectByQuestionId = new Map<string, boolean>()
-  if (sorted.length) {
-    const ids = sorted.map((q) => q.id)
-    const chunks: string[][] = []
-    for (let i = 0; i < ids.length; i += 100) chunks.push(ids.slice(i, i + 100))
-    const results = await Promise.all(
-      chunks.map((chunk) =>
-        db
-          .from('session_answers_new')
-          .select('question_id, is_correct, answered_at')
-          .in('question_id', chunk)
-          .order('answered_at', { ascending: false }),
-      ),
-    )
-    for (const { data: attempts, error: aErr } of results) {
-      if (aErr) throw new Error(aErr.message)
-      for (const row of attempts ?? []) {
-        if (row.is_correct !== true && row.is_correct !== false) continue
-        if (!lastCorrectByQuestionId.has(row.question_id)) {
-          lastCorrectByQuestionId.set(row.question_id, row.is_correct)
-        }
-      }
-    }
-  }
+  const lastCorrectByQuestionId = await laatsteAntwoorden(
+    db,
+    sorted.map((vraag) => vraag.id),
+  )
 
   return sorted.map((q, i) => ({
     questionId: q.id,
@@ -195,6 +215,38 @@ export async function loadTilesForClusters(
     preview: stripForPreview(q.latex_body ?? '', 56),
     lastCorrect: lastCorrectByQuestionId.get(q.id) ?? null,
   }))
+}
+
+/** Laatste goed/fout per vraag. RLS beperkt dit tot de eigen sessies. */
+async function laatsteAntwoorden(
+  db: DB,
+  questionIds: string[],
+): Promise<Map<string, boolean>> {
+  const lastCorrectByQuestionId = new Map<string, boolean>()
+  if (!questionIds.length) return lastCorrectByQuestionId
+
+  // In brokken van 100 id's: alle id's in één .in() maakt de request-URI te lang.
+  const chunks: string[][] = []
+  for (let i = 0; i < questionIds.length; i += 100) chunks.push(questionIds.slice(i, i + 100))
+  const results = await Promise.all(
+    chunks.map((chunk) =>
+      db
+        .from('session_answers_new')
+        .select('question_id, is_correct, answered_at')
+        .in('question_id', chunk)
+        .order('answered_at', { ascending: false }),
+    ),
+  )
+  for (const { data: attempts, error: aErr } of results) {
+    if (aErr) throw new Error(aErr.message)
+    for (const row of attempts ?? []) {
+      if (row.is_correct !== true && row.is_correct !== false) continue
+      if (!lastCorrectByQuestionId.has(row.question_id)) {
+        lastCorrectByQuestionId.set(row.question_id, row.is_correct)
+      }
+    }
+  }
+  return lastCorrectByQuestionId
 }
 
 export async function loadQuestionNew(

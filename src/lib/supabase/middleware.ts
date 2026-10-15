@@ -5,8 +5,28 @@ import { ACHTER_INLOG } from '@/i18n/paths'
 import { routing } from '@/i18n/routing'
 import { leesBron } from '@/lib/bron'
 
+import { LEERLING_KOP } from './leerling-kop'
 import { heeftInlogsessie } from './sessie-cookie'
 import type { Database } from './types'
+
+/** Zonder een door de bezoeker meegestuurd leerling-id. */
+function koppenZonderLeerling(request: NextRequest): Headers {
+  const headers = new Headers(request.headers)
+  headers.delete(LEERLING_KOP)
+  return headers
+}
+
+/**
+ * Geeft het verzoek door met deze koppen, en houdt cookies vast die de
+ * sessiecontrole net ververst heeft.
+ */
+function antwoordMetKoppen(requestHeaders: Headers, bron: NextResponse) {
+  const volgende = NextResponse.next({ request: { headers: requestHeaders } })
+  for (const cookie of bron.headers.getSetCookie()) {
+    volgende.headers.append('set-cookie', cookie)
+  }
+  return volgende
+}
 
 export async function updateSession(request: NextRequest) {
   const path = request.nextUrl.pathname
@@ -32,7 +52,8 @@ export async function updateSession(request: NextRequest) {
     return verderMetBron(request)
   }
 
-  let supabaseResponse = NextResponse.next({ request })
+  const requestHeaders = koppenZonderLeerling(request)
+  let supabaseResponse = NextResponse.next({ request: { headers: requestHeaders } })
 
   const supabase = createServerClient<Database>(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -93,7 +114,11 @@ export async function updateSession(request: NextRequest) {
     return naarInloggen(request, taal)
   }
 
-  return supabaseResponse
+  // Opnieuw uit het verzoek lezen: de sessiecontrole kan de cookie net
+  // ververst hebben. De pagina leest dit id en slaat een tweede ronde over.
+  const doorgegeven = koppenZonderLeerling(request)
+  doorgegeven.set(LEERLING_KOP, user.id)
+  return antwoordMetKoppen(doorgegeven, supabaseResponse)
 }
 
 /** `/nl/zelf-toets/loop/abc` wordt `{ taal: 'nl', rest: 'zelf-toets/loop/abc' }`. */
@@ -132,10 +157,12 @@ function taalVanBeschermdPad(path: string): string | null {
  */
 function verderMetBron(request: NextRequest) {
   const bron = leesBron(request.nextUrl.searchParams.get('van'))
-  const meegestuurd = request.headers.get('x-bron')
-  if (!bron && !meegestuurd) return NextResponse.next({ request })
+  const headers = koppenZonderLeerling(request)
+  const meegestuurd = headers.get('x-bron')
+  if (!bron && !meegestuurd) {
+    return NextResponse.next({ request: { headers } })
+  }
 
-  const headers = new Headers(request.headers)
   if (bron) headers.set('x-bron', bron)
   else headers.delete('x-bron')
   return NextResponse.next({ request: { headers } })

@@ -13,7 +13,7 @@ import {
   type TopicInfo,
 } from '@/lib/practice/chapter-overview'
 import { EXAMEN_HOOFDSTUK } from '@/lib/practice/examentraining'
-import { getCurrentUser } from '@/lib/supabase/request-cache'
+import { getIngelogdeLeerlingId } from '@/lib/supabase/request-cache'
 import { createClient } from '@/lib/supabase/server'
 
 const REGELS = ['regel1', 'regel2', 'regel3', 'regel4'] as const
@@ -36,8 +36,8 @@ export default async function ExamentrainingPage({
   searchParams?: Promise<{ q?: string }>
 }) {
   const { locale } = await params
-  const user = await getCurrentUser()
-  if (!user) redirect(`/${locale}/inloggen`)
+  const userId = await getIngelogdeLeerlingId()
+  if (!userId) redirect(`/${locale}/inloggen`)
 
   const t = await getTranslations('Examentraining')
   const supabase = await createClient()

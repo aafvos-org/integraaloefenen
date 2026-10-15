@@ -75,6 +75,7 @@ export async function loadConfigData(db: DB, userId: string): Promise<ConfigData
     { data: topics },
     { data: clusters },
     { data: questions },
+    { data: sessions },
   ] = await Promise.all([
     db
       .from('chapters')
@@ -105,6 +106,7 @@ export async function loadConfigData(db: DB, userId: string): Promise<ConfigData
       .from('questions_new')
       .select('id, cluster_id')
       .eq('site', SITE),
+    db.from('user_sessions_new').select('id').eq('user_id', userId),
   ])
 
   // Build cluster → question IDs map
@@ -115,11 +117,6 @@ export async function loadConfigData(db: DB, userId: string): Promise<ConfigData
     questionsByCluster.set(q.cluster_id, arr)
   }
 
-  // Load user's session IDs to derive answered/wrong question IDs
-  const { data: sessions } = await db
-    .from('user_sessions_new')
-    .select('id')
-    .eq('user_id', userId)
   const sessionIds = (sessions ?? []).map((s) => s.id)
 
   const answeredIds = new Set<string>()

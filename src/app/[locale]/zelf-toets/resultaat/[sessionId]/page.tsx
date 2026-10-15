@@ -6,6 +6,7 @@ import { Math as TeX, RichMath } from '@/components/math'
 import { Card, cn } from '@/components/ui'
 import { loadTestResults } from '@/lib/practice/custom-test'
 import { linkNaToets } from '@/lib/practice/zelf-toets-indeling'
+import { getIngelogdeLeerlingId } from '@/lib/supabase/request-cache'
 import { createClient } from '@/lib/supabase/server'
 
 export async function generateMetadata({
@@ -30,15 +31,16 @@ export default async function ZelfToetsResultaatPage({
   params: Promise<{ locale: string; sessionId: string }>
 }) {
   const { sessionId, locale } = await params
-  const supabase = await createClient()
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
-  if (!user) redirect(`/${locale}/inloggen`)
+  const [supabase, userId] = await Promise.all([
+    createClient(),
+    getIngelogdeLeerlingId(),
+  ])
+  if (!userId) redirect(`/${locale}/inloggen`)
 
-  const t = await getTranslations('ZelfToets')
-
-  const results = await loadTestResults(supabase, user.id, sessionId)
+  const [t, results] = await Promise.all([
+    getTranslations('ZelfToets'),
+    loadTestResults(supabase, userId, sessionId),
+  ])
   if (!results) {
     return (
       <div className="mx-auto max-w-2xl px-4 py-12">

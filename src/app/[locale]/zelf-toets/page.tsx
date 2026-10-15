@@ -3,6 +3,7 @@ import { Link } from '@/i18n/navigation'
 import { redirect } from 'next/navigation'
 
 import { loadConfigData } from '@/lib/practice/custom-test'
+import { getIngelogdeLeerlingId } from '@/lib/supabase/request-cache'
 import { createClient } from '@/lib/supabase/server'
 
 import { ConfigForm } from './config-form'
@@ -18,21 +19,20 @@ export async function generateMetadata({
 }
 
 export default async function ZelfToetsPage() {
-  const supabase = await createClient()
-  const locale = await getLocale()
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
-  if (!user) redirect(`/${locale}/inloggen`)
+  const [supabase, locale, userId] = await Promise.all([
+    createClient(),
+    getLocale(),
+    getIngelogdeLeerlingId(),
+  ])
+  if (!userId) redirect(`/${locale}/inloggen`)
 
-  const t = await getTranslations('ZelfToets')
-
-  const [config, { data: existingTests }] = await Promise.all([
-    loadConfigData(supabase, user.id),
+  const [t, config, { data: existingTests }] = await Promise.all([
+    getTranslations('ZelfToets'),
+    loadConfigData(supabase, userId),
     supabase
       .from('user_sessions_new')
       .select('id, name, started_at, ended_at')
-      .eq('user_id', user.id)
+      .eq('user_id', userId)
       .eq('session_type', 'custom_test')
       .order('started_at', { ascending: false }),
   ])

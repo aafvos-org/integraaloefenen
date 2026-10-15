@@ -4,6 +4,7 @@ import { redirect } from 'next/navigation'
 
 import { Card } from '@/components/ui'
 import { loadTestResults, loadTestSessionState } from '@/lib/practice/custom-test'
+import { getIngelogdeLeerlingId } from '@/lib/supabase/request-cache'
 import { createClient } from '@/lib/supabase/server'
 
 import { TestRunnerCard } from './runner-card'
@@ -24,15 +25,16 @@ export default async function ZelfToetsRunnerPage({
   params: Promise<{ locale: string; sessionId: string }>
 }) {
   const { sessionId, locale } = await params
-  const supabase = await createClient()
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
-  if (!user) redirect(`/${locale}/inloggen`)
+  const [supabase, userId] = await Promise.all([
+    createClient(),
+    getIngelogdeLeerlingId(),
+  ])
+  if (!userId) redirect(`/${locale}/inloggen`)
 
-  const t = await getTranslations('ZelfToets')
-
-  const state = await loadTestSessionState(supabase, user.id, sessionId)
+  const [t, state] = await Promise.all([
+    getTranslations('ZelfToets'),
+    loadTestSessionState(supabase, userId, sessionId),
+  ])
   if (!state) {
     return (
       <div className="mx-auto max-w-2xl px-4 py-12">
@@ -48,7 +50,7 @@ export default async function ZelfToetsRunnerPage({
   }
 
   if (state.ended || !state.nextQuestionId) {
-    const results = await loadTestResults(supabase, user.id, sessionId)
+    const results = await loadTestResults(supabase, userId, sessionId)
     const correctCount = results?.correctCount ?? 0
     const totalCount = results?.totalCount ?? state.totalCount
     const pct =

@@ -1,7 +1,7 @@
 import { getTranslations } from 'next-intl/server'
 import { redirect } from 'next/navigation'
 
-import { createClient } from '@/lib/supabase/server'
+import { getIngelogdeLeerlingId } from '@/lib/supabase/request-cache'
 
 import { FeedbackForm } from './feedback-form'
 
@@ -21,11 +21,8 @@ export default async function FeedbackPage({
   params: Promise<{ locale: string }>
 }) {
   const { locale } = await params
-  const supabase = await createClient()
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
-  if (!user) redirect(`/${locale}/inloggen`)
+  const userId = await getIngelogdeLeerlingId()
+  if (!userId) redirect(`/${locale}/inloggen`)
 
   const t = await getTranslations('Feedback')
 

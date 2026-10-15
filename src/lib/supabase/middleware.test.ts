@@ -1,6 +1,7 @@
 import { NextRequest } from 'next/server'
 import { describe, expect, it } from 'vitest'
 
+import { LEERLING_KOP } from './leerling-kop'
 import { updateSession } from './middleware'
 
 function verzoek(pad: string) {
@@ -36,6 +37,18 @@ describe('inlogpoort en herkomst', () => {
     const naar = bestemming(antwoord)
     expect(naar.pathname).toBe('/nl/inloggen')
     expect(naar.search).toBe('')
+  })
+
+  it('neemt een meegestuurd leerling-id niet over op een openbare pagina', async () => {
+    const verzoekMetKop = new NextRequest(new URL('/nl/theorie', 'http://localhost'), {
+      headers: {
+        cookie: 'sb-test-auth-token=abc',
+        [LEERLING_KOP]: 'nep-id',
+      },
+    })
+    const antwoord = await updateSession(verzoekMetKop)
+    expect(antwoord.headers.get(`x-middleware-request-${LEERLING_KOP}`)).toBeNull()
+    expect(antwoord.status).toBe(200)
   })
 
   it('laat theorie met een sessiecookie met rust, zonder Supabase', async () => {

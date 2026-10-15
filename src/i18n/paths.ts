@@ -65,8 +65,9 @@ export const AFGESCHERMD: readonly string[] = MET_TAAL.filter(
 // dat de matcher overslaat (node_modules/next/dist/docs/01-app/03-api-reference/
 // 03-file-conventions/proxy.md, kopje "Execution order").
 //
-// paths.test.ts vergelijkt deze lijst met de pagina's die zelf `if (!user)
-// redirect(...)` doen, zodat de twee niet uit elkaar kunnen lopen.
+// paths.test.ts vergelijkt deze lijst met de pagina's die zelf
+// `if (!user)` of `if (!userId)` en daarna `redirect(...)` doen, zodat de
+// twee niet uit elkaar kunnen lopen.
 export const ACHTER_INLOG = [
   'dashboard',
   'examentraining',

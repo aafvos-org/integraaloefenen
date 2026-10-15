@@ -2,12 +2,13 @@ import { getTranslations, getLocale } from 'next-intl/server'
 import { redirect } from 'next/navigation'
 
 import {
+  loadAllClusters,
   loadAllTopics,
-  loadClustersForTopics,
   loadParagraphs,
   loadTheoryBlocks,
-  loadTilesForClusters,
   loadQuestionNew,
+  loadVragenVoorSite,
+  tegelsVanVragen,
   type ClusterInfo,
   type TopicCategory,
 } from '@/lib/practice/chapter-overview'
@@ -21,7 +22,7 @@ import {
   losSelectieOp,
   oefenIndeling,
 } from '@/lib/practice/oefenen-indeling'
-import { getChapters, getCurrentUser } from '@/lib/supabase/request-cache'
+import { getChapters, getIngelogdeLeerlingId } from '@/lib/supabase/request-cache'
 import { createClient } from '@/lib/supabase/server'
 
 import { eigenPagina } from '@/lib/seo'
@@ -116,10 +117,12 @@ export default async function OefenenPage(props: PageProps) {
 }
 
 async function OnderwerpPagina({ searchParams }: PageProps) {
-  const supabase = await createClient()
-  const locale = await getLocale()
-  const user = await getCurrentUser()
-  if (!user) redirect(`/${locale}/inloggen`)
+  const [supabase, locale, userId] = await Promise.all([
+    createClient(),
+    getLocale(),
+    getIngelogdeLeerlingId(),
+  ])
+  if (!userId) redirect(`/${locale}/inloggen`)
 
   const params = (await searchParams) ?? {}
   const categoryParam = params.category?.trim() ?? null
@@ -132,10 +135,12 @@ async function OnderwerpPagina({ searchParams }: PageProps) {
     ? categoryParam
     : 'primitiveren'
 
-  const [t, chapters, allTopicsRaw] = await Promise.all([
+  const [t, chapters, allTopicsRaw, alleClusters, vragen] = await Promise.all([
     getTranslations('FreeExercise'),
     getChapters(),
     loadAllTopics(supabase),
+    loadAllClusters(supabase),
+    loadVragenVoorSite(supabase),
   ])
 
   const allTopics = activeCategory
@@ -147,10 +152,9 @@ async function OnderwerpPagina({ searchParams }: PageProps) {
     ? chapters.filter((c) => visibleChapterIds.has(c.id))
     : chapters
 
-  // Load ALL clusters for ALL visible topics (needed for client-side sidebar)
-  const allClusters = await loadClustersForTopics(
-    supabase,
-    allTopics.map((t) => t.id),
+  const zichtbareOnderwerpen = new Set(allTopics.map((onderwerp) => onderwerp.id))
+  const allClusters = alleClusters.filter((cluster) =>
+    zichtbareOnderwerpen.has(cluster.topic_id),
   )
 
   // Resolve initial selection from URL params for first render
@@ -191,7 +195,8 @@ async function OnderwerpPagina({ searchParams }: PageProps) {
       .filter((t) => t.chapter_id === ch.id)
       .flatMap((t) => (clustersByTopic.get(t.id) ?? []).map((c) => c.id)),
   )
-  const allTiles = await loadTilesForClusters(supabase, allClusterIdsOrdered)
+  const gekozenVraag = qParam ? loadQuestionNew(supabase, qParam) : null
+  const allTiles = await tegelsVanVragen(supabase, vragen, allClusterIdsOrdered)
 
   // Starttegels afleiden uit allTiles i.p.v. een tweede query; de client
   // hernummert bij navigatie op dezelfde manier (zie chapterGroups)
@@ -202,9 +207,7 @@ async function OnderwerpPagina({ searchParams }: PageProps) {
 
   const validQuestionIds = new Set(initialTiles.map((t) => t.questionId))
   const question =
-    qParam && validQuestionIds.has(qParam)
-      ? await loadQuestionNew(supabase, qParam)
-      : null
+    qParam && validQuestionIds.has(qParam) && gekozenVraag ? await gekozenVraag : null
 
   return (
     <OefenenClient
@@ -242,10 +245,12 @@ async function OnderwerpPagina({ searchParams }: PageProps) {
 }
 
 async function BlokPagina({ searchParams }: PageProps) {
-  const supabase = await createClient()
-  const locale = await getLocale()
-  const user = await getCurrentUser()
-  if (!user) redirect(`/${locale}/inloggen`)
+  const [supabase, locale, userId] = await Promise.all([
+    createClient(),
+    getLocale(),
+    getIngelogdeLeerlingId(),
+  ])
+  if (!userId) redirect(`/${locale}/inloggen`)
 
   const params = (await searchParams) ?? {}
   const ruwAdres = {
@@ -259,18 +264,19 @@ async function BlokPagina({ searchParams }: PageProps) {
     ruwAdres.blok || ruwAdres.topic || ruwAdres.cluster || ruwAdres.chapter || qParam,
   )
 
-  const [t, chapters, allTopics, paragraphs, blocks] = await Promise.all([
-    getTranslations('FreeExercise'),
-    getChapters(),
-    loadAllTopics(supabase),
-    loadParagraphs(supabase),
-    loadTheoryBlocks(supabase),
-  ])
+  // Catalogus en "heeft deze leerling al geoefend" hangen niet van elkaar af.
+  const [t, chapters, allTopics, paragraphs, blocks, allClusters, vragen, heeftAntwoord] =
+    await Promise.all([
+      getTranslations('FreeExercise'),
+      getChapters(),
+      loadAllTopics(supabase),
+      loadParagraphs(supabase),
+      loadTheoryBlocks(supabase),
+      loadAllClusters(supabase),
+      loadVragenVoorSite(supabase),
+      heeftAlEenAntwoord(supabase, userId),
+    ])
 
-  const allClusters = await loadClustersForTopics(
-    supabase,
-    allTopics.map((topic) => topic.id),
-  )
   const allClusterIds = chapters.flatMap((ch) =>
     allTopics
       .filter((topic) => topic.chapter_id === ch.id)
@@ -278,7 +284,9 @@ async function BlokPagina({ searchParams }: PageProps) {
         allClusters.filter((cl) => cl.topic_id === topic.id).map((cl) => cl.id),
       ),
   )
-  const allTiles = await loadTilesForClusters(supabase, allClusterIds)
+  const gekozenVraag =
+    zelfGekozen && qParam ? loadQuestionNew(supabase, qParam) : null
+  const allTiles = await tegelsVanVragen(supabase, vragen, allClusterIds)
 
   const makkelijksteId = makkelijksteSomInBlok(
     MACHTSREGEL_BLOK,
@@ -290,7 +298,7 @@ async function BlokPagina({ searchParams }: PageProps) {
   const start =
     !zelfGekozen && makkelijksteId
       ? eersteSomVoorLegeLeerling({
-          heeftAntwoord: await heeftAlEenAntwoord(supabase, user.id),
+          heeftAntwoord,
           zelfGekozen: false,
           vraagId: makkelijksteId,
           blokSlug: MACHTSREGEL_BLOK,
@@ -306,10 +314,14 @@ async function BlokPagina({ searchParams }: PageProps) {
   const scope = new Set(
     selectie ? clusterIdsVoorSelectie(selectie, allTopics, allClusters) : [],
   )
-  const question =
-    vraagId && allTiles.some((tile) => tile.questionId === vraagId && scope.has(tile.clusterId))
-      ? await loadQuestionNew(supabase, vraagId)
-      : null
+  const vraagMag =
+    vraagId != null &&
+    allTiles.some((tile) => tile.questionId === vraagId && scope.has(tile.clusterId))
+  const question = vraagMag
+    ? gekozenVraag && vraagId === qParam
+      ? await gekozenVraag
+      : await loadQuestionNew(supabase, vraagId)
+    : null
 
   return (
     <OefenenClient

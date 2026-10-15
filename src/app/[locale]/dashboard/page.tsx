@@ -7,7 +7,7 @@ import { bouwDashboardIndeling, kiesBijnaBeheerst } from '@/lib/dashboard/indeli
 import {
   getChapters,
   getCurrentProfile,
-  getCurrentUser,
+  getIngelogdeLeerlingId,
 } from '@/lib/supabase/request-cache'
 import { createClient } from '@/lib/supabase/server'
 
@@ -24,10 +24,12 @@ export async function generateMetadata({
 }
 
 export default async function DashboardPage() {
-  const supabase = await createClient()
-  const locale = await getLocale()
-  const user = await getCurrentUser()
-  if (!user) redirect(`/${locale}/inloggen`)
+  const [supabase, locale, userId] = await Promise.all([
+    createClient(),
+    getLocale(),
+    getIngelogdeLeerlingId(),
+  ])
+  if (!userId) redirect(`/${locale}/inloggen`)
 
   // Activity: last 14 days via user_sessions_new + session_answers_new
   const since14 = new Date()
@@ -75,11 +77,11 @@ export default async function DashboardPage() {
       supabase
         .from('user_progress_new')
         .select('cluster_id, status, total_answered, total_correct, is_skipped, correct_streak')
-        .eq('user_id', user.id),
+        .eq('user_id', userId),
       supabase
         .from('user_sessions_new')
         .select('id')
-        .eq('user_id', user.id)
+        .eq('user_id', userId)
         .gte('started_at', since14.toISOString()),
     ])
 

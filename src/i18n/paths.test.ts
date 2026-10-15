@@ -77,7 +77,7 @@ function paginas(map: string): string[] {
 }
 
 /** De regel waarmee een pagina zelf een uitgelogde bezoeker wegstuurt. */
-const EIGEN_INLOGCHECK = /if \(!user\) redirect\(`\/\$\{locale\}\/inloggen`\)/
+const EIGEN_INLOGCHECK = /if \(!user(?:Id)?\) redirect\(`\/\$\{locale\}\/inloggen`\)/
 
 describe('ACHTER_INLOG', () => {
   const taalmap = join(process.cwd(), 'src', 'app', '[locale]')
