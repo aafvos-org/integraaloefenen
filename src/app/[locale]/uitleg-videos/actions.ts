@@ -1,5 +1,6 @@
 'use server'
 
+import { SITE } from '@/config/site'
 import { checkWrongAnswerNew } from '@/lib/ai/check-answer-new'
 import {
   afzender,
@@ -9,6 +10,9 @@ import {
 import { verstuurMail } from '@/lib/email/versturen'
 import { beoordeelAntwoord } from '@/lib/practice/nakijken'
 import { createClient, createServiceRoleClient } from '@/lib/supabase/server'
+import { getUitlegVideos } from '@/lib/videos'
+
+import { kiesOefenvragen, type OefenVraag, type VraagRij } from './kies-vragen'
 
 /** Wat de leerling ziet als het verzoek niet weg kon. */
 const NIET_GELUKT = 'Versturen mislukt. Probeer het later opnieuw.'
@@ -149,6 +153,44 @@ export async function vraagVideoAction(
     return { error: NIET_GELUKT, sent: false }
   }
   return { error: null, sent: true }
+}
+
+export type VideoOefenvragenResult =
+  | { kind: 'ok'; vragen: OefenVraag[] }
+  | { kind: 'error' }
+
+/**
+ * Drie oefenvragen bij een uitlegvideo. Dit draait pas als de pagina al staat
+ * en alleen voor een ingelogde leerling, zodat de videolijst zelf bij de build
+ * klaar kan staan.
+ */
+export async function haalVideoOefenvragenAction(
+  slug: string,
+): Promise<VideoOefenvragenResult> {
+  const video = getUitlegVideos().find((kandidaat) => kandidaat.slug === slug.trim())
+  if (!video || video.clusterIds.length === 0) return { kind: 'ok', vragen: [] }
+
+  const supabase = await createClient()
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+  if (!user) return { kind: 'ok', vragen: [] }
+
+  const { data, error } = await supabase
+    .from('questions_new')
+    .select('id, cluster_id, difficulty, latex_body')
+    .eq('site', SITE)
+    .in('cluster_id', video.clusterIds)
+
+  if (error) {
+    console.error('[video-oefenvragen]', error.message)
+    return { kind: 'error' }
+  }
+
+  return {
+    kind: 'ok',
+    vragen: kiesOefenvragen((data ?? []) as VraagRij[], video.clusterIds, 3),
+  }
 }
 
 export type VideoAnswerResult =

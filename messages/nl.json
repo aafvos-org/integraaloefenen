@@ -526,6 +526,8 @@
     "nextQuestion": "Volgende",
     "morePractice": "Meer oefenen met dit onderwerp",
     "loginToPractice": "Meld je aan om mee te oefenen met dit onderwerp",
+    "practiceLoading": "Even de vragen ophalen…",
+    "practiceError": "De vragen konden niet geladen worden. Probeer het zo nog eens.",
     "askTitle": "Welke uitleg mis jij?",
     "askIntro": "Stel je vraag. Grote kans dat hij een video wordt.",
     "askPlaceholder": "Bijv. wanneer gebruik ik de kettingregel?",

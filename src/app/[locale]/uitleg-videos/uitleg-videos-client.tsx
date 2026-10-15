@@ -1,21 +1,46 @@
 'use client'
 
 import Link from 'next/link'
-import { useMemo, useRef, useState, useTransition } from 'react'
+import { useSearchParams } from 'next/navigation'
+import { Suspense, useEffect, useMemo, useRef, useState, useSyncExternalStore, useTransition } from 'react'
 
 import { Math as TeX, RichMath } from '@/components/math'
 import { MathKeyboard } from '@/components/math-keyboard'
 import { Button, ErrorBanner } from '@/components/ui'
 import { VraagForm } from '@/components/vraag-form'
 import { insertAtCursor, toLatexPreview } from '@/lib/practice/input'
+import { heeftInlogsessie } from '@/lib/supabase/sessie-cookie'
 
 import { ExerciseTileMathPreview } from '../oefenen/exercise-tile-preview'
 
-import { checkVideoAnswerAction, type VideoAnswerResult } from './actions'
+import { checkVideoAnswerAction, haalVideoOefenvragenAction, type VideoAnswerResult } from './actions'
+import type { OefenVraag } from './kies-vragen'
 
-export type OefenVraag = {
-  id: string
-  latex_body: string | null
+function cookiesUitDocument(): { name: string }[] {
+  return document.cookie.split(';').map((deel) => ({
+    name: deel.split('=')[0]?.trim() ?? '',
+  }))
+}
+
+/** Zelfde aanpak als de examenpagina: de HTML blijft de uitgelogde versie. */
+function useIngelogd(): boolean {
+  return useSyncExternalStore(
+    () => () => {},
+    () => heeftInlogsessie(cookiesUitDocument()),
+    () => false,
+  )
+}
+
+/**
+ * ?video= zit niet in de opgebouwde HTML. Dit stuk leest hem in de browser,
+ * achter een Suspense-grens, zodat de rest van de pagina wél vast blijft.
+ */
+function VideoUitAdres({ onGevonden }: { onGevonden: (slug: string | null) => void }) {
+  const gevraagd = useSearchParams().get('video')?.trim() || null
+  useEffect(() => {
+    onGevonden(gevraagd)
+  }, [gevraagd, onGevonden])
+  return null
 }
 
 type VideoItem = {
@@ -49,6 +74,8 @@ type Labels = {
   previousQuestion: string
   morePractice: string
   loginToPractice: string
+  practiceLoading: string
+  practiceError: string
   askTitle: string
   askIntro: string
   askCta: string
@@ -152,25 +179,63 @@ function Hoofdstukgroep({
 
 export function UitlegVideosClient({
   videos,
-  activeSlug,
-  vragen,
-  isLoggedIn,
   loginHref,
   registerHref,
   oefenHref,
   labels,
 }: {
   videos: VideoItem[]
-  activeSlug: string | null
-  vragen: OefenVraag[]
-  isLoggedIn: boolean
   loginHref: string
   registerHref: string
   oefenHref: string
   labels: Labels
 }) {
+  const ingelogd = useIngelogd()
+  const [uitAdres, setUitAdres] = useState<string | null>(null)
+  const activeSlug = videos.some((v) => v.slug === uitAdres)
+    ? uitAdres
+    : (videos[0]?.slug ?? null)
   const active = videos.find((v) => v.slug === activeSlug) ?? null
   const [toonAccountMelding, setToonAccountMelding] = useState(false)
+  const [vragen, setVragen] = useState<OefenVraag[]>([])
+  const [vragenVoor, setVragenVoor] = useState<{
+    slug: string | null
+    ingelogd: boolean
+  } | null>(null)
+  const [vragenLaden, setVragenLaden] = useState(false)
+  const [vragenMislukt, setVragenMislukt] = useState(false)
+
+  // Andere video of net ingelogd: de vorige vragen horen hier niet te blijven staan.
+  if (vragenVoor?.slug !== activeSlug || vragenVoor?.ingelogd !== ingelogd) {
+    setVragenVoor({ slug: activeSlug, ingelogd })
+    setVragen([])
+    setVragenMislukt(false)
+    setVragenLaden(Boolean(ingelogd && active?.hasPractice))
+  }
+
+  useEffect(() => {
+    if (!ingelogd || !activeSlug || !active?.hasPractice) return
+    let geannuleerd = false
+    haalVideoOefenvragenAction(activeSlug)
+      .then((uitkomst) => {
+        if (geannuleerd) return
+        if (uitkomst.kind === 'error') {
+          setVragenMislukt(true)
+          setVragen([])
+        } else {
+          setVragen(uitkomst.vragen)
+        }
+      })
+      .catch(() => {
+        if (!geannuleerd) setVragenMislukt(true)
+      })
+      .finally(() => {
+        if (!geannuleerd) setVragenLaden(false)
+      })
+    return () => {
+      geannuleerd = true
+    }
+  }, [ingelogd, activeSlug, active?.hasPractice])
   const algemeen = useMemo(() => videos.filter((v) => v.soort === 'algemeen'), [videos])
 
   /** Vraaguitwerkingen per hoofdstuk, H2 vóór H6/H7/H9; zonder hoofdstuk achteraan. */
@@ -195,7 +260,7 @@ export function UitlegVideosClient({
    * bij de knop. Ingelogd springen we naar het formulier onderaan.
    */
   function naarVraagFormulier() {
-    if (!isLoggedIn) {
+    if (!ingelogd) {
       setToonAccountMelding(true)
       return
     }
@@ -208,6 +273,9 @@ export function UitlegVideosClient({
 
   return (
     <main className="mx-auto w-full max-w-5xl px-4 py-8 sm:py-12">
+      <Suspense fallback={null}>
+        <VideoUitAdres onGevonden={setUitAdres} />
+      </Suspense>
       <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div>
           <h1 className="font-serif text-3xl text-text sm:text-4xl">{labels.h1}</h1>
@@ -321,11 +389,19 @@ export function UitlegVideosClient({
       {active?.hasPractice ? (
         <section className="mt-10">
           <h2 className="font-serif text-2xl text-text">{labels.practiceTitle}</h2>
-          {isLoggedIn && vragen.length > 0 ? (
+          {ingelogd && vragen.length > 0 ? (
             <div className="mt-4">
               <OefenKaart key={active.slug} vragen={vragen} oefenHref={oefenHref} labels={labels} />
             </div>
-          ) : !isLoggedIn ? (
+          ) : ingelogd && vragenLaden ? (
+            <p className="mt-3 text-text-muted" role="status">
+              {labels.practiceLoading}
+            </p>
+          ) : ingelogd && vragenMislukt ? (
+            <p className="mt-3 text-text-muted" role="alert">
+              {labels.practiceError}
+            </p>
+          ) : !ingelogd ? (
             <p className="mt-3 text-text-muted">
               <Link href={loginHref as '/inloggen'} className="text-accent underline underline-offset-2">
                 {labels.loginToPractice}
@@ -342,7 +418,7 @@ export function UitlegVideosClient({
       >
         <h2 className="font-serif text-2xl text-text">{labels.askTitle}</h2>
         <p className="mt-1 text-sm text-text-muted">{labels.askIntro}</p>
-        {isLoggedIn ? (
+        {ingelogd ? (
           <VraagForm labels={labels} />
         ) : (
           <div className="mt-4">

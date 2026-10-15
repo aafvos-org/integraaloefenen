@@ -1,12 +1,10 @@
 import { getTranslations } from 'next-intl/server'
 
-import { SITE } from '@/config/site'
+import { zetStatischeTaal } from '@/i18n/statisch'
 import { eigenPagina } from '@/lib/seo'
-import { getCurrentUser } from '@/lib/supabase/request-cache'
-import { createClient } from '@/lib/supabase/server'
 import { getUitlegVideos } from '@/lib/videos'
 
-import { UitlegVideosClient, type OefenVraag } from './uitleg-videos-client'
+import { UitlegVideosClient } from './uitleg-videos-client'
 
 export async function generateMetadata({
   params,
@@ -14,6 +12,7 @@ export async function generateMetadata({
   params: Promise<{ locale: string }>
 }) {
   const { locale } = await params
+  zetStatischeTaal(locale)
   const t = await getTranslations({ locale, namespace: 'UitlegVideos' })
   return eigenPagina({
     locale,
@@ -23,63 +22,21 @@ export async function generateMetadata({
   })
 }
 
-type PageProps = {
+/**
+ * De videolijst verandert zelden en is voor iedereen hetzelfde. Daarom leest
+ * deze pagina geen inlogcookie en geen ?video= in het adres: dat zou hem bij
+ * elk bezoek opnieuw laten bouwen. Welke video openstaat en de drie
+ * oefenvragen (alleen voor een ingelogde leerling) vult de browser daarna aan.
+ */
+export default async function UitlegVideosPage({
+  params,
+}: {
   params: Promise<{ locale: string }>
-  searchParams?: Promise<{ video?: string }>
-}
-
-/** Kies max `count` vragen, verdeeld over de clusters, makkelijkste eerst. */
-function pickQuestions(
-  rows: Array<{ id: string; cluster_id: string; difficulty: number; latex_body: string | null }>,
-  clusterIds: string[],
-  count: number,
-): OefenVraag[] {
-  const byCluster = new Map<string, typeof rows>()
-  for (const id of clusterIds) byCluster.set(id, [])
-  for (const row of rows) byCluster.get(row.cluster_id)?.push(row)
-  for (const list of byCluster.values()) {
-    list.sort(() => Math.random() - 0.5)
-  }
-
-  const picked: typeof rows = []
-  let added = true
-  while (picked.length < count && added) {
-    added = false
-    for (const list of byCluster.values()) {
-      const next = list.pop()
-      if (next && picked.length < count) {
-        picked.push(next)
-        added = true
-      }
-    }
-  }
-
-  return picked
-    .sort((a, b) => a.difficulty - b.difficulty)
-    .map((q) => ({ id: q.id, latex_body: q.latex_body }))
-}
-
-export default async function UitlegVideosPage({ params, searchParams }: PageProps) {
+}) {
   const { locale } = await params
-  const search = (await searchParams) ?? {}
+  zetStatischeTaal(locale)
   const t = await getTranslations('UitlegVideos')
-
   const videos = getUitlegVideos()
-  const activeVideo =
-    videos.find((v) => v.slug === search.video?.trim()) ?? videos[0] ?? null
-
-  const user = await getCurrentUser()
-
-  let vragen: OefenVraag[] = []
-  if (user && activeVideo && activeVideo.clusterIds.length > 0) {
-    const supabase = await createClient()
-    const { data } = await supabase
-      .from('questions_new')
-      .select('id, cluster_id, difficulty, latex_body')
-      .eq('site', SITE)
-      .in('cluster_id', activeVideo.clusterIds)
-    vragen = pickQuestions(data ?? [], activeVideo.clusterIds, 3)
-  }
 
   return (
     <UitlegVideosClient
@@ -94,9 +51,6 @@ export default async function UitlegVideosPage({ params, searchParams }: PagePro
         chapter: v.chapter,
         hasPractice: v.clusterIds.length > 0,
       }))}
-      activeSlug={activeVideo?.slug ?? null}
-      vragen={vragen}
-      isLoggedIn={!!user}
       loginHref={`/${locale}/inloggen`}
       registerHref={`/${locale}/registreren`}
       oefenHref={`/${locale}/oefenen`}
@@ -119,6 +73,8 @@ export default async function UitlegVideosPage({ params, searchParams }: PagePro
         previousQuestion: t('previousQuestion'),
         morePractice: t('morePractice'),
         loginToPractice: t('loginToPractice'),
+        practiceLoading: t('practiceLoading'),
+        practiceError: t('practiceError'),
         askTitle: t('askTitle'),
         askIntro: t('askIntro'),
         askCta: t('askCta'),
