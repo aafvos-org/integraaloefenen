@@ -16,7 +16,12 @@ const nextConfig: NextConfig = {
       // De site is alleen Nederlands. Oude Engelse links gaan permanent naar
       // dezelfde pagina onder /nl/. Dit hoort hier en niet in de middleware,
       // want deze doorverwijzing hoeft niet eerst Supabase te raadplegen.
-      { source: '/en/:rest*', destination: '/nl/:rest*', permanent: true },
+      // Zonder stuk erachter mag :rest* niet letterlijk in het adres blijven
+      // staan (/nl/:rest* bestaat niet). Die twee adressen gaan daarom rechtstreeks.
+      { source: '/en', destination: '/nl', permanent: true },
+      { source: '/en/', destination: '/nl', permanent: true },
+      // Een langer Engels adres, bijvoorbeeld /en/theorie/primitieve.
+      { source: '/en/:rest+', destination: '/nl/:rest+', permanent: true },
     ]
   },
   // /theorie en / blijven in de adresbalk staan, maar tonen /nl/…. Een
