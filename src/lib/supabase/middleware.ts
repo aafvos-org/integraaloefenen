@@ -22,10 +22,19 @@ function koppenZonderLeerling(request: NextRequest): Headers {
  */
 function antwoordMetKoppen(requestHeaders: Headers, bron: NextResponse) {
   const volgende = NextResponse.next({ request: { headers: requestHeaders } })
-  for (const cookie of bron.headers.getSetCookie()) {
-    volgende.headers.append('set-cookie', cookie)
+  return neemCookiesMee(bron, volgende)
+}
+
+/**
+ * Het doorsturen is een nieuw antwoord. Zonder deze kopie blijven
+ * cookie-wijzigingen van de sessiecontrole achter op het antwoord dat
+ * de browser niet te zien krijgt.
+ */
+function neemCookiesMee(van: NextResponse, naar: NextResponse) {
+  for (const cookie of van.headers.getSetCookie()) {
+    naar.headers.append('set-cookie', cookie)
   }
-  return volgende
+  return naar
 }
 
 export async function updateSession(request: NextRequest) {
@@ -79,9 +88,8 @@ export async function updateSession(request: NextRequest) {
   const { data: userData, error: userError } = await supabase.auth.getUser()
   const user = userData.user
 
-  // Stale or revoked refresh token (e.g. user was deleted). Clear all Supabase
-  // auth cookies so the next request starts fresh — otherwise every request
-  // logs an Invalid Refresh Token error.
+  // Verlopen of ingetrokken sessie. Wis de inlogcookies, anders probeert
+  // elk volgend verzoek dezelfde dode sessie opnieuw.
   if (userError?.code === 'refresh_token_not_found' && !user) {
     for (const cookie of request.cookies.getAll()) {
       if (cookie.name.startsWith('sb-')) {
@@ -92,7 +100,10 @@ export async function updateSession(request: NextRequest) {
 
   if (path.startsWith('/admin')) {
     if (!user) {
-      return naarInloggen(request, routing.defaultLocale)
+      return neemCookiesMee(
+        supabaseResponse,
+        naarInloggen(request, routing.defaultLocale),
+      )
     }
 
     const { data: profile } = await supabase
@@ -104,14 +115,14 @@ export async function updateSession(request: NextRequest) {
     if (profile?.role !== 'admin') {
       const url = request.nextUrl.clone()
       url.pathname = '/'
-      return NextResponse.redirect(url)
+      return neemCookiesMee(supabaseResponse, NextResponse.redirect(url))
     }
   }
 
   // /nl/dashboard heeft de taal vooraan. /dashboard nog niet: de rewrite in
   // next.config.ts komt pas ná de middleware. Beide moeten hier dicht.
   if (!user) {
-    return naarInloggen(request, taal)
+    return neemCookiesMee(supabaseResponse, naarInloggen(request, taal))
   }
 
   // Opnieuw uit het verzoek lezen: de sessiecontrole kan de cookie net
