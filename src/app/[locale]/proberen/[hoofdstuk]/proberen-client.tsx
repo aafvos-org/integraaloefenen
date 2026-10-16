@@ -122,6 +122,7 @@ export function ProberenClient({
           <div className="mt-5 flex flex-wrap items-center gap-3">
             <Link
               href={aanmelden}
+              data-meet="proberen-klaar-registreren"
               className="inline-flex min-h-11 items-center rounded-full bg-accent px-5 text-sm font-medium text-white"
             >
               Maak een gratis account
@@ -187,7 +188,7 @@ export function ProberenClient({
                 {fase.melding}
               </p>
             )}
-            <Button type="submit" disabled={bezig || !antwoord.trim()}>
+            <Button type="submit" data-meet="proberen-nakijken" disabled={bezig || !antwoord.trim()}>
               {bezig ? t('checking') : t('submit')}
             </Button>
           </form>
@@ -196,7 +197,7 @@ export function ProberenClient({
         {fase.soort === 'goed' && (
           <div className="mt-4 rounded-xl border border-accent/30 bg-accent-light p-4">
             <p className="font-serif text-xl text-accent">{t('correct')}</p>
-            <Button className="mt-4" onClick={verder}>
+            <Button className="mt-4" data-meet="proberen-volgende" onClick={verder}>
               {laatste ? 'Klaar' : t('nextQuestion')}
             </Button>
           </div>
@@ -206,8 +207,8 @@ export function ProberenClient({
           <div ref={terugkoppeling} className="mt-4 space-y-4">
             {!fase.getoond ? (
               <div className="flex flex-wrap gap-2">
-                <Button onClick={opnieuw}>{t('retryButton')}</Button>
-                <Button variant="secondary" onClick={toonStappen}>
+                <Button data-meet="proberen-opnieuw" onClick={opnieuw}>{t('retryButton')}</Button>
+                <Button variant="secondary" data-meet="proberen-toon-uitwerking" onClick={toonStappen}>
                   {t('showAnswer')}
                 </Button>
               </div>
@@ -229,8 +230,10 @@ export function ProberenClient({
                   </ol>
                 </div>
                 <div className="flex flex-wrap gap-2">
-                  <Button onClick={verder}>{laatste ? 'Klaar' : t('nextQuestion')}</Button>
-                  <Button variant="secondary" onClick={opnieuw}>
+                  <Button data-meet="proberen-volgende-na-uitwerking" onClick={verder}>
+                    {laatste ? 'Klaar' : t('nextQuestion')}
+                  </Button>
+                  <Button variant="secondary" data-meet="proberen-opnieuw-na-uitwerking" onClick={opnieuw}>
                     {t('retryButton')}
                   </Button>
                 </div>

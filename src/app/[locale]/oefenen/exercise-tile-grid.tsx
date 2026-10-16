@@ -42,6 +42,7 @@ function TileGrid({
           <li key={tile.questionId} className="min-w-0">
             <Link
               href={tileHref as '/oefenen'}
+              data-meet="oefenen-opgavetegel"
               prefetch={false}
               className={cn(
                 'block min-h-[6.75rem] min-w-0 overflow-hidden rounded-xl border px-3 py-3 transition',

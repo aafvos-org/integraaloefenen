@@ -15,7 +15,8 @@ export default async function NotFound() {
   const t = await getTranslations('NotFound')
 
   return (
-    <div className="mx-auto max-w-2xl px-4 py-24 text-center">
+    // data-meet-404: zo weet de klikmeting dat dit een 404 was.
+    <div data-meet-404 className="mx-auto max-w-2xl px-4 py-24 text-center">
       <p className="text-sm font-medium uppercase tracking-wider text-accent">
         {t('eyebrow')}
       </p>

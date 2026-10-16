@@ -82,6 +82,7 @@ export function UserMenu({
     >
       <button
         type="button"
+        data-meet="gebruikersmenu"
         aria-expanded={open}
         aria-haspopup="menu"
         aria-label={displayName}
@@ -105,6 +106,7 @@ export function UserMenu({
           <div className="my-1.5 border-t border-border" />
           <Link
             href={`/${locale}/instellingen`}
+            data-meet="gebruikersmenu-instellingen"
             onClick={() => setOpen(false)}
             className={itemClass}
           >
@@ -116,6 +118,7 @@ export function UserMenu({
           </Link>
           <Link
             href={`/${locale}/feedback`}
+            data-meet="gebruikersmenu-feedback"
             onClick={() => setOpen(false)}
             className={itemClass}
           >
@@ -126,7 +129,7 @@ export function UserMenu({
           </Link>
           <div className="my-1.5 border-t border-border" />
           <form action="/uitloggen" method="post">
-            <button type="submit" className={itemClass}>
+            <button type="submit" data-meet="gebruikersmenu-uitloggen" className={itemClass}>
               <svg className="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
                 <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
                 <path d="m16 17 5-5-5-5" />

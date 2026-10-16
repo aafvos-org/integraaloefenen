@@ -586,6 +586,8 @@
     "mailResend": "De mails verstuurt de dienst Resend. De site zelf bewaart ze niet. Bij een nieuw account krijgt degene die de site bijhoudt ook een seintje, met je e-mailadres en je gebruikersnaam.",
     "visitH2": "Bezoeken en cookies",
     "analytics": "Cloudflare Web Analytics telt hoeveel mensen de site bezoeken. Die dienst gebruikt geen cookies en slaat geen persoonsgegevens op.",
+    "klikmeting": "Daarnaast houden we zelf bij hoe de site gebruikt wordt: welke pagina je bekijkt, waar je klikt, hoe ver je scrolt, of er iets misging, en of je een telefoon of een computer gebruikt. Dat helpt ons zien waar leerlingen vastlopen. Er gaat geen cookie aan te pas, we bewaren geen IP-adres en geen antwoorden die je intypt. Bij elk bezoek hoort een willekeurig nummer dat alleen in dit tabblad bestaat en verdwijnt zodra je het tabblad sluit. Deze gegevens bewaren we 90 dagen; daarna blijven alleen aantallen over.",
+    "schuilnaam": "Ben je ingelogd, dan zetten we er een schuilnaam bij: een onleesbare reeks tekens die uit je account berekend wordt. Daarmee kunnen we zien of iemand vaker terugkomt, zonder dat we weten wie het is. Je naam, je gebruikersnaam en je e-mailadres staan er niet bij, en de schuilnaam is niet terug te rekenen naar jouw account.",
     "cookie": "Om ingelogd te blijven zet de site één cookie. Zonder die cookie zou je bij elke pagina opnieuw moeten inloggen. Er zijn geen reclamecookies en we volgen niet wat je buiten deze site doet.",
     "host": "De site zelf draait bij Cloudflare.",
     "keepH2": "Hoe lang",
@@ -602,6 +604,6 @@
     "who4": "Resend verstuurt de mails.",
     "who5": "Google (Gemini) krijgt alleen een foute opgave en het antwoord, zonder je naam.",
     "who6": "Cloudflare laat de site draaien en telt bezoeken zonder persoonsgegevens.",
-    "updated": "Bijgewerkt op 12 oktober 2026."
+    "updated": "Bijgewerkt op 16 oktober 2026."
   }
 }

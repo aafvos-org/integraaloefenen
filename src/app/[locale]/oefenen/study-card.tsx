@@ -195,6 +195,7 @@ export function StudyCard({
         {video && (
           <Link
             href={`/uitleg-videos?video=${encodeURIComponent(video.slug)}` as '/uitleg-videos'}
+            data-meet="oefenen-video-bij-vraag"
             title={video.title}
             className="inline-flex shrink-0 items-center gap-1.5 rounded-full border border-accent/30 bg-accent-light px-2.5 py-1 text-xs font-medium text-accent transition hover:border-accent/60"
           >
@@ -308,6 +309,7 @@ export function StudyCard({
               <div className="flex items-center gap-3">
                 <Button
                   type="submit"
+                  data-meet="oefenen-nakijken"
                   disabled={(pending && submitting) || !answer.trim()}
                 >
                   {t('submit')}
@@ -350,11 +352,12 @@ export function StudyCard({
               : t('streakBody', { streak: state.streak, remaining: MASTERY_THRESHOLD - state.streak })}
           </p>
           <div className="mt-4 flex items-center gap-2">
-            <Button onClick={next} disabled={pending}>
+            <Button onClick={next} data-meet="oefenen-volgende" disabled={pending}>
               {pending ? t('navigating') : t('nextQuestion')}
             </Button>
             <button
               type="button"
+              data-meet="oefenen-nog-een-zelfde"
               onClick={retry}
               disabled={pending}
               className="rounded-lg border border-accent/40 bg-white/70 px-4 py-2 text-sm font-medium text-accent transition hover:bg-white disabled:opacity-60"
@@ -402,11 +405,12 @@ function WrongFeedback({
   if (!revealed) {
     return (
       <div className="flex items-center justify-center gap-2">
-        <Button onClick={onRetry} disabled={pending}>
+        <Button onClick={onRetry} data-meet="oefenen-opnieuw" disabled={pending}>
           {t('retryButton')}
         </Button>
         <button
           type="button"
+          data-meet="oefenen-toon-antwoord"
           onClick={onReveal}
           disabled={pending}
           className="rounded-lg border border-border bg-surface px-4 py-2 text-sm font-medium text-text transition hover:bg-surface-2 disabled:opacity-60"
@@ -446,11 +450,12 @@ function WrongFeedback({
       )}
 
       <div className="flex items-center justify-center gap-2">
-        <Button onClick={onNext} disabled={pending}>
+        <Button onClick={onNext} data-meet="oefenen-volgende-na-antwoord" disabled={pending}>
           {pending ? t('navigating') : t('nextPlus')}
         </Button>
         <button
           type="button"
+          data-meet="oefenen-opnieuw-na-antwoord"
           onClick={onRetry}
           disabled={pending}
           className="rounded-lg border border-border bg-surface px-4 py-2 text-sm font-medium text-text transition hover:bg-surface-2 disabled:opacity-60"

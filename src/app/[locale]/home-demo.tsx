@@ -128,7 +128,7 @@ function DemoCard({
           </label>
 
           <div className="flex items-center gap-3">
-            <Button type="submit" disabled={!answer.trim()}>
+            <Button type="submit" data-meet="proefsom-nakijken" disabled={!answer.trim()}>
               {t('submit')}
             </Button>
             <span className="text-xs text-text-muted">{t('hint')}</span>
@@ -143,12 +143,14 @@ function DemoCard({
           <div className="mt-4 flex flex-wrap items-center gap-3">
             <Link
               href={aanmelden}
+              data-meet="proefsom-goed-registreren"
               className="rounded-lg bg-accent px-5 py-2.5 font-medium text-white shadow-sm transition hover:bg-accent/90"
             >
               {t('correctCta')}
             </Link>
             <button
               type="button"
+              data-meet="proefsom-nog-een"
               onClick={retry}
               className="rounded-lg border border-accent/40 bg-white/70 px-4 py-2 text-sm font-medium text-accent transition hover:bg-white"
             >
@@ -197,12 +199,14 @@ function DemoCard({
           <div className="mt-4 flex flex-wrap items-center gap-3">
             <Link
               href={aanmelden}
+              data-meet="proefsom-fout-registreren"
               className="rounded-lg bg-accent px-5 py-2.5 font-medium text-white shadow-sm transition hover:bg-accent/90"
             >
               {t('wrongCta')}
             </Link>
             <button
               type="button"
+              data-meet="proefsom-opnieuw"
               onClick={retry}
               className="rounded-lg border border-accent-2/40 bg-white/70 px-4 py-2 text-sm font-medium text-accent-2 transition hover:bg-white"
             >
@@ -240,6 +244,7 @@ export function HomeDemo({ aanmelden }: { aanmelden: string }) {
           <button
             key={tab.id}
             type="button"
+            data-meet={`proefsom-niveau-${tab.id}`}
             onClick={() => setActive(tab.id)}
             className={`flex min-h-11 flex-1 items-center justify-center rounded-lg px-3 py-1.5 text-sm font-medium transition ${
               active === tab.id

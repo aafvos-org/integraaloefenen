@@ -64,6 +64,8 @@ export default async function PrivacyPage({
 
       <Blok titel={t('visitH2')}>
         <p>{t('analytics')}</p>
+        <p>{t('klikmeting')}</p>
+        <p>{t('schuilnaam')}</p>
         <p>{t('cookie')}</p>
         <p>{t('host')}</p>
       </Blok>

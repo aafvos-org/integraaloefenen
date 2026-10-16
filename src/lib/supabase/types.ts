@@ -1,4 +1,5 @@
 import type { Bron } from '@/lib/bron'
+import type { Apparaat, Soort } from '@/lib/meten/gebeurtenis'
 
 /**
  * Types voor de tabellen die de site echt gebruikt.
@@ -359,6 +360,46 @@ export type Database = {
           created_at?: string
         }
         Update: Partial<Database['public']['Tables']['known_wrong_answers_new']['Insert']>
+        Relationships: []
+      }
+      /** Klikmeting zonder cookies; zie migratie 0078 en src/lib/meten/. */
+      site_gebeurtenissen: {
+        Row: {
+          id: number
+          site: string
+          tijdstip: string
+          sessie_id: string
+          volgnummer: number
+          soort: Soort
+          pad: string
+          doel: string | null
+          scrolldiepte: number | null
+          apparaat: Apparaat
+          verwijzer: string | null
+          van: string | null
+          utm_source: string | null
+          ingelogd: boolean
+          /** HMAC over het user_id; alleen bij een ingelogde leerling. */
+          schuilnaam: string | null
+        }
+        Insert: {
+          id?: number
+          site?: string
+          tijdstip?: string
+          sessie_id: string
+          volgnummer: number
+          soort: Soort
+          pad: string
+          doel?: string | null
+          scrolldiepte?: number | null
+          apparaat: Apparaat
+          verwijzer?: string | null
+          van?: string | null
+          utm_source?: string | null
+          ingelogd?: boolean
+          schuilnaam?: string | null
+        }
+        Update: Partial<Database['public']['Tables']['site_gebeurtenissen']['Insert']>
         Relationships: []
       }
     }

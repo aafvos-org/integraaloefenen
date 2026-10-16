@@ -295,6 +295,7 @@ export function TheorieClient({
                           <Link
                             key={link.href}
                             href={link.href as '/oefenen'}
+                            data-meet="theorie-oefenlink"
                             className="inline-flex min-h-11 items-center rounded-full border border-border px-4 text-sm font-medium text-text"
                           >
                             {link.label}
@@ -304,6 +305,7 @@ export function TheorieClient({
                     ) : (
                       <Link
                         href={`/oefenen?chapter=${encodeURIComponent(ch.slug)}` as '/oefenen'}
+                        data-meet="theorie-oefen-hoofdstuk"
                         className="inline-flex min-h-11 items-center text-sm font-medium text-accent underline-offset-2 hover:underline"
                       >
                         {ch.practiceLabel}
@@ -578,6 +580,7 @@ function Uitwerkingen({ hoofdstuk }: { hoofdstuk: string }) {
           <li key={item.slug}>
             <Link
               href={`/voorbeeld/${item.slug}` as '/voorbeeld'}
+              data-meet="theorie-voorbeeld"
               className="inline-flex min-h-11 items-center text-sm font-medium text-accent underline-offset-2 hover:underline"
             >
               {item.kop}
@@ -593,6 +596,7 @@ function ProberenKnop({ slug }: { slug: string }) {
   return (
     <Link
       href={`/proberen/${slug}` as '/proberen'}
+      data-meet="theorie-proefsom"
       className="inline-flex min-h-11 items-center rounded-full bg-accent px-4 text-sm font-medium text-white"
     >
       Probeer 3 sommen

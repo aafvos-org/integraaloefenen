@@ -19,6 +19,7 @@ export function NavDropdown({
   overviewLabel,
   items,
   dataTour,
+  dataMeet,
 }: {
   label: string
   icon?: React.ReactNode
@@ -27,6 +28,8 @@ export function NavDropdown({
   items: NavDropdownItem[]
   /** Doelwit-id voor de welkomst-rondleiding */
   dataTour?: string
+  /** Vaste naam voor de klikmeting, bijvoorbeeld `menu-theorie` */
+  dataMeet?: string
 }) {
   const [open, setOpen] = useState(false)
   const rootRef = useRef<HTMLDivElement | null>(null)
@@ -85,6 +88,7 @@ export function NavDropdown({
     >
       <Link
         href={overviewHref}
+        data-meet={dataMeet}
         aria-expanded={open}
         aria-haspopup="menu"
         onClick={() => setOpen(false)}
@@ -112,6 +116,7 @@ export function NavDropdown({
         <div className="absolute left-0 top-full z-40 mt-1 w-64 rounded-xl border border-border bg-surface p-1.5 shadow-lg">
           <Link
             href={overviewHref}
+            data-meet={dataMeet ? `${dataMeet}-overzicht` : undefined}
             onClick={() => setOpen(false)}
             className="block rounded-lg px-3 py-2 text-sm font-medium text-text hover:bg-surface-2"
           >
@@ -123,6 +128,11 @@ export function NavDropdown({
               <li key={item.href}>
                 <Link
                   href={item.href}
+                  data-meet={
+                    dataMeet
+                      ? `${dataMeet}-${(item.code ?? item.label).toLowerCase()}`
+                      : undefined
+                  }
                   onClick={() => setOpen(false)}
                   className="flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm text-text-muted hover:bg-surface-2 hover:text-text"
                 >

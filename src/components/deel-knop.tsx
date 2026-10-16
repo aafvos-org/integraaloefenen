@@ -32,6 +32,7 @@ export function DeelKnop({ pad }: { pad?: string }) {
     <span className="inline-flex flex-col items-start gap-1">
       <button
         type="button"
+        data-meet="deel-knop"
         onClick={() => void deel()}
         className="inline-flex min-h-11 items-center rounded-full border border-border bg-surface px-4 text-sm font-medium text-text"
       >

@@ -112,6 +112,7 @@ function VideoLink({ video, isActive }: { video: VideoItem; isActive: boolean })
     <li>
       <Link
         href={video.href as '/uitleg-videos'}
+        data-meet="video-kiezen"
         scroll={false}
         aria-current={isActive ? 'true' : undefined}
         className={`flex items-start gap-2.5 rounded-xl border p-3 transition ${
@@ -317,6 +318,7 @@ export function UitlegVideosClient({
           <p className="mt-2 max-w-2xl text-text-muted">{labels.emptyBody}</p>
           <Link
             href={oefenHref as '/oefenen'}
+            data-meet="video-leeg-oefenen"
             className="mt-5 inline-block rounded-lg bg-accent px-5 py-3 font-medium text-white shadow-sm transition hover:bg-accent/90"
           >
             {labels.emptyPractice}
@@ -451,12 +453,14 @@ function AccountNodigMelding({
       <p className="mt-3 flex flex-wrap gap-2 text-sm">
         <Link
           href={loginHref as '/inloggen'}
+          data-meet="video-vraag-inloggen"
           className="inline-flex min-h-11 items-center rounded-lg bg-accent px-4 py-2 font-medium text-white transition hover:bg-accent/90"
         >
           {labels.askLogin}
         </Link>
         <Link
           href={registerHref as '/registreren'}
+          data-meet="video-vraag-registreren"
           className="inline-flex min-h-11 items-center rounded-lg border border-border px-4 py-2 font-medium text-text transition hover:bg-surface-2"
         >
           {labels.askRegister}
@@ -567,11 +571,16 @@ function OefenKaart({
 
   const navigatie = (
     <div className="mt-5 flex items-center justify-between border-t border-border pt-4">
-      <Button onClick={() => setIndex((i) => i - 1)} disabled={index === 0}>
+      <Button
+        onClick={() => setIndex((i) => i - 1)}
+        data-meet="video-vorige-vraag"
+        disabled={index === 0}
+      >
         ← {labels.previousQuestion}
       </Button>
       <Button
         onClick={() => setIndex((i) => i + 1)}
+        data-meet="video-volgende-vraag"
         disabled={index === vragen.length - 1}
       >
         {labels.nextQuestion} →
@@ -653,7 +662,7 @@ function OefenKaart({
             />
           </label>
           <ErrorBanner>{error}</ErrorBanner>
-          <Button type="submit" disabled={pending || !answer.trim()}>
+          <Button type="submit" data-meet="video-nakijken" disabled={pending || !answer.trim()}>
             {pending ? labels.checking : labels.check}
           </Button>
         </form>
