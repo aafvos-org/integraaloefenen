@@ -66,6 +66,13 @@ export function vindVoorbeeld(slug: string): Voorbeeld | undefined {
   return VOORBEELDEN.find((voorbeeld) => voorbeeld.slug === slug)
 }
 
+/** Antwoordpagina's waarvan het theoriepad op dit hoofdstuk eindigt. */
+export function uitwerkingenVoor(hoofdstuk: string): { slug: string; kop: string }[] {
+  return VOORBEELDEN.filter((voorbeeld) =>
+    voorbeeld.theorie.endsWith(`/${hoofdstuk}`),
+  ).map((voorbeeld) => ({ slug: voorbeeld.slug, kop: voorbeeld.kop }))
+}
+
 export const VOORBEELDEN: Voorbeeld[] = [
   {
     slug: '1-over-x',

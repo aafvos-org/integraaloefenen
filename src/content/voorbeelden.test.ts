@@ -1,7 +1,14 @@
 import { derivative, isComplex, parse, type MathNode } from 'mathjs'
 import { describe, expect, it } from 'vitest'
 
-import { oefenPad, proefPad, VOORBEELDEN, vindVoorbeeld, type Voorbeeld } from './voorbeelden'
+import {
+  oefenPad,
+  proefPad,
+  uitwerkingenVoor,
+  VOORBEELDEN,
+  vindVoorbeeld,
+  type Voorbeeld,
+} from './voorbeelden'
 
 const AANTAL_PUNTEN = 13
 const MINIMAAL_BRUIKBAAR = 3
@@ -141,6 +148,18 @@ describe('antwoordpagina’s', () => {
         `/proberen/${voorbeeld.theorie.split('/').pop()}`,
       )
     }
+  })
+
+  it('koppelt uitwerkingen aan het theoriehoofdstuk', () => {
+    expect(uitwerkingenVoor('primitieve')).toHaveLength(19)
+    expect(uitwerkingenVoor('partieel-integreren')).toHaveLength(6)
+    expect(uitwerkingenVoor('k3')).toHaveLength(3)
+    expect(uitwerkingenVoor('substitutiemethode')).toHaveLength(2)
+    expect(uitwerkingenVoor('oppervlakte')).toHaveLength(0)
+    expect(uitwerkingenVoor('inhoud')).toHaveLength(0)
+    expect(uitwerkingenVoor('primitieve').some((item) => item.kop === 'De primitieve van 1/x')).toBe(
+      true,
+    )
   })
 
   it('klopt elke primitieve door terug te differentiëren', () => {

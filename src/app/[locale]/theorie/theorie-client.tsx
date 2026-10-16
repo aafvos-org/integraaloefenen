@@ -7,6 +7,7 @@ import { Math as TeX, RichMath } from '@/components/math'
 import { cn } from '@/components/ui'
 import { DeelKnop } from '@/components/deel-knop'
 import type { Voorbeeldopgave } from '@/content/theory/voorbeeldopgaven'
+import { uitwerkingenVoor } from '@/content/voorbeelden'
 import type { Oefenlink, OverviewCard, Stappenplan } from '@/lib/theory'
 
 import { leesbareTekst, leesbareWiskunde } from './leesbare-tekst'
@@ -358,6 +359,8 @@ export function TheorieClient({
                     deelPad={`/nl/theorie/${ch.slug}#voorbeeldopgaven`}
                   />
                 )}
+
+                <Uitwerkingen hoofdstuk={ch.slug} />
               </section>
             )
           })}
@@ -561,6 +564,30 @@ function KaartTekst({ card, labels }: { card: OverviewCard; labels: Labels }) {
 }
 
 /* ── Eén theoriekaart ───────────────────────────────────────────────────── */
+
+function Uitwerkingen({ hoofdstuk }: { hoofdstuk: string }) {
+  const lijst = uitwerkingenVoor(hoofdstuk)
+  if (lijst.length === 0) return null
+  return (
+    <section className="mt-8" aria-labelledby={`uitwerkingen-${hoofdstuk}`}>
+      <h2 id={`uitwerkingen-${hoofdstuk}`} className="font-serif text-xl text-text">
+        Uitwerkingen
+      </h2>
+      <ul className="mt-3 space-y-1">
+        {lijst.map((item) => (
+          <li key={item.slug}>
+            <Link
+              href={`/voorbeeld/${item.slug}` as '/voorbeeld'}
+              className="inline-flex min-h-11 items-center text-sm font-medium text-accent underline-offset-2 hover:underline"
+            >
+              {item.kop}
+            </Link>
+          </li>
+        ))}
+      </ul>
+    </section>
+  )
+}
 
 function ProberenKnop({ slug }: { slug: string }) {
   return (
