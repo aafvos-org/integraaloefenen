@@ -451,13 +451,13 @@ function AccountNodigMelding({
       <p className="mt-3 flex flex-wrap gap-2 text-sm">
         <Link
           href={loginHref as '/inloggen'}
-          className="rounded-lg bg-accent px-4 py-2 font-medium text-white transition hover:bg-accent/90"
+          className="inline-flex min-h-11 items-center rounded-lg bg-accent px-4 py-2 font-medium text-white transition hover:bg-accent/90"
         >
           {labels.askLogin}
         </Link>
         <Link
           href={registerHref as '/registreren'}
-          className="rounded-lg border border-border px-4 py-2 font-medium text-text transition hover:bg-surface-2"
+          className="inline-flex min-h-11 items-center rounded-lg border border-border px-4 py-2 font-medium text-text transition hover:bg-surface-2"
         >
           {labels.askRegister}
         </Link>
