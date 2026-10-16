@@ -154,7 +154,10 @@ export function leesbareWiskunde(tex: string): string {
   let s = tex.trim()
   s = s.replace(/\\begin\{[a-zA-Z*]+\}/g, ' ')
   s = s.replace(/\\end\{[a-zA-Z*]+\}/g, ' ')
-  s = s.replace(/\\(?:left|right|bigl|bigr|Bigl|Bigr|biggl|biggr|displaystyle)(?![a-zA-Z])/g, '')
+  s = s.replace(
+    /\\(?:left|right|biggl|biggr|Biggl|Biggr|bigl|bigr|Bigl|Bigr|bigg|Bigg|big|Big|displaystyle)(?![a-zA-Z])/g,
+    '',
+  )
   // \! is een negatieve spatie (geen gat); de rest is wel een spatie.
   s = s.replace(/\\!/g, '')
   s = s.replace(/\\[,;:]|\\quad(?![a-zA-Z])|\\qquad(?![a-zA-Z])/g, ' ')

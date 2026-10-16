@@ -21,6 +21,9 @@ describe('leesbare wiskunde', () => {
     expect(leesbareWiskunde('\\int_{-\\frac13\\sqrt3}^{\\sqrt3} \\frac{1}{x^2+1}\\,dx')).toBe(
       '∫ van -(1/3)√(3) tot √(3) 1/(x²+1) dx',
     )
+    expect(leesbareWiskunde('\\frac{1}{2}e^{x}\\big(\\sin(x)-\\cos(x)\\big)+c')).toBe(
+      '(1/2)e^(x)(sin(x)-cos(x))+c',
+    )
   })
 
   it('laat in elke route geen LaTeX-commando achter', () => {
