@@ -155,7 +155,7 @@ describe('antwoordpagina’s', () => {
     expect(uitwerkingenVoor('partieel-integreren')).toHaveLength(6)
     expect(uitwerkingenVoor('k3')).toHaveLength(3)
     expect(uitwerkingenVoor('substitutiemethode')).toHaveLength(2)
-    expect(uitwerkingenVoor('oppervlakte')).toHaveLength(0)
+    expect(uitwerkingenVoor('oppervlakte')).toHaveLength(3)
     expect(uitwerkingenVoor('inhoud')).toHaveLength(0)
     expect(uitwerkingenVoor('primitieve').some((item) => item.kop === 'De primitieve van 1/x')).toBe(
       true,
