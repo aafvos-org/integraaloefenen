@@ -100,6 +100,20 @@ describe('answersMatch', () => {
     expect(answersMatch('2ln(2)', 'ln(4)')).toBe(true)
   })
 
+  it('kent arctan, arcsin en arccos, ook zonder + c', () => {
+    // In de les en in de database staan de schoolnamen. De rekenmachine
+    // kende alleen atan, asin en acos, waardoor een goed antwoord zonder
+    // + c niet doorgerekend werd en als fout telde.
+    expect(answersMatch('arctan(x)', 'arctan(x) + c')).toBe(true)
+    expect(answersMatch('arcsin(x)', 'arcsin(x) + c')).toBe(true)
+    expect(answersMatch('arccos(x)', 'arccos(x) + c')).toBe(true)
+    expect(answersMatch('2arctan(x)', '2*arctan(x)+c')).toBe(true)
+    expect(answersMatch('atan(x)', 'arctan(x)')).toBe(true)
+    expect(answersMatch('asin(x)', 'arcsin(x) + c')).toBe(true)
+    expect(answersMatch('acos(x)', 'arccos(x)')).toBe(true)
+    expect(answersMatch('arcsin(x)', 'arctan(x) + c')).toBe(false)
+  })
+
   it('rekent staafjes hetzelfde als abs', () => {
     expect(answersMatch('ln|x+2|', 'ln(abs(x+2))')).toBe(true)
     expect(answersMatch('ln(|x+2|)', 'ln(abs(x+2))')).toBe(true)

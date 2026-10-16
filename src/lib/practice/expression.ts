@@ -11,9 +11,11 @@
  * devDependency, voor `src/content/primitieven.test.ts`.)
  *
  * Hij kent de notatie uit `AGENTS.md`: `*` mag je weglaten, `^` voor machten,
- * `sqrt(x)`, `sin(x)`, `asin(x)`, `e^x`, `pi`, `ln(x)` en `log10(x)`. `log(...)`
- * kent hij niet — dat is te verwarrend — en een formule daarmee gaat dus langs
- * de AI-stap. Staafjes `|x|` zijn hetzelfde als `abs(x)`, ook in `ln|x+2|`.
+ * `sqrt(x)`, `sin(x)`, `asin(x)`, `e^x`, `pi`, `ln(x)` en `log10(x)`. In de les
+ * heten de inverse functies `arctan`, `arcsin` en `arccos`; die rekent hij
+ * hetzelfde als `atan`, `asin` en `acos`. `log(...)` kent hij niet — dat is te
+ * verwarrend — en een formule daarmee gaat dus langs de AI-stap. Staafjes
+ * `|x|` zijn hetzelfde als `abs(x)`, ook in `ln|x+2|`.
  */
 
 /** Langer dan dit is geen antwoord meer; dan rekenen we niet door. */
@@ -26,6 +28,11 @@ const FUNCTIES: Record<string, (waarde: number) => number> = {
   asin: Math.asin,
   acos: Math.acos,
   atan: Math.atan,
+  // In de les en in de database: arcsin, arccos, arctan. De langste naam
+  // wint bij het inlezen, dus `arctan` wordt niet per ongeluk `atan`.
+  arcsin: Math.asin,
+  arccos: Math.acos,
+  arctan: Math.atan,
   sqrt: Math.sqrt,
   abs: Math.abs,
   exp: Math.exp,
