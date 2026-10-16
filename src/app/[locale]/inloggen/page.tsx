@@ -1,3 +1,4 @@
+import type { Metadata, ResolvingMetadata } from 'next'
 import { getTranslations, getLocale } from 'next-intl/server'
 import { Link } from '@/i18n/navigation'
 import { redirect } from 'next/navigation'
@@ -10,14 +11,18 @@ import { BevestigingsMelding } from './bevestigings-melding'
 import { HerstelMelding } from './herstel-melding'
 import { LoginForm } from './login-form'
 
-export async function generateMetadata({
-  params,
-}: {
-  params: Promise<{ locale: string }>
-}) {
+export async function generateMetadata(
+  { params }: { params: Promise<{ locale: string }> },
+  parent: ResolvingMetadata,
+): Promise<Metadata> {
   const { locale } = await params
   const t = await getTranslations({ locale, namespace: 'Login' })
-  return { title: t('title') }
+  const vorige = await parent
+  return {
+    title: t('title'),
+    description: t('description'),
+    openGraph: { ...vorige.openGraph, description: t('description') },
+  }
 }
 
 export default async function LoginPage({

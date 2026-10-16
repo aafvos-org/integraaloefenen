@@ -1,3 +1,4 @@
+import type { Metadata, ResolvingMetadata } from 'next'
 import { notFound } from 'next/navigation'
 
 import { routing } from '@/i18n/routing'
@@ -18,11 +19,22 @@ export function generateStaticParams() {
   )
 }
 
-export async function generateMetadata({ params }: { params: Params }) {
+const PROEFSOM_OMSCHRIJVING =
+  'Maak drie sommen zonder account en kijk of je de primitieve vindt.'
+
+export async function generateMetadata(
+  { params }: { params: Params },
+  parent: ResolvingMetadata,
+): Promise<Metadata> {
   const { locale, hoofdstuk } = await params
   zetStatischeTaal(locale)
   if (!proefSommen(hoofdstuk)) notFound()
-  return { title: 'Probeer 3 sommen' }
+  const vorige = await parent
+  return {
+    title: 'Probeer 3 sommen',
+    description: PROEFSOM_OMSCHRIJVING,
+    openGraph: { ...vorige.openGraph, description: PROEFSOM_OMSCHRIJVING },
+  }
 }
 
 export default async function ProberenPage({ params }: { params: Params }) {

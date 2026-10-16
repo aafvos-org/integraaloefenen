@@ -1,3 +1,4 @@
+import type { Metadata, ResolvingMetadata } from 'next'
 import { getTranslations, getLocale } from 'next-intl/server'
 import { Link } from '@/i18n/navigation'
 import { redirect } from 'next/navigation'
@@ -8,14 +9,18 @@ import { getCurrentUser } from '@/lib/supabase/request-cache'
 
 import { SignupForm } from './signup-form'
 
-export async function generateMetadata({
-  params,
-}: {
-  params: Promise<{ locale: string }>
-}) {
+export async function generateMetadata(
+  { params }: { params: Promise<{ locale: string }> },
+  parent: ResolvingMetadata,
+): Promise<Metadata> {
   const { locale } = await params
   const t = await getTranslations({ locale, namespace: 'Register' })
-  return { title: t('title') }
+  const vorige = await parent
+  return {
+    title: t('title'),
+    description: t('description'),
+    openGraph: { ...vorige.openGraph, description: t('description') },
+  }
 }
 
 export default async function SignupPage({
