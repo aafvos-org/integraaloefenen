@@ -8,73 +8,23 @@ import { Math as TeX, RichMath } from '@/components/math'
 import { Badge, Button } from '@/components/ui'
 import { Link } from '@/i18n/navigation'
 import { insertAtCursor, toLatexPreview } from '@/lib/practice/input'
-
-type Difficulty = 'easy' | 'medium' | 'hard'
+import { STARTPAGINA_VRAGEN, startpaginaKlopt } from '@/lib/practice/startpagina-demo'
+import type { DemoNiveau } from '@/lib/practice/startpagina-demo'
 
 type State =
   | { phase: 'input'; error: string | null }
   | { phase: 'correct' }
   | { phase: 'wrong'; studentAnswer: string }
 
-type QuestionConfig = {
-  difficulty: 1 | 2 | 3
-  accepted: string[]
-  correctLatex: string
-}
-
-// De integreerconstante mag een leerling weglaten: elk antwoord staat er met
-// en zonder `+c` in. `normalize` haalt hoofdletters en keer-tekens er al af.
-const QUESTIONS: Record<Difficulty, QuestionConfig> = {
-  easy: {
-    difficulty: 1,
-    accepted: withOptionalConstant(['3x^2+5x', '5x+3x^2']),
-    correctLatex: '3x^2 + 5x + c',
-  },
-  medium: {
-    difficulty: 2,
-    accepted: withOptionalConstant([
-      '1/3sin(3x)',
-      '(1/3)sin(3x)',
-      'sin(3x)/3',
-    ]),
-    correctLatex: '\\tfrac{1}{3}\\sin(3x) + c',
-  },
-  hard: {
-    difficulty: 3,
-    accepted: withOptionalConstant([
-      'xe^x-e^x',
-      '-e^x+xe^x',
-      '(x-1)e^x',
-      'e^x(x-1)',
-    ]),
-    correctLatex: '(x - 1)e^x + c',
-  },
-}
-
-/** Geeft elk antwoord terug in twee vormen: kaal en met `+c` erachter. */
-function withOptionalConstant(answers: string[]): string[] {
-  return answers.flatMap((a) => [a, `${a}+c`])
-}
-
-function normalize(s: string): string {
-  return s
-    .toLowerCase()
-    .replace(/\s+/g, '')
-    .replace(/\*/g, '')
-    .replace(/·/g, '')
-    .replace(/\\cdot/g, '')
-    .replace(/\^{(\d+)}/g, '^$1')
-}
-
 function DemoCard({
   difficulty,
   aanmelden,
 }: {
-  difficulty: Difficulty
+  difficulty: DemoNiveau
   aanmelden: string
 }) {
   const t = useTranslations('HomeDemo')
-  const q = QUESTIONS[difficulty]
+  const q = STARTPAGINA_VRAGEN[difficulty]
   const [answer, setAnswer] = useState('')
   const [state, setState] = useState<State>({ phase: 'input', error: null })
   const inputRef = useRef<HTMLInputElement | null>(null)
@@ -82,8 +32,7 @@ function DemoCard({
   function submit(e: React.FormEvent) {
     e.preventDefault()
     if (!answer.trim() || state.phase !== 'input') return
-    const norm = normalize(answer)
-    if (q.accepted.some((a) => normalize(a) === norm)) {
+    if (startpaginaKlopt(difficulty, answer)) {
       setState({ phase: 'correct' })
     } else {
       setState({ phase: 'wrong', studentAnswer: answer })
@@ -268,9 +217,9 @@ function DemoCard({
 
 export function HomeDemo({ aanmelden }: { aanmelden: string }) {
   const t = useTranslations('HomeDemo')
-  const [active, setActive] = useState<Difficulty>('easy')
+  const [active, setActive] = useState<DemoNiveau>('easy')
 
-  const tabs: { id: Difficulty; label: string }[] = [
+  const tabs: { id: DemoNiveau; label: string }[] = [
     { id: 'easy', label: t('tabEasy') },
     { id: 'medium', label: t('tabMedium') },
     { id: 'hard', label: t('tabHard') },
