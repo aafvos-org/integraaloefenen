@@ -1,0 +1,109 @@
+# Eén release per dag. Werk van de agents gaat naar `volgende`; deze workflow
+# zet daar 's ochtends één pull request naar `main` van. Aaf leest die en
+# merget hem zelf — met "Create a merge commit", nooit met squash.
+#
+# Staat `volgende` niet voor op `main`, dan doet de workflow niets en blijft
+# hij groen.
+#
+# Waarom hij de controle zelf opstart: een pull request die met GITHUB_TOKEN
+# gemaakt is, start geen andere workflows (en een `pull_request`-run zou op
+# "wacht op goedkeuring" blijven staan). De verplichte controles kijken naar
+# de commit waar de pull request op staat, en dat is precies de kop van
+# `volgende`. Daarom starten we Controle met de hand op die tak: GitHub maakt
+# een uitzondering voor `workflow_dispatch`, dus dat lukt wél met
+# GITHUB_TOKEN, en de uitslag belandt op dezelfde commit. Een eigen
+# persoonlijk token is zo niet nodig.
+
+name: Release
+
+on:
+  schedule:
+    # 05:00 UTC: 07:00 in de zomertijd, 06:00 in de winter.
+    - cron: "0 5 * * *"
+  workflow_dispatch:
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+  pull-requests: write
+  # Nodig om de workflow Controle op `volgende` op te starten.
+  actions: write
+
+jobs:
+  release-pull-request:
+    name: Release-pull-request
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24
+
+      - name: Takken ophalen
+        run: git fetch --no-tags origin main volgende
+
+      - name: Kijken of er iets te releasen valt
+        id: voor
+        run: |
+          set -euo pipefail
+          aantal=$(git rev-list --count origin/main..origin/volgende)
+          echo "aantal=$aantal" >> "$GITHUB_OUTPUT"
+          if [ "$aantal" -eq 0 ]; then
+            echo "volgende staat niet voor op main. Geen release vandaag."
+          else
+            echo "$aantal commits wachten op een release."
+          fi
+
+      - name: Pull request maken of bijwerken
+        if: steps.voor.outputs.aantal != '0'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+
+          tekst=$(node scripts/release-tekst.mjs)
+          titel="Release $(date -u +%Y-%m-%d)"
+
+          nummer=$(gh pr list --base main --head volgende --state open --json number --jq '.[0].number // empty')
+
+          if [ -n "$nummer" ]; then
+            gh pr edit "$nummer" --title "$titel" --body "$tekst"
+            echo "Release-pull-request #$nummer bijgewerkt."
+          else
+            gh pr create --base main --head volgende --title "$titel" --body "$tekst"
+            nummer=$(gh pr list --base main --head volgende --state open --json number --jq '.[0].number // empty')
+            echo "Release-pull-request #$nummer aangemaakt."
+          fi
+
+          echo "https://github.com/$GH_REPO/pull/$nummer" >> "$GITHUB_STEP_SUMMARY"
+
+      # De uitslag landt op de kop van `volgende` en telt daardoor mee als
+      # verplichte controle op de release-pull-request. Staat er al een
+      # geslaagde run op dezelfde commit, dan slaan we het over.
+      - name: Controle op volgende opstarten
+        if: steps.voor.outputs.aantal != '0'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+
+          kop=$(git rev-parse origin/volgende)
+          klaar=$(gh api "repos/$GH_REPO/commits/$kop/check-runs" \
+            --jq '[.check_runs[] | select(.name == "Weg van een leerling" and .conclusion == "success")] | length')
+
+          if [ "$klaar" != "0" ]; then
+            echo "De controles staan al op $kop."
+            exit 0
+          fi
+
+          gh workflow run controle.yml --ref volgende
+          echo "Controle opgestart op volgende ($kop)."
