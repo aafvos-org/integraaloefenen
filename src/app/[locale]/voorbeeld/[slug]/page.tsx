@@ -2,6 +2,7 @@ import { notFound } from 'next/navigation'
 import { getTranslations } from 'next-intl/server'
 
 import { leesbareTekst, leesbareWiskunde } from '@/app/[locale]/theorie/leesbare-tekst'
+import { DeelKnop } from '@/components/deel-knop'
 import { Math, RichMath } from '@/components/math'
 import { SITE_CONFIG } from '@/config/site'
 import { oefenPad, proefPad, vindVoorbeeld, VOORBEELDEN } from '@/content/voorbeelden'
@@ -107,7 +108,7 @@ export default async function VoorbeeldPagina({ params }: { params: Params }) {
         </p>
       </section>
 
-      <p className="mt-10 flex flex-wrap gap-2">
+      <div className="mt-10 flex flex-wrap items-center gap-2">
         {proef && (
           <Link
             href={proef as '/proberen'}
@@ -122,7 +123,8 @@ export default async function VoorbeeldPagina({ params }: { params: Params }) {
         >
           {t('oefenen')}
         </Link>
-      </p>
+        <DeelKnop />
+      </div>
 
       <section className="mt-12">
         <h2 className="font-serif text-2xl text-text">{t('verwant')}</h2>
