@@ -1,5 +1,5 @@
 /**
- * Openbare antwoordpagina's: één veelgezochte primitieve per adres.
+ * Openbare antwoordpagina's: een veelgezochte primitieve of oppervlakte per adres.
  *
  * Een nieuwe pagina is een extra object in `VOORBEELDEN`. De pagina, de
  * sitemap en de rekentest lezen deze lijst. `integrand` en `primitieve`
@@ -745,5 +745,83 @@ export const VOORBEELDEN: Voorbeeld[] = [
     cluster: 'k0b_lin_breuk_wortel',
     theorie: '/theorie/primitieve',
     verwant: ['wortel-x', '1-over-2x-plus-1'],
+  },
+  {
+    slug: 'oppervlakte-tussen-grafiek-en-x-as',
+    kop: 'Oppervlakte tussen de grafiek en de x-as',
+    titel: 'Oppervlakte tussen grafiek en x-as',
+    omschrijving:
+      'De oppervlakte tussen f(x) = 4 − x² en de x-as, van x = −2 tot x = 2, is 32/3. De grafiek ligt daar op of boven de x-as.',
+    vraagLatex:
+      'f(x)=4-x^{2}.\\ \\text{Oppervlakte tussen de grafiek en de }x\\text{-as, van }x=-2\\text{ tot }x=2.',
+    antwoordLatex: '\\dfrac{32}{3}',
+    integrand: '4 - x^2',
+    primitieve: '4*x - x^3/3',
+    domein: [-2, 2],
+    grenzen: [-2, 2],
+    waarde: '32/3',
+    stappen: [
+      'Deel 1: van het verhaaltje naar de integraal. $f(x)=4-x^{2}$ is een bergparabool met nulpunten $x=-2$ en $x=2$. De top is $(0,4)$, dus tussen die nulpunten ligt de grafiek op of boven de $x$-as. De oppervlakte is $\\displaystyle\\int_{-2}^{2}(4-x^{2})\\,dx$. Deel 2 rekent die integraal uit. Deel 3 vult de grenzen in; er blijft een getal over, geen vergelijking.',
+      'Deel 2: een primitieve van $4-x^{2}$ is $4x-\\dfrac{1}{3}x^{3}$. Differentieer die: $4-x^{2}$. Dat klopt. De $+c$ laat je weg, die valt bij de grenzen weg.',
+      'Deel 2, verder: $\\left[4x-\\dfrac{1}{3}x^{3}\\right]_{-2}^{2}$.',
+      'Deel 3: $F(2)=8-\\dfrac{8}{3}=\\dfrac{16}{3}$ en $F(-2)=-8-\\left(-\\dfrac{8}{3}\\right)=-\\dfrac{16}{3}$. Het verschil is $\\dfrac{16}{3}-\\left(-\\dfrac{16}{3}\\right)=\\dfrac{32}{3}$. De oppervlakte is $\\dfrac{32}{3}$.',
+    ],
+    fout: 'Alleen van $0$ tot $2$ rekenen geeft $\\dfrac{16}{3}$, de helft van het vlakdeel. De grenzen lopen van $-2$ tot $2$. Een oppervlakte is een getal, zonder $+c$.',
+    blok: 'k5a',
+    cluster: 'k5a_oppervlakte',
+    theorie: '/theorie/oppervlakte',
+    verwant: ['oppervlakte-tussen-twee-grafieken', 'grafiek-onder-de-x-as'],
+  },
+  {
+    slug: 'oppervlakte-tussen-twee-grafieken',
+    kop: 'Oppervlakte tussen twee grafieken',
+    titel: 'Oppervlakte tussen twee grafieken',
+    omschrijving:
+      'De oppervlakte tussen f(x) = x en g(x) = x², van x = 0 tot x = 1, is 1/6. Op dat stuk ligt f boven g.',
+    vraagLatex:
+      'f(x)=x,\\ g(x)=x^{2}.\\ \\text{Oppervlakte tussen de grafieken, van }x=0\\text{ tot }x=1.',
+    antwoordLatex: '\\dfrac{1}{6}',
+    integrand: 'x - x^2',
+    primitieve: 'x^2/2 - x^3/3',
+    domein: [0, 1],
+    grenzen: [0, 1],
+    waarde: '1/6',
+    stappen: [
+      'Deel 1: het vlakdeel zit tussen twee grafieken. De grenzen zijn $x=0$ en $x=1$. Daar snijden $f$ en $g$ elkaar, want $x=x^{2}$ geeft $x=0$ of $x=1$. Tussen die punten is $x>x^{2}$, dus $f$ ligt boven $g$. De oppervlakte is $\\displaystyle\\int_{0}^{1}(x-x^{2})\\,dx$. Deel 2 is primitiveren. Deel 3 is de grenzen invullen.',
+      'Deel 2: een primitieve van $x-x^{2}$ is $\\dfrac{1}{2}x^{2}-\\dfrac{1}{3}x^{3}$. Differentieer die: $x-x^{2}$. Dat klopt.',
+      'Deel 2, verder: $\\left[\\dfrac{1}{2}x^{2}-\\dfrac{1}{3}x^{3}\\right]_{0}^{1}$. Geen $+c$.',
+      'Deel 3: $F(1)-F(0)=\\left(\\dfrac{1}{2}-\\dfrac{1}{3}\\right)-0=\\dfrac{3}{6}-\\dfrac{2}{6}=\\dfrac{1}{6}$. De oppervlakte is $\\dfrac{1}{6}$.',
+    ],
+    fout: '$x^{2}-x$ is onder min boven. Die integraal van $0$ tot $1$ is $-\\dfrac{1}{6}$. De oppervlakte is het positieve getal $\\dfrac{1}{6}$.',
+    blok: 'k5b',
+    cluster: 'k5b_oppervlakte',
+    theorie: '/theorie/oppervlakte',
+    verwant: ['oppervlakte-tussen-grafiek-en-x-as', 'grafiek-onder-de-x-as'],
+  },
+  {
+    slug: 'grafiek-onder-de-x-as',
+    kop: 'De grafiek ligt onder de x-as',
+    titel: 'Oppervlakte als de grafiek onder de x-as ligt',
+    omschrijving:
+      'f(x) = x − 2 ligt van x = 0 tot x = 2 op of onder de x-as. De integraal is −2; de oppervlakte is de absolute waarde, dus 2.',
+    vraagLatex:
+      'f(x)=x-2.\\ \\text{Oppervlakte tussen de grafiek en de }x\\text{-as, van }x=0\\text{ tot }x=2.',
+    antwoordLatex: '2',
+    integrand: '-(x - 2)',
+    primitieve: '2*x - x^2/2',
+    domein: [0, 2],
+    grenzen: [0, 2],
+    waarde: 2,
+    stappen: [
+      'Deel 1: $f(x)=x-2$ snijdt de $x$-as bij $x=2$. Op $[0,2]$ is $f(x)\\le 0$, want $f(0)=-2$. De grafiek ligt dus op of onder de $x$-as. De oppervlakte is het tegengestelde van de integraal: $-\\displaystyle\\int_{0}^{2}(x-2)\\,dx$, en dat is $\\displaystyle\\int_{0}^{2}(2-x)\\,dx$. Deel 2 rekent de integraal uit. Deel 3 maakt van een negatieve uitkomst een positieve oppervlakte.',
+      'Deel 2: een primitieve van $x-2$ is $\\dfrac{1}{2}x^{2}-2x$. $\\left[\\dfrac{1}{2}x^{2}-2x\\right]_{0}^{2}=(2-4)-0=-2$. De integraal zelf is $-2$.',
+      'Deel 2, voor de oppervlakte: een primitieve van $2-x$ is $2x-\\dfrac{1}{2}x^{2}$. Differentieer die: $2-x$. Dat klopt.',
+      'Deel 3: $\\left[2x-\\dfrac{1}{2}x^{2}\\right]_{0}^{2}=(4-2)-0=2$. Dat is de absolute waarde van $-2$. De oppervlakte is $2$, zonder $+c$.',
+    ],
+    fout: 'De uitkomst $-2$ als oppervlakte laten staan. Een oppervlakte is positief. Je neemt de absolute waarde, dus $2$.',
+    blok: 'k5a',
+    cluster: 'k5a_oppervlakte',
+    theorie: '/theorie/oppervlakte',
+    verwant: ['oppervlakte-tussen-grafiek-en-x-as', 'oppervlakte-tussen-twee-grafieken'],
   },
 ]

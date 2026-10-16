@@ -125,9 +125,9 @@ function problemenVan(voorbeeld: Voorbeeld): string[] {
 }
 
 describe('antwoordpagina’s', () => {
-  it('zijn er dertig, elk met een eigen adres', () => {
-    expect(VOORBEELDEN).toHaveLength(30)
-    expect(new Set(VOORBEELDEN.map((v) => v.slug)).size).toBe(30)
+  it('zijn er drieëndertig, elk met een eigen adres', () => {
+    expect(VOORBEELDEN).toHaveLength(33)
+    expect(new Set(VOORBEELDEN.map((v) => v.slug)).size).toBe(33)
   })
 
   it('heeft per pagina vier stappen, twee verwante pagina’s en een oefenlink', () => {

@@ -57,10 +57,10 @@ const LAATST_GEWIJZIGD: Record<string, string> = {
   '/uitleg-videos': '2026-10-13',
   '/hoe-het-werkt': '2026-10-10',
   '/privacy': '2026-10-13',
-  '/voorbeeld': '2026-10-14',
+  '/voorbeeld': '2026-10-16',
 }
 const THEORIE_HOOFDSTUK_GEWIJZIGD = '2026-10-14'
-const VOORBEELD_GEWIJZIGD = '2026-10-14'
+const VOORBEELD_GEWIJZIGD = '2026-10-16'
 
 function laatstGewijzigd(pad: string): Date {
   const dag = pad.startsWith('/theorie/')
