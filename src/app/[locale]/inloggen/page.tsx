@@ -62,14 +62,20 @@ export default async function LoginPage({
         <LoginForm />
       </div>
 
-      <p className="mt-6 text-center text-sm text-text-muted">
+      <p className="mt-4 text-center text-sm text-text-muted">
         {t('noAccount')}{' '}
-        <Link href={aanmelden} className="font-medium text-accent hover:underline">
+        <Link
+          href={aanmelden}
+          className="inline-flex min-h-11 items-center px-1 font-medium text-accent hover:underline"
+        >
           {t('registerLink')}
         </Link>
       </p>
-      <p className="mt-2 text-center text-sm text-text-muted">
-        <Link href="/wachtwoord-vergeten" className="text-accent hover:underline">
+      <p className="text-center text-sm text-text-muted">
+        <Link
+          href="/wachtwoord-vergeten"
+          className="inline-flex min-h-11 items-center px-2 text-accent hover:underline"
+        >
           {t('forgotPassword')}
         </Link>
       </p>

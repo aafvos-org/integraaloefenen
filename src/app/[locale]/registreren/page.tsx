@@ -48,8 +48,11 @@ export default async function SignupPage({
         <SignupForm bronUitAdres={bron} />
       </div>
 
-      <p className="mt-2 text-center text-sm text-text-muted">
-        <Link href="/wachtwoord-vergeten" className="text-accent hover:underline">
+      <p className="text-center text-sm text-text-muted">
+        <Link
+          href="/wachtwoord-vergeten"
+          className="inline-flex min-h-11 items-center px-2 text-accent hover:underline"
+        >
           {t('forgotPassword')}
         </Link>
       </p>

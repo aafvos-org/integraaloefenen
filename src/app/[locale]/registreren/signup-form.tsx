@@ -109,9 +109,12 @@ export function SignupForm({ bronUitAdres = null }: { bronUitAdres?: string | nu
 
       <SubmitButton />
 
-      <p className="pt-1 text-center text-sm text-text-muted">
+      <p className="text-center text-sm text-text-muted">
         {t('hasAccount')}{' '}
-        <Link href="/inloggen" className="font-medium text-accent hover:underline">
+        <Link
+          href="/inloggen"
+          className="inline-flex min-h-11 items-center px-1 font-medium text-accent hover:underline"
+        >
           {t('loginLink')}
         </Link>
       </p>
