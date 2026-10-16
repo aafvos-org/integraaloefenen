@@ -23,7 +23,7 @@ test('de startpagina begint met drie sommen zonder account @telefoon', async ({ 
   await expect(inloggen).toBeVisible()
   await proberen.click()
   await expect(page).toHaveURL(/\/proberen\/primitieve/)
-  await expect(page.getByText('Som 1 van 3')).toBeVisible()
+  await expect(page.getByRole('heading', { name: 'Som 1 van 3' })).toBeVisible()
 })
 
 test('drie proefopgaven zonder account, daarna aanmelden @telefoon', async ({ page }) => {
@@ -31,7 +31,7 @@ test('drie proefopgaven zonder account, daarna aanmelden @telefoon', async ({ pa
   await page.getByRole('link', { name: 'Probeer 3 sommen' }).click()
 
   await expect(page).toHaveURL(/\/proberen\/primitieve/)
-  await expect(page.getByText('Som 1 van 3')).toBeVisible()
+  await expect(page.getByRole('heading', { name: 'Som 1 van 3' })).toBeVisible()
   await expect(page.getByRole('button', { name: 'Nakijken' })).toBeDisabled()
 
   await page.getByLabel('Jouw antwoord').fill('x^4/4 + sin(x)')
@@ -39,13 +39,13 @@ test('drie proefopgaven zonder account, daarna aanmelden @telefoon', async ({ pa
   await expect(page.getByText('Goed!', { exact: true })).toBeVisible()
   await page.getByRole('button', { name: 'Volgende' }).click()
 
-  await expect(page.getByText('Som 2 van 3')).toBeVisible()
+  await expect(page.getByRole('heading', { name: 'Som 2 van 3' })).toBeVisible()
   await page.getByLabel('Jouw antwoord').fill('2*x^3 + cos(x)')
   await page.getByRole('button', { name: 'Nakijken' }).click()
   await expect(page.getByText('Goed!', { exact: true })).toBeVisible()
   await page.getByRole('button', { name: 'Volgende' }).click()
 
-  await expect(page.getByText('Som 3 van 3')).toBeVisible()
+  await expect(page.getByRole('heading', { name: 'Som 3 van 3' })).toBeVisible()
   await page.getByLabel('Jouw antwoord').fill('5*2^x/ln(2)')
   await page.getByRole('button', { name: 'Nakijken' }).click()
   await expect(page.getByText('Goed!', { exact: true })).toBeVisible()
@@ -86,7 +86,7 @@ test('een antwoordpagina heeft dezelfde proefknop', async ({ page }) => {
   await page.goto('/nl/voorbeeld/1-over-x')
   await page.getByRole('link', { name: 'Probeer 3 sommen' }).click()
   await expect(page).toHaveURL(/\/proberen\/primitieve/)
-  await expect(page.getByText('Som 1 van 3')).toBeVisible()
+  await expect(page.getByRole('heading', { name: 'Som 1 van 3' })).toBeVisible()
 })
 
 test('de voorbeeldopgaven hebben dezelfde proefknop', async ({ page }) => {
@@ -95,5 +95,5 @@ test('de voorbeeldopgaven hebben dezelfde proefknop', async ({ page }) => {
   await expect(knoppen.first()).toBeVisible()
   await knoppen.last().click()
   await expect(page).toHaveURL(/\/proberen\/k3/)
-  await expect(page.getByText('Som 1 van 3')).toBeVisible()
+  await expect(page.getByRole('heading', { name: 'Som 1 van 3' })).toBeVisible()
 })

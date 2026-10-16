@@ -140,9 +140,9 @@ export function ProberenClient({
 
   return (
     <main className="mx-auto max-w-2xl px-4 py-6">
-      <p className="text-sm font-medium text-text-muted">
+      <h1 className="font-serif text-2xl text-text">
         Som {index + 1} van {sommen.length}
-      </p>
+      </h1>
       <div className="mt-3 min-w-0 overflow-x-auto rounded-2xl border border-border bg-surface p-4 sm:p-6">
         {opdracht && <p className="mb-1 text-sm font-medium text-text-muted">{t(opdracht)}</p>}
         <div className="font-serif text-xl leading-snug text-text">
