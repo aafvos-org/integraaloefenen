@@ -447,7 +447,7 @@
       "immediate": "Direct na elke vraag",
       "immediateHint": "Je ziet meteen of je goed zat.",
       "end": "Pas aan het einde",
-      "endHint": "Geen hints — pas na de laatste vraag zie je alles."
+      "endHint": "Pas na de laatste vraag zie je of je goed zat."
     },
     "savedDeferred": "Antwoord opgeslagen",
     "myTests": "Mijn toetsen",
