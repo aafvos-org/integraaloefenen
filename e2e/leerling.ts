@@ -126,7 +126,7 @@ export async function kiesOpgave(page: Page, nummer: number) {
 }
 
 function antwoordveld(page: Page): Locator {
-  return page.getByPlaceholder('Bijv. 12x^2')
+  return page.getByPlaceholder('Bijv. x^3/3 + sin(x)')
 }
 
 /**

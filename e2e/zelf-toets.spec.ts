@@ -42,7 +42,7 @@ test('een zelf-toets aanmaken geeft meteen de eerste vraag @telefoon', async ({
   await maakToets(page, 3)
 
   await expect(page.getByText('Vraag 1 van 3')).toBeVisible()
-  await expect(page.getByPlaceholder('Bijv. 12x^2')).toBeVisible()
+  await expect(page.getByPlaceholder('Bijv. x^3/3 + sin(x)')).toBeVisible()
 
   // En er staat geen foutmelding op de plek waar de toets werd samengesteld.
   await expect(page.getByText(/lukte niet/)).toBeHidden()
