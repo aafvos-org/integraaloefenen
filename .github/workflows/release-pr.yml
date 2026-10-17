@@ -31,6 +31,8 @@ permissions:
   pull-requests: write
   # Nodig om de workflow Controle op `volgende` op te starten.
   actions: write
+  # Nodig om te zien of die controle er al staat.
+  checks: read
 
 jobs:
   release-pull-request:
