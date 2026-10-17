@@ -423,7 +423,7 @@ function WrongFeedback({
 
   return (
     <div className="space-y-4">
-      {orderedSteps.length > 0 && (
+      {orderedSteps.length > 0 ? (
         <div className="rounded-lg border border-border bg-white/90 shadow-sm">
           <div className="px-4 py-3">
             <p className="text-sm font-semibold text-text">{t('stepsTitle')}</p>
@@ -447,6 +447,8 @@ function WrongFeedback({
             ))}
           </ol>
         </div>
+      ) : (
+        <p className="text-xs text-text-muted">{t('noSteps')}</p>
       )}
 
       <div className="flex items-center justify-center gap-2">
