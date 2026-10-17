@@ -33,6 +33,9 @@ export async function resolveFlagAction(
       resolved_by: userId,
     })
     .eq('id', flagId)
-  if (error) throw new Error(error.message)
+  if (error) {
+    console.error('[admin] melding afhandelen mislukt', error.code, error.message)
+    throw new Error('Afhandelen is niet gelukt. Probeer het nog eens.')
+  }
   revalidatePath('/admin/flags')
 }

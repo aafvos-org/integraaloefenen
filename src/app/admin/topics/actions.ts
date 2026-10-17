@@ -36,7 +36,10 @@ export async function createTopic(formData: FormData) {
     is_unlocked_by_default,
     category,
   })
-  if (error) throw new Error(error.message)
+  if (error) {
+    console.error('[admin] onderwerp aanmaken mislukt', error.code, error.message)
+    throw new Error('Aanmaken is niet gelukt. Probeer het nog eens.')
+  }
 
   revalidatePath('/admin/topics')
   revalidatePath('/admin')
@@ -58,7 +61,10 @@ export async function updateTopic(id: string, formData: FormData) {
     .from('topics_new')
     .update({ slug, title, chapter_id, order_index, is_unlocked_by_default, category })
     .eq('id', id)
-  if (error) throw new Error(error.message)
+  if (error) {
+    console.error('[admin] onderwerp bijwerken mislukt', error.code, error.message)
+    throw new Error('Opslaan is niet gelukt. Probeer het nog eens.')
+  }
 
   revalidatePath('/admin/topics')
   revalidatePath(`/admin/topics/${id}`)
@@ -67,7 +73,10 @@ export async function updateTopic(id: string, formData: FormData) {
 export async function deleteTopic(id: string) {
   const supabase = await createClient()
   const { error } = await supabase.from('topics_new').delete().eq('id', id)
-  if (error) throw new Error(error.message)
+  if (error) {
+    console.error('[admin] onderwerp verwijderen mislukt', error.code, error.message)
+    throw new Error('Verwijderen is niet gelukt. Probeer het nog eens.')
+  }
 
   revalidatePath('/admin/topics')
   redirect('/admin/topics')
@@ -91,7 +100,10 @@ export async function createCluster(topicId: string, formData: FormData) {
     title,
     order_index,
   })
-  if (error) throw new Error(error.message)
+  if (error) {
+    console.error('[admin] groep aanmaken mislukt', error.code, error.message)
+    throw new Error('Aanmaken is niet gelukt. Probeer het nog eens.')
+  }
 
   revalidatePath(`/admin/topics/${topicId}`)
 }
@@ -112,7 +124,10 @@ export async function updateCluster(
     .from('topic_clusters_new')
     .update({ slug, title, order_index })
     .eq('id', clusterId)
-  if (error) throw new Error(error.message)
+  if (error) {
+    console.error('[admin] groep bijwerken mislukt', error.code, error.message)
+    throw new Error('Opslaan is niet gelukt. Probeer het nog eens.')
+  }
 
   revalidatePath(`/admin/topics/${topicId}`)
 }
@@ -123,7 +138,10 @@ export async function deleteCluster(clusterId: string, topicId: string) {
     .from('topic_clusters_new')
     .delete()
     .eq('id', clusterId)
-  if (error) throw new Error(error.message)
+  if (error) {
+    console.error('[admin] groep verwijderen mislukt', error.code, error.message)
+    throw new Error('Verwijderen is niet gelukt. Probeer het nog eens.')
+  }
 
   revalidatePath(`/admin/topics/${topicId}`)
 }

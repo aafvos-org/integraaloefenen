@@ -15,7 +15,10 @@ export async function setUserRole(userId: string, formData: FormData) {
     .from('profiles')
     .update({ role })
     .eq('id', userId)
-  if (error) throw new Error(error.message)
+  if (error) {
+    console.error('[admin] rol wijzigen mislukt', error.code, error.message)
+    throw new Error('Rol wijzigen is niet gelukt. Probeer het nog eens.')
+  }
 
   revalidatePath('/admin/users')
 }
