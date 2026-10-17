@@ -15,6 +15,17 @@ export type GeminiJsonResponse<T> =
   | { ok: false; error: string; raw?: string }
 
 /**
+ * Haal de API-sleutel uit een foutmelding.
+ *
+ * De sleutel staat in de URL. Op Cloudflare Workers zet fetch die URL soms in
+ * de melding ("Fetch API cannot load: ..."), en de aanroeper logt die tekst.
+ * Zo komt hij niet in het log terecht.
+ */
+function zonderSleutel(tekst: string, apiKey: string): string {
+  return apiKey ? tekst.split(apiKey).join('***') : tekst
+}
+
+/**
  * Roep Gemini aan en forceer een JSON-response.
  * T is de verwachte shape van de JSON.
  */
@@ -56,7 +67,10 @@ export async function generateJson<T>(
   } catch (err) {
     return {
       ok: false,
-      error: err instanceof Error ? err.message : 'Netwerkfout naar Gemini.',
+      error: zonderSleutel(
+        err instanceof Error ? err.message : 'Netwerkfout naar Gemini.',
+        apiKey,
+      ),
     }
   }
 
@@ -64,7 +78,10 @@ export async function generateJson<T>(
     const text = await res.text().catch(() => '')
     return {
       ok: false,
-      error: `Gemini ${res.status}: ${text || res.statusText}`.slice(0, 400),
+      error: zonderSleutel(
+        `Gemini ${res.status}: ${text || res.statusText}`,
+        apiKey,
+      ).slice(0, 400),
     }
   }
 
@@ -75,7 +92,15 @@ export async function generateJson<T>(
     }>
     promptFeedback?: { blockReason?: string }
   }
-  const json = (await res.json()) as GeminiResp
+  // Een 200 met een niet-JSON body (een foutpagina van een tussenliggende
+  // server) mag hier niet als uitzondering naar buiten vliegen: de aanroeper
+  // vangt alleen ok:false af, en een uitzondering komt bij de leerling terecht.
+  let json: GeminiResp
+  try {
+    json = (await res.json()) as GeminiResp
+  } catch {
+    return { ok: false, error: 'Gemini gaf geen geldige JSON terug.' }
+  }
 
   if (json.promptFeedback?.blockReason) {
     return {
