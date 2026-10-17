@@ -5,6 +5,7 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { DeelKnop } from '@/components/deel-knop'
 import { Link, useRouter } from '@/i18n/navigation'
 import { Card, cn } from '@/components/ui'
+import { titelZonderCode } from '@/lib/dashboard/indeling'
 import type {
   ChapterInfo,
   ClusterInfo,
@@ -1269,11 +1270,6 @@ function BlokWeergave({
       )}
     </div>
   )
-}
-
-function titelZonderCode(slug: string, title: string): string {
-  const rest = title.replace(new RegExp(`^${slug}\\s*[—–-]\\s*`, 'i'), '')
-  return rest || title
 }
 
 function Chevron({ open }: { open: boolean }) {

@@ -8,6 +8,7 @@ import { cn } from '@/components/ui'
 import {
   hrefVoorBlok,
   hrefVoorOnderwerp,
+  titelZonderCode,
   weegClusters,
   type ClusterVoortgang,
   type NieuwHoofdstuk,
@@ -33,12 +34,6 @@ function VoortgangCijfers({ clusters }: { clusters: ClusterVoortgang[] }) {
       </span>
     </>
   )
-}
-
-function titelZonderCode(slug: string, title: string): string {
-  const code = slug.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
-  const rest = title.replace(new RegExp(`^${code}\\s*[—–-]\\s*`, 'i'), '')
-  return rest || title
 }
 
 function Chevron({ open }: { open: boolean }) {
