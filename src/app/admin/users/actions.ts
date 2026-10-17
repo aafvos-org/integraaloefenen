@@ -2,6 +2,7 @@
 
 import { revalidatePath } from 'next/cache'
 
+import { gooiAdminFout } from '@/lib/supabase/admin-fouten'
 import { createServiceRoleClient } from '@/lib/supabase/server'
 
 export async function setUserRole(userId: string, formData: FormData) {
@@ -15,10 +16,7 @@ export async function setUserRole(userId: string, formData: FormData) {
     .from('profiles')
     .update({ role })
     .eq('id', userId)
-  if (error) {
-    console.error('[admin] rol wijzigen mislukt', error.code, error.message)
-    throw new Error('Rol wijzigen is niet gelukt. Probeer het nog eens.')
-  }
+  if (error) gooiAdminFout('rol wijzigen', error, 'Rol wijzigen')
 
   revalidatePath('/admin/users')
 }

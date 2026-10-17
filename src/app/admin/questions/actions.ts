@@ -4,6 +4,7 @@ import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 
 import { SITE } from '@/config/site'
+import { gooiAdminFout } from '@/lib/supabase/admin-fouten'
 import { createClient } from '@/lib/supabase/server'
 
 function parseDifficulty(v: FormDataEntryValue | null): 1 | 2 | 3 {
@@ -42,10 +43,7 @@ export async function createQuestion(formData: FormData) {
     .insert({ ...fields, site: SITE, is_ai_generated: false })
     .select('id')
     .single()
-  if (error) {
-    console.error('[admin] vraag aanmaken mislukt', error.code, error.message)
-    throw new Error('Aanmaken is niet gelukt. Probeer het nog eens.')
-  }
+  if (error) gooiAdminFout('vraag aanmaken', error, 'Aanmaken')
 
   revalidatePath('/admin/questions')
   revalidatePath('/admin')
@@ -60,10 +58,7 @@ export async function updateQuestion(id: string, formData: FormData) {
     .from('questions_new')
     .update(fields)
     .eq('id', id)
-  if (error) {
-    console.error('[admin] vraag bijwerken mislukt', error.code, error.message)
-    throw new Error('Opslaan is niet gelukt. Probeer het nog eens.')
-  }
+  if (error) gooiAdminFout('vraag bijwerken', error, 'Opslaan')
 
   revalidatePath('/admin/questions')
   revalidatePath(`/admin/questions/${id}`)
@@ -72,10 +67,7 @@ export async function updateQuestion(id: string, formData: FormData) {
 export async function deleteQuestion(id: string) {
   const supabase = await createClient()
   const { error } = await supabase.from('questions_new').delete().eq('id', id)
-  if (error) {
-    console.error('[admin] vraag verwijderen mislukt', error.code, error.message)
-    throw new Error('Verwijderen is niet gelukt. Probeer het nog eens.')
-  }
+  if (error) gooiAdminFout('vraag verwijderen', error, 'Verwijderen')
 
   revalidatePath('/admin/questions')
   revalidatePath('/admin')
@@ -99,10 +91,7 @@ export async function addStep(questionId: string, formData: FormData) {
     step_order,
     step_description,
   })
-  if (error) {
-    console.error('[admin] stap aanmaken mislukt', error.code, error.message)
-    throw new Error('Aanmaken is niet gelukt. Probeer het nog eens.')
-  }
+  if (error) gooiAdminFout('stap aanmaken', error, 'Aanmaken')
 
   revalidatePath(`/admin/questions/${questionId}`)
 }
@@ -124,10 +113,7 @@ export async function updateStep(
     .from('question_steps_new')
     .update({ step_description, step_order })
     .eq('id', stepId)
-  if (error) {
-    console.error('[admin] stap bijwerken mislukt', error.code, error.message)
-    throw new Error('Opslaan is niet gelukt. Probeer het nog eens.')
-  }
+  if (error) gooiAdminFout('stap bijwerken', error, 'Opslaan')
 
   revalidatePath(`/admin/questions/${questionId}`)
 }
@@ -138,10 +124,7 @@ export async function deleteStep(stepId: string, questionId: string) {
     .from('question_steps_new')
     .delete()
     .eq('id', stepId)
-  if (error) {
-    console.error('[admin] stap verwijderen mislukt', error.code, error.message)
-    throw new Error('Verwijderen is niet gelukt. Probeer het nog eens.')
-  }
+  if (error) gooiAdminFout('stap verwijderen', error, 'Verwijderen')
 
   revalidatePath(`/admin/questions/${questionId}`)
 }

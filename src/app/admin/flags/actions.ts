@@ -2,6 +2,7 @@
 
 import { revalidatePath } from 'next/cache'
 
+import { gooiAdminFout } from '@/lib/supabase/admin-fouten'
 import { createClient } from '@/lib/supabase/server'
 
 async function assertAdmin() {
@@ -33,9 +34,6 @@ export async function resolveFlagAction(
       resolved_by: userId,
     })
     .eq('id', flagId)
-  if (error) {
-    console.error('[admin] melding afhandelen mislukt', error.code, error.message)
-    throw new Error('Afhandelen is niet gelukt. Probeer het nog eens.')
-  }
+  if (error) gooiAdminFout('melding afhandelen', error, 'Afhandelen')
   revalidatePath('/admin/flags')
 }
