@@ -163,7 +163,8 @@ in `config.toml`. Pushen doet Aaf, niet een agent.
 
 ## Oefenvragen in `content/`
 
-De vragen staan in `content/hoofdstuk-<letter>/<wat-dan-ook>.json`. Elk bestand
+De vragen staan in `content/hoofdstuk-<naam>/<wat-dan-ook>.json`, bijvoorbeeld
+`content/hoofdstuk-k/` of `content/hoofdstuk-h11/`. Elk bestand
 heeft een lijst `vragen`; per vraag staat er een `integrand` en een
 `primitieve`:
 
