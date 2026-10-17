@@ -15,7 +15,14 @@ on:
   schedule:
     # Elke nacht om 02:15 UTC (04:15 in de zomertijd, 03:15 in de winter).
     # De browsercontrole draait dan één keer over main, niet na elke merge.
+    # `volgende` krijgt zijn eigen beurt om 05:00 UTC: de workflow Release
+    # start deze controle daar op, zodat de release-pull-request zijn
+    # verplichte controles heeft.
     - cron: "15 2 * * *"
+  # Met de hand op een tak naar keuze. De workflow Release gebruikt dit om de
+  # controles op `volgende` te zetten; een pull request die met GITHUB_TOKEN
+  # gemaakt is, start ze namelijk zelf niet.
+  workflow_dispatch:
 
 concurrency:
   # De nachtelijke run en een push naar main mogen elkaar niet afkappen.

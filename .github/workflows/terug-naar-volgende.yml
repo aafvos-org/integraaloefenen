@@ -1,0 +1,166 @@
+# Komt er iets op `main` dat niet via de release is binnengekomen — een
+# kritieke reparatie, of een wijziging aan de workflows zelf — dan moet
+# `volgende` dat meteen ook hebben. Anders bouwt het werk van morgen op code
+# die de reparatie niet kent, en draait de release van morgen hem weer terug.
+#
+# Komt de push van de release zelf, dan zit `main` al in `volgende` en doet
+# deze workflow niets.
+#
+# Waarom via een pull request en niet met een directe push: de ruleset
+# "volgende beschermen" eist een pull request met groene controles, en
+# GitHub Actions kan daar niet als uitzondering op (de REST-API weigert de
+# Actions-app als bypass-actor zolang hij niet als app in de organisatie
+# staat). Daarom zet de workflow het samenvoegen op een eigen wegwerptak,
+# opent hij daarvan een pull request naar `volgende`, start hij de controles
+# met de hand op en laat hij GitHub hem automatisch mergen zodra ze groen
+# zijn. Zo blijft `volgende` net zo beschermd als eerst.
+
+name: Terug naar volgende
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: terug-naar-volgende
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+  actions: write
+
+env:
+  WEGWERPTAK: main-terug-in-volgende
+
+jobs:
+  samenvoegen:
+    name: main terug in volgende
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+          ref: volgende
+
+      - name: Takken ophalen
+        run: |
+          set -euo pipefail
+          git fetch --no-tags origin main volgende
+          # De wegwerptak hoeft er nog niet te zijn.
+          git fetch --no-tags origin "+refs/heads/$WEGWERPTAK:refs/remotes/origin/$WEGWERPTAK" || true
+
+      - name: Samenvoegen op de wegwerptak
+        id: samenvoegen
+        run: |
+          set -euo pipefail
+
+          if git merge-base --is-ancestor origin/main origin/volgende; then
+            echo "volgende heeft main al. Niets te doen."
+            echo "nodig=nee" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git checkout -B "$WEGWERPTAK" origin/volgende
+
+          if ! git merge --no-edit origin/main; then
+            git merge --abort || true
+            echo "nodig=ja" >> "$GITHUB_OUTPUT"
+            echo "conflict=ja" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          echo "nodig=ja" >> "$GITHUB_OUTPUT"
+          echo "conflict=nee" >> "$GITHUB_OUTPUT"
+
+          if git rev-parse --verify --quiet "refs/remotes/origin/$WEGWERPTAK" >/dev/null; then
+            # De tak is van deze workflow en wordt elke keer opnieuw
+            # uitgerekend; een oudere poging mag eroverheen.
+            git push --force-with-lease="$WEGWERPTAK:$(git rev-parse "origin/$WEGWERPTAK")" \
+              origin "HEAD:$WEGWERPTAK"
+          else
+            git push origin "HEAD:$WEGWERPTAK"
+          fi
+
+          echo "kop=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+
+      - name: Pull request naar volgende
+        if: steps.samenvoegen.outputs.conflict == 'nee' && steps.samenvoegen.outputs.nodig == 'ja'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+
+          tekst=$(printf '%s\n' \
+            "Op \`main\` staat werk dat buiten de release om binnenkwam — meestal een kritieke reparatie." \
+            "Deze pull request zet dat terug in \`volgende\`, zodat het werk van morgen erop verder bouwt" \
+            "en de release van morgen het niet terugdraait." \
+            "" \
+            "Gemaakt door [terug-naar-volgende.yml](../blob/main/.github/workflows/terug-naar-volgende.yml)." \
+            "GitHub merget hem vanzelf zodra de controles groen zijn; er hoeft niemand naar te kijken.")
+
+          nummer=$(gh pr list --base volgende --head "$WEGWERPTAK" --state open --json number --jq '.[0].number // empty')
+
+          if [ -z "$nummer" ]; then
+            if ! gh pr create --base volgende --head "$WEGWERPTAK" \
+              --title "Zet main terug in volgende" --body "$tekst"; then
+              echo "::error::De pull request kon niet gemaakt worden. Staat het vinkje \"Allow GitHub Actions to create and approve pull requests\" uit bij de organisatie (Settings → Actions → General → Workflow permissions)? Zet dat aan. De tak \`$WEGWERPTAK\` staat klaar; tot die tijd opent iemand de pull request met de hand."
+              exit 1
+            fi
+            nummer=$(gh pr list --base volgende --head "$WEGWERPTAK" --state open --json number --jq '.[0].number // empty')
+          fi
+
+          # Een pull request die met GITHUB_TOKEN gemaakt is, start de
+          # controles niet zelf. Ze horen bij de commit, dus we starten
+          # Controle met de hand op de wegwerptak op.
+          gh workflow run controle.yml --ref "$WEGWERPTAK"
+
+          # Samenvoegcommit, geen squash: anders kent `volgende` de commits
+          # van `main` niet als voorouder en blijft deze workflow hem elke
+          # keer opnieuw aanbieden.
+          gh pr merge "$nummer" --auto --merge --delete-branch
+
+          echo "Pull request #$nummer staat klaar en merget zichzelf zodra de controles groen zijn."
+
+      # Lukt het samenvoegen niet, dan moet een mens het oplossen. We maken er
+      # één melding van en laten de workflow rood worden, zodat het niet
+      # stilletjes blijft liggen.
+      - name: Melding maken bij een conflict
+        if: steps.samenvoegen.outputs.conflict == 'ja'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          RUN: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          set -euo pipefail
+
+          titel="main botst met volgende"
+          bestaat=$(gh issue list --state open --search "$titel in:title" --json number --jq '.[0].number // empty')
+
+          if [ -n "$bestaat" ]; then
+            gh issue comment "$bestaat" --body "Het samenvoegen van \`main\` in \`volgende\` is opnieuw mislukt. Zie $RUN."
+          else
+            gh issue create --title "$titel" --body "$(printf '%s\n' \
+              "\`main\` kon niet automatisch in \`volgende\` gezet worden: er is een conflict." \
+              "" \
+              "Los het met de hand op:" \
+              "" \
+              "    git fetch origin" \
+              "    git switch -c main-terug-in-volgende origin/volgende" \
+              "    git merge origin/main" \
+              "    # conflict oplossen, dan een pull request naar volgende" \
+              "" \
+              "Zolang dit open staat, mist \`volgende\` wat er op \`main\` staat, en draait de" \
+              "volgende release het terug." \
+              "" \
+              "Run: $RUN")"
+          fi
+
+          echo "::error::main kon niet in volgende gezet worden. Er staat een melding klaar."
+          exit 1
