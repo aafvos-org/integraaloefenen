@@ -5,14 +5,14 @@ import { SITE_CONFIG } from '@/config/site'
 import { createClient } from '@/lib/supabase/server'
 
 export const metadata = {
-  title: `Admin · ${SITE_CONFIG.domain}`,
+  title: `Beheer · ${SITE_CONFIG.domain}`,
 }
 
 const NAV = [
   { href: '/admin', label: 'Overzicht' },
   { href: '/admin/topics', label: 'Onderwerpen' },
   { href: '/admin/questions', label: 'Vragen' },
-  { href: '/admin/flags', label: 'Flags' },
+  { href: '/admin/flags', label: 'Meldingen' },
   { href: '/admin/users', label: 'Gebruikers' },
 ]
 
@@ -41,7 +41,7 @@ export default async function AdminLayout({
       <div className="mb-6 flex flex-wrap items-baseline justify-between gap-3">
         <div>
           <p className="text-xs font-medium uppercase tracking-wider text-accent">
-            Admin
+            Beheerder
           </p>
           <h1 className="font-serif text-2xl text-text">Beheer</h1>
         </div>

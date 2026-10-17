@@ -70,7 +70,7 @@ export default async function TopicEditPage({
           />
           <Input
             name="slug"
-            label="Slug"
+            label="Korte naam"
             defaultValue={topic.slug}
             required
             pattern="[a-z0-9_-]+"
@@ -150,7 +150,7 @@ export default async function TopicEditPage({
               <tr>
                 <th className="px-3 py-2 font-medium">#</th>
                 <th className="px-3 py-2 font-medium">Titel</th>
-                <th className="px-3 py-2 font-medium">Slug</th>
+                <th className="px-3 py-2 font-medium">Korte naam</th>
                 <th className="px-3 py-2" />
               </tr>
             </thead>
@@ -227,7 +227,7 @@ export default async function TopicEditPage({
             <Input name="title" label="Titel" required placeholder="Haakjes uitwerken" />
             <Input
               name="slug"
-              label="Slug"
+              label="Korte naam"
               required
               pattern="[a-z0-9_-]+"
               placeholder="haakjes_uitwerken"

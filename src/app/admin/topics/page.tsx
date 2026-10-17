@@ -56,7 +56,7 @@ export default async function TopicsPage() {
               <th className="px-4 py-2 font-medium">Titel</th>
               <th className="px-4 py-2 font-medium">Hoofdstuk</th>
               <th className="px-4 py-2 font-medium">Categorie</th>
-              <th className="px-4 py-2 font-medium">Slug</th>
+              <th className="px-4 py-2 font-medium">Korte naam</th>
               <th className="px-4 py-2 font-medium">Groepen</th>
               <th className="px-4 py-2 font-medium">Toegang</th>
               <th className="px-4 py-2" />
@@ -116,7 +116,7 @@ export default async function TopicsPage() {
           <Input name="title" label="Titel" required placeholder="De Integraalregel" />
           <Input
             name="slug"
-            label="Slug"
+            label="Korte naam"
             required
             pattern="[a-z0-9_-]+"
             placeholder="h3_integraalregel"

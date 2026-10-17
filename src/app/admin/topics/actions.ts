@@ -23,7 +23,7 @@ export async function createTopic(formData: FormData) {
   const is_unlocked_by_default = formData.get('is_unlocked_by_default') === 'on'
   const category = parseCategory(formData.get('category'))
 
-  if (!slug || !title) throw new Error('Slug en titel zijn verplicht.')
+  if (!slug || !title) throw new Error('Korte naam en titel zijn verplicht.')
   if (!chapter_id) throw new Error('Kies een hoofdstuk.')
 
   const supabase = await createClient()
@@ -50,7 +50,7 @@ export async function updateTopic(id: string, formData: FormData) {
   const is_unlocked_by_default = formData.get('is_unlocked_by_default') === 'on'
   const category = parseCategory(formData.get('category'))
 
-  if (!slug || !title) throw new Error('Slug en titel zijn verplicht.')
+  if (!slug || !title) throw new Error('Korte naam en titel zijn verplicht.')
   if (!chapter_id) throw new Error('Kies een hoofdstuk.')
 
   const supabase = await createClient()
@@ -81,7 +81,7 @@ export async function createCluster(topicId: string, formData: FormData) {
   const title = (formData.get('title') ?? '').toString().trim()
   const order_index = Number(formData.get('order_index') ?? 0)
 
-  if (!slug || !title) throw new Error('Slug en titel zijn verplicht.')
+  if (!slug || !title) throw new Error('Korte naam en titel zijn verplicht.')
 
   const supabase = await createClient()
   const { error } = await supabase.from('topic_clusters_new').insert({
@@ -105,7 +105,7 @@ export async function updateCluster(
   const title = (formData.get('title') ?? '').toString().trim()
   const order_index = Number(formData.get('order_index') ?? 0)
 
-  if (!slug || !title) throw new Error('Slug en titel zijn verplicht.')
+  if (!slug || !title) throw new Error('Korte naam en titel zijn verplicht.')
 
   const supabase = await createClient()
   const { error } = await supabase
