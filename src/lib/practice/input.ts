@@ -15,6 +15,8 @@
  *   a/b           → \dfrac{a}{b}   (alleen als a en b simpele tokens zijn)
  *   *  , ·         → \cdot
  *   pi            → \pi
+ *   sin, cos, tan, ln, arctan, arcsin, arccos → \sin enz.
+ *     (langste naam eerst, zodat arcsin geen losse sin wordt)
  */
 export function toLatexPreview(raw: string): string {
   if (!raw.trim()) return ''
@@ -53,6 +55,12 @@ export function toLatexPreview(raw: string): string {
 
   // pi → \pi
   s = s.replace(/\bpi\b/g, '\\pi')
+
+  // Functienamen als één KaTeX-commando, anders tekent KaTeX s·i·n.
+  // Cijfer ervoor mag (2sin(x)); een letter ervoor niet (arcsin blijft heel).
+  for (const naam of ['arcsin', 'arccos', 'arctan', 'sin', 'cos', 'tan', 'ln']) {
+    s = s.replace(new RegExp(`(?<![A-Za-z\\\\])${naam}(?![A-Za-z])`, 'g'), `\\${naam}`)
+  }
 
   // * en · naar \cdot
   s = s.replace(/\*|·/g, '\\cdot ')
