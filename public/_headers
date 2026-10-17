@@ -1,0 +1,15 @@
+# Koppen voor de statische bestanden van Cloudflare Workers.
+# Dit bestand komt via `public/` in `.open-next/assets/` terecht en wordt
+# daar niet zelf uitgeserveerd; Workers Assets leest het alleen.
+#
+#   https://developers.cloudflare.com/workers/static-assets/headers
+#   https://opennext.js.org/cloudflare/caching#static-assets-caching
+#
+# Alles onder /_next/static/ heeft een inhoudshash in de bestandsnaam
+# (KaTeX_Main-Regular.0462f03b.woff2). Verandert de inhoud, dan verandert de
+# naam, dus de browser mag zo'n bestand een jaar houden zonder na te vragen.
+# Zonder deze regel staat er `max-age=0, must-revalidate` op en doet de
+# browser bij elk bezoek opnieuw een heenreis voor tientallen lettertypen.
+
+/_next/static/*
+  Cache-Control: public,max-age=31536000,immutable
