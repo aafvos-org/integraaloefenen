@@ -53,7 +53,7 @@ export default async function TopicEditPage({
           href="/admin/topics"
           className="text-sm text-text-muted hover:text-text"
         >
-          ← Alle topics
+          ← Alle onderwerpen
         </Link>
         <h2 className="mt-1 font-serif text-2xl text-text">{topic.title}</h2>
       </div>
@@ -70,7 +70,7 @@ export default async function TopicEditPage({
           />
           <Input
             name="slug"
-            label="Slug"
+            label="Korte naam"
             defaultValue={topic.slug}
             required
             pattern="[a-z0-9_-]+"
@@ -123,7 +123,7 @@ export default async function TopicEditPage({
               defaultChecked={topic.is_unlocked_by_default}
               className="size-4 rounded border-border"
             />
-            Direct beschikbaar voor nieuwe studenten
+            Direct beschikbaar voor nieuwe leerlingen
           </label>
           <div className="flex gap-2 sm:col-span-2">
             <Button type="submit">Opslaan</Button>
@@ -131,17 +131,17 @@ export default async function TopicEditPage({
         </form>
         <form action={deleteThisTopic} className="mt-3 border-t border-border pt-3">
           <Button type="submit" variant="danger">
-            Topic verwijderen (cascade)
+            Onderwerp verwijderen (inclusief groepen)
           </Button>
         </form>
       </Card>
 
       {/* --- Clusters --- */}
       <div>
-        <h3 className="mb-2 font-serif text-lg text-text">Clusters</h3>
+        <h3 className="mb-2 font-serif text-lg text-text">Groepen</h3>
         <p className="mb-3 text-sm text-text-muted">
-          Een cluster is een specifieke vraagcategorie binnen dit topic. De
-          student doorloopt ze in volgorde.
+          Een groep is een specifieke vraagcategorie binnen dit onderwerp. De
+          leerling doorloopt ze in volgorde.
         </p>
 
         <div className="overflow-hidden rounded-xl border border-border bg-surface">
@@ -150,7 +150,7 @@ export default async function TopicEditPage({
               <tr>
                 <th className="px-3 py-2 font-medium">#</th>
                 <th className="px-3 py-2 font-medium">Titel</th>
-                <th className="px-3 py-2 font-medium">Slug</th>
+                <th className="px-3 py-2 font-medium">Korte naam</th>
                 <th className="px-3 py-2" />
               </tr>
             </thead>
@@ -213,7 +213,7 @@ export default async function TopicEditPage({
               {!clusters?.length && (
                 <tr>
                   <td colSpan={4} className="px-4 py-6 text-center text-text-muted">
-                    Nog geen clusters.
+                    Nog geen groepen.
                   </td>
                 </tr>
               )}
@@ -222,12 +222,12 @@ export default async function TopicEditPage({
         </div>
 
         <Card className="mt-4">
-          <h4 className="mb-3 font-serif text-base text-text">Nieuw cluster</h4>
+          <h4 className="mb-3 font-serif text-base text-text">Nieuwe groep</h4>
           <form action={createClusterHere} className="grid gap-3 sm:grid-cols-3">
             <Input name="title" label="Titel" required placeholder="Haakjes uitwerken" />
             <Input
               name="slug"
-              label="Slug"
+              label="Korte naam"
               required
               pattern="[a-z0-9_-]+"
               placeholder="haakjes_uitwerken"
@@ -240,7 +240,7 @@ export default async function TopicEditPage({
               min={0}
             />
             <div className="sm:col-span-3">
-              <Button type="submit">Cluster toevoegen</Button>
+              <Button type="submit">Groep toevoegen</Button>
             </div>
           </form>
         </Card>

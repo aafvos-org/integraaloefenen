@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { DM_Sans, DM_Serif_Display } from 'next/font/google'
 import Script from 'next/script'
 
+import { Klikmeting } from '@/components/klikmeting'
 import { scriptDatBronOnthoudt } from '@/lib/bron'
 
 import './globals.css'
@@ -40,6 +41,7 @@ export default function RootLayout({
         <Script id="onthoud-bron" strategy="beforeInteractive">
           {scriptDatBronOnthoudt()}
         </Script>
+        <Klikmeting />
       </body>
       {beaconToken ? (
         <Script

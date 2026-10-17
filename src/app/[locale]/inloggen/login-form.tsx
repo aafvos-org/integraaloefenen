@@ -76,6 +76,7 @@ export function LoginForm() {
           )}
           <button
             type="button"
+            data-meet="inloggen-mail-opnieuw"
             onClick={handleResend}
             disabled={resendPending || wacht > 0}
             className="inline-flex min-h-[44px] items-center font-medium text-accent hover:underline disabled:cursor-not-allowed disabled:opacity-60"
@@ -167,6 +168,7 @@ function SubmitButton() {
   return (
     <button
       type="submit"
+      data-meet="inloggen-versturen"
       disabled={pending}
       className="w-full rounded-md bg-accent px-4 py-2.5 font-medium text-white shadow-sm transition hover:bg-accent/90 disabled:cursor-not-allowed disabled:opacity-60"
     >

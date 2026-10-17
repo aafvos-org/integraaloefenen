@@ -1,6 +1,6 @@
 'use client'
 
-import { useActionState, useState, useSyncExternalStore } from 'react'
+import { useActionState, useEffect, useState, useSyncExternalStore } from 'react'
 import { useFormStatus } from 'react-dom'
 import { useTranslations } from 'next-intl'
 
@@ -28,6 +28,17 @@ export function SignupForm({ bronUitAdres = null }: { bronUitAdres?: string | nu
   const uitTabblad = useBronUitTabblad()
   const bron = bronUitAdres || uitTabblad
 
+  // De klikmeting legt vast dat er in dit bezoek een account is aangemaakt.
+  // Alleen dát, zonder naam of e-mailadres: zo is de route naar een account
+  // te volgen zonder iemand te kennen.
+  const gelukt = state.notice !== null
+  useEffect(() => {
+    if (!gelukt) return
+    void import('@/lib/meten/verzamelaar')
+      .then((meting) => meting.meldAccountstap('geregistreerd'))
+      .catch(() => {})
+  }, [gelukt])
+
   if (state.notice) {
     return (
       <div className="space-y-4">
@@ -39,6 +50,7 @@ export function SignupForm({ bronUitAdres = null }: { bronUitAdres?: string | nu
         </p>
         <Link
           href="/inloggen"
+          data-meet="registreren-klaar-inloggen"
           className="block w-full rounded-md bg-accent px-4 py-2.5 text-center font-medium text-white shadow-sm transition hover:bg-accent/90"
         >
           {t('toLoginLabel')}
@@ -99,6 +111,7 @@ export function SignupForm({ bronUitAdres = null }: { bronUitAdres?: string | nu
           privacy: (stuk) => (
             <Link
               href="/privacy"
+              data-meet="registreren-privacy"
               className="inline-flex min-h-11 items-center font-medium text-accent underline-offset-2 hover:underline"
             >
               {stuk}
@@ -109,9 +122,13 @@ export function SignupForm({ bronUitAdres = null }: { bronUitAdres?: string | nu
 
       <SubmitButton />
 
-      <p className="pt-1 text-center text-sm text-text-muted">
+      <p className="text-center text-sm text-text-muted">
         {t('hasAccount')}{' '}
-        <Link href="/inloggen" className="font-medium text-accent hover:underline">
+        <Link
+          href="/inloggen"
+          data-meet="registreren-naar-inloggen"
+          className="inline-flex min-h-11 items-center px-1 font-medium text-accent hover:underline"
+        >
           {t('loginLink')}
         </Link>
       </p>
@@ -203,6 +220,7 @@ function SubmitButton() {
   return (
     <button
       type="submit"
+      data-meet="registreren-versturen"
       disabled={pending}
       className="w-full rounded-md bg-accent px-4 py-2.5 font-medium text-white shadow-sm transition hover:bg-accent/90 disabled:cursor-not-allowed disabled:opacity-60"
     >

@@ -24,7 +24,7 @@ function readQuestionFields(formData: FormData) {
   const order_index_raw = formData.get('order_index')
   const order_index = order_index_raw ? Number(order_index_raw) : null
 
-  if (!topic_id || !cluster_id) throw new Error('Kies een topic en cluster.')
+  if (!topic_id || !cluster_id) throw new Error('Kies een onderwerp en een groep.')
   if (!answer) throw new Error('Het juiste antwoord is verplicht.')
 
   return { topic_id, cluster_id, latex_body, answer, latex_answer, difficulty, order_index }

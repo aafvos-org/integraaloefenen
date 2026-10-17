@@ -90,7 +90,7 @@ export default async function QuestionEditPage({
       <div>
         <h3 className="mb-2 font-serif text-lg text-text">Stappenplan</h3>
         <p className="mb-3 text-sm text-text-muted">
-          De stappen die de student doorloopt als hij een fout maakt.
+          De stappen die de leerling doorloopt als hij een fout maakt.
         </p>
 
         <div className="space-y-2">

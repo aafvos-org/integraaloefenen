@@ -5,7 +5,7 @@ import { createServiceRoleClient } from '@/lib/supabase/server'
 
 import { resolveFlagAction } from './actions'
 
-export const metadata = { title: 'Flags · Admin' }
+export const metadata = { title: 'Meldingen · Beheer' }
 
 type FlagRow = {
   id: string
@@ -62,9 +62,9 @@ export default async function AdminFlagsPage({
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="font-serif text-xl text-text">Flags</h2>
+        <h2 className="font-serif text-xl text-text">Meldingen</h2>
         <p className="mt-1 text-sm text-text-muted">
-          Vragen die studenten als &ldquo;klopt niet&rdquo; hebben gemarkeerd.
+          Vragen die leerlingen als &ldquo;klopt niet&rdquo; hebben gemarkeerd.
         </p>
       </div>
 
@@ -87,7 +87,7 @@ export default async function AdminFlagsPage({
       {!flags?.length ? (
         <Card>
           <p className="text-sm text-text-muted">
-            Geen flags in deze categorie.
+            Geen meldingen in deze categorie.
           </p>
         </Card>
       ) : (

@@ -34,8 +34,9 @@ export async function generateMetadata({
     // openbare pagina zet ze zelf, met eigenPagina() uit src/lib/seo.ts.
     //
     // Wat hieronder blijft staan is de terugval voor de afgeschermde pagina's
-    // (dashboard, inloggen): die horen niet in een zoekmachine en hebben geen
-    // eigen kaartje nodig.
+    // (dashboard, inloggen, proberen): die horen niet in een zoekmachine en
+    // hebben geen eigen kaartje nodig. Openbare pagina's overschrijven dit
+    // via eigenPagina() met index, follow.
     openGraph: {
       type: 'website',
       locale: 'nl_NL',
@@ -44,8 +45,8 @@ export async function generateMetadata({
       description: t('description'),
     },
     robots: {
-      index: true,
-      follow: true,
+      index: false,
+      follow: false,
     },
     icons: {
       icon: [{ url: '/favicon.svg', type: 'image/svg+xml' }],

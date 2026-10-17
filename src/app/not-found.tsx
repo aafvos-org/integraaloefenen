@@ -15,7 +15,8 @@ export default async function NotFound() {
 
   return (
     <main className="flex min-h-screen flex-1 items-center justify-center px-4">
-      <div className="mx-auto max-w-2xl py-24 text-center">
+      {/* Zo weet de klikmeting dat dit een 404 was; zie src/lib/meten/verzamelaar.ts. */}
+      <div data-meet-404 className="mx-auto max-w-2xl py-24 text-center">
         <p className="text-sm font-medium uppercase tracking-wider text-accent">
           {t('eyebrow')}
         </p>

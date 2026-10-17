@@ -41,9 +41,9 @@ export default async function TopicsPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="font-serif text-xl text-text">Topics</h2>
+        <h2 className="font-serif text-xl text-text">Onderwerpen</h2>
         <p className="text-sm text-text-muted">
-          De hoofdonderwerpen van de leerlijn. Clusters beheer je vanuit de
+          De hoofdonderwerpen van de leerlijn. Groepen beheer je vanuit de
           detailpagina.
         </p>
       </div>
@@ -56,8 +56,8 @@ export default async function TopicsPage() {
               <th className="px-4 py-2 font-medium">Titel</th>
               <th className="px-4 py-2 font-medium">Hoofdstuk</th>
               <th className="px-4 py-2 font-medium">Categorie</th>
-              <th className="px-4 py-2 font-medium">Slug</th>
-              <th className="px-4 py-2 font-medium">Clusters</th>
+              <th className="px-4 py-2 font-medium">Korte naam</th>
+              <th className="px-4 py-2 font-medium">Groepen</th>
               <th className="px-4 py-2 font-medium">Toegang</th>
               <th className="px-4 py-2" />
             </tr>
@@ -102,7 +102,7 @@ export default async function TopicsPage() {
                   colSpan={8}
                   className="px-4 py-8 text-center text-text-muted"
                 >
-                  Nog geen topics. Voeg er hieronder een toe.
+                  Nog geen onderwerpen. Voeg er hieronder een toe.
                 </td>
               </tr>
             )}
@@ -111,12 +111,12 @@ export default async function TopicsPage() {
       </div>
 
       <Card>
-        <h3 className="mb-4 font-serif text-lg text-text">Nieuw topic</h3>
+        <h3 className="mb-4 font-serif text-lg text-text">Nieuw onderwerp</h3>
         <form action={createTopic} className="grid gap-3 sm:grid-cols-2">
           <Input name="title" label="Titel" required placeholder="De Integraalregel" />
           <Input
             name="slug"
-            label="Slug"
+            label="Korte naam"
             required
             pattern="[a-z0-9_-]+"
             placeholder="h3_integraalregel"
@@ -167,7 +167,7 @@ export default async function TopicsPage() {
               name="is_unlocked_by_default"
               className="size-4 rounded border-border"
             />
-            Direct beschikbaar voor nieuwe studenten
+            Direct beschikbaar voor nieuwe leerlingen
           </label>
           <div className="sm:col-span-2">
             <Button type="submit">Toevoegen</Button>

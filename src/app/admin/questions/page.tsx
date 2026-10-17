@@ -88,7 +88,7 @@ export default async function QuestionsPage({
           defaultValue={sp.topic ?? ''}
           className="rounded-md border border-border bg-surface px-2 py-2 text-sm"
         >
-          <option value="">Alle topics</option>
+          <option value="">Alle onderwerpen</option>
           {topics?.map((t) => (
             <option key={t.id} value={t.id}>
               {t.title}
@@ -100,7 +100,7 @@ export default async function QuestionsPage({
           defaultValue={sp.cluster ?? ''}
           className="rounded-md border border-border bg-surface px-2 py-2 text-sm"
         >
-          <option value="">Alle clusters</option>
+          <option value="">Alle groepen</option>
           {clustersForSelectedTopic?.map((c) => (
             <option key={c.id} value={c.id}>
               {c.title}
@@ -148,7 +148,7 @@ export default async function QuestionsPage({
           <thead className="bg-surface-2 text-left text-xs uppercase tracking-wider text-text-muted">
             <tr>
               <th className="px-4 py-2 font-medium">Antwoord</th>
-              <th className="px-4 py-2 font-medium">Topic / cluster</th>
+              <th className="px-4 py-2 font-medium">Onderwerp / groep</th>
               <th className="px-4 py-2 font-medium">Moeilijkheid</th>
               <th className="px-4 py-2 font-medium">Bron</th>
               <th className="px-4 py-2" />

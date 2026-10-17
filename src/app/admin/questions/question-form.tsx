@@ -43,7 +43,7 @@ export function QuestionForm({
       <div className="grid gap-4 sm:grid-cols-2">
         <Select
           name="topic_id"
-          label="Topic"
+          label="Onderwerp"
           value={topicId}
           onChange={(e) => {
             setTopicId(e.target.value)
@@ -52,7 +52,7 @@ export function QuestionForm({
           required
         >
           <option value="" disabled>
-            Kies topic…
+            Kies onderwerp…
           </option>
           {topics.map((t) => (
             <option key={t.id} value={t.id}>
@@ -62,13 +62,13 @@ export function QuestionForm({
         </Select>
         <Select
           name="cluster_id"
-          label="Cluster"
+          label="Groep"
           value={clusterId}
           onChange={(e) => setClusterId(e.target.value)}
           required
         >
           <option value="" disabled>
-            Kies cluster…
+            Kies groep…
           </option>
           {filteredClusters.map((c) => (
             <option key={c.id} value={c.id}>

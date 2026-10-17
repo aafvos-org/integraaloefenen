@@ -207,6 +207,7 @@ export function SiteHeader({ locale }: { locale: string }) {
       overviewLabel={t('overview')}
       items={theorieItems}
       dataTour="theorie"
+      dataMeet="menu-theorie"
     />
   )
 
@@ -214,6 +215,7 @@ export function SiteHeader({ locale }: { locale: string }) {
     <Link
       href={`/${locale}/uitleg-videos`}
       data-tour="videos"
+      data-meet="menu-videos"
       className="flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-md px-3 py-1.5 text-text-muted hover:bg-surface-2 hover:text-text"
     >
       <IconPlayCircle />
@@ -233,6 +235,7 @@ export function SiteHeader({ locale }: { locale: string }) {
       <div className="flex h-full w-full items-center justify-between gap-4 px-4">
         <Link
           href={`/${locale}`}
+          data-meet="kop-logo"
           className="min-w-0 shrink font-serif text-lg font-medium tracking-tight text-text"
         >
           {t('brand')}<span className="text-accent">{t('brandSuffix')}</span>
@@ -250,9 +253,11 @@ export function SiteHeader({ locale }: { locale: string }) {
                 overviewLabel={t('overview')}
                 items={oefenenItems}
                 dataTour="oefenen"
+                dataMeet="menu-oefenen"
               />
               <Link
                 href={`/${locale}/examentraining`}
+                data-meet="menu-examentraining"
                 className="flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-md px-3 py-1.5 text-text-muted hover:bg-surface-2 hover:text-text"
               >
                 <IconExamen />
@@ -261,6 +266,7 @@ export function SiteHeader({ locale }: { locale: string }) {
               <Link
                 href={`/${locale}/zelf-toets`}
                 data-tour="zelftoets"
+                data-meet="menu-zelftoets"
                 className="flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-md px-3 py-1.5 text-text-muted hover:bg-surface-2 hover:text-text"
               >
                 <IconClipboardCheck />
@@ -269,6 +275,7 @@ export function SiteHeader({ locale }: { locale: string }) {
               <Link
                 href={`/${locale}/dashboard`}
                 data-tour="voortgang"
+                data-meet="menu-dashboard"
                 className="flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-md px-3 py-1.5 text-text-muted hover:bg-surface-2 hover:text-text"
               >
                 <IconChart />
@@ -300,6 +307,7 @@ export function SiteHeader({ locale }: { locale: string }) {
               {videosLink}
               <Link
                 href={`/${locale}/examen-integralen`}
+                data-meet="menu-examen-integralen"
                 className="flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-md px-3 py-1.5 text-text-muted hover:bg-surface-2 hover:text-text"
               >
                 <IconExamen />
@@ -307,12 +315,14 @@ export function SiteHeader({ locale }: { locale: string }) {
               </Link>
               <Link
                 href={`/${locale}/inloggen`}
+                data-meet="menu-inloggen"
                 className="rounded-md px-3 py-1.5 text-text-muted hover:bg-surface-2 hover:text-text"
               >
                 {t('login')}
               </Link>
               <Link
                 href={aanmelden}
+                data-meet="menu-registreren"
                 className="ml-1 rounded-md bg-accent px-3 py-1.5 text-white hover:bg-accent/90"
               >
                 {t('register')}

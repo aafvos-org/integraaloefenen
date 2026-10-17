@@ -35,7 +35,7 @@ export default async function WachtwoordVergetenPage({
         <ForgotForm />
         <Link
           href="/inloggen"
-          className="block text-center text-sm text-text-muted underline-offset-2 hover:underline"
+          className="flex min-h-11 items-center justify-center text-center text-sm text-text-muted underline-offset-2 hover:underline"
         >
           {t('backToLogin')}
         </Link>

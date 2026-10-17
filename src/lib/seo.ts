@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 
 import { SITE_CONFIG } from '@/config/site'
+import { OPENBAAR } from '@/i18n/paths'
 
 /**
  * Alles wat een openbare pagina over zichzelf moet vertellen: het eigen adres
@@ -22,6 +23,10 @@ import { SITE_CONFIG } from '@/config/site'
  * Het pad begint met een schuine streep en heeft de taal niet vooraan:
  * pad '/theorie' wordt /nl/theorie. De startpagina geeft geen pad mee. Het
  * domein komt uit metadataBase in de layout.
+ *
+ * De layout zet standaard noindex. Alleen paden uit OPENBAAR (en de
+ * startpagina) mogen in de index. Next.js vervangt `robots` in zijn geheel,
+ * dus dit blok moet index én follow zelf zetten.
  */
 export function eigenPagina({
   locale,
@@ -43,10 +48,16 @@ export function eigenPagina({
   omschrijving: string
 }): Metadata {
   const adres = `/${locale}${pad}`
+  const eerste = pad.replace(/^\//, '').split('/')[0] ?? ''
+  const openbaar =
+    pad === '' || (OPENBAAR as readonly string[]).includes(eerste)
 
   return {
     ...(titel ? { title: titel } : {}),
     description: omschrijving,
+    robots: openbaar
+      ? { index: true, follow: true }
+      : { index: false, follow: false },
     alternates: { canonical: adres },
     openGraph: {
       type: 'website',
