@@ -81,8 +81,8 @@ export async function logUit(page: Page) {
  * waar geen knop meer doorheen komt, dus zonder dit kan een test verder niets
  * meer aanklikken.
  *
- * Hij staat er niet altijd: alleen op brede schermen, en alleen zolang de
- * leerling hem nog niet heeft weggeklikt. Daarom kijkt dit eerst of hij
+ * Hij staat er niet altijd: alleen zolang de leerling hem nog niet heeft
+ * weggeklikt (op elk schermformaat). Daarom kijkt dit eerst of hij
  * opkomt in plaats van het af te dwingen. Dát de rondleiding er voor een
  * nieuwe leerling ís, controleert `e2e/nieuwe-leerling.spec.ts` apart.
  */

@@ -107,12 +107,10 @@ test('een nieuwe leerling registreert zich, bevestigt zijn mail en maakt zijn ee
   })
 
   await test.step('5. de rondleiding van Aaf begroet hem', async () => {
-    const breed = (page.viewportSize()?.width ?? 0) >= 900
-    if (breed) {
-      await expect(page.getByText('Hoi! Ik ben Aaf.')).toBeVisible()
-      await page.getByRole('button', { name: 'Ja, graag!' }).click()
-      await expect(page.getByText('Bij Theorie vind je per hoofdstuk')).toBeVisible()
-    }
+    // Ook op telefoonformaat: daar begint de meeste leerlingen (INT-358).
+    await expect(page.getByText('Hoi! Ik ben Aaf.')).toBeVisible()
+    await page.getByRole('button', { name: 'Ja, graag!' }).click()
+    await expect(page.getByText('Bij Theorie vind je per hoofdstuk')).toBeVisible()
     await rondleidingWegklikken(page)
   })
 

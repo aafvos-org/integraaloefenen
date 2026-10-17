@@ -8,9 +8,20 @@ import { ErrorBanner, SuccessBanner } from '@/components/ui'
 import { markTourSeenAction } from '@/lib/tour-actions'
 
 
-const GUIDE_WIDTH = 400
+const MAX_GUIDE_WIDTH = 400
 
 type Step = { target?: string; text: string }
+
+/** Plaats van de praatwolk; de breedte krimpt mee op een telefoon. */
+type Plaats = { x: number; y: number; breedte: number; viaMenu: boolean }
+
+/** Staat het echt op het scherm? Het menu van de balk is op telefoonformaat
+ * wel in de HTML, maar verborgen; een verborgen element heeft geen afmeting. */
+function zichtbaar(el: Element | null): el is HTMLElement {
+  if (!(el instanceof HTMLElement)) return false
+  const r = el.getBoundingClientRect()
+  return r.width > 0 && r.height > 0
+}
 
 const initialAskState: FeedbackState = { error: null, sent: false }
 
@@ -135,7 +146,7 @@ export function WelcomeTour({ tourSeen }: { tourSeen: boolean }) {
   const t = useTranslations('Tour')
   const [phase, setPhase] = useState<'hidden' | 'tour' | 'rest'>('hidden')
   const [stepIdx, setStepIdx] = useState(0)
-  const [pos, setPos] = useState<{ x: number; y: number } | null>(null)
+  const [pos, setPos] = useState<Plaats | null>(null)
 
   const steps: Step[] = useMemo(
     () => [
@@ -152,15 +163,10 @@ export function WelcomeTour({ tourSeen }: { tourSeen: boolean }) {
   const step = steps[stepIdx]!
   const isLast = stepIdx === steps.length - 1
 
-  // Eerste keer inloggen: start de rondleiding (alleen op brede schermen)
+  // Eerste keer inloggen: start de rondleiding. Ook op de telefoon — daar
+  // begint de meeste leerlingen (INT-358).
   useEffect(() => {
-    const id = window.setTimeout(() => {
-      if (tourSeen) {
-        setPhase('rest')
-      } else if (window.innerWidth >= 900) {
-        setPhase('tour')
-      }
-    }, 700)
+    const id = window.setTimeout(() => setPhase(tourSeen ? 'rest' : 'tour'), 700)
     return () => window.clearTimeout(id)
   }, [tourSeen])
 
@@ -170,22 +176,31 @@ export function WelcomeTour({ tourSeen }: { tourSeen: boolean }) {
 
     function place() {
       document.querySelectorAll('.tour-ring').forEach((el) => el.classList.remove('tour-ring'))
+      const breedte = Math.min(MAX_GUIDE_WIDTH, window.innerWidth - 16)
       const s = steps[stepIdx]!
       if (s.target) {
-        const el = document.querySelector(`[data-tour="${s.target}"]`)
+        // Op de telefoon zitten de menu-items in het uitklapmenu. Het knopje
+        // daarvan wijzen we dan aan in plaats van de verborgen link.
+        const doelwit = document.querySelector(`[data-tour="${s.target}"]`)
+        const menu = document.querySelector('[data-tour="menu"]')
+        const el = zichtbaar(doelwit) ? doelwit : zichtbaar(menu) ? menu : null
         if (el) {
           el.classList.add('tour-ring')
           const r = el.getBoundingClientRect()
           setPos({
-            x: Math.max(8, Math.min(r.left + r.width / 2 - GUIDE_WIDTH / 2, window.innerWidth - GUIDE_WIDTH - 8)),
+            x: Math.max(8, Math.min(r.left + r.width / 2 - breedte / 2, window.innerWidth - breedte - 8)),
             y: r.bottom + 14,
+            breedte,
+            viaMenu: el === menu,
           })
           return
         }
       }
       setPos({
-        x: (window.innerWidth - GUIDE_WIDTH) / 2,
+        x: (window.innerWidth - breedte) / 2,
         y: Math.max(120, window.innerHeight * 0.34),
+        breedte,
+        viaMenu: false,
       })
     }
 
@@ -231,18 +246,21 @@ export function WelcomeTour({ tourSeen }: { tourSeen: boolean }) {
         role="dialog"
         aria-label={t('restart')}
         className="fixed left-0 top-0 z-50 flex items-start gap-1 transition-transform duration-500 ease-out"
-        style={{ transform: `translate(${pos.x}px, ${pos.y}px)`, width: GUIDE_WIDTH }}
+        style={{ transform: `translate(${pos.x}px, ${pos.y}px)`, width: pos.breedte }}
       >
         <div className="shrink-0">
-          <Aaf size={72} />
+          <Aaf size={pos.breedte < MAX_GUIDE_WIDTH ? 44 : 72} />
         </div>
-        <div className="rounded-2xl rounded-tl-sm border border-border bg-surface px-4 py-3 shadow-xl">
+        <div className="min-w-0 rounded-2xl rounded-tl-sm border border-border bg-surface px-4 py-3 shadow-xl">
           <p className="text-sm leading-relaxed text-text">{step.text}</p>
+          {pos.viaMenu && (
+            <p className="mt-1.5 text-xs leading-relaxed text-text-muted">{t('menuHint')}</p>
+          )}
           <div className="mt-3 flex items-center gap-3">
             <button
               type="button"
               onClick={() => (isLast ? finish() : setStepIdx((i) => i + 1))}
-              className="rounded-lg bg-accent px-4 py-1.5 text-sm font-medium text-white transition hover:bg-accent/90"
+              className="rounded-lg bg-accent px-4 py-2.5 text-sm font-medium text-white transition hover:bg-accent/90 sm:py-1.5"
             >
               {isLast ? t('finish') : stepIdx === 0 ? t('start') : t('next')}
             </button>
@@ -250,7 +268,7 @@ export function WelcomeTour({ tourSeen }: { tourSeen: boolean }) {
               <button
                 type="button"
                 onClick={finish}
-                className="text-xs font-medium text-text-muted underline-offset-2 hover:text-text hover:underline"
+                className="px-1 py-2 text-xs font-medium text-text-muted underline-offset-2 hover:text-text hover:underline sm:py-0"
               >
                 {t('skip')}
               </button>

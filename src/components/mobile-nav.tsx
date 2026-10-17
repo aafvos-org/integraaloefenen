@@ -25,6 +25,7 @@ export function MobileNav({
       <button
         type="button"
         data-meet="mobiel-menu"
+        data-tour="menu"
         aria-label={open ? 'Menu sluiten' : 'Menu openen'}
         aria-expanded={open}
         onClick={() => setOpen((v) => !v)}
