@@ -97,6 +97,7 @@ export async function generateMetadata({
     pad: '/oefenen',
     titel: t('title'),
     omschrijving: 'Oefen primitiveren en integralen voor wiskunde B. Kies een hoofdstuk en stuur de link naar een klasgenoot.',
+    eigenDeelafbeelding: true,
   })
 }
 

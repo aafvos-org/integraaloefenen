@@ -32,6 +32,7 @@ export async function generateMetadata({ params }: { params: Params }) {
     pad: `/voorbeeld/${slug}`,
     titel: voorbeeld.titel,
     omschrijving: voorbeeld.omschrijving,
+    eigenDeelafbeelding: true,
   })
 }
 

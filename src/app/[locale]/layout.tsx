@@ -43,6 +43,13 @@ export async function generateMetadata({
       siteName: domain,
       title: t('ogTitle'),
       description: t('description'),
+      images: [{ url: '/og-image.png', width: 1200, height: 630, alt: domain }],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: t('ogTitle'),
+      description: t('description'),
+      images: ['/og-image.png'],
     },
     robots: {
       index: false,
