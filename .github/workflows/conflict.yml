@@ -1,12 +1,18 @@
-# Botst een pull request met main, dan start de gewone controle niet: die
-# draait op de samengevoegde versie, en die bestaat bij een conflict niet.
+# Botst een pull request met zijn doeltak, dan start de gewone controle niet:
+# die draait op de samengevoegde versie, en die bestaat bij een conflict niet.
 # Deze workflow draait wél, op de code van main, en zet dan een rode controle.
+#
+# De doeltak is `volgende` voor gewoon werk en `main` voor een kritieke
+# reparatie of de release. GitHub rekent `mergeable` altijd uit tegen de
+# doeltak van de pull request zelf, dus hier staat geen taknaam vast; we
+# noemen hem alleen in de melding.
 #
 # Veilig houden:
 # - geen checkout, ook niet van main
 # - geen scripts of pakketten uit de pull request
 # - geen geheimen
-# - alleen het pull-requestnummer, nooit de titel of de tekst
+# - alleen het pull-requestnummer en de naam van de doeltak, nooit de titel
+#   of de tekst van de pull request
 # Een pull request kan dit bestand pas veranderen nadat het op main staat.
 
 name: Conflict
@@ -29,16 +35,22 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 2
     steps:
-      - name: Kijken of de pull request botst met main
+      - name: Kijken of de pull request botst met zijn doeltak
         env:
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}
           PR_NUMMER: ${{ github.event.pull_request.number }}
+          DOELTAK: ${{ github.event.pull_request.base.ref }}
         run: |
           set -euo pipefail
 
           if ! [[ "$PR_NUMMER" =~ ^[0-9]+$ ]]; then
             echo "::error::Ongeldig pull-requestnummer."
+            exit 1
+          fi
+
+          if ! [[ "$DOELTAK" =~ ^[A-Za-z0-9._/-]+$ ]]; then
+            echo "::error::Ongeldige naam voor de doeltak."
             exit 1
           fi
 
@@ -52,12 +64,12 @@ jobs:
           done
 
           if [ "$staat" = "MERGEABLE" ]; then
-            echo "Deze pull request botst niet met main."
+            echo "Deze pull request botst niet met $DOELTAK."
             exit 0
           fi
 
           if [ "$staat" = "CONFLICTING" ]; then
-            echo "::error::Deze pull request botst met main. Haal main binnen en los het conflict op. De andere controles starten niet zolang dat conflict er is."
+            echo "::error::Deze pull request botst met $DOELTAK. Haal $DOELTAK binnen (git fetch origin && git merge origin/$DOELTAK) en los het conflict op. De andere controles starten niet zolang dat conflict er is."
             exit 1
           fi
 
