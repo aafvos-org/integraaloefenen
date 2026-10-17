@@ -5,14 +5,12 @@
 //
 //   GH_TOKEN=$(gh auth token) node scripts/release-tekst.mjs
 //
-// Nodig: een volledige kloon (git log over main..volgende) en een token dat
-// de pull requests mag lezen.
+// Nodig: een volledige kloon en een token dat de pull requests mag lezen.
 
 import { execFileSync } from 'node:child_process'
 
 const repo = process.env.GH_REPO ?? 'aafvos-org/integraaloefenen'
 const token = process.env.GH_TOKEN
-const basis = process.env.BASIS ?? 'origin/main'
 const tak = process.env.TAK ?? 'origin/volgende'
 const voorbeeld =
   process.env.VOORBEELD ?? 'https://volgende-integraaloefenen.alhvos.workers.dev'
@@ -68,6 +66,32 @@ async function bestandenVan(nummer) {
   return { bestanden: alles, volledig: false }
 }
 
+// Waar de vorige release ophield. Dat is de kop van `volgende` zoals die in
+// de vorige release-pull-request zat — niet `origin/main`. Is die release met
+// squash gemerged, dan kent `main` de commits van `volgende` niet meer en zou
+// `main..volgende` alles opnieuw opsommen wat vorige keer al meeging.
+// Is er nog geen release geweest, dan vallen we terug op `origin/main`.
+async function vorigeRelease() {
+  const eigenaar = repo.split('/')[0]
+  const lijst = await api(
+    `/repos/${repo}/pulls?state=closed&base=main&head=${eigenaar}:volgende&per_page=20`,
+  )
+  const laatste = lijst
+    .filter((pr) => pr.merged_at)
+    .sort((a, b) => new Date(b.merged_at) - new Date(a.merged_at))[0]
+
+  const sha = laatste?.head?.sha
+  if (!sha) return null
+
+  try {
+    execFileSync('git', ['cat-file', '-e', `${sha}^{commit}`], { stdio: 'ignore' })
+  } catch {
+    // De commit zit niet in deze kloon; dan maar vanaf main.
+    return null
+  }
+  return sha
+}
+
 function ticketUit(...teksten) {
   for (const tekst of teksten) {
     const gevonden = /INT-\d+/i.exec(tekst ?? '')
@@ -87,9 +111,19 @@ function regel({ ticket, titel, url, nummer }) {
 }
 
 async function main() {
+  const basis = process.env.BASIS ?? (await vorigeRelease()) ?? 'origin/main'
+
   // Zonder de samenvoegcommits: die van de release zelf en die van
-  // terug-naar-volgende horen niet in de lijst thuis.
-  const commits = git('log', '--no-merges', '--format=%s', `${basis}..${tak}`)
+  // terug-naar-volgende horen niet in de lijst thuis. En zonder alles wat al
+  // op `main` staat: wat via terug-naar-volgende binnenkwam, is al live.
+  const commits = git(
+    'log',
+    '--no-merges',
+    '--format=%s',
+    `${basis}..${tak}`,
+    '--not',
+    'origin/main',
+  )
     .split('\n')
     .filter(Boolean)
 
