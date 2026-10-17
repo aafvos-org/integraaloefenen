@@ -108,8 +108,11 @@ jobs:
           nummer=$(gh pr list --base volgende --head "$WEGWERPTAK" --state open --json number --jq '.[0].number // empty')
 
           if [ -z "$nummer" ]; then
-            gh pr create --base volgende --head "$WEGWERPTAK" \
-              --title "Zet main terug in volgende" --body "$tekst"
+            if ! gh pr create --base volgende --head "$WEGWERPTAK" \
+              --title "Zet main terug in volgende" --body "$tekst"; then
+              echo "::error::De pull request kon niet gemaakt worden. Staat het vinkje \"Allow GitHub Actions to create and approve pull requests\" uit bij de organisatie (Settings → Actions → General → Workflow permissions)? Zet dat aan. De tak \`$WEGWERPTAK\` staat klaar; tot die tijd opent iemand de pull request met de hand."
+              exit 1
+            fi
             nummer=$(gh pr list --base volgende --head "$WEGWERPTAK" --state open --json number --jq '.[0].number // empty')
           fi
 

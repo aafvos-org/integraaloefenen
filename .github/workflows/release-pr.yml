@@ -78,7 +78,10 @@ jobs:
             gh pr edit "$nummer" --title "$titel" --body "$tekst"
             echo "Release-pull-request #$nummer bijgewerkt."
           else
-            gh pr create --base main --head volgende --title "$titel" --body "$tekst"
+            if ! gh pr create --base main --head volgende --title "$titel" --body "$tekst"; then
+              echo "::error::De release-pull-request kon niet gemaakt worden. Staat het vinkje \"Allow GitHub Actions to create and approve pull requests\" uit bij de organisatie (Settings → Actions → General → Workflow permissions)? Zet dat aan. Tot die tijd maakt iemand hem met de hand; \`node scripts/release-tekst.mjs\` geeft de tekst."
+              exit 1
+            fi
             nummer=$(gh pr list --base main --head volgende --state open --json number --jq '.[0].number // empty')
             echo "Release-pull-request #$nummer aangemaakt."
           fi
