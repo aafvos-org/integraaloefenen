@@ -72,4 +72,25 @@ describe('eigenPagina', () => {
     expect(m.title).toBe('Uitlegvideo’s')
     expect(m.openGraph?.title).toBe('Uitlegvideo’s')
   })
+
+  it('laat een openbare pagina indexeren', () => {
+    const start = eigenPagina({ locale: 'nl', omschrijving: 'Start.' })
+    const theorie = eigenPagina({
+      locale: 'nl',
+      pad: '/theorie',
+      omschrijving: 'Theorie.',
+    })
+    expect(start.robots).toEqual({ index: true, follow: true })
+    expect(theorie.robots).toEqual({ index: true, follow: true })
+  })
+
+  it('houdt een afgeschermde pagina uit de index', () => {
+    const m = eigenPagina({
+      locale: 'nl',
+      pad: '/oefenen',
+      titel: 'Oefenen',
+      omschrijving: 'Oefen.',
+    })
+    expect(m.robots).toEqual({ index: false, follow: false })
+  })
 })

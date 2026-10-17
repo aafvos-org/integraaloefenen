@@ -145,6 +145,7 @@ describe('eigen adres en deelkaartje', () => {
       'utf8',
     )
     expect(layout).not.toMatch(/canonical:/)
+    expect(layout).toMatch(/index:\s*false/)
     // Alleen in het openGraph-blok kijken: de iconen hebben ook een `url:`.
     const kaartje = layout.match(/openGraph:\s*\{[^}]*\}/)?.[0] ?? ''
     expect(kaartje).toContain('siteName:')
