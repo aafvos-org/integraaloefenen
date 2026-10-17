@@ -87,7 +87,9 @@ function regel({ ticket, titel, url, nummer }) {
 }
 
 async function main() {
-  const commits = git('log', '--format=%s', `${basis}..${tak}`)
+  // Zonder de samenvoegcommits: die van de release zelf en die van
+  // terug-naar-volgende horen niet in de lijst thuis.
+  const commits = git('log', '--no-merges', '--format=%s', `${basis}..${tak}`)
     .split('\n')
     .filter(Boolean)
 
