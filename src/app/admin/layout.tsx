@@ -10,7 +10,7 @@ export const metadata = {
 
 const NAV = [
   { href: '/admin', label: 'Overzicht' },
-  { href: '/admin/topics', label: 'Topics' },
+  { href: '/admin/topics', label: 'Onderwerpen' },
   { href: '/admin/questions', label: 'Vragen' },
   { href: '/admin/flags', label: 'Flags' },
   { href: '/admin/users', label: 'Gebruikers' },

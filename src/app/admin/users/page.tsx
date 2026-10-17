@@ -67,7 +67,7 @@ export default async function UsersPage() {
         <h2 className="font-serif text-xl text-text">Gebruikers</h2>
         <p className="text-sm text-text-muted">
           {users.length} accounts, nieuwste bovenaan. Klik op een rol om
-          iemand admin te maken of terug te zetten naar student.
+          iemand admin te maken of terug te zetten naar leerling.
         </p>
       </div>
 
@@ -79,7 +79,7 @@ export default async function UsersPage() {
               <th className="px-4 py-2 font-medium">E-mail</th>
               <th className="px-4 py-2 font-medium">Bevestigd</th>
               <th className="px-4 py-2 font-medium">Rol</th>
-              <th className="px-4 py-2 font-medium">Gemasterde clusters</th>
+              <th className="px-4 py-2 font-medium">Beheerste groepen</th>
               <th className="px-4 py-2 font-medium">Antwoorden</th>
               <th className="px-4 py-2 font-medium">% correct</th>
               <th className="px-4 py-2 font-medium">Bron</th>
@@ -120,7 +120,7 @@ export default async function UsersPage() {
                         defaultValue={p.role}
                         className="rounded-md border border-border bg-surface px-2 py-1 text-sm"
                       >
-                        <option value="student">student</option>
+                        <option value="student">leerling</option>
                         <option value="admin">admin</option>
                       </select>
                       <button

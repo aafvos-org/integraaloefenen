@@ -26,8 +26,8 @@ export default async function AdminDashboardPage() {
   ])
 
   const stats: Array<{ label: string; value: number | null; href?: string }> = [
-    { label: 'Topics', value: topics.count, href: '/admin/topics' },
-    { label: 'Clusters', value: clusters.count, href: '/admin/topics' },
+    { label: 'Onderwerpen', value: topics.count, href: '/admin/topics' },
+    { label: 'Groepen', value: clusters.count, href: '/admin/topics' },
     { label: 'Vragen totaal', value: questions.count, href: '/admin/questions' },
     { label: 'AI-gegenereerde vragen', value: aiQuestions.count },
     { label: 'Gebruikers', value: profileCount.count, href: '/admin/users' },

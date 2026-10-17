@@ -64,7 +64,7 @@ export default async function AdminFlagsPage({
       <div>
         <h2 className="font-serif text-xl text-text">Flags</h2>
         <p className="mt-1 text-sm text-text-muted">
-          Vragen die studenten als &ldquo;klopt niet&rdquo; hebben gemarkeerd.
+          Vragen die leerlingen als &ldquo;klopt niet&rdquo; hebben gemarkeerd.
         </p>
       </div>
 
