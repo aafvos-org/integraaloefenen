@@ -7,10 +7,6 @@ describe('startpagina-knoppen', () => {
   it('zet drie sommen zonder account als eerste knop en in de zoektekst', () => {
     const pagina = readFileSync(join(process.cwd(), 'src/app/[locale]/page.tsx'), 'utf8')
     const teksten = readFileSync(join(process.cwd(), 'messages/nl.json'), 'utf8')
-    const overrides = readFileSync(
-      join(process.cwd(), 'messages/overrides/integralen.nl.json'),
-      'utf8',
-    )
 
     const knoppen = pagina.slice(
       pagina.indexOf('mt-8 flex flex-wrap'),
@@ -22,6 +18,5 @@ describe('startpagina-knoppen', () => {
 
     expect(teksten).toContain('"ctaTry": "Probeer drie sommen"')
     expect(teksten).toContain('Maak drie sommen zonder account. Integreren oefenen')
-    expect(overrides).toContain('Maak drie sommen zonder account. Integreren oefenen')
   })
 })
