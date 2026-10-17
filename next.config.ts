@@ -37,6 +37,12 @@ const nextConfig: NextConfig = {
         // lettertype-adressen dan op /static/media, terwijl de bestanden op
         // /_next/static/media staan. Zonder deze regel laden de formules
         // hun lettertype niet.
+        //
+        // Let op: deze regel helpt alleen bij `next dev` en `next start`,
+        // want daar serveert de Next-server /_next/static zelf. Op Cloudflare
+        // doet de bestandenbinding dat, nog vóór de Worker, en komt de
+        // Next-server nooit bij het bestand. Daar lost src/worker/lettertypen.ts
+        // het op.
         { source: '/static/media/:path*', destination: '/_next/static/media/:path*' },
       ],
     }

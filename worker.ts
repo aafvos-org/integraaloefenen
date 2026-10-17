@@ -1,11 +1,12 @@
 /**
  * Eigen Worker-ingang rond de OpenNext-worker (zie wrangler.jsonc "main").
  *
- * Twee dingen vóór de app. Het kale domein integraaloefenen.nl gaat naar www
+ * Drie dingen vóór de app. Het kale domein integraaloefenen.nl gaat naar www
  * (dat deed eerst Vercel; in middleware.ts kan het niet, die draait op de
- * Worker niet mee). De openbare startpagina komt uit de randcache als die
- * er al staat, zodat een koud bezoek niet telkens het hele bestand opnieuw
- * inleest.
+ * Worker niet mee). De lettertypen van de formules worden op hun echte plek
+ * opgehaald (zie src/worker/lettertypen.ts). En de openbare startpagina komt
+ * uit de randcache als die er al staat, zodat een koud bezoek niet telkens
+ * het hele bestand opnieuw inleest.
  */
 
 // .open-next/worker.js ontstaat pas bij `opennextjs-cloudflare build`.
@@ -13,6 +14,7 @@
 // @ts-ignore
 import { default as handler } from './.open-next/worker.js'
 
+import { antwoordMetLettertype, bestandenVan } from './src/worker/lettertypen'
 import { antwoordMetStartpaginaCache } from './src/worker/startpagina-cache'
 
 const KAAL_DOMEIN = 'integraaloefenen.nl'
@@ -45,11 +47,10 @@ const worker = {
       },
     }
 
-    return antwoordMetStartpaginaCache(
-      request,
-      versieVan(env),
-      cache,
-      () => Promise.resolve(handler.fetch(request, env, ctx)),
+    return antwoordMetLettertype(request, bestandenVan(env), () =>
+      antwoordMetStartpaginaCache(request, versieVan(env), cache, () =>
+        Promise.resolve(handler.fetch(request, env, ctx)),
+      ),
     )
   },
 }
