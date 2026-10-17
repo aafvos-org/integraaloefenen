@@ -51,14 +51,18 @@ export async function logIn(
 }
 
 /**
- * Uitloggen via het menu, zoals een leerling. Op computerformaat zit dat
- * achter het rondje met je initiaal (dat rondje heet naar je gebruikersnaam),
- * op telefoonformaat achter het hamburgermenu.
+ * Het menu met "Uitloggen" openen en die knop teruggeven. Op computerformaat
+ * zit dat achter het rondje met je initiaal (dat rondje heet naar je
+ * gebruikersnaam), op telefoonformaat achter het hamburgermenu.
  *
- * Daarna controleren we dat de sessie echt weg is: een pagina achter de inlog
- * stuurt je terug naar het inlogscherm.
+ * De eerste klik kan aankomen voordat de balk klaarstaat — de balk komt uit
+ * een client-component, en in ontwikkelstand bouwt Next een pagina pas als je
+ * hem opvraagt. Die klik doet dan niets, en er komt geen tweede gebeurtenis
+ * meer: de muis blijft staan waar hij staat. Daarom klikken we opnieuw tot
+ * "Uitloggen" er echt is. Dat overkomt een leerling met een trage verbinding
+ * ook, en de test moet er niet op omvallen.
  */
-export async function logUit(page: Page) {
+export async function menuMetUitloggen(page: Page): Promise<Locator> {
   const smal = (page.viewportSize()?.width ?? 1280) < 768
   const knop = smal
     ? page.getByRole('button', { name: 'Menu openen' })
@@ -66,9 +70,26 @@ export async function logUit(page: Page) {
       // per leerling verschillen; het is wel altijd het laatste klapmenu in
       // de balk.
       page.locator('header button[aria-haspopup="menu"]').last()
+  const uitloggen = page.getByRole('button', { name: 'Uitloggen' })
 
-  await knop.click()
-  await page.getByRole('button', { name: 'Uitloggen' }).click()
+  await expect(async () => {
+    // Staat het menu al open, dan zou een tweede klik het juist sluiten.
+    if (!(await uitloggen.isVisible())) await knop.click({ timeout: 5_000 })
+    await expect(uitloggen).toBeVisible({ timeout: 3_000 })
+  }).toPass({ timeout: 60_000, intervals: [500, 1_000, 2_000] })
+
+  return uitloggen
+}
+
+/**
+ * Uitloggen via het menu, zoals een leerling.
+ *
+ * Daarna controleren we dat de sessie echt weg is: een pagina achter de inlog
+ * stuurt je terug naar het inlogscherm.
+ */
+export async function logUit(page: Page) {
+  const uitloggen = await menuMetUitloggen(page)
+  await uitloggen.click()
   // Uitloggen zet je terug op de voorpagina (/ of /nl).
   await expect(page).toHaveURL(/\/(nl)?\/?$/)
 
