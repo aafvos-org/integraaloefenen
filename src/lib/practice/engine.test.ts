@@ -68,6 +68,27 @@ describe('answersMatch', () => {
     expect(answersMatch('x^3', 'x^3 - c')).toBe(true)
   })
 
+  it('rekent een andere, even geldige constante bij + c goed', () => {
+    // Bij een onbepaalde integraal loopt c over alle getallen: F(x) + c en
+    // F(x) - 1 + c zijn precies dezelfde verzameling primitieven. Wie via de
+    // substitutie g = x + 1 primitiveert, houdt die -1 over (INT-362).
+    expect(answersMatch('(x+1)*ln(x+1)-x-1+c', '(x+1)ln(x+1) - x + c')).toBe(true)
+    expect(answersMatch('(x+1)*ln(x+1)-x+5+c', '(x+1)ln(x+1) - x + c')).toBe(true)
+    expect(answersMatch('1/3x^3 + 2 + c', '1/3x^3 + c')).toBe(true)
+    // ook zonder dat de leerling zelf + c opschrijft
+    expect(answersMatch('1/3x^3 + 2', '1/3x^3 + c')).toBe(true)
+    // maar een andere functie blijft fout, ook met + c erbij
+    expect(answersMatch('1/3x^3 + 2x + c', '1/3x^3 + c')).toBe(false)
+  })
+
+  it('geeft geen vrije constante weg zonder + c in het goede antwoord', () => {
+    // Hier hoort geen integratieconstante bij, dus een getal ernaast is fout.
+    expect(answersMatch('p=5', 'p=2')).toBe(false)
+    expect(answersMatch('5 + c', '2')).toBe(false)
+    expect(answersMatch('ln(2) - 1 + c', 'ln(2)')).toBe(false)
+    expect(answersMatch('x^3 + 1', 'x^3')).toBe(false)
+  })
+
   it('rekent dezelfde functie anders opgeschreven goed', () => {
     // De drie gevallen uit de echte data (INT-79).
     expect(answersMatch('x^3', 'x^3 + c')).toBe(true)

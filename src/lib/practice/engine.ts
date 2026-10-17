@@ -99,19 +99,42 @@ function uitkomst(formule: Formula, x: number): number | null {
   return waarde
 }
 
-/** Zijn dit twee schrijfwijzen van dezelfde functie? */
+/**
+ * Zijn dit twee schrijfwijzen van dezelfde functie?
+ *
+ * Staat er `+ c` achter het goede antwoord, dan is het een onbepaalde
+ * integraal en mag de constante élke waarde hebben: `F(x) + c` en
+ * `F(x) - 1 + c` zijn dezelfde verzameling primitieven. Dan eisen we niet dat
+ * de uitkomsten gelijk zijn, maar dat ze overal even veel schelen. Zo komt een
+ * leerling die via een andere tussenstap bij een andere constante uitkomt
+ * (`(x+1)ln(x+1) - x - 1` naast `(x+1)ln(x+1) - x`) er ook door.
+ *
+ * We kijken daarvoor naar het goede antwoord en niet naar dat van de leerling:
+ * typt die `+ c` achter het antwoord op een vraag waar geen vrije constante
+ * hoort (een bepaalde integraal, een `p = ...`), dan zou elk getal opeens goed
+ * zijn.
+ */
 function zelfdeFunctie(student: string, correct: string): boolean {
+  const kaalCorrect = zonderIntegratieconstante(correct)
+  const vrijeConstante = kaalCorrect !== correct
+
   const formuleStudent = readFormula(zonderIntegratieconstante(student))
   if (!formuleStudent) return false
-  const formuleCorrect = readFormula(zonderIntegratieconstante(correct))
+  const formuleCorrect = readFormula(kaalCorrect)
   if (!formuleCorrect) return false
 
   let bruikbaar = 0
+  /** Hoeveel de twee mogen schelen: 0, of bij een vrije constante het verschil
+   *  op het eerste bruikbare punt. */
+  let mag: number | null = null
   for (const x of PROEFPUNTEN) {
     const a = uitkomst(formuleStudent, x)
     const b = uitkomst(formuleCorrect, x)
     if (a === null || b === null) continue
-    if (Math.abs(a - b) > TOLERANTIE * Math.max(1, Math.abs(b))) return false
+    const verschil = a - b
+    if (mag === null) mag = vrijeConstante ? verschil : 0
+    const schaal = Math.max(1, Math.abs(b), Math.abs(mag))
+    if (Math.abs(verschil - mag) > TOLERANTIE * schaal) return false
     bruikbaar++
   }
   return bruikbaar >= MINIMAAL_BRUIKBAAR
