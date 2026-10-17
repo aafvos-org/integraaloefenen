@@ -5,17 +5,24 @@ export function cn(...classes: Array<string | false | null | undefined>) {
 }
 
 type ButtonVariant = 'primary' | 'secondary' | 'ghost' | 'danger'
+type ButtonSize = 'sm' | 'lg'
 
 export function Button({
   variant = 'primary',
+  size = 'sm',
   className,
   ...props
-}: React.ButtonHTMLAttributes<HTMLButtonElement> & { variant?: ButtonVariant }) {
+}: React.ButtonHTMLAttributes<HTMLButtonElement> & {
+  variant?: ButtonVariant
+  size?: ButtonSize
+}) {
   return (
     <button
       {...props}
       className={cn(
-        'inline-flex min-h-11 items-center justify-center rounded-md px-3 py-1.5 text-sm font-medium transition disabled:cursor-not-allowed disabled:opacity-60',
+        'inline-flex min-h-11 items-center justify-center rounded-md font-medium transition disabled:cursor-not-allowed disabled:opacity-60',
+        size === 'sm' && 'px-3 py-1.5 text-sm',
+        size === 'lg' && 'px-4 py-2.5 text-base',
         variant === 'primary' &&
           'bg-accent text-white shadow-sm hover:bg-accent/90',
         variant === 'secondary' &&
@@ -158,24 +165,42 @@ export function Card({
   )
 }
 
-export function ErrorBanner({ children }: { children: React.ReactNode }) {
+export function ErrorBanner({
+  children,
+  className,
+}: {
+  children: React.ReactNode
+  className?: string
+}) {
   if (!children) return null
   return (
     <p
       role="alert"
-      className="rounded-md border border-accent-2/30 bg-accent-2-light px-3 py-2 text-sm text-accent-2"
+      className={cn(
+        'rounded-md border border-accent-2/30 bg-accent-2-light px-3 py-2 text-sm text-accent-2',
+        className,
+      )}
     >
       {children}
     </p>
   )
 }
 
-export function SuccessBanner({ children }: { children: React.ReactNode }) {
+export function SuccessBanner({
+  children,
+  className,
+}: {
+  children: React.ReactNode
+  className?: string
+}) {
   if (!children) return null
   return (
     <p
       role="status"
-      className="rounded-md border border-accent/30 bg-accent-light px-3 py-2 text-sm text-accent"
+      className={cn(
+        'rounded-md border border-accent/30 bg-accent-light px-3 py-2 text-sm text-accent',
+        className,
+      )}
     >
       {children}
     </p>
@@ -206,16 +231,30 @@ export function Badge({
 
 export function SubmitButton({
   label,
+  pendingLabel,
   pending,
   variant = 'primary',
+  size = 'sm',
+  className,
+  ...props
 }: {
   label: string
+  pendingLabel?: string
   pending?: boolean
   variant?: ButtonVariant
-}) {
+  size?: ButtonSize
+  className?: string
+} & Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, 'type' | 'children' | 'disabled'>) {
   return (
-    <Button type="submit" disabled={pending} variant={variant}>
-      {pending ? 'Bezig…' : label}
+    <Button
+      {...props}
+      type="submit"
+      disabled={pending}
+      variant={variant}
+      size={size}
+      className={className}
+    >
+      {pending ? (pendingLabel ?? 'Bezig…') : label}
     </Button>
   )
 }

@@ -3,6 +3,7 @@
 import { useSyncExternalStore } from 'react'
 import { useTranslations } from 'next-intl'
 
+import { ErrorBanner, SuccessBanner } from '@/components/ui'
 import { heeftLinkFout } from './link-fout'
 
 /** De adresregel verandert op deze pagina niet meer; er valt niets te volgen. */
@@ -31,24 +32,10 @@ export function BevestigingsMelding({ linkFout = false }: { linkFout?: boolean }
   )
 
   if (linkFout || stand === 'fout') {
-    return (
-      <p
-        role="status"
-        className="mt-6 rounded-md border border-accent-2/30 bg-accent-2-light px-3 py-2 text-sm text-accent-2"
-      >
-        {t('expiredLinkNotice')}
-      </p>
-    )
+    return <ErrorBanner className="mt-6">{t('expiredLinkNotice')}</ErrorBanner>
   }
 
   if (stand === 'onbekend') return null
 
-  return (
-    <p
-      role="status"
-      className="mt-6 rounded-md border border-accent/30 bg-accent-light px-3 py-2 text-sm text-accent"
-    >
-      {t('confirmedNotice')}
-    </p>
-  )
+  return <SuccessBanner className="mt-6">{t('confirmedNotice')}</SuccessBanner>
 }

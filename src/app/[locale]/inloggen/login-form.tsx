@@ -1,9 +1,9 @@
 'use client'
 
 import { useActionState, useEffect, useState, useTransition } from 'react'
-import { useFormStatus } from 'react-dom'
 import { useTranslations } from 'next-intl'
 
+import { ErrorBanner, SubmitButton } from '@/components/ui'
 import { loginAction, resendConfirmationAction, type LoginState } from './actions'
 import type { ResendUitkomst } from './resend'
 
@@ -18,7 +18,7 @@ const RESEND_ZIN = {
 } as const
 
 export function LoginForm() {
-  const [state, formAction] = useActionState(loginAction, initialState)
+  const [state, formAction, pending] = useActionState(loginAction, initialState)
   const t = useTranslations('Login')
   const [showPassword, setShowPassword] = useState(false)
   const [resendPending, startResend] = useTransition()
@@ -55,14 +55,7 @@ export function LoginForm() {
         toggleLabel={showPassword ? t('hidePassword') : t('showPassword')}
       />
 
-      {state.error && (
-        <p
-          role="alert"
-          className="rounded-md border border-accent-2/30 bg-accent-2-light px-3 py-2 text-sm text-accent-2"
-        >
-          {state.error}
-        </p>
-      )}
+      <ErrorBanner>{state.error}</ErrorBanner>
 
       {state.unconfirmedEmail && (
         <div className="rounded-md border border-border bg-surface-2 px-3 py-2 text-sm text-text-muted">
@@ -90,7 +83,14 @@ export function LoginForm() {
         </div>
       )}
 
-      <SubmitButton />
+      <SubmitButton
+        label={t('submitLabel')}
+        pendingLabel={t('submitPending')}
+        pending={pending}
+        size="lg"
+        className="w-full"
+        data-meet="inloggen-versturen"
+      />
     </form>
   )
 }
@@ -159,20 +159,5 @@ function PasswordField({
         </button>
       </div>
     </label>
-  )
-}
-
-function SubmitButton() {
-  const { pending } = useFormStatus()
-  const t = useTranslations('Login')
-  return (
-    <button
-      type="submit"
-      data-meet="inloggen-versturen"
-      disabled={pending}
-      className="w-full rounded-md bg-accent px-4 py-2.5 font-medium text-white shadow-sm transition hover:bg-accent/90 disabled:cursor-not-allowed disabled:opacity-60"
-    >
-      {pending ? t('submitPending') : t('submitLabel')}
-    </button>
   )
 }

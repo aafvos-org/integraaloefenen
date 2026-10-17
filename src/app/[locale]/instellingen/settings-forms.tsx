@@ -1,9 +1,9 @@
 'use client'
 
 import { useActionState, useState } from 'react'
-import { useFormStatus } from 'react-dom'
 import { useTranslations } from 'next-intl'
 
+import { ErrorBanner, SubmitButton, SuccessBanner } from '@/components/ui'
 import {
   updatePasswordAction,
   updateUsernameAction,
@@ -13,39 +13,11 @@ import {
 const initialState: SettingsState = { error: null, success: null }
 
 function StateBanner({ state }: { state: SettingsState }) {
-  if (state.error) {
-    return (
-      <p
-        role="alert"
-        className="rounded-md border border-accent-2/30 bg-accent-2-light px-3 py-2 text-sm text-accent-2"
-      >
-        {state.error}
-      </p>
-    )
-  }
-  if (state.success) {
-    return (
-      <p
-        role="status"
-        className="rounded-md border border-accent/30 bg-accent-light px-3 py-2 text-sm text-accent"
-      >
-        {state.success}
-      </p>
-    )
-  }
-  return null
-}
-
-function SubmitButton({ label, pendingLabel }: { label: string; pendingLabel: string }) {
-  const { pending } = useFormStatus()
   return (
-    <button
-      type="submit"
-      disabled={pending}
-      className="rounded-md bg-accent px-4 py-2 text-sm font-medium text-white shadow-sm transition hover:bg-accent/90 disabled:cursor-not-allowed disabled:opacity-60"
-    >
-      {pending ? pendingLabel : label}
-    </button>
+    <>
+      <ErrorBanner>{state.error}</ErrorBanner>
+      <SuccessBanner>{state.success}</SuccessBanner>
+    </>
   )
 }
 
@@ -53,7 +25,7 @@ const inputClass =
   'w-full max-w-sm rounded-md border border-border bg-surface px-3 py-2 text-text outline-none focus:border-accent focus:ring-2 focus:ring-accent/20'
 
 export function UsernameForm({ initialUsername }: { initialUsername: string }) {
-  const [state, formAction] = useActionState(updateUsernameAction, initialState)
+  const [state, formAction, pending] = useActionState(updateUsernameAction, initialState)
   const t = useTranslations('Settings')
   const [editing, setEditing] = useState(initialUsername === '')
   const [savedName, setSavedName] = useState(initialUsername)
@@ -110,7 +82,7 @@ export function UsernameForm({ initialUsername }: { initialUsername: string }) {
       </label>
       <StateBanner state={state} />
       <div className="flex items-center gap-3">
-        <SubmitButton label={t('save')} pendingLabel={t('savePending')} />
+        <SubmitButton label={t('save')} pendingLabel={t('savePending')} pending={pending} />
         {savedName && (
           <button
             type="button"
@@ -126,7 +98,7 @@ export function UsernameForm({ initialUsername }: { initialUsername: string }) {
 }
 
 export function PasswordForm() {
-  const [state, formAction] = useActionState(updatePasswordAction, initialState)
+  const [state, formAction, pending] = useActionState(updatePasswordAction, initialState)
   const t = useTranslations('Settings')
 
   return (
@@ -159,7 +131,7 @@ export function PasswordForm() {
         />
       </label>
       <StateBanner state={state} />
-      <SubmitButton label={t('savePassword')} pendingLabel={t('savePending')} />
+      <SubmitButton label={t('savePassword')} pendingLabel={t('savePending')} pending={pending} />
     </form>
   )
 }

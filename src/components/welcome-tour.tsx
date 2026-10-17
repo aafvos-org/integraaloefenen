@@ -4,6 +4,7 @@ import { useActionState, useEffect, useMemo, useState } from 'react'
 import { useTranslations } from 'next-intl'
 
 import { askAafAction, type FeedbackState } from '@/app/[locale]/feedback/actions'
+import { ErrorBanner, SuccessBanner } from '@/components/ui'
 import { markTourSeenAction } from '@/lib/tour-actions'
 
 
@@ -25,9 +26,7 @@ function AafHelper({ onRestartTour }: { onRestartTour: () => void }) {
         <div className="w-72 rounded-2xl rounded-br-sm border border-border bg-surface p-4 shadow-xl">
           <p className="font-serif text-base text-text">{t('askTitle')}</p>
           {askState.sent ? (
-            <p className="mt-2 rounded-md border border-accent/30 bg-accent-light px-3 py-2 text-sm text-accent">
-              {t('askThanks')}
-            </p>
+            <SuccessBanner className="mt-2">{t('askThanks')}</SuccessBanner>
           ) : (
             <form action={askFormAction} className="mt-2 space-y-2">
               <textarea
@@ -38,11 +37,7 @@ function AafHelper({ onRestartTour }: { onRestartTour: () => void }) {
                 placeholder={t('askPlaceholder')}
                 className="w-full rounded-md border border-border bg-surface px-3 py-2 text-sm text-text outline-none focus:border-accent focus:ring-2 focus:ring-accent/20"
               />
-              {askState.error && (
-                <p className="rounded-md border border-accent-2/30 bg-accent-2-light px-3 py-1.5 text-xs text-accent-2">
-                  {askState.error}
-                </p>
-              )}
+              <ErrorBanner className="!py-1.5 !text-xs">{askState.error}</ErrorBanner>
               <button
                 type="submit"
                 className="rounded-lg bg-accent px-4 py-1.5 text-sm font-medium text-white transition hover:bg-accent/90"

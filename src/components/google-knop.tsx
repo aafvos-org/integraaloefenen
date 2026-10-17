@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { useTranslations } from 'next-intl'
 
+import { ErrorBanner } from '@/components/ui'
 import type { Bron } from '@/lib/bron'
 import { veiligeVolgende } from '@/lib/google-login'
 import { createClient } from '@/lib/supabase/browser'
@@ -59,14 +60,7 @@ export function GoogleKnop({
         <GoogleLogo />
         {bezig ? t('pending') : t('button')}
       </button>
-      {fout && (
-        <p
-          role="alert"
-          className="rounded-md border border-accent-2/30 bg-accent-2-light px-3 py-2 text-sm text-accent-2"
-        >
-          {t('error')}
-        </p>
-      )}
+      <ErrorBanner>{fout && t('error')}</ErrorBanner>
     </div>
   )
 }

@@ -4,6 +4,7 @@ import { useSyncExternalStore } from 'react'
 import { useTranslations } from 'next-intl'
 
 import { Link } from '@/i18n/navigation'
+import { ErrorBanner } from '@/components/ui'
 
 import { heeftLinkFout } from './link-fout'
 
@@ -35,10 +36,7 @@ export function HerstelMelding({ kapot = false }: { kapot?: boolean }) {
 
   if (kapot || stand === 'fout') {
     return (
-      <p
-        role="status"
-        className="mt-6 rounded-md border border-accent-2/30 bg-accent-2-light px-3 py-2 text-sm text-accent-2"
-      >
+      <ErrorBanner className="mt-6">
         {t('expiredResetNotice')}{' '}
         <Link
           href="/wachtwoord-vergeten"
@@ -47,18 +45,11 @@ export function HerstelMelding({ kapot = false }: { kapot?: boolean }) {
           {t('requestNewResetLink')}
         </Link>
         .
-      </p>
+      </ErrorBanner>
     )
   }
 
   if (stand === 'onbekend') return null
 
-  return (
-    <p
-      role="alert"
-      className="mt-6 rounded-md border border-accent-2/30 bg-accent-2-light px-3 py-2 text-sm text-accent-2"
-    >
-      {t('callbackError')}
-    </p>
-  )
+  return <ErrorBanner className="mt-6">{t('callbackError')}</ErrorBanner>
 }

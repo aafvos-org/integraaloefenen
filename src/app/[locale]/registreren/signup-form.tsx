@@ -1,11 +1,11 @@
 'use client'
 
 import { useActionState, useEffect, useState, useSyncExternalStore } from 'react'
-import { useFormStatus } from 'react-dom'
 import { useTranslations } from 'next-intl'
 
 import { Link } from '@/i18n/navigation'
 import { bronUitTabblad } from '@/lib/bron'
+import { ErrorBanner, SubmitButton, SuccessBanner } from '@/components/ui'
 import { signupAction, type SignupState } from './actions'
 
 const initialState: SignupState = { error: null, notice: null }
@@ -20,7 +20,7 @@ function useBronUitTabblad(): string {
 }
 
 export function SignupForm({ bronUitAdres = null }: { bronUitAdres?: string | null }) {
-  const [state, formAction] = useActionState(signupAction, initialState)
+  const [state, formAction, pending] = useActionState(signupAction, initialState)
   const t = useTranslations('Register')
   const [showPassword, setShowPassword] = useState(false)
   // Het adres van deze pagina gaat voor. Anders de bron die het tabblad
@@ -42,12 +42,7 @@ export function SignupForm({ bronUitAdres = null }: { bronUitAdres?: string | nu
   if (state.notice) {
     return (
       <div className="space-y-4">
-        <p
-          role="status"
-          className="rounded-md border border-accent/30 bg-accent-light px-3 py-2 text-sm text-accent"
-        >
-          {state.notice}
-        </p>
+        <SuccessBanner>{state.notice}</SuccessBanner>
         <Link
           href="/inloggen"
           data-meet="registreren-klaar-inloggen"
@@ -97,14 +92,7 @@ export function SignupForm({ bronUitAdres = null }: { bronUitAdres?: string | nu
         toggleLabel={showPassword ? t('hidePassword') : t('showPassword')}
       />
 
-      {state.error && (
-        <p
-          role="alert"
-          className="rounded-md border border-accent-2/30 bg-accent-2-light px-3 py-2 text-sm text-accent-2"
-        >
-          {state.error}
-        </p>
-      )}
+      <ErrorBanner>{state.error}</ErrorBanner>
 
       <p className="text-center text-sm leading-relaxed text-text-muted">
         {t.rich('privacyNote', {
@@ -120,7 +108,14 @@ export function SignupForm({ bronUitAdres = null }: { bronUitAdres?: string | nu
         })}
       </p>
 
-      <SubmitButton />
+      <SubmitButton
+        label={t('submitLabel')}
+        pendingLabel={t('submitPending')}
+        pending={pending}
+        size="lg"
+        className="w-full"
+        data-meet="registreren-versturen"
+      />
 
       <p className="text-center text-sm text-text-muted">
         {t('hasAccount')}{' '}
@@ -211,20 +206,5 @@ function PasswordField({
       </div>
       {hint && <span className="mt-1 block text-xs text-text-muted">{hint}</span>}
     </label>
-  )
-}
-
-function SubmitButton() {
-  const { pending } = useFormStatus()
-  const t = useTranslations('Register')
-  return (
-    <button
-      type="submit"
-      data-meet="registreren-versturen"
-      disabled={pending}
-      className="w-full rounded-md bg-accent px-4 py-2.5 font-medium text-white shadow-sm transition hover:bg-accent/90 disabled:cursor-not-allowed disabled:opacity-60"
-    >
-      {pending ? t('submitPending') : t('submitLabel')}
-    </button>
   )
 }
