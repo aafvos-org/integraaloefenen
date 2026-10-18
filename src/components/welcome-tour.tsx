@@ -4,7 +4,7 @@ import { useActionState, useEffect, useMemo, useState } from 'react'
 import { useTranslations } from 'next-intl'
 
 import { askAafAction, type FeedbackState } from '@/app/[locale]/feedback/actions'
-import { ErrorBanner, SuccessBanner } from '@/components/ui'
+import { ErrorBanner, SubmitButton, SuccessBanner } from '@/components/ui'
 import { markTourSeenAction } from '@/lib/tour-actions'
 
 
@@ -29,7 +29,7 @@ const initialAskState: FeedbackState = { error: null, sent: false }
 function AafHelper({ onRestartTour }: { onRestartTour: () => void }) {
   const t = useTranslations('Tour')
   const [open, setOpen] = useState(false)
-  const [askState, askFormAction] = useActionState(askAafAction, initialAskState)
+  const [askState, askFormAction, askPending] = useActionState(askAafAction, initialAskState)
 
   return (
     <div className="fixed bottom-4 right-4 z-30 flex flex-col items-end gap-2">
@@ -49,12 +49,11 @@ function AafHelper({ onRestartTour }: { onRestartTour: () => void }) {
                 className="w-full rounded-md border border-border bg-surface px-3 py-2 text-sm text-text outline-none focus:border-accent focus:ring-2 focus:ring-accent/20"
               />
               <ErrorBanner className="!py-1.5 !text-xs">{askState.error}</ErrorBanner>
-              <button
-                type="submit"
-                className="rounded-lg bg-accent px-4 py-1.5 text-sm font-medium text-white transition hover:bg-accent/90"
-              >
-                {t('askSend')}
-              </button>
+              <SubmitButton
+                label={t('askSend')}
+                pendingLabel={t('askSending')}
+                pending={askPending}
+              />
             </form>
           )}
           <div className="mt-3 border-t border-border pt-2">
