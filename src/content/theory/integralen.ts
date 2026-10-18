@@ -835,9 +835,9 @@ export const THEORY_OVERVIEW: OverviewChapter[] = [
     slug: 'k3',
     code: 'K.3',
     title: 'K.3 — Cyclometrische functies',
-    zoektitel: 'Arcsin en arctan',
+    zoektitel: 'Arcsin en arctan integreren',
     zoekomschrijving:
-      'Integralen die uitkomen op arcsin of arctan: de noemer zegt welke van de twee.',
+      'Integralen die arcsin of arctan worden: de noemer bepaalt welke. Met uitleg en voorbeelden. Probeer meteen 3 sommen, zonder account.',
     intro: 'Elke integraal hier wordt $\\arctan$ of $\\arcsin$. De noemer zegt welke van de twee.',
     oefenlinks: [
       { label: 'Oefen K.3 A', href: '/oefenen?blok=k3a' },
