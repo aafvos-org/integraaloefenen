@@ -25,8 +25,6 @@
 
 import type { ClusterTheory, OverviewChapter } from './types'
 
-export type { ClusterTheory, OverviewChapter }
-
 /** Nog leeg: wordt gevuld zodra de clusters van de integralen-site in de database staan. */
 export const CLUSTER_THEORY: Record<string, ClusterTheory> = {}
 
