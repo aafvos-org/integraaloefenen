@@ -488,7 +488,9 @@
     "savePending": "Bezig met opslaan…",
     "change": "Wijzigen",
     "cancel": "Annuleren",
-    "noUsername": "Nog niet ingesteld"
+    "noUsername": "Nog niet ingesteld",
+    "showPassword": "Toon",
+    "hidePassword": "Verberg"
   },
   "Feedback": {
     "title": "Feedback",

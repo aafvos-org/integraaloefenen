@@ -100,6 +100,8 @@ export function UsernameForm({ initialUsername }: { initialUsername: string }) {
 export function PasswordForm() {
   const [state, formAction, pending] = useActionState(updatePasswordAction, initialState)
   const t = useTranslations('Settings')
+  const [showPassword, setShowPassword] = useState(false)
+  const toggleLabel = showPassword ? t('hidePassword') : t('showPassword')
 
   return (
     <form action={formAction} className="space-y-3">
@@ -107,28 +109,46 @@ export function PasswordForm() {
         <span className="mb-1 block text-sm font-medium text-text">
           {t('newPasswordLabel')}
         </span>
-        <input
-          name="password"
-          type="password"
-          autoComplete="new-password"
-          required
-          minLength={8}
-          className={inputClass}
-        />
+        <div className="flex max-w-sm items-center gap-2">
+          <input
+            name="password"
+            type={showPassword ? 'text' : 'password'}
+            autoComplete="new-password"
+            required
+            minLength={8}
+            className="w-full min-w-0 rounded-md border border-border bg-surface px-3 py-2 text-text outline-none focus:border-accent focus:ring-2 focus:ring-accent/20"
+          />
+          <button
+            type="button"
+            onClick={() => setShowPassword((prev) => !prev)}
+            className="inline-flex min-h-11 min-w-11 shrink-0 items-center justify-center rounded-md border border-border px-3 text-xs font-medium text-text-muted hover:bg-surface-2 hover:text-text"
+          >
+            {toggleLabel}
+          </button>
+        </div>
         <span className="mt-1 block text-xs text-text-muted">{t('passwordHint')}</span>
       </label>
       <label className="block">
         <span className="mb-1 block text-sm font-medium text-text">
           {t('repeatPasswordLabel')}
         </span>
-        <input
-          name="passwordConfirm"
-          type="password"
-          autoComplete="new-password"
-          required
-          minLength={8}
-          className={inputClass}
-        />
+        <div className="flex max-w-sm items-center gap-2">
+          <input
+            name="passwordConfirm"
+            type={showPassword ? 'text' : 'password'}
+            autoComplete="new-password"
+            required
+            minLength={8}
+            className="w-full min-w-0 rounded-md border border-border bg-surface px-3 py-2 text-text outline-none focus:border-accent focus:ring-2 focus:ring-accent/20"
+          />
+          <button
+            type="button"
+            onClick={() => setShowPassword((prev) => !prev)}
+            className="inline-flex min-h-11 min-w-11 shrink-0 items-center justify-center rounded-md border border-border px-3 text-xs font-medium text-text-muted hover:bg-surface-2 hover:text-text"
+          >
+            {toggleLabel}
+          </button>
+        </div>
       </label>
       <StateBanner state={state} />
       <SubmitButton label={t('savePassword')} pendingLabel={t('savePending')} pending={pending} />
