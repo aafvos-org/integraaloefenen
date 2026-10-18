@@ -256,8 +256,14 @@ function doelVan(element: Element): string {
   return tekst ? `${tag}: ${tekst.slice(0, 40)}` : tag
 }
 
+/**
+ * Waar een klik iets doet. Invoervelden horen er ook bij: wie in het
+ * antwoordveld tikt om te typen, doet precies wat de bedoeling is. Telden we
+ * dat als dode klik, dan zou dat lijken op een stuk scherm terwijl er niets
+ * mis is.
+ */
 const KLIKBAAR =
-  'a, button, summary, label, select, [role="button"], [role="link"], [role="tab"], [onclick], input[type="submit"], input[type="button"], input[type="checkbox"], input[type="radio"]'
+  'a, button, summary, label, input, textarea, select, [role="button"], [role="link"], [role="tab"], [onclick], [contenteditable]:not([contenteditable="false"])'
 
 function opKlik(gebeurtenis: MouseEvent): void {
   const doelElement = gebeurtenis.target
