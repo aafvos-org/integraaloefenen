@@ -330,6 +330,7 @@
     "streakBody": "Reeks: {streak}/3. Nog {remaining} goed op rij.",
     "nextCluster": "Volgend onderdeel",
     "nextQuestion": "Volgende",
+    "done": "Klaar",
     "navigating": "Laden…",
     "retry": "Opnieuw",
     "wrongTitle": "Niet helemaal goed",

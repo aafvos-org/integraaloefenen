@@ -187,7 +187,7 @@ export function ProberenClient({
           <div className="mt-4 rounded-xl border border-accent/30 bg-accent-light p-4">
             <p className="font-serif text-xl text-accent">{t('correct')}</p>
             <Button className="mt-4" data-meet="proberen-volgende" onClick={verder}>
-              {laatste ? 'Klaar' : t('nextQuestion')}
+              {laatste ? t('done') : t('nextQuestion')}
             </Button>
           </div>
         )}
@@ -220,7 +220,7 @@ export function ProberenClient({
                 </div>
                 <div className="flex flex-wrap gap-2">
                   <Button data-meet="proberen-volgende-na-uitwerking" onClick={verder}>
-                    {laatste ? 'Klaar' : t('nextQuestion')}
+                    {laatste ? t('done') : t('nextQuestion')}
                   </Button>
                   <Button variant="secondary" data-meet="proberen-opnieuw-na-uitwerking" onClick={opnieuw}>
                     {t('retryButton')}
