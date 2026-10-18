@@ -47,9 +47,6 @@ export function MathKeyboard({
   disabled,
 }: {
   onInsert: (text: string) => void
-  /** Niet meer gebruikt — backspace/wissen gaan via het gewone toetsenbord */
-  onBackspace?: () => void
-  onClear?: () => void
   disabled?: boolean
 }) {
   const [showHelp, setShowHelp] = useState(false)

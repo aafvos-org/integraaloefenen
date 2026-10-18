@@ -4,17 +4,20 @@ import { useRouter } from 'next/navigation'
 import { useEffect, useRef, useState, useTransition } from 'react'
 import { useTranslations } from 'next-intl'
 
-import { Math as TeX, RichMath } from '@/components/math'
+import { Math as TeX } from '@/components/math'
+import {
+  GoedAntwoord,
+  OpgaveTekst,
+  Stappenplan,
+  useAntwoordInvoer,
+  type Stap,
+} from '@/components/oefenkaart'
 import { Button, ErrorBanner } from '@/components/ui'
-import { insertAtCursor, toLatexPreview } from '@/lib/practice/input'
+import { toLatexPreview } from '@/lib/practice/input'
+import { nakijkenMetVangnet } from '@/lib/practice/vangnet'
 
 import { MathKeyboard } from '@/components/math-keyboard'
-import {
-  submitCustomTestAnswerAction,
-  type CustomTestAnswerResult,
-} from '../../actions'
-
-type Step = { id: string; step_order: number; step_description: string }
+import { submitCustomTestAnswerAction } from '../../actions'
 
 type RunnerQuestion = {
   id: string
@@ -41,7 +44,7 @@ export function TestRunnerCard({
 }: {
   sessionId: string
   question: RunnerQuestion
-  steps: Step[]
+  steps: Stap[]
   showAnswers: 'immediate' | 'end'
 }) {
   const router = useRouter()
@@ -51,7 +54,7 @@ export function TestRunnerCard({
   const [submitting, setSubmitting] = useState(false)
   const [answer, setAnswer] = useState('')
   const [state, setState] = useState<State>({ phase: 'input', error: null })
-  const inputRef = useRef<HTMLInputElement | null>(null)
+  const { invoerRef: inputRef, voegIn } = useAntwoordInvoer(answer, setAnswer)
   // Moment waarop deze vraag in beeld kwam; het verschil met het indienen gaat
   // als tijd per antwoord mee naar de database.
   const shownAtRef = useRef(0)
@@ -70,41 +73,6 @@ export function TestRunnerCard({
     })
   }
 
-  function handleKey(text: string) {
-    const el = inputRef.current
-    const start = el?.selectionStart ?? answer.length
-    const end = el?.selectionEnd ?? answer.length
-    const { value, caret } = insertAtCursor(answer, start, end, text)
-    setAnswer(value)
-    requestAnimationFrame(() => {
-      if (inputRef.current) {
-        inputRef.current.focus()
-        inputRef.current.setSelectionRange(caret, caret)
-      }
-    })
-  }
-
-  function handleBackspace() {
-    const el = inputRef.current
-    const start = el?.selectionStart ?? answer.length
-    const end = el?.selectionEnd ?? answer.length
-    if (start === end && start === 0) return
-    const nextStart = start === end ? start - 1 : start
-    const value = answer.slice(0, nextStart) + answer.slice(end)
-    setAnswer(value)
-    requestAnimationFrame(() => {
-      if (inputRef.current) {
-        inputRef.current.focus()
-        inputRef.current.setSelectionRange(nextStart, nextStart)
-      }
-    })
-  }
-
-  function handleClear() {
-    setAnswer('')
-    requestAnimationFrame(() => inputRef.current?.focus())
-  }
-
   function submit(e: React.FormEvent) {
     e.preventDefault()
     if (!answer.trim() || state.phase !== 'input') return
@@ -112,22 +80,14 @@ export function TestRunnerCard({
     setSubmitting(true)
     const seconden = Math.round((Date.now() - shownAtRef.current) / 1000)
     startTransition(async () => {
-      // Hapert het netwerk, dan hoort de leerling een melding in de kaart te
-      // zien en zijn antwoord te houden — niet de crashpagina.
-      let result: CustomTestAnswerResult
-      try {
-        result = await submitCustomTestAnswerAction(
-          sessionId,
-          question.id,
-          answer,
-          seconden,
-        )
-      } catch {
-        setSubmitting(false)
+      const result = await nakijkenMetVangnet(() =>
+        submitCustomTestAnswerAction(sessionId, question.id, answer, seconden),
+      )
+      setSubmitting(false)
+      if (!result) {
         setState({ phase: 'input', error: tP('genericError') })
         return
       }
-      setSubmitting(false)
       if (result.kind === 'error') {
         setState({ phase: 'input', error: result.message })
         return
@@ -149,16 +109,10 @@ export function TestRunnerCard({
     })
   }
 
-  const orderedSteps = [...steps].sort((a, b) => a.step_order - b.step_order)
-
   return (
     <div className="rounded-2xl border border-border bg-surface p-4 shadow-sm sm:p-6">
       <div className="mb-6 font-serif text-2xl leading-snug text-text">
-        {question.latex_body?.includes('$') ? (
-          <RichMath source={question.latex_body} />
-        ) : (
-          <TeX tex={question.latex_body ?? ''} displayMode />
-        )}
+        <OpgaveTekst latexBody={question.latex_body} />
       </div>
 
       {state.phase === 'input' && (
@@ -215,12 +169,7 @@ export function TestRunnerCard({
                   autoCorrect="off"
                   spellCheck={false}
                 />
-                <MathKeyboard
-                  onInsert={handleKey}
-                  onBackspace={handleBackspace}
-                  onClear={handleClear}
-                  disabled={pending}
-                />
+                <MathKeyboard onInsert={voegIn} disabled={pending} />
               </label>
 
               <ErrorBanner>{state.error}</ErrorBanner>
@@ -272,34 +221,19 @@ export function TestRunnerCard({
             </span>
             <span>
               {t('correctAnswer')}:{' '}
-              {(() => {
-                const display = state.latexCorrectAnswer ?? state.correctAnswer
-                if (display.includes('$')) {
-                  return <span className="font-serif"><RichMath source={display} /></span>
-                }
-                return <span className="font-serif"><TeX tex={display} /></span>
-              })()}
+              <GoedAntwoord
+                antwoord={state.correctAnswer}
+                latexAntwoord={state.latexCorrectAnswer}
+              />
             </span>
           </div>
 
-          {orderedSteps.length > 0 ? (
-            <div className="mt-4 rounded-lg border border-border bg-white/90 shadow-sm">
-              <div className="px-4 py-3">
-                <p className="text-sm font-semibold text-text">{tP('stepsTitle')}</p>
-              </div>
-              <ol className="list-none space-y-1 border-t border-border px-3 py-3 text-sm text-text">
-                {orderedSteps.map((s) => (
-                  <li key={s.id} className="flex items-start gap-3 rounded-md px-3 py-2 leading-relaxed">
-                    <span className="min-w-[1.25rem] shrink-0 font-semibold tabular-nums text-accent">
-                      {s.step_order}.
-                    </span>
-                    <span>
-                      <RichMath source={s.step_description} />
-                    </span>
-                  </li>
-                ))}
-              </ol>
-            </div>
+          {steps.length > 0 ? (
+            <Stappenplan
+              stappen={steps}
+              titel={tP('stepsTitle')}
+              className="mt-4"
+            />
           ) : (
             <p className="mt-3 text-xs text-text-muted">{tP('noSteps')}</p>
           )}

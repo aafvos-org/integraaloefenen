@@ -2,18 +2,26 @@
 
 import Link from 'next/link'
 import { useSearchParams } from 'next/navigation'
-import { Suspense, useEffect, useMemo, useRef, useState, useSyncExternalStore, useTransition } from 'react'
+import { Suspense, useEffect, useMemo, useState, useSyncExternalStore, useTransition } from 'react'
 
-import { Math as TeX, RichMath } from '@/components/math'
+import { Math as TeX } from '@/components/math'
 import { MathKeyboard } from '@/components/math-keyboard'
+import {
+  GoedAntwoord,
+  OpgaveTekst,
+  Stappenplan,
+  useAntwoordInvoer,
+  type Stap,
+} from '@/components/oefenkaart'
 import { Button, ErrorBanner } from '@/components/ui'
 import { VraagForm } from '@/components/vraag-form'
-import { insertAtCursor, toLatexPreview } from '@/lib/practice/input'
+import { toLatexPreview } from '@/lib/practice/input'
+import { nakijkenMetVangnet } from '@/lib/practice/vangnet'
 import { heeftInlogsessie } from '@/lib/supabase/sessie-cookie'
 
 import { ExerciseTileMathPreview } from '../oefenen/exercise-tile-preview'
 
-import { checkVideoAnswerAction, haalVideoOefenvragenAction, type VideoAnswerResult } from './actions'
+import { checkVideoAnswerAction, haalVideoOefenvragenAction } from './actions'
 import type { OefenVraag } from './kies-vragen'
 
 function cookiesUitDocument(): { name: string }[] {
@@ -479,7 +487,7 @@ type VraagResultaat =
       phase: 'wrong'
       correctAnswer: string
       latexCorrectAnswer: string | null
-      steps: Array<{ id: string; step_order: number; step_description: string }>
+      steps: Stap[]
     }
 
 function OefenKaart({
@@ -496,7 +504,6 @@ function OefenKaart({
   const [results, setResults] = useState<Record<string, VraagResultaat>>({})
   const [error, setError] = useState<string | null>(null)
   const [pending, startTransition] = useTransition()
-  const inputRef = useRef<HTMLInputElement | null>(null)
 
   const vraag = vragen[index]
   const answer = vraag ? (answers[vraag.id] ?? '') : ''
@@ -507,42 +514,14 @@ function OefenKaart({
     setAnswers((prev) => ({ ...prev, [vraag.id]: value }))
   }
 
+  const { invoerRef, voegIn } = useAntwoordInvoer(answer, setAnswer)
+
   // Blader je naar een andere vraag, dan hoort de foutmelding van de vorige
   // vraag te verdwijnen.
   const [handledIndex, setHandledIndex] = useState(index)
   if (handledIndex !== index) {
     setHandledIndex(index)
     setError(null)
-  }
-
-  function handleInsert(text: string) {
-    const el = inputRef.current
-    const start = el?.selectionStart ?? answer.length
-    const end = el?.selectionEnd ?? answer.length
-    const { value, caret } = insertAtCursor(answer, start, end, text)
-    setAnswer(value)
-    requestAnimationFrame(() => {
-      if (inputRef.current) {
-        inputRef.current.focus()
-        inputRef.current.setSelectionRange(caret, caret)
-      }
-    })
-  }
-
-  function handleBackspace() {
-    const el = inputRef.current
-    const start = el?.selectionStart ?? answer.length
-    const end = el?.selectionEnd ?? answer.length
-    if (start === end && start === 0) return
-    const nextStart = start === end ? start - 1 : start
-    const value = answer.slice(0, nextStart) + answer.slice(end)
-    setAnswer(value)
-    requestAnimationFrame(() => {
-      if (inputRef.current) {
-        inputRef.current.focus()
-        inputRef.current.setSelectionRange(nextStart, nextStart)
-      }
-    })
   }
 
   function submit(e: React.FormEvent) {
@@ -552,12 +531,10 @@ function OefenKaart({
     // drukt; anders blijft hij naast het goede antwoord staan.
     setError(null)
     startTransition(async () => {
-      // Hapert het netwerk, dan hoort de leerling een melding in de kaart te
-      // zien en zijn antwoord te houden — niet de crashpagina.
-      let result: VideoAnswerResult
-      try {
-        result = await checkVideoAnswerAction(vraag.id, answer)
-      } catch {
+      const result = await nakijkenMetVangnet(() =>
+        checkVideoAnswerAction(vraag.id, answer),
+      )
+      if (!result) {
         setError(labels.checkError)
         return
       }
@@ -632,11 +609,7 @@ function OefenKaart({
 
       <div className="mt-4 rounded-2xl border border-border bg-surface p-4 shadow-sm sm:p-6">
       <div className="mb-6 font-serif text-2xl leading-snug text-text">
-        {vraag.latex_body?.includes('$') ? (
-          <RichMath source={vraag.latex_body} />
-        ) : (
-          <TeX tex={vraag.latex_body ?? ''} displayMode />
-        )}
+        <OpgaveTekst latexBody={vraag.latex_body} />
       </div>
 
       {!resultaat && (
@@ -655,7 +628,7 @@ function OefenKaart({
               )}
             </div>
             <input
-              ref={inputRef}
+              ref={invoerRef}
               value={answer}
               onChange={(e) => setAnswer(e.target.value)}
               placeholder={labels.placeholder}
@@ -666,12 +639,7 @@ function OefenKaart({
               autoCorrect="off"
               spellCheck={false}
             />
-            <MathKeyboard
-              onInsert={handleInsert}
-              onBackspace={handleBackspace}
-              onClear={() => setAnswer('')}
-              disabled={pending}
-            />
+            <MathKeyboard onInsert={voegIn} disabled={pending} />
           </label>
           <ErrorBanner>{error}</ErrorBanner>
           <Button type="submit" data-meet="video-nakijken" disabled={pending || !answer.trim()}>
@@ -698,41 +666,18 @@ function OefenKaart({
             </span>
             <span>
               {labels.correctAnswer}:{' '}
-              {(() => {
-                const display = resultaat.latexCorrectAnswer ?? resultaat.correctAnswer
-                if (display.includes('$')) {
-                  return (
-                    <span className="font-serif">
-                      <RichMath source={display} />
-                    </span>
-                  )
-                }
-                return (
-                  <span className="font-serif">
-                    <TeX tex={display} />
-                  </span>
-                )
-              })()}
+              <GoedAntwoord
+                antwoord={resultaat.correctAnswer}
+                latexAntwoord={resultaat.latexCorrectAnswer}
+              />
             </span>
           </div>
           {resultaat.steps.length > 0 && (
-            <div className="mt-4 rounded-lg border border-border bg-white/90 shadow-sm">
-              <div className="px-4 py-3">
-                <p className="text-sm font-semibold text-text">{labels.stepsTitle}</p>
-              </div>
-              <ol className="list-none space-y-1 border-t border-border px-3 py-3 text-sm text-text">
-                {resultaat.steps.map((s) => (
-                  <li key={s.id} className="flex items-start gap-3 rounded-md px-3 py-2 leading-relaxed">
-                    <span className="min-w-[1.25rem] shrink-0 font-semibold tabular-nums text-accent">
-                      {s.step_order}.
-                    </span>
-                    <span>
-                      <RichMath source={s.step_description} />
-                    </span>
-                  </li>
-                ))}
-              </ol>
-            </div>
+            <Stappenplan
+              stappen={resultaat.steps}
+              titel={labels.stepsTitle}
+              className="mt-4"
+            />
           )}
         </div>
       )}

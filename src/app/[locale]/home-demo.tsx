@@ -1,13 +1,14 @@
 'use client'
 
-import { useRef, useState } from 'react'
+import { useState } from 'react'
 import { useTranslations } from 'next-intl'
 
 import { MathKeyboard } from '@/components/math-keyboard'
 import { Math as TeX, RichMath } from '@/components/math'
+import { useAntwoordInvoer } from '@/components/oefenkaart'
 import { Badge, Button } from '@/components/ui'
 import { Link } from '@/i18n/navigation'
-import { insertAtCursor, toLatexPreview } from '@/lib/practice/input'
+import { toLatexPreview } from '@/lib/practice/input'
 import { STARTPAGINA_VRAGEN, startpaginaKlopt } from '@/lib/practice/startpagina-demo'
 import type { DemoNiveau } from '@/lib/practice/startpagina-demo'
 
@@ -27,7 +28,7 @@ function DemoCard({
   const q = STARTPAGINA_VRAGEN[difficulty]
   const [answer, setAnswer] = useState('')
   const [state, setState] = useState<State>({ phase: 'input', error: null })
-  const inputRef = useRef<HTMLInputElement | null>(null)
+  const { invoerRef: inputRef, voegIn } = useAntwoordInvoer(answer, setAnswer)
 
   function submit(e: React.FormEvent) {
     e.preventDefault()
@@ -42,41 +43,6 @@ function DemoCard({
   function retry() {
     setAnswer('')
     setState({ phase: 'input', error: null })
-    requestAnimationFrame(() => inputRef.current?.focus())
-  }
-
-  function handleKey(text: string) {
-    const el = inputRef.current
-    const start = el?.selectionStart ?? answer.length
-    const end = el?.selectionEnd ?? answer.length
-    const { value, caret } = insertAtCursor(answer, start, end, text)
-    setAnswer(value)
-    requestAnimationFrame(() => {
-      if (inputRef.current) {
-        inputRef.current.focus()
-        inputRef.current.setSelectionRange(caret, caret)
-      }
-    })
-  }
-
-  function handleBackspace() {
-    const el = inputRef.current
-    const start = el?.selectionStart ?? answer.length
-    const end = el?.selectionEnd ?? answer.length
-    if (start === end && start === 0) return
-    const nextStart = start === end ? start - 1 : start
-    const value = answer.slice(0, nextStart) + answer.slice(end)
-    setAnswer(value)
-    requestAnimationFrame(() => {
-      if (inputRef.current) {
-        inputRef.current.focus()
-        inputRef.current.setSelectionRange(nextStart, nextStart)
-      }
-    })
-  }
-
-  function handleClear() {
-    setAnswer('')
     requestAnimationFrame(() => inputRef.current?.focus())
   }
 
@@ -120,11 +86,7 @@ function DemoCard({
               autoCorrect="off"
               spellCheck={false}
             />
-            <MathKeyboard
-              onInsert={handleKey}
-              onBackspace={handleBackspace}
-              onClear={handleClear}
-            />
+            <MathKeyboard onInsert={voegIn} />
           </label>
 
           <div className="flex items-center gap-3">

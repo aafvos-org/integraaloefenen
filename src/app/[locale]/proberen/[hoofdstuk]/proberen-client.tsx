@@ -6,10 +6,11 @@ import { useTranslations } from 'next-intl'
 import { DeelKnop } from '@/components/deel-knop'
 import { MathKeyboard } from '@/components/math-keyboard'
 import { Math as TeX, RichMath } from '@/components/math'
+import { useAntwoordInvoer } from '@/components/oefenkaart'
 import { Button } from '@/components/ui'
 import { Link } from '@/i18n/navigation'
 import { padNaarAanmelden } from '@/lib/bron'
-import { insertAtCursor, toLatexPreview } from '@/lib/practice/input'
+import { toLatexPreview } from '@/lib/practice/input'
 import { antwoordPrefix, opdrachtSleutel } from '@/lib/practice/opdracht'
 
 import { nakijkProefopgave } from './actions'
@@ -38,7 +39,7 @@ export function ProberenClient({
   const [antwoord, setAntwoord] = useState('')
   const [fase, setFase] = useState<Fase>({ soort: 'invoer', melding: null })
   const [bezig, setBezig] = useState(false)
-  const invoer = useRef<HTMLInputElement | null>(null)
+  const { invoerRef: invoer, voegIn } = useAntwoordInvoer(antwoord, setAntwoord)
   const terugkoppeling = useRef<HTMLDivElement | null>(null)
 
   const som = sommen[index]
@@ -68,18 +69,6 @@ export function ProberenClient({
     requestAnimationFrame(() =>
       terugkoppeling.current?.scrollIntoView({ behavior: 'smooth', block: 'end' }),
     )
-  }
-
-  function voegIn(tekst: string) {
-    const el = invoer.current
-    const start = el?.selectionStart ?? antwoord.length
-    const end = el?.selectionEnd ?? antwoord.length
-    const { value, caret } = insertAtCursor(antwoord, start, end, tekst)
-    setAntwoord(value)
-    requestAnimationFrame(() => {
-      invoer.current?.focus()
-      invoer.current?.setSelectionRange(caret, caret)
-    })
   }
 
   async function verstuur(e: FormEvent) {

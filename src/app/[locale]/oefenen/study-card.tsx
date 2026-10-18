@@ -6,20 +6,22 @@ import { Link } from '@/i18n/navigation'
 import { useEffect, useRef, useState, useTransition } from 'react'
 import { useTranslations } from 'next-intl'
 
-import { Math as TeX, RichMath } from '@/components/math'
-import { Button, cn, ErrorBanner } from '@/components/ui'
+import { Math as TeX } from '@/components/math'
 import {
-  submitStudyAnswerAction,
-  type StudyResult,
-} from '@/lib/practice/chapter-actions'
-import { insertAtCursor, toLatexPreview } from '@/lib/practice/input'
+  OpgaveTekst,
+  Stappenplan,
+  useAntwoordInvoer,
+  type Stap,
+} from '@/components/oefenkaart'
+import { Button, ErrorBanner } from '@/components/ui'
+import { submitStudyAnswerAction } from '@/lib/practice/chapter-actions'
+import { toLatexPreview } from '@/lib/practice/input'
 import { antwoordPrefix, opdrachtSleutel } from '@/lib/practice/opdracht'
 import { MASTERY_THRESHOLD } from '@/lib/practice/progress'
+import { nakijkenMetVangnet } from '@/lib/practice/vangnet'
 import type { UitlegVideo } from '@/lib/videos'
 
 import { MathKeyboard } from '@/components/math-keyboard'
-
-type Step = { id: string; step_order: number; step_description: string }
 
 /** Klein icoontje: er staat een uitlegvideo klaar over dit onderwerp. */
 function IconVideo() {
@@ -56,7 +58,7 @@ export function StudyCard({
   onAnswered,
 }: {
   question: StudyQuestion
-  steps: Step[]
+  steps: Stap[]
   nextHref?: string
   questionNumber?: number
   /** Uitlegvideo over dit onderwerp, als die er is. */
@@ -71,7 +73,7 @@ export function StudyCard({
   const [state, setState] = useState<State>({ phase: 'input', error: null })
   const [lastAttempt, setLastAttempt] = useState<string | null>(null)
   const [revealed, setRevealed] = useState(false)
-  const inputRef = useRef<HTMLInputElement | null>(null)
+  const { invoerRef: inputRef, voegIn } = useAntwoordInvoer(answer, setAnswer)
   const feedbackRef = useRef<HTMLDivElement | null>(null)
   const shownAtRef = useRef(0)
   // Wat er gevraagd wordt en hoe de antwoordregel begint, allebei afgeleid
@@ -108,41 +110,6 @@ export function StudyCard({
     requestAnimationFrame(() => inputRef.current?.focus())
   }
 
-  function handleKey(text: string) {
-    const el = inputRef.current
-    const start = el?.selectionStart ?? answer.length
-    const end = el?.selectionEnd ?? answer.length
-    const { value, caret } = insertAtCursor(answer, start, end, text)
-    setAnswer(value)
-    requestAnimationFrame(() => {
-      if (inputRef.current) {
-        inputRef.current.focus()
-        inputRef.current.setSelectionRange(caret, caret)
-      }
-    })
-  }
-
-  function handleBackspace() {
-    const el = inputRef.current
-    const start = el?.selectionStart ?? answer.length
-    const end = el?.selectionEnd ?? answer.length
-    if (start === end && start === 0) return
-    const nextStart = start === end ? start - 1 : start
-    const value = answer.slice(0, nextStart) + answer.slice(end)
-    setAnswer(value)
-    requestAnimationFrame(() => {
-      if (inputRef.current) {
-        inputRef.current.focus()
-        inputRef.current.setSelectionRange(nextStart, nextStart)
-      }
-    })
-  }
-
-  function handleClear() {
-    setAnswer('')
-    requestAnimationFrame(() => inputRef.current?.focus())
-  }
-
   function submit(e: React.FormEvent) {
     e.preventDefault()
     if (!answer.trim() || state.phase !== 'input') return
@@ -151,15 +118,14 @@ export function StudyCard({
     const submitted = answer
     const seconden = Math.round((Date.now() - shownAtRef.current) / 1000)
     startTransition(async () => {
-      let result: StudyResult
-      try {
-        result = await submitStudyAnswerAction(question.id, submitted, seconden)
-      } catch {
-        setSubmitting(false)
+      const result = await nakijkenMetVangnet(() =>
+        submitStudyAnswerAction(question.id, submitted, seconden),
+      )
+      setSubmitting(false)
+      if (!result) {
         setState({ phase: 'input', error: t('genericError') })
         return
       }
-      setSubmitting(false)
       if (result.kind === 'error') {
         setState({ phase: 'input', error: result.message })
         return
@@ -210,11 +176,7 @@ export function StudyCard({
           <p className="mb-1 text-sm font-medium text-text-muted">{t(opdracht)}</p>
         )}
         <div className="min-w-0 overflow-x-auto font-serif text-xl leading-snug text-text sm:text-2xl">
-          {question.latex_body?.includes('$') ? (
-            <RichMath source={question.latex_body} />
-          ) : (
-            <TeX tex={question.latex_body ?? ''} displayMode />
-          )}
+          <OpgaveTekst latexBody={question.latex_body} />
         </div>
         {state.phase === 'input' && (
           <div className="mt-2 font-serif text-2xl leading-snug text-accent">
@@ -296,12 +258,7 @@ export function StudyCard({
                   autoCorrect="off"
                   spellCheck={false}
                 />
-                <MathKeyboard
-                  onInsert={handleKey}
-                  onBackspace={handleBackspace}
-                  onClear={handleClear}
-                  disabled={pending}
-                />
+                <MathKeyboard onInsert={voegIn} disabled={pending} />
               </label>
 
               <ErrorBanner>{state.error}</ErrorBanner>
@@ -392,7 +349,7 @@ function WrongFeedback({
   onRetry,
   pending,
 }: {
-  steps: Step[]
+  steps: Stap[]
   revealed: boolean
   onReveal: () => void
   onNext: () => void
@@ -400,7 +357,6 @@ function WrongFeedback({
   pending: boolean
 }) {
   const t = useTranslations('PracticeCard')
-  const orderedSteps = [...steps].sort((a, b) => a.step_order - b.step_order)
 
   if (!revealed) {
     return (
@@ -423,30 +379,8 @@ function WrongFeedback({
 
   return (
     <div className="space-y-4">
-      {orderedSteps.length > 0 ? (
-        <div className="rounded-lg border border-border bg-white/90 shadow-sm">
-          <div className="px-4 py-3">
-            <p className="text-sm font-semibold text-text">{t('stepsTitle')}</p>
-          </div>
-          <ol className="list-none space-y-1 border-t border-border px-3 py-3 text-sm text-text">
-            {orderedSteps.map((s) => (
-              <li key={s.id}>
-                <div
-                  className={cn(
-                    'flex items-start gap-3 rounded-md border border-transparent px-3 py-2 leading-relaxed',
-                  )}
-                >
-                  <span className="min-w-[1.25rem] shrink-0 font-semibold tabular-nums text-accent">
-                    {s.step_order}.
-                  </span>
-                  <span>
-                    <RichMath source={s.step_description} />
-                  </span>
-                </div>
-              </li>
-            ))}
-          </ol>
-        </div>
+      {steps.length > 0 ? (
+        <Stappenplan stappen={steps} titel={t('stepsTitle')} />
       ) : (
         <p className="text-xs text-text-muted">{t('noSteps')}</p>
       )}
