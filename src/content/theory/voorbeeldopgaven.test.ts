@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 
 import { THEORY_OVERVIEW } from './integralen'
-import { controleerPrimitieve, latexNaarFormule } from './narekenen.testhulp'
+import { controleerPrimitieve, latexNaarFormule } from '../narekenen.testhulp'
 import { VOORBEELDOPGAVEN } from './voorbeeldopgaven'
 
 // =====================================================================

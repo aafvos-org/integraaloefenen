@@ -2,8 +2,17 @@ import { existsSync, readFileSync, readdirSync } from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 
-import { derivative, isComplex, parse, type MathNode } from 'mathjs'
+import type { MathNode } from 'mathjs'
 import { describe, expect, it } from 'vitest'
+
+import {
+  alsGetal,
+  controleerBepaaldMetPrimitieve,
+  controleerPrimitieve,
+  lees,
+  melding,
+  STANDAARD_DOMEIN,
+} from './narekenen.testhulp'
 
 // =====================================================================
 // Elke primitieve in content/ wordt nagerekend door terug te differentiëren.
@@ -12,6 +21,9 @@ import { describe, expect, it } from 'vitest'
 // neemt de afgeleide van de primitieve naar x en vergelijkt die met de
 // integrand op een rij x-waarden in het domein. Staat er ook `grenzen` en
 // `waarde` bij, dan wordt F(b) − F(a) met die waarde vergeleken.
+//
+// Het lezen van een formule, het terugdifferentiëren en het vergelijken op
+// proefpunten staat in `narekenen.testhulp.ts`, samen met `voorbeelden.test.ts`.
 //
 // Een melding noemt altijd het bestand, het vraagnummer en de x-waarde, zodat
 // een rekenfout meteen te vinden is.
@@ -23,17 +35,12 @@ const AANTAL_PUNTEN = 13
 /** Zoveel punten moeten er overblijven, anders zegt de test niets. */
 const MINIMAAL_BRUIKBAAR = 3
 
-/** Toegestane afwijking: relatief, maar bij kleine waarden absoluut. */
-const TOLERANTIE = 1e-6
-
-/** Standaarddomein als een vraag zelf geen `domein` opgeeft. */
-const STANDAARD_DOMEIN: [number, number] = [-2.5, 2.5]
-
-/** Hierboven is een uitkomst zo groot dat vergelijken niets meer zegt. */
-const TE_GROOT = 1e9
-
-/** Namen die in een formule mogen staan naast de functies van mathjs. */
-const TOEGESTANE_NAMEN = new Set(['x', 'e', 'pi', 'tau', 'phi'])
+/** Namen die een vraag in content/ mag gebruiken naast de functies van mathjs. */
+const LEES_OPTIES = {
+  extraNamen: ['tau', 'phi'],
+  weigerLog: true,
+  onbekendeNaamHint: 'gebruik alleen x (en laat de integratieconstante weg)',
+}
 
 type Vraag = {
   nummer: string
@@ -45,192 +52,45 @@ type Vraag = {
 }
 
 // ---------------------------------------------------------------------
-// Formules lezen
-// ---------------------------------------------------------------------
-
-/**
- * mathjs kent geen `ln`, maar schrijft de natuurlijke logaritme als `log`.
- * In de wiskundeles is `log` juist de logaritme met grondtal 10, dus laten we
- * `log(...)` helemaal niet toe: schrijf `ln(...)` of `log10(...)`.
- */
-function lees(formule: string): MathNode {
-  if (/\blog\s*\(/.test(formule)) {
-    throw new Error(
-      'schrijf `ln(...)` voor de natuurlijke logaritme en `log10(...)` voor die met grondtal 10; `log(...)` is te verwarrend',
-    )
-  }
-
-  const node = parse(formule.replace(/\bln\s*\(/g, 'log('))
-
-  const onbekend = node
-    .filter(
-      (kind, pad, ouder) =>
-        kind.type === 'SymbolNode' && !(ouder?.type === 'FunctionNode' && pad === 'fn'),
-    )
-    .map((kind) => (kind as unknown as { name: string }).name)
-    .filter((naam) => !TOEGESTANE_NAMEN.has(naam))
-
-  if (onbekend.length > 0) {
-    throw new Error(
-      `onbekende naam ${[...new Set(onbekend)].map((naam) => `\`${naam}\``).join(', ')} — gebruik alleen x (en laat de integratieconstante weg)`,
-    )
-  }
-
-  return node
-}
-
-/** Maakt van een formule een functie die `null` geeft waar hij niet bestaat. */
-function alsFunctie(node: MathNode): (x: number) => number | null {
-  const gecompileerd = node.compile()
-  return (x) => {
-    let uitkomst: unknown
-    try {
-      uitkomst = gecompileerd.evaluate({ x })
-    } catch {
-      return null
-    }
-    if (isComplex(uitkomst)) return null
-    if (typeof uitkomst !== 'number') return null
-    if (!Number.isFinite(uitkomst) || Math.abs(uitkomst) > TE_GROOT) return null
-    return uitkomst
-  }
-}
-
-/** Rekent een losse waarde uit (een getal of een formule zonder x). */
-function alsGetal(waarde: string | number): number {
-  if (typeof waarde === 'number') return waarde
-  const uitkomst = alsFunctie(lees(waarde))(Number.NaN)
-  if (uitkomst === null) throw new Error(`\`${waarde}\` levert geen gewoon getal op`)
-  return uitkomst
-}
-
-/**
- * Dertien punten die netjes over het domein verdeeld liggen, maar niet op
- * ronde getallen — daar zitten juist de asymptoten en de nulpunten.
- */
-function proefpunten([begin, eind]: [number, number]): number[] {
-  const gulden = 0.618033988749895
-  return Array.from({ length: AANTAL_PUNTEN }, (_, i) => {
-    const deel = ((i + 1) * gulden) % 1
-    return begin + (eind - begin) * deel
-  })
-}
-
-function klopt(gevonden: number, verwacht: number): boolean {
-  return Math.abs(gevonden - verwacht) <= TOLERANTIE * Math.max(1, Math.abs(verwacht))
-}
-
-function afgerond(getal: number): string {
-  return Number(getal.toPrecision(10)).toString()
-}
-
-// ---------------------------------------------------------------------
 // Eén vraag nakijken
 // ---------------------------------------------------------------------
 
 /** Geeft per gevonden probleem één regel in het Nederlands; leeg is goed. */
 function controleerVraag(vraag: Vraag, bestand: string): string[] {
   const hier = `${bestand}, vraag ${vraag.nummer}`
-  const problemen: string[] = []
-
-  let integrand: MathNode
-  let primitieve: MathNode
-  try {
-    integrand = lees(vraag.integrand)
-  } catch (fout) {
-    return [`${hier}: de integrand \`${vraag.integrand}\` is niet te lezen — ${melding(fout)}`]
-  }
-  try {
-    primitieve = lees(vraag.primitieve)
-  } catch (fout) {
-    return [`${hier}: de primitieve \`${vraag.primitieve}\` is niet te lezen — ${melding(fout)}`]
-  }
-
-  let afgeleide: MathNode
-  try {
-    afgeleide = derivative(primitieve, 'x')
-  } catch (fout) {
-    return [
-      `${hier}: de primitieve \`${vraag.primitieve}\` is niet te differentiëren — ${melding(fout)}`,
-    ]
-  }
-
-  const bereken = {
-    integrand: alsFunctie(integrand),
-    afgeleide: alsFunctie(afgeleide),
-  }
-
-  let bruikbaar = 0
-  const afwijkingen: string[] = []
-  for (const x of proefpunten(vraag.domein)) {
-    const verwacht = bereken.integrand(x)
-    const gevonden = bereken.afgeleide(x)
-    if (verwacht === null || gevonden === null) continue
-    bruikbaar += 1
-    if (klopt(gevonden, verwacht)) continue
-
-    afwijkingen.push(
-      `bij x = ${afgerond(x)} geeft de afgeleide ${afgerond(gevonden)} en de integrand ${afgerond(verwacht)}`,
-    )
-  }
-
-  if (afwijkingen.length > 0) {
-    // Eén melding per vraag, met de eerste paar x-waarden als bewijs. Alle
-    // dertien eronder zetten maakt de uitvoer onleesbaar.
-    problemen.push(
-      `${hier}: de afgeleide van \`${vraag.primitieve}\` is \`${afgeleide.toString()}\`, ` +
-        `maar er staat \`${vraag.integrand}\` als integrand — ` +
-        `${afwijkingen.slice(0, 2).join('; ')}` +
-        `${afwijkingen.length > 2 ? ` (en zo bij nog ${afwijkingen.length - 2} van de ${bruikbaar} x-waarden)` : ''}.`,
-    )
-  }
-
-  if (bruikbaar < MINIMAAL_BRUIKBAAR) {
-    problemen.push(
-      `${hier}: maar ${bruikbaar} van de ${AANTAL_PUNTEN} x-waarden in het domein ` +
-        `[${vraag.domein[0]}, ${vraag.domein[1]}] waren bruikbaar; geef een \`domein\` op waar beide formules wél bestaan.`,
-    )
-  }
+  const problemen = controleerPrimitieve(vraag.integrand, vraag.primitieve, hier, {
+    domein: vraag.domein,
+    aantalPunten: AANTAL_PUNTEN,
+    minimaalBruikbaar: MINIMAAL_BRUIKBAAR,
+    leesOpties: LEES_OPTIES,
+  })
 
   if (vraag.grenzen !== null && vraag.waarde !== null) {
-    problemen.push(...controleerBepaald(vraag, primitieve, hier))
+    problemen.push(...controleerBepaald(vraag, hier))
   }
 
   return problemen
 }
 
 /** Kijkt na of F(b) − F(a) de opgegeven waarde oplevert. */
-function controleerBepaald(vraag: Vraag, primitieve: MathNode, hier: string): string[] {
+function controleerBepaald(vraag: Vraag, hier: string): string[] {
   const [a, b] = vraag.grenzen as [number, number]
-  const F = alsFunctie(primitieve)
+
+  let primitieve: MathNode
+  try {
+    primitieve = lees(vraag.primitieve, LEES_OPTIES)
+  } catch (fout) {
+    return [`${hier}: de primitieve \`${vraag.primitieve}\` is niet te lezen — ${melding(fout)}`]
+  }
 
   let verwacht: number
   try {
-    verwacht = alsGetal(vraag.waarde as string | number)
+    verwacht = alsGetal(vraag.waarde as string | number, {}, LEES_OPTIES)
   } catch (fout) {
     return [`${hier}: de waarde \`${vraag.waarde}\` is niet te lezen — ${melding(fout)}`]
   }
 
-  for (const grens of [a, b]) {
-    if (F(grens) === null) {
-      return [
-        `${hier}: de primitieve \`${vraag.primitieve}\` bestaat niet bij x = ${afgerond(grens)}, ` +
-          `terwijl dat wel een grens van de integraal is.`,
-      ]
-    }
-  }
-
-  const gevonden = (F(b) as number) - (F(a) as number)
-  if (klopt(gevonden, verwacht)) return []
-
-  return [
-    `${hier}: F(${afgerond(b)}) − F(${afgerond(a)}) is ${afgerond(gevonden)}, ` +
-      `maar er staat ${afgerond(verwacht)} als waarde.`,
-  ]
-}
-
-function melding(fout: unknown): string {
-  return fout instanceof Error ? fout.message : String(fout)
+  return controleerBepaaldMetPrimitieve(primitieve, a, b, verwacht, hier)
 }
 
 // ---------------------------------------------------------------------

@@ -1,6 +1,13 @@
-import { derivative, isComplex, parse, type MathNode } from 'mathjs'
 import { describe, expect, it } from 'vitest'
 
+import {
+  alsGetal,
+  controleerBepaaldMetPrimitieve,
+  controleerPrimitieve,
+  lees,
+  melding,
+  STANDAARD_DOMEIN,
+} from './narekenen.testhulp'
 import {
   oefenPad,
   proefPad,
@@ -12,113 +19,27 @@ import {
 
 const AANTAL_PUNTEN = 13
 const MINIMAAL_BRUIKBAAR = 3
-const TOLERANTIE = 1e-6
-const STANDAARD_DOMEIN: [number, number] = [-2.5, 2.5]
-const TE_GROOT = 1e9
-const TOEGESTANE_NAMEN = new Set(['x', 'e', 'pi', 'tau', 'phi'])
 
-function lees(formule: string): MathNode {
-  if (/\blog\s*\(/.test(formule)) {
-    throw new Error('gebruik ln(...) of log10(...), niet log(...)')
-  }
-  const node = parse(formule.replace(/\bln\s*\(/g, 'log('))
-  const onbekend = node
-    .filter(
-      (kind, pad, ouder) =>
-        kind.type === 'SymbolNode' && !(ouder?.type === 'FunctionNode' && pad === 'fn'),
-    )
-    .map((kind) => (kind as unknown as { name: string }).name)
-    .filter((naam) => !TOEGESTANE_NAMEN.has(naam))
-  if (onbekend.length > 0) {
-    throw new Error(`onbekende naam ${[...new Set(onbekend)].join(', ')}`)
-  }
-  return node
-}
-
-function alsFunctie(node: MathNode): (x: number) => number | null {
-  const gecompileerd = node.compile()
-  return (x) => {
-    try {
-      const uitkomst = gecompileerd.evaluate({ x })
-      if (isComplex(uitkomst) || typeof uitkomst !== 'number') return null
-      if (!Number.isFinite(uitkomst) || Math.abs(uitkomst) > TE_GROOT) return null
-      return uitkomst
-    } catch {
-      return null
-    }
-  }
-}
-
-function alsGetal(waarde: string | number): number {
-  if (typeof waarde === 'number') return waarde
-  const uitkomst = alsFunctie(lees(waarde))(Number.NaN)
-  if (uitkomst === null) throw new Error(`\`${waarde}\` is geen getal`)
-  return uitkomst
-}
-
-function proefpunten([begin, eind]: [number, number]): number[] {
-  const gulden = 0.618033988749895
-  return Array.from({ length: AANTAL_PUNTEN }, (_, i) => {
-    const deel = ((i + 1) * gulden) % 1
-    return begin + (eind - begin) * deel
-  })
-}
-
-function klopt(gevonden: number, verwacht: number): boolean {
-  return Math.abs(gevonden - verwacht) <= TOLERANTIE * Math.max(1, Math.abs(verwacht))
-}
+/** Namen die een voorbeeld mag gebruiken naast de functies van mathjs. */
+const LEES_OPTIES = { extraNamen: ['tau', 'phi'], weigerLog: true }
 
 function problemenVan(voorbeeld: Voorbeeld): string[] {
   const hier = voorbeeld.slug
-  const problemen: string[] = []
-  let integrand: MathNode
-  let primitieve: MathNode
-  try {
-    integrand = lees(voorbeeld.integrand)
-  } catch (fout) {
-    return [`${hier}: integrand — ${fout instanceof Error ? fout.message : fout}`]
-  }
-  try {
-    primitieve = lees(voorbeeld.primitieve)
-  } catch (fout) {
-    return [`${hier}: primitieve — ${fout instanceof Error ? fout.message : fout}`]
-  }
-  const afgeleide = derivative(primitieve, 'x')
-  const bereken = {
-    integrand: alsFunctie(integrand),
-    afgeleide: alsFunctie(afgeleide),
-  }
-  const domein = voorbeeld.domein ?? STANDAARD_DOMEIN
-  let bruikbaar = 0
-  const afwijkingen: string[] = []
-  for (const x of proefpunten(domein)) {
-    const verwacht = bereken.integrand(x)
-    const gevonden = bereken.afgeleide(x)
-    if (verwacht === null || gevonden === null) continue
-    bruikbaar += 1
-    if (!klopt(gevonden, verwacht)) {
-      afwijkingen.push(`x=${x}: afgeleide ${gevonden}, integrand ${verwacht}`)
-    }
-  }
-  if (afwijkingen.length > 0) {
-    problemen.push(
-      `${hier}: afgeleide van \`${voorbeeld.primitieve}\` is \`${afgeleide.toString()}\`, integrand \`${voorbeeld.integrand}\` — ${afwijkingen.slice(0, 2).join('; ')}`,
-    )
-  }
-  if (bruikbaar < MINIMAAL_BRUIKBAAR) {
-    problemen.push(`${hier}: maar ${bruikbaar} bruikbare x-waarden`)
-  }
+  const problemen = controleerPrimitieve(voorbeeld.integrand, voorbeeld.primitieve, hier, {
+    domein: voorbeeld.domein ?? STANDAARD_DOMEIN,
+    aantalPunten: AANTAL_PUNTEN,
+    minimaalBruikbaar: MINIMAAL_BRUIKBAAR,
+    leesOpties: LEES_OPTIES,
+  })
+
   if (voorbeeld.grenzen && voorbeeld.waarde !== undefined) {
     const [a, b] = voorbeeld.grenzen
-    const F = alsFunctie(primitieve)
-    const links = F(a)
-    const rechts = F(b)
-    if (links === null || rechts === null) {
-      problemen.push(`${hier}: primitieve bestaat niet op een grens`)
-    } else if (!klopt(rechts - links, alsGetal(voorbeeld.waarde))) {
-      problemen.push(
-        `${hier}: F(b)-F(a)=${rechts - links}, verwacht ${voorbeeld.waarde}`,
-      )
+    try {
+      const primitieve = lees(voorbeeld.primitieve, LEES_OPTIES)
+      const verwacht = alsGetal(voorbeeld.waarde, {}, LEES_OPTIES)
+      problemen.push(...controleerBepaaldMetPrimitieve(primitieve, a, b, verwacht, hier))
+    } catch (fout) {
+      problemen.push(`${hier}: ${melding(fout)}`)
     }
   }
   return problemen

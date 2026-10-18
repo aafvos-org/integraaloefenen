@@ -9,7 +9,7 @@ import {
   klopt,
   latexNaarFormule,
   leesArgument,
-} from './narekenen.testhulp'
+} from '../narekenen.testhulp'
 import type { OverviewCard, OverviewChapter, OverviewExample } from './types'
 
 // =====================================================================

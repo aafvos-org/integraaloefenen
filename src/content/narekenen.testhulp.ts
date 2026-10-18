@@ -1,17 +1,19 @@
 /**
- * Hulpstukken om theorie-content in LaTeX na te rekenen.
+ * Hulpstukken om een primitieve terug te differentiëren en tegen de
+ * integrand te leggen — zowel voor de theorie in LaTeX (`integralen.test.ts`,
+ * `voorbeeldopgaven.test.ts`) als voor de kale formules uit `content/`
+ * (`primitieven.test.ts`, `voorbeelden.test.ts`). Al die tests hebben
+ * dezelfde manier nodig om een formule te lezen, te differentiëren en op een
+ * rij x-waarden te vergelijken; dat staat hier maar één keer.
  *
- * Alleen voor de tests naast dit bestand (`integralen.test.ts` en
- * `voorbeeldopgaven.test.ts`); de site importeert hier niets van. Het staat
- * apart omdat beide tests dezelfde vertaling van LaTeX naar mathjs nodig
- * hebben en dezelfde manier om een primitieve terug te differentiëren.
+ * De site importeert hier niets van.
  *
  * De naam eindigt niet op `.test.ts`, dus vitest ziet dit niet als een suite.
  */
 
 import { derivative, isComplex, parse, type MathNode } from 'mathjs'
 
-/** Zoveel x-waarden proberen we per opgave. */
+/** Zoveel x-waarden proberen we per opgave, als een aanroep er geen eigen aantal voor opgeeft. */
 const AANTAL_PUNTEN = 61
 
 /** Zoveel punten moeten er overblijven, anders zegt de test niets. */
@@ -20,8 +22,8 @@ const MINIMAAL_BRUIKBAAR = 5
 /** Toegestane afwijking: relatief, maar bij kleine waarden absoluut. */
 const TOLERANTIE = 1e-6
 
-/** De proefpunten liggen tussen $-2{,}5$ en $2{,}5$. */
-const BEREIK = 2.5
+/** Standaarddomein als een aanroep er zelf geen opgeeft: tussen $-2{,}5$ en $2{,}5$. */
+export const STANDAARD_DOMEIN: [number, number] = [-2.5, 2.5]
 
 /** Hierboven is een uitkomst zo groot dat vergelijken niets meer zegt. */
 const TE_GROOT = 1e9
@@ -208,13 +210,33 @@ export function latexNaarFormule(latex: string): string {
 // Rekenen
 // ---------------------------------------------------------------------
 
+/** Extra's die een aanroep aan `lees` kan meegeven, naast het standaardgedrag. */
+export type LeesOpties = {
+  /** Namen die naast `x`, `e` en `pi` ook mogen, bijvoorbeeld een variabele uit een scope. */
+  extraNamen?: Iterable<string>
+  /**
+   * Wijs `log(...)` af in plaats van hem stilzwijgend te lezen. In de
+   * wiskundeles is `log` grondtal 10, in mathjs grondtal e — voor content die
+   * leerlingen rechtstreeks schrijven moet dat verschil hardop misgaan.
+   */
+  weigerLog?: boolean
+  /** Toegevoegd aan de melding over een onbekende naam, bijvoorbeeld een tip voor content-schrijvers. */
+  onbekendeNaamHint?: string
+}
+
 /**
  * mathjs schrijft de natuurlijke logaritme als `log`; in de wiskundeles is dat
  * juist grondtal 10. In de vertaling houden we `ln` aan en zetten we hem hier om.
  */
-function lees(formule: string, extraNamen: string[] = []): MathNode {
+export function lees(formule: string, opties: LeesOpties = {}): MathNode {
+  if (opties.weigerLog && /\blog\s*\(/.test(formule)) {
+    throw new Error(
+      'schrijf `ln(...)` voor de natuurlijke logaritme en `log10(...)` voor die met grondtal 10; `log(...)` is te verwarrend',
+    )
+  }
+
   const node = parse(formule.replace(/\bln\s*\(/g, 'log('))
-  const toegestaan = new Set([...TOEGESTANE_NAMEN, ...extraNamen])
+  const toegestaan = new Set([...TOEGESTANE_NAMEN, ...(opties.extraNamen ?? [])])
   const onbekend = node
     .filter(
       (kind, pad, ouder) =>
@@ -223,13 +245,15 @@ function lees(formule: string, extraNamen: string[] = []): MathNode {
     .map((kind) => (kind as unknown as { name: string }).name)
     .filter((naam) => !toegestaan.has(naam))
   if (onbekend.length > 0) {
-    throw new Error(`onbekende naam ${[...new Set(onbekend)].map((n) => `\`${n}\``).join(', ')}`)
+    const namen = [...new Set(onbekend)].map((n) => `\`${n}\``).join(', ')
+    const hint = opties.onbekendeNaamHint === undefined ? '' : ` — ${opties.onbekendeNaamHint}`
+    throw new Error(`onbekende naam ${namen}${hint}`)
   }
   return node
 }
 
 /** Maakt van een formule een functie die `null` geeft waar hij niet bestaat. */
-function alsFunctie(
+export function alsFunctie(
   node: MathNode,
   scope: Record<string, number> = {},
 ): (x: number) => number | null {
@@ -247,22 +271,31 @@ function alsFunctie(
   }
 }
 
-/** Rekent een formule zonder x uit. */
-export function alsGetal(formule: string, scope: Record<string, number> = {}): number {
-  const uitkomst = alsFunctie(lees(formule, Object.keys(scope)), scope)(Number.NaN)
+/** Rekent een formule zonder x uit; een getal komt er ongewijzigd uit. */
+export function alsGetal(
+  formule: string | number,
+  scope: Record<string, number> = {},
+  opties: LeesOpties = {},
+): number {
+  if (typeof formule === 'number') return formule
+  const gelezen = lees(formule, { ...opties, extraNamen: [...(opties.extraNamen ?? []), ...Object.keys(scope)] })
+  const uitkomst = alsFunctie(gelezen, scope)(Number.NaN)
   if (uitkomst === null) throw new Error(`\`${formule}\` levert geen gewoon getal op`)
   return uitkomst
 }
 
 /**
- * Proefpunten tussen $-2{,}5$ en $2{,}5$, met de derde macht dichter bij nul
- * opeengepakt: veel opgaven bestaan alleen op $(-1,1)$ of nog smaller.
+ * Proefpunten over een domein, met de derde macht dichter bij het midden
+ * opeengepakt: veel opgaven bestaan alleen op een stuk van dat domein, vaak
+ * rond het midden, en dan heeft een punt vlak bij de rand weinig nut.
  */
-function proefpunten(): number[] {
+function proefpunten([begin, eind]: [number, number], aantal: number): number[] {
+  const midden = (begin + eind) / 2
+  const halveBreedte = (eind - begin) / 2
   const gulden = 0.618033988749895
-  return Array.from({ length: AANTAL_PUNTEN }, (_, i) => {
+  return Array.from({ length: aantal }, (_, i) => {
     const t = (((i + 1) * gulden) % 1) * 2 - 1
-    return BEREIK * t ** 3
+    return midden + halveBreedte * t ** 3
   })
 }
 
@@ -274,7 +307,7 @@ export function afgerond(getal: number): string {
   return Number(getal.toPrecision(10)).toString()
 }
 
-function melding(fout: unknown): string {
+export function melding(fout: unknown): string {
   return fout instanceof Error ? fout.message : String(fout)
 }
 
@@ -291,35 +324,57 @@ function integreer(f: (x: number) => number | null, van: number, tot: number): n
   return (som * h) / 3
 }
 
+/** Extra's die een aanroep aan `controleerPrimitieve` kan meegeven. */
+export type ControleerPrimitieveOpties = {
+  /** Domein om proefpunten uit te kiezen. Standaard [[STANDAARD_DOMEIN]]. */
+  domein?: [number, number]
+  /** Zoveel proefpunten. Standaard [[AANTAL_PUNTEN]]. */
+  aantalPunten?: number
+  /** Zoveel proefpunten moeten minstens bruikbaar zijn. Standaard [[MINIMAAL_BRUIKBAAR]]. */
+  minimaalBruikbaar?: number
+  /** Doorgegeven aan `lees` voor zowel de integrand als de primitieve. */
+  leesOpties?: LeesOpties
+}
+
 /**
  * Differentieert de primitieve en legt hem naast de integrand. Geeft per
  * probleem één regel in het Nederlands; leeg is goed.
  */
-export function controleerPrimitieve(integrand: string, primitieve: string, hier: string): string[] {
+export function controleerPrimitieve(
+  integrand: string,
+  primitieve: string,
+  hier: string,
+  opties: ControleerPrimitieveOpties = {},
+): string[] {
+  const domein = opties.domein ?? STANDAARD_DOMEIN
+  const aantalPunten = opties.aantalPunten ?? AANTAL_PUNTEN
+  const minimaalBruikbaar = opties.minimaalBruikbaar ?? MINIMAAL_BRUIKBAAR
+  const leesOpties = opties.leesOpties ?? {}
+
   let f: MathNode
   let F: MathNode
   try {
-    f = lees(integrand)
+    f = lees(integrand, leesOpties)
   } catch (fout) {
     return [`${hier}: de integrand \`${integrand}\` is niet te lezen — ${melding(fout)}`]
   }
   try {
-    F = lees(primitieve)
+    F = lees(primitieve, leesOpties)
   } catch (fout) {
-    return [`${hier}: het antwoord \`${primitieve}\` is niet te lezen — ${melding(fout)}`]
+    return [`${hier}: de primitieve \`${primitieve}\` is niet te lezen — ${melding(fout)}`]
   }
 
   let afgeleide: MathNode
   try {
     afgeleide = derivative(F, 'x')
   } catch (fout) {
-    return [`${hier}: het antwoord \`${primitieve}\` is niet te differentiëren — ${melding(fout)}`]
+    return [`${hier}: de primitieve \`${primitieve}\` is niet te differentiëren — ${melding(fout)}`]
   }
 
   const bereken = { integrand: alsFunctie(f), afgeleide: alsFunctie(afgeleide) }
   let bruikbaar = 0
   const afwijkingen: string[] = []
-  for (const x of proefpunten()) {
+  for (const x of proefpunten(domein, aantalPunten)) {
     const verwacht = bereken.integrand(x)
     const gevonden = bereken.afgeleide(x)
     if (verwacht === null || gevonden === null) continue
@@ -339,10 +394,38 @@ export function controleerPrimitieve(integrand: string, primitieve: string, hier
         `${afwijkingen.length > 2 ? ` (en zo bij nog ${afwijkingen.length - 2} van de ${bruikbaar} x-waarden)` : ''}.`,
     )
   }
-  if (bruikbaar < MINIMAAL_BRUIKBAAR) {
-    problemen.push(`${hier}: maar ${bruikbaar} van de ${AANTAL_PUNTEN} proefpunten waren bruikbaar.`)
+  if (bruikbaar < minimaalBruikbaar) {
+    problemen.push(
+      `${hier}: maar ${bruikbaar} van de ${aantalPunten} proefpunten in het domein ` +
+        `[${domein[0]}, ${domein[1]}] waren bruikbaar.`,
+    )
   }
   return problemen
+}
+
+/** Rekent F(b) − F(a) uit voor een al gelezen primitieve en legt dat naast het antwoord. */
+export function controleerBepaaldMetPrimitieve(
+  primitieve: MathNode,
+  van: number,
+  tot: number,
+  verwacht: number,
+  hier: string,
+): string[] {
+  const F = alsFunctie(primitieve)
+  for (const grens of [van, tot]) {
+    if (F(grens) === null) {
+      return [
+        `${hier}: de primitieve bestaat niet bij x = ${afgerond(grens)}, ` +
+          `terwijl dat wel een grens van de integraal is.`,
+      ]
+    }
+  }
+  const gevonden = (F(tot) as number) - (F(van) as number)
+  if (klopt(gevonden, verwacht)) return []
+  return [
+    `${hier}: F(${afgerond(tot)}) − F(${afgerond(van)}) is ${afgerond(gevonden)}, ` +
+      `maar er staat ${afgerond(verwacht)} als waarde.`,
+  ]
 }
 
 /** Rekent een bepaalde integraal numeriek uit en legt hem naast het antwoord. */
