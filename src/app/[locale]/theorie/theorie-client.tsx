@@ -429,21 +429,28 @@ function StappenplanKaart({
                         <RichMath source={row.schil} />
                       </span>
                     </span>
-                    <span className="shrink-0 text-sm font-medium text-accent">
+                    <span
+                      className={cn(
+                        'shrink-0 text-sm font-medium',
+                        row.kaart ? 'text-accent' : 'text-text-muted',
+                      )}
+                    >
                       <RichMath source={row.regel} />
                       {row.kaart && <span aria-hidden> →</span>}
                     </span>
                   </>
                 )
-                const vorm =
-                  'flex min-h-11 w-full min-w-0 items-center justify-between gap-3 rounded-lg border border-border bg-surface-2/60 px-3 py-2 text-left'
+                const vorm = 'flex min-h-11 w-full min-w-0 items-center justify-between gap-3 px-3 py-2 text-left'
                 return (
                   <li key={i} className="min-w-0">
                     {row.kaart ? (
                       <button
                         type="button"
                         onClick={() => onKies(row.kaart!)}
-                        className={cn(vorm, 'transition hover:border-accent hover:bg-accent-light/60')}
+                        className={cn(
+                          vorm,
+                          'rounded-lg border border-border bg-surface-2/60 transition hover:border-accent hover:bg-accent-light/60',
+                        )}
                       >
                         {inhoud}
                       </button>
