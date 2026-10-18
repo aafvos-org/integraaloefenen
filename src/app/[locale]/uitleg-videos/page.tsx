@@ -81,6 +81,7 @@ export default async function UitlegVideosPage({
         askCta: t('askCta'),
         askPlaceholder: t('askPlaceholder'),
         askSend: t('askSend'),
+        askSending: t('askSending'),
         askThanks: t('askThanks'),
         askPhoto: t('askPhoto'),
         askPhotoHint: t('askPhotoHint'),

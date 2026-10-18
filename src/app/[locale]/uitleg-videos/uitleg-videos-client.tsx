@@ -90,6 +90,7 @@ type Labels = {
   askCta: string
   askPlaceholder: string
   askSend: string
+  askSending: string
   askThanks: string
   askPhoto: string
   askPhotoHint: string

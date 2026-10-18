@@ -178,6 +178,7 @@ export default async function DashboardPage() {
         vraagLabels={{
           askPlaceholder: tv('askPlaceholder'),
           askSend: tv('askSend'),
+          askSending: tv('askSending'),
           askThanks: tv('askThanks'),
           askPhoto: tv('askPhoto'),
           askPhotoHint: tv('askPhotoHint'),

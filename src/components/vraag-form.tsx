@@ -17,6 +17,7 @@ import {
 export type VraagLabels = {
   askPlaceholder: string
   askSend: string
+  askSending: string
   askThanks: string
   askPhoto: string
   askPhotoHint: string
@@ -42,7 +43,7 @@ const MAX_FOTOS = 3
 const MAX_TOTAAL_BYTES = 3.2 * 1024 * 1024
 
 export function VraagForm({ labels, compact = false }: { labels: VraagLabels; compact?: boolean }) {
-  const [state, formAction] = useActionState(vraagVideoAction, initialVraagState)
+  const [state, formAction, pending] = useActionState(vraagVideoAction, initialVraagState)
   const [fotos, setFotos] = useState<File[]>([])
   const [fotoBezig, setFotoBezig] = useState(false)
   const [fotoFout, setFotoFout] = useState<string | null>(null)
@@ -125,8 +126,8 @@ export function VraagForm({ labels, compact = false }: { labels: VraagLabels; co
           />
         </label>
         {compact && (
-          <Button type="submit" disabled={fotoBezig}>
-            {labels.askSend}
+          <Button type="submit" disabled={fotoBezig || pending}>
+            {pending ? labels.askSending : labels.askSend}
           </Button>
         )}
         {!compact && <p className="mt-1.5 text-xs text-text-muted">{labels.askPhotoHint}</p>}
@@ -160,8 +161,8 @@ export function VraagForm({ labels, compact = false }: { labels: VraagLabels; co
 
       <ErrorBanner>{fotoFout ?? state.error}</ErrorBanner>
       {!compact && (
-        <Button type="submit" disabled={fotoBezig}>
-          {labels.askSend}
+        <Button type="submit" disabled={fotoBezig || pending}>
+          {pending ? labels.askSending : labels.askSend}
         </Button>
       )}
 
