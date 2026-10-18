@@ -75,6 +75,7 @@ export default async function UitlegVideosPage({
         loginToPractice: t('loginToPractice'),
         practiceLoading: t('practiceLoading'),
         practiceError: t('practiceError'),
+        checkError: t('checkError'),
         askTitle: t('askTitle'),
         askIntro: t('askIntro'),
         askCta: t('askCta'),

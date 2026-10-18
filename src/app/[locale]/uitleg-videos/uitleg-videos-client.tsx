@@ -76,6 +76,7 @@ type Labels = {
   loginToPractice: string
   practiceLoading: string
   practiceError: string
+  checkError: string
   askTitle: string
   askIntro: string
   askCta: string
@@ -547,8 +548,19 @@ function OefenKaart({
   function submit(e: React.FormEvent) {
     e.preventDefault()
     if (!answer.trim() || resultaat || !vraag) return
+    // De melding van de vorige poging hoort weg zodra je opnieuw op nakijken
+    // drukt; anders blijft hij naast het goede antwoord staan.
+    setError(null)
     startTransition(async () => {
-      const result: VideoAnswerResult = await checkVideoAnswerAction(vraag.id, answer)
+      // Hapert het netwerk, dan hoort de leerling een melding in de kaart te
+      // zien en zijn antwoord te houden — niet de crashpagina.
+      let result: VideoAnswerResult
+      try {
+        result = await checkVideoAnswerAction(vraag.id, answer)
+      } catch {
+        setError(labels.checkError)
+        return
+      }
       if (result.kind === 'error') {
         setError(result.message)
       } else if (result.kind === 'correct') {

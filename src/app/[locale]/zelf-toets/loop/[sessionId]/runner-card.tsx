@@ -112,12 +112,21 @@ export function TestRunnerCard({
     setSubmitting(true)
     const seconden = Math.round((Date.now() - shownAtRef.current) / 1000)
     startTransition(async () => {
-      const result: CustomTestAnswerResult = await submitCustomTestAnswerAction(
-        sessionId,
-        question.id,
-        answer,
-        seconden,
-      )
+      // Hapert het netwerk, dan hoort de leerling een melding in de kaart te
+      // zien en zijn antwoord te houden — niet de crashpagina.
+      let result: CustomTestAnswerResult
+      try {
+        result = await submitCustomTestAnswerAction(
+          sessionId,
+          question.id,
+          answer,
+          seconden,
+        )
+      } catch {
+        setSubmitting(false)
+        setState({ phase: 'input', error: tP('genericError') })
+        return
+      }
       setSubmitting(false)
       if (result.kind === 'error') {
         setState({ phase: 'input', error: result.message })
