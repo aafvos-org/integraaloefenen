@@ -305,6 +305,11 @@
     "hardStep2": "Kies $g(x) = x$, dus $g'(x) = 1$, en $h'(x) = e^x$, dus $h(x) = e^x$",
     "hardStep3": "$\\int x \\cdot e^x\\,dx = x e^x - \\int e^x\\,dx = (x - 1)e^x + c$"
   },
+  "ChatgptStrip": {
+    "title": "Klaar om te oefenen?",
+    "body": "Drie sommen, geen account.",
+    "cta": "Probeer drie sommen"
+  },
   "PracticeCard": {
     "difficulty": "Moeilijkheid {n}",
     "promptPrimitieve": "Bepaal de primitieve van:",

@@ -10,6 +10,7 @@ import { eigenPagina } from '@/lib/seo'
 
 import { AfgeleideVerwijzing } from '@/components/afgeleide-verwijzing'
 
+import { ChatgptStrip } from './chatgpt-strip'
 import { HomeDemo } from './home-demo'
 
 export async function generateMetadata({
@@ -64,6 +65,8 @@ export default async function HomePage({
       />
 
       <div className="mx-auto max-w-3xl px-4 py-16">
+        <ChatgptStrip />
+
         <section className="text-center">
           <p className="mb-3 text-sm font-medium uppercase tracking-wider text-accent">
             {t('eyebrow')}
