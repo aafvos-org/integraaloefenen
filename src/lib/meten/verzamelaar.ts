@@ -28,6 +28,7 @@ import {
   type RuwPakket,
   type Soort,
 } from './gebeurtenis'
+import { legeWoedestaat, volgendeWoedestaat, type Woedestaat } from './woede-klik'
 import { heeftInlogsessie } from '@/lib/supabase/sessie-cookie'
 
 const ROUTE = '/api/meet'
@@ -43,11 +44,6 @@ const SLEUTEL_UTM = 'integraal-meet-utm'
 /** Hoe lang we verzamelen voordat er een pakketje weggaat. */
 const WACHT_MS = 3000
 
-/** Woedeklik: zoveel klikken binnen zoveel milliseconden op dezelfde plek. */
-const WOEDE_KLIKKEN = 3
-const WOEDE_MS = 1000
-const WOEDE_PIXELS = 30
-
 /**
  * Hoe lang we wachten voordat we een klik die nergens op landde een dode klik
  * noemen. Lang genoeg om een dubbelklik af te laten maken — pas daarna staat
@@ -60,8 +56,7 @@ let gestart = false
 let timer: number | null = null
 let laatstePad: string | null = null
 let gehaaldeScroll = new Set<number>()
-let woedeKlikken: { x: number; y: number; t: number }[] = []
-let woedeGemeld = false
+let woede: Woedestaat = legeWoedestaat()
 let dodeKlikTimer: number | null = null
 let wachtendDoel: string | null = null
 
@@ -277,6 +272,9 @@ function doelVan(element: Element): string {
 const KLIKBAAR =
   'a, button, summary, label, input, textarea, select, [role="button"], [role="link"], [role="tab"], [onclick], [contenteditable]:not([contenteditable="false"])'
 
+/** Een veld waar je in typt. Daar is een paar keer tikken heel gewoon. */
+const INVOERVELD = 'input, textarea, [contenteditable]:not([contenteditable="false"])'
+
 /** Of er op dit moment tekst geselecteerd staat. */
 function heeftSelectie(): boolean {
   try {
@@ -315,6 +313,7 @@ function opKlik(gebeurtenis: MouseEvent): void {
 
   const klikbaar = doelElement.closest(KLIKBAAR)
   const doel = doelVan(klikbaar ?? doelElement)
+  const selectie = heeftSelectie()
 
   if (klikbaar) {
     // Een klik die wél ergens op landt kan een pagina openen. Dan hoort een
@@ -326,7 +325,7 @@ function opKlik(gebeurtenis: MouseEvent): void {
       tag: doelElement.tagName.toLowerCase(),
       klikbaar: false,
       // Slepen over een zin is hier al te zien; een dubbelklik pas straks.
-      selectie: heeftSelectie(),
+      selectie,
     })
   ) {
     // Wachten tot een eventuele dubbelklik af is. Een tweede klik vervangt de
@@ -338,24 +337,15 @@ function opKlik(gebeurtenis: MouseEvent): void {
 
   // Drie klikken binnen een seconde, bijna op dezelfde plek: iemand is aan
   // het rammen omdat er niets gebeurt.
-  const nu = Date.now()
-  woedeKlikken = woedeKlikken.filter((klik) => nu - klik.t < WOEDE_MS)
-  const vorige = woedeKlikken[woedeKlikken.length - 1]
-  if (
-    vorige &&
-    (Math.abs(vorige.x - gebeurtenis.clientX) > WOEDE_PIXELS ||
-      Math.abs(vorige.y - gebeurtenis.clientY) > WOEDE_PIXELS)
-  ) {
-    woedeKlikken = []
-    woedeGemeld = false
-  }
-  woedeKlikken.push({ x: gebeurtenis.clientX, y: gebeurtenis.clientY, t: nu })
-  // Drie keer klikken op een alinea selecteert die alinea. Dat is geen woede.
-  if (woedeKlikken.length >= WOEDE_KLIKKEN && !woedeGemeld && !heeftSelectie()) {
-    woedeGemeld = true
-    noteer('woedeklik', doel)
-  }
-  if (woedeKlikken.length < WOEDE_KLIKKEN) woedeGemeld = false
+  const stap = volgendeWoedestaat(woede, {
+    x: gebeurtenis.clientX,
+    y: gebeurtenis.clientY,
+    t: Date.now(),
+    invoerveld: doelElement.closest(INVOERVELD) !== null,
+    selectie,
+  })
+  woede = stap.staat
+  if (stap.melden) noteer('woedeklik', doel)
 }
 
 function opScroll(): void {
@@ -439,8 +429,7 @@ export function meldPagina(): void {
   laatstePad = pad
 
   gehaaldeScroll = new Set()
-  woedeKlikken = []
-  woedeGemeld = false
+  woede = legeWoedestaat()
   pakWachtendeKlik()
 
   noteer('pagina')
