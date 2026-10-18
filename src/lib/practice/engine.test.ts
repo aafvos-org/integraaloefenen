@@ -121,6 +121,15 @@ describe('answersMatch', () => {
     expect(answersMatch('2ln(2)', 'ln(4)')).toBe(true)
   })
 
+  it('leest de wetenschappelijke notatie van een rekenmachine', () => {
+    expect(answersMatch('1e5', '100000')).toBe(true)
+    expect(answersMatch('2,5e3', '2500')).toBe(true)
+    expect(answersMatch('1e5', '13,59')).toBe(false)
+    // een teken achter de e houdt de constante van Euler: 2e - 3, niet 0,002
+    expect(answersMatch('2e-3', '-3 + 2e')).toBe(true)
+    expect(answersMatch('2e-3', '0,002')).toBe(false)
+  })
+
   it('kent arctan, arcsin en arccos, ook zonder + c', () => {
     // In de les en in de database staan de schoolnamen. De rekenmachine
     // kende alleen atan, asin en acos, waardoor een goed antwoord zonder

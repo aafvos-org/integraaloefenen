@@ -16,6 +16,11 @@
  * hetzelfde als `atan`, `asin` en `acos`. `log(...)` kent hij niet — dat is te
  * verwarrend — en een formule daarmee gaat dus langs de AI-stap. Staafjes
  * `|x|` zijn hetzelfde als `abs(x)`, ook in `ln|x+2|`.
+ *
+ * De `e` van een rekenmachine: `1e5` is 100000, want een getal maal e maal een
+ * getal schrijft niemand zo. Staat er een teken achter de `e`, dan blijft het
+ * de constante van Euler: `2e-3` is 2·e − 3, de gewone vorm van een exacte
+ * uitkomst bij een integraal, en niet 0,002.
  */
 
 /** Langer dan dit is geen antwoord meer; dan rekenen we niet door. */
@@ -82,7 +87,9 @@ function tokenize(bron: string): Token[] | null {
   while (i < bron.length) {
     const rest = bron.slice(i)
 
-    const getal = /^(?:\d+(?:[.,]\d+)?|[.,]\d+)/.exec(rest)
+    // `1e5` hoort bij het getal (100000). `2e-3` en `2e^x` niet: daar is de
+    // `e` de constante van Euler.
+    const getal = /^(?:\d+(?:[.,]\d+)?|[.,]\d+)(?:e\d+)?/.exec(rest)
     if (getal) {
       tokens.push({ soort: 'getal', waarde: Number(getal[0].replace(',', '.')) })
       i += getal[0].length

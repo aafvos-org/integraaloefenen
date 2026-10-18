@@ -44,6 +44,19 @@ describe('readFormula', () => {
     expect(reken('0,5x', 4)).toBe(2)
   })
 
+  it('leest 1e5 als 100000, maar 2e-3 als 2·e − 3', () => {
+    expect(reken('1e5', 0)).toBe(100000)
+    expect(reken('2e3x', 1)).toBe(2000)
+    expect(reken('1,5e3', 0)).toBe(1500)
+    // met een teken erachter blijft e de constante van Euler: zo schrijf je
+    // de exacte uitkomst van een integraal op
+    expect(reken('2e-3', 0)).toBeCloseTo(2 * Math.E - 3, 12)
+    expect(reken('2e+1', 0)).toBeCloseTo(2 * Math.E + 1, 12)
+    // en een macht blijft een macht
+    expect(reken('2e^x', 1)).toBeCloseTo(2 * Math.E, 12)
+    expect(reken('1/2e^(2x)', 0.5)).toBeCloseTo(Math.E / 2, 12)
+  })
+
   it('leest staafjes als absolute waarde', () => {
     expect(reken('|x|', -3)).toBe(3)
     expect(reken('2|x|', -3)).toBe(6)
