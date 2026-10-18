@@ -25,6 +25,16 @@ describe('readFormula', () => {
     expect(reken('x*ln(x)', Math.E)).toBeCloseTo(Math.E, 12)
   })
 
+  it('leest een maalteken tussen twee getallen als maal', () => {
+    expect(reken('2*3', 0)).toBe(6)
+    expect(reken('1/2*3', 0)).toBe(1.5)
+    expect(readFormula('2*3')?.(0)).toBe(6)
+    expect(reken('2*3*4', 0)).toBe(24)
+    expect(reken('2*-3', 0)).toBe(-6)
+    expect(reken('2*3^2', 0)).toBe(18)
+    expect(reken('2*e^3*5', 0)).toBeCloseTo(10 * Math.exp(3), 9)
+  })
+
   it('leest een negatieve exponent', () => {
     expect(reken('x^-2', 2)).toBe(0.25)
     expect(reken('x^(-2)', 2)).toBe(0.25)
