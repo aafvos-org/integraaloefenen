@@ -87,7 +87,14 @@ function from(naam: string) {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const nepClient = { from } as any
 
-function hoofdstuk(slug: string, order_index: number, site = SITE): Rij {
+/**
+ * Een site-waarde die niet van ons is. Sinds migratie 0079 weigert de database
+ * zo'n rij, maar de query's filtren nog steeds op `site`. Deze nepwaarde bewaakt
+ * dat dat filter blijft staan.
+ */
+const ANDERE_SITE = 'andere-site'
+
+function hoofdstuk(slug: string, order_index: number, site: string = SITE): Rij {
   return { id: `h-${slug}`, slug, title: slug, book_part: 1, order_index, site }
 }
 
@@ -142,7 +149,7 @@ describe('loadChapters', () => {
   })
 
   it('laat hoofdstukken van een andere site weg', async () => {
-    tabellen.chapters = [hoofdstuk('K', 1), hoofdstuk('A', 2, 'afgeleiden')]
+    tabellen.chapters = [hoofdstuk('K', 1), hoofdstuk('A', 2, ANDERE_SITE)]
 
     const hoofdstukken = await loadChapters(nepClient)
 
@@ -165,11 +172,11 @@ describe('de overige overzichtslijsten', () => {
     tabellen.topics_new = [
       { id: 't2', slug: 'b', title: 'B', chapter_id: 'h-K', order_index: 2, category: 'integralen', theory_block_id: null, site: SITE },
       { id: 't1', slug: 'a', title: 'A', chapter_id: 'h-K', order_index: 1, category: 'primitiveren', theory_block_id: 'tb1', site: SITE },
-      { id: 't9', slug: 'x', title: 'X', chapter_id: 'h-A', order_index: 1, category: null, theory_block_id: null, site: 'afgeleiden' },
+      { id: 't9', slug: 'x', title: 'X', chapter_id: 'h-A', order_index: 1, category: null, theory_block_id: null, site: ANDERE_SITE },
     ]
     tabellen.paragraphs = [
       { id: 'p1', chapter_id: 'h-K', slug: 'k1', label: '1', title: 'Primitiveren', order_index: 1, site: SITE },
-      { id: 'p9', chapter_id: 'h-A', slug: 'a1', label: '1', title: 'Afgeleiden', order_index: 1, site: 'afgeleiden' },
+      { id: 'p9', chapter_id: 'h-A', slug: 'a1', label: '1', title: 'Anders', order_index: 1, site: ANDERE_SITE },
     ]
     tabellen.theory_blocks = [
       { id: 'tb1', paragraph_id: 'p1', slug: 'k1a', letter: 'A', title: 'Standaardvormen', order_index: 1, site: SITE },
@@ -203,7 +210,7 @@ describe('loadClustersForTopics', () => {
       { id: 'c2', slug: 'c2', title: 'Tweede', topic_id: 't1', order_index: 2, site: SITE },
       { id: 'c1', slug: 'c1', title: 'Eerste', topic_id: 't1', order_index: 1, site: SITE },
       { id: 'c3', slug: 'c3', title: 'Derde', topic_id: 't2', order_index: 1, site: SITE },
-      { id: 'c9', slug: 'c9', title: 'Anders', topic_id: 't9', order_index: 1, site: 'afgeleiden' },
+      { id: 'c9', slug: 'c9', title: 'Anders', topic_id: 't9', order_index: 1, site: ANDERE_SITE },
     ]
   })
 

@@ -11,6 +11,12 @@ import type { Apparaat, Soort } from '@/lib/meten/gebeurtenis'
 export type ProgressStatus = 'locked' | 'in_progress' | 'mastered'
 export type ProfileRole = 'student' | 'admin'
 export type Difficulty = 1 | 2 | 3
+/**
+ * De kolom `site` op de leerstoftabellen. Sinds migratie 0079 laat de
+ * CHECK-constraint alleen 'integralen' toe, dus meer kan er niet in staan.
+ * (`site_gebeurtenissen` heeft die constraint niet en blijft `string`.)
+ */
+export type Site = 'integralen'
 
 export type Database = {
   public: {
@@ -41,7 +47,7 @@ export type Database = {
       chapters: {
         Row: {
           id: string
-          site: 'afgeleiden' | 'integralen'
+          site: Site
           slug: string
           title: string
           book_part: number
@@ -50,7 +56,7 @@ export type Database = {
         }
         Insert: {
           id?: string
-          site?: 'afgeleiden' | 'integralen'
+          site?: Site
           slug: string
           title: string
           book_part: number
@@ -64,7 +70,7 @@ export type Database = {
         Row: {
           id: string
           chapter_id: string
-          site: 'afgeleiden' | 'integralen'
+          site: Site
           slug: string
           label: string
           title: string
@@ -74,7 +80,7 @@ export type Database = {
         Insert: {
           id?: string
           chapter_id: string
-          site?: 'afgeleiden' | 'integralen'
+          site?: Site
           slug: string
           label: string
           title: string
@@ -88,7 +94,7 @@ export type Database = {
         Row: {
           id: string
           paragraph_id: string
-          site: 'afgeleiden' | 'integralen'
+          site: Site
           slug: string
           letter: string
           title: string
@@ -98,7 +104,7 @@ export type Database = {
         Insert: {
           id?: string
           paragraph_id: string
-          site?: 'afgeleiden' | 'integralen'
+          site?: Site
           slug: string
           letter: string
           title: string
@@ -111,7 +117,7 @@ export type Database = {
       topics_new: {
         Row: {
           id: string
-          site: 'afgeleiden' | 'integralen'
+          site: Site
           slug: string
           title: string
           chapter_id: string
@@ -123,7 +129,7 @@ export type Database = {
         }
         Insert: {
           id?: string
-          site?: 'afgeleiden' | 'integralen'
+          site?: Site
           slug: string
           title: string
           chapter_id: string
@@ -139,7 +145,7 @@ export type Database = {
       topic_clusters_new: {
         Row: {
           id: string
-          site: 'afgeleiden' | 'integralen'
+          site: Site
           topic_id: string
           slug: string
           title: string
@@ -147,7 +153,7 @@ export type Database = {
         }
         Insert: {
           id?: string
-          site?: 'afgeleiden' | 'integralen'
+          site?: Site
           topic_id: string
           slug: string
           title: string
@@ -159,7 +165,7 @@ export type Database = {
       questions_new: {
         Row: {
           id: string
-          site: 'afgeleiden' | 'integralen'
+          site: Site
           topic_id: string
           cluster_id: string
           latex_body: string | null
@@ -173,7 +179,7 @@ export type Database = {
         }
         Insert: {
           id?: string
-          site?: 'afgeleiden' | 'integralen'
+          site?: Site
           topic_id: string
           cluster_id: string
           latex_body?: string | null
