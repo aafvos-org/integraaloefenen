@@ -14,6 +14,7 @@
  * Uit invoervelden lezen we nooit een waarde of een ingetypte tekst.
  */
 
+import { teltAlsDodeKlik } from './dode-klik'
 import {
   apparaatVanBreedte,
   isBeheerpad,
@@ -47,6 +48,13 @@ const WOEDE_KLIKKEN = 3
 const WOEDE_MS = 1000
 const WOEDE_PIXELS = 30
 
+/**
+ * Hoe lang we wachten voordat we een klik die nergens op landde een dode klik
+ * noemen. Lang genoeg om een dubbelklik af te laten maken — pas daarna staat
+ * het woord geselecteerd en weten we dat het lezen was en geen mislukte klik.
+ */
+const SELECTIE_MS = 350
+
 const buffer: RuweGebeurtenis[] = []
 let gestart = false
 let timer: number | null = null
@@ -54,6 +62,8 @@ let laatstePad: string | null = null
 let gehaaldeScroll = new Set<number>()
 let woedeKlikken: { x: number; y: number; t: number }[] = []
 let woedeGemeld = false
+let dodeKlikTimer: number | null = null
+let wachtendDoel: string | null = null
 
 /** Een id dat alleen in dit tabblad bestaat. */
 function nieuwSessieId(): string {
@@ -202,6 +212,8 @@ function onthoudHerkomst(): void {
 }
 
 function verstuur(): void {
+  // Gaat het tabblad dicht, dan krijgt een wachtende dode klik geen kans meer.
+  rondDodeKlikAf()
   if (timer !== null) {
     window.clearTimeout(timer)
     timer = null
@@ -265,12 +277,64 @@ function doelVan(element: Element): string {
 const KLIKBAAR =
   'a, button, summary, label, input, textarea, select, [role="button"], [role="link"], [role="tab"], [onclick], [contenteditable]:not([contenteditable="false"])'
 
+/** Of er op dit moment tekst geselecteerd staat. */
+function heeftSelectie(): boolean {
+  try {
+    const selectie = window.getSelection()
+    return selectie !== null && !selectie.isCollapsed && selectie.toString().trim() !== ''
+  } catch {
+    return false
+  }
+}
+
+/** Vergeet een klik die nog op beoordeling wacht, en geeft zijn doel terug. */
+function pakWachtendeKlik(): string | null {
+  if (dodeKlikTimer !== null) {
+    window.clearTimeout(dodeKlikTimer)
+    dodeKlikTimer = null
+  }
+  const doel = wachtendDoel
+  wachtendDoel = null
+  return doel
+}
+
+/**
+ * Beoordeelt de laatste klik die nergens op landde, nu het klikgebaar klaar
+ * is. Staat er inmiddels tekst geselecteerd, dan was het lezen.
+ */
+function rondDodeKlikAf(): void {
+  const doel = pakWachtendeKlik()
+  if (doel === null) return
+  if (heeftSelectie()) return
+  noteer('dode_klik', doel)
+}
+
 function opKlik(gebeurtenis: MouseEvent): void {
   const doelElement = gebeurtenis.target
   if (!(doelElement instanceof Element)) return
 
   const klikbaar = doelElement.closest(KLIKBAAR)
-  noteer(klikbaar ? 'klik' : 'dode_klik', doelVan(klikbaar ?? doelElement))
+  const doel = doelVan(klikbaar ?? doelElement)
+
+  if (klikbaar) {
+    // Een klik die wél ergens op landt kan een pagina openen. Dan hoort een
+    // dode klik van een tel geleden niet meer bij de pagina die zo komt.
+    pakWachtendeKlik()
+    noteer('klik', doel)
+  } else if (
+    teltAlsDodeKlik({
+      tag: doelElement.tagName.toLowerCase(),
+      klikbaar: false,
+      // Slepen over een zin is hier al te zien; een dubbelklik pas straks.
+      selectie: heeftSelectie(),
+    })
+  ) {
+    // Wachten tot een eventuele dubbelklik af is. Een tweede klik vervangt de
+    // eerste, zodat één gebaar hoogstens één dode klik oplevert.
+    if (dodeKlikTimer !== null) window.clearTimeout(dodeKlikTimer)
+    wachtendDoel = doel
+    dodeKlikTimer = window.setTimeout(rondDodeKlikAf, SELECTIE_MS)
+  }
 
   // Drie klikken binnen een seconde, bijna op dezelfde plek: iemand is aan
   // het rammen omdat er niets gebeurt.
@@ -286,9 +350,10 @@ function opKlik(gebeurtenis: MouseEvent): void {
     woedeGemeld = false
   }
   woedeKlikken.push({ x: gebeurtenis.clientX, y: gebeurtenis.clientY, t: nu })
-  if (woedeKlikken.length >= WOEDE_KLIKKEN && !woedeGemeld) {
+  // Drie keer klikken op een alinea selecteert die alinea. Dat is geen woede.
+  if (woedeKlikken.length >= WOEDE_KLIKKEN && !woedeGemeld && !heeftSelectie()) {
     woedeGemeld = true
-    noteer('woedeklik', doelVan(klikbaar ?? doelElement))
+    noteer('woedeklik', doel)
   }
   if (woedeKlikken.length < WOEDE_KLIKKEN) woedeGemeld = false
 }
@@ -376,6 +441,7 @@ export function meldPagina(): void {
   gehaaldeScroll = new Set()
   woedeKlikken = []
   woedeGemeld = false
+  pakWachtendeKlik()
 
   noteer('pagina')
   kijkNaarInloggen()
