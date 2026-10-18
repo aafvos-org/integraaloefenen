@@ -67,7 +67,7 @@ export type AdditiveChapter = {
   chapterTitle: string
   bookPart: number
   chapterOrder: number
-  site: 'afgeleiden' | 'integralen'
+  site: 'integralen'
   /** Bestandsnaam van de migratie, bv. '0034_k0b_primitiveren.sql' */
   migrationFile: string
   /** Titel achter "Migration NNNN:" */
