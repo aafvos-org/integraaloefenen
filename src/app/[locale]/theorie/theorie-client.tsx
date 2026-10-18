@@ -470,7 +470,36 @@ function StappenplanKaart({
             <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-accent">
               {labels.regelsTitle}
             </p>
-            <div className="overflow-x-auto rounded-lg border border-border bg-surface">
+
+            {/* Telefoon: gestapelde kaartjes, want Route/Stap 1/2/3 past niet naast elkaar op een smal scherm */}
+            <ul className="grid gap-3 sm:hidden">
+              {plan.regels.map((row, i) => (
+                <li key={i} className="rounded-lg border border-border bg-surface p-3">
+                  <p className="text-xs font-medium uppercase tracking-wider text-text-muted">
+                    {labels.herkenRegel}
+                  </p>
+                  <p className="font-medium text-text">{row.regel}</p>
+                  <p className="mt-1 overflow-x-auto whitespace-nowrap text-[0.85em] text-text-muted">
+                    <TeX tex={row.formule} />
+                  </p>
+                  <dl className="mt-3 space-y-2 border-t border-border pt-3">
+                    {[row.stap1, row.stap2, row.stap3].map((stap, n) => (
+                      <div key={n}>
+                        <dt className="text-xs font-medium uppercase tracking-wider text-text-muted">
+                          {labels.stepLabel.replace('{n}', String(n + 1))}
+                        </dt>
+                        <dd className="mt-0.5 text-text">
+                          <RichMath source={stap} />
+                        </dd>
+                      </div>
+                    ))}
+                  </dl>
+                </li>
+              ))}
+            </ul>
+
+            {/* Vanaf tablet: tabel, breed genoeg voor alle kolommen naast elkaar */}
+            <div className="hidden overflow-x-auto rounded-lg border border-border bg-surface sm:block">
               <table className="w-full text-sm">
                 <thead className="bg-surface-2">
                   <tr>
