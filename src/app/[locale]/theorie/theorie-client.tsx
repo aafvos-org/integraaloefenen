@@ -474,7 +474,7 @@ function StappenplanKaart({
             {/* Telefoon: gestapelde kaartjes, want Route/Stap 1/2/3 past niet naast elkaar op een smal scherm */}
             <ul className="grid gap-3 sm:hidden">
               {plan.regels.map((row, i) => (
-                <li key={i} className="rounded-lg border border-border bg-surface p-3">
+                <li key={i} className="min-w-0 rounded-lg border border-border bg-surface p-3">
                   <p className="text-xs font-medium uppercase tracking-wider text-text-muted">
                     {labels.herkenRegel}
                   </p>
@@ -484,11 +484,11 @@ function StappenplanKaart({
                   </p>
                   <dl className="mt-3 space-y-2 border-t border-border pt-3">
                     {[row.stap1, row.stap2, row.stap3].map((stap, n) => (
-                      <div key={n}>
+                      <div key={n} className="min-w-0">
                         <dt className="text-xs font-medium uppercase tracking-wider text-text-muted">
                           {labels.stepLabel.replace('{n}', String(n + 1))}
                         </dt>
-                        <dd className="mt-0.5 text-text">
+                        <dd className="mt-0.5 min-w-0 overflow-x-auto whitespace-nowrap text-text">
                           <RichMath source={stap} />
                         </dd>
                       </div>
