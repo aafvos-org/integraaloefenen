@@ -72,11 +72,20 @@ export default async function LocaleLayout({
   }
 
   const messages = await getMessages()
+  const t = await getTranslations({ locale, namespace: 'Header' })
 
   return (
     <NextIntlClientProvider messages={messages}>
+      <a
+        href="#inhoud"
+        className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-md focus:bg-accent focus:px-4 focus:py-2 focus:text-white focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2"
+      >
+        {t('skipToContent')}
+      </a>
       <SiteHeader locale={locale} />
-      <main className="flex-1">{children}</main>
+      <main id="inhoud" tabIndex={-1} className="flex-1 focus:outline-none">
+        {children}
+      </main>
       <SiteFooter />
     </NextIntlClientProvider>
   )
