@@ -11,7 +11,6 @@ import { losSelectieOp } from '@/lib/practice/oefenen-indeling'
 import {
   bouwZelfToetsBoom,
   clusterIdsVanHoofdstuk,
-  clusterIdsVanOnderwerpen,
   linkNaToets,
   type ZelfToetsIndelingInvoer,
 } from '@/lib/practice/zelf-toets-indeling'
@@ -148,16 +147,10 @@ function blokK1aUitBoom() {
 }
 
 describe('zelf-toets per theorieblok', () => {
-  it('trekt voor K.1 A dezelfde clusters als de drie onderwerpen samen', () => {
+  it('trekt voor K.1 A de clusters van de drie onderwerpen samen', () => {
     const blok = blokK1aUitBoom()
-    const vanOnderwerpen = clusterIdsVanOnderwerpen(
-      [kern.id, ketting.id, oppervlakte.id],
-      data.topics,
-      data.clusters,
-    )
 
-    expect(blok?.clusters.map((item) => item.id)).toEqual(vanOnderwerpen)
-    expect(vanOnderwerpen).toEqual([
+    expect(blok?.clusters.map((item) => item.id)).toEqual([
       'c-k1a_differentiaal',
       'c-k1a_welke_a',
       'c-k1a_macht_kern',

@@ -217,24 +217,6 @@ export function clusterIdsVanHoofdstuk(hoofdstuk: ToetsHoofdstuk): string[] {
   return [...uitBlokken, ...uitLos]
 }
 
-/** Alle clusters van de onderwerpen, in de volgorde van die onderwerpen. */
-export function clusterIdsVanOnderwerpen(
-  topicIds: string[],
-  topics: { id: string; order_index: number }[],
-  clusters: { id: string; topic_id: string; order_index: number }[],
-): string[] {
-  const gekozen = new Set(topicIds)
-  const ids: string[] = []
-  for (const topic of [...topics].sort((a, b) => a.order_index - b.order_index)) {
-    if (!gekozen.has(topic.id)) continue
-    const vanTopic = clusters
-      .filter((cluster) => cluster.topic_id === topic.id)
-      .sort((a, b) => a.order_index - b.order_index)
-    for (const cluster of vanTopic) ids.push(cluster.id)
-  }
-  return ids
-}
-
 export type ToetsResultaatGroep = {
   blockSlug: string
   chapterSlug: string
