@@ -157,4 +157,36 @@ describe('normalizeAnswer', () => {
     // U+2212, wat je meekrijgt als je uit een pdf of uit Word plakt
     expect(normalizeAnswer('−cos(x) + c')).toBe('-cos(x)+c')
   })
+
+  it('maakt van het π-teken gewoon pi', () => {
+    expect(normalizeAnswer('π')).toBe('pi')
+    expect(normalizeAnswer('2π')).toBe('2pi')
+    expect(normalizeAnswer('sin(πx)')).toBe('sin(pix)')
+  })
+
+  it('maakt van een getypte macht een macht met een dakje', () => {
+    expect(normalizeAnswer('x²')).toBe('x^2')
+    expect(normalizeAnswer('x³ + c')).toBe('x^3+c')
+    // een hele rij machttekens hoort bij één exponent
+    expect(normalizeAnswer('x¹⁰')).toBe('x^10')
+    expect(normalizeAnswer('x⁻¹')).toBe('x^-1')
+    // x^1 blijft gewoon x, net als bij een getypt dakje
+    expect(normalizeAnswer('x¹')).toBe('x')
+  })
+})
+
+describe('antwoorden van het symbolentoetsenbord', () => {
+  it('rekent π en pi hetzelfde', () => {
+    expect(answersMatch('π', 'pi', [])).toBe(true)
+    expect(answersMatch('2π', '2 * pi', [])).toBe(true)
+  })
+
+  it('rekent x² en x^2 hetzelfde', () => {
+    expect(answersMatch('arcsin(x²) + c', 'arcsin(x^2) + c', [])).toBe(true)
+    expect(answersMatch('(1/3)x³ + c', '(1/3) * x^3 + c', [])).toBe(true)
+  })
+
+  it('blijft een fout antwoord fout rekenen', () => {
+    expect(answersMatch('x²', 'x^3', [])).toBe(false)
+  })
 })

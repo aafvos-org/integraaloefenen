@@ -9,12 +9,34 @@ import { readFormula, type Formula } from './expression'
 // =====================================================================
 // Normalisatie
 // =====================================================================
+/** De tekens die het symbolentoetsenbord van een telefoon als macht typt. */
+const MACHTCIJFERS: Record<string, string> = {
+  '⁰': '0',
+  '¹': '1',
+  '²': '2',
+  '³': '3',
+  '⁴': '4',
+  '⁵': '5',
+  '⁶': '6',
+  '⁷': '7',
+  '⁸': '8',
+  '⁹': '9',
+  '⁻': '-',
+  ⁿ: 'n',
+}
+
 export function normalizeAnswer(raw: string): string {
   return raw
     .toLowerCase()
     .replace(/\s+/g, '')
     .replace(/\*/g, '')
     .replace(/·/g, '')
+    // het π-toetsje van een wiskundetoetsenbord
+    .replace(/π/g, 'pi')
+    // x² → x^2, x⁻¹ → x^-1: een hele rij machttekens wordt één exponent
+    .replace(/[⁰¹²³⁴⁵⁶⁷⁸⁹⁻ⁿ]+/g, (reeks) =>
+      '^' + [...reeks].map((teken) => MACHTCIJFERS[teken]).join(''),
+    )
     // ^(5), ^(-1), ^(x) → ^5, ^-1, ^x — alleen simpele exponenten, zodat
     // bv. e^(x+1) niet gelijk wordt aan e^x+1
     .replace(/\^\((-?\d+|-?[a-z])\)/g, '^$1')
