@@ -164,13 +164,10 @@ describe('de tekstbestanden in messages/', () => {
 
 describe('paginatitels', () => {
   it('bevatten het domein niet, want de layout plakt het er achter', () => {
-    const overrides = JSON.parse(
-      readFileSync(
-        join(process.cwd(), 'messages', 'overrides', 'integralen.nl.json'),
-        'utf8',
-      ),
+    const messages = JSON.parse(
+      readFileSync(join(process.cwd(), 'messages', 'nl.json'), 'utf8'),
     ) as Record<string, Record<string, unknown>>
-    for (const [namespace, sleutels] of Object.entries(overrides)) {
+    for (const [namespace, sleutels] of Object.entries(messages)) {
       // Metadata.title is de standaardtitel van de layout zelf en wordt niet
       // door de titel-sjabloon heen gehaald: daar hoort het domein wél in.
       if (namespace === 'Metadata') continue
