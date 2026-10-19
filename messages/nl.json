@@ -103,8 +103,8 @@
     "theorie": "Lees de theorie"
   },
   "HoeHetWerkt": {
-    "title": "Hoe het werkt",
-    "description": "Oefenen per hoofdstuk, je eigen zelf-toets samenstellen, je voortgang bekijken en een vraag stellen: zo werkt __DOMAIN__.",
+    "title": "Hoe werkt integralen oefenen voor wiskunde B VWO",
+    "description": "Zo werkt __DOMAIN__: probeer eerst drie sommen zonder account, maak daarna een gratis account aan en bouw je voortgang op. Oefenen per hoofdstuk, een zelf-toets samenstellen, je voortgang bekijken en een vraag stellen.",
     "eyebrow": "Het idee achter deze site",
     "h1": "Zo oefen je hier integralen",
     "intro": "__DOMAIN__ heeft één doel: jou sneller en zekerder maken in integreren en primitiveren. Je hoeft vooraf niets in te stellen. Je maakt een gratis account, kiest een hoofdstuk en begint. Bij elke fout legt de site uit waar het misging.",
@@ -145,6 +145,7 @@
     "weten1": "Alles op de site is gratis. Je mag eerst drie sommen proberen zonder account. Een account heb je pas nodig om je voortgang te bewaren.",
     "weten2": "Notatie en volgorde volgen Getal & Ruimte. Gebruik je een andere methode, dan werkt de site net zo goed.",
     "weten3": "Je kunt op elk moment stoppen. Na opnieuw inloggen staan je antwoorden en je voortgang er gewoon weer.",
+    "ctaTry": "Probeer drie sommen",
     "ctaRegister": "Account aanmaken",
     "ctaBack": "← Terug naar home"
   },

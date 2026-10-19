@@ -34,6 +34,7 @@ export function eigenPagina({
   titel,
   kaartTitel,
   omschrijving,
+  eigenDeelafbeelding = false,
 }: {
   locale: string
   /** Het pad onder de taal, met schuine streep vooraan. Leeg op de startpagina. */
@@ -46,11 +47,24 @@ export function eigenPagina({
   /** De titel op het deelkaartje. Standaard dezelfde als `titel`. */
   kaartTitel?: string
   omschrijving: string
+  /**
+   * Zet op `true` als de map van deze pagina al een eigen `opengraph-image.tsx`
+   * heeft (zie `oefenen`, `theorie`, `theorie/[hoofdstuk]`, `voorbeeld/[slug]`).
+   * Next.js laat zo'n bestand alleen gelden als `openGraph.images` hier leeg
+   * blijft: zet deze pagina er zelf een, dan verdringt dat het kaartje op maat.
+   */
+  eigenDeelafbeelding?: boolean
 }): Metadata {
   const adres = `/${locale}${pad}`
   const eerste = pad.replace(/^\//, '').split('/')[0] ?? ''
   const openbaar =
     pad === '' || (OPENBAAR as readonly string[]).includes(eerste)
+  const deelafbeelding = {
+    url: '/og-image.png',
+    width: 1200,
+    height: 630,
+    alt: SITE_CONFIG.domain,
+  }
 
   return {
     ...(titel ? { title: titel } : {}),
@@ -66,6 +80,17 @@ export function eigenPagina({
       siteName: SITE_CONFIG.domain,
       title: kaartTitel ?? titel,
       description: omschrijving,
+      ...(eigenDeelafbeelding ? {} : { images: [deelafbeelding] }),
     },
+    ...(eigenDeelafbeelding
+      ? {}
+      : {
+          twitter: {
+            card: 'summary_large_image',
+            title: kaartTitel ?? titel,
+            description: omschrijving,
+            images: [deelafbeelding.url],
+          },
+        }),
   }
 }

@@ -24,6 +24,11 @@ export function UserMenu({
   const [open, setOpen] = useState(false)
   const rootRef = useRef<HTMLDivElement | null>(null)
   const closeTimer = useRef<number | null>(null)
+  // Met een muis komt er altijd eerst een zweefbeweging: het menu staat dan al
+  // open voordat de klik binnen is. Die klik mag het niet meteen weer
+  // dichtdoen. Op een aanraakscherm op computerformaat (laptop met touch,
+  // tablet) viel het menu daardoor in dezelfde tik weer dicht.
+  const doorZweven = useRef(false)
   const menuId = useId()
 
   const initial = (displayName.trim()[0] ?? '?').toUpperCase()
@@ -70,6 +75,30 @@ export function UserMenu({
     window.dispatchEvent(new CustomEvent(NAV_DROPDOWN_OPEN_EVENT, { detail: menuId }))
   }
 
+  function zweefBinnen() {
+    doorZweven.current = true
+    openMenu()
+  }
+
+  function zweefWeg() {
+    doorZweven.current = false
+    scheduleClose()
+  }
+
+  /**
+   * Opende de zweefbeweging het menu net? Dan houdt deze klik hem open; pas
+   * de volgende klik sluit hem. Zonder muis (toetsenbord) staat `doorZweven`
+   * uit en is het gewoon een aan/uit-knop.
+   */
+  function klikOpKnop() {
+    if (open && !doorZweven.current) {
+      setOpen(false)
+      return
+    }
+    doorZweven.current = false
+    openMenu()
+  }
+
   const itemClass =
     'flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-left text-sm text-text-muted hover:bg-surface-2 hover:text-text'
 
@@ -77,8 +106,8 @@ export function UserMenu({
     <div
       ref={rootRef}
       className="relative ml-4"
-      onMouseEnter={openMenu}
-      onMouseLeave={scheduleClose}
+      onMouseEnter={zweefBinnen}
+      onMouseLeave={zweefWeg}
     >
       <button
         type="button"
@@ -86,7 +115,7 @@ export function UserMenu({
         aria-expanded={open}
         aria-haspopup="menu"
         aria-label={displayName}
-        onClick={() => (open ? setOpen(false) : openMenu())}
+        onClick={klikOpKnop}
         className={`flex size-8 items-center justify-center rounded-full bg-accent text-sm font-semibold text-white transition hover:bg-accent/90 ${
           open ? 'ring-2 ring-accent/30' : ''
         }`}

@@ -149,7 +149,11 @@ describe('eigen adres en deelkaartje', () => {
     // Alleen in het openGraph-blok kijken: de iconen hebben ook een `url:`.
     const kaartje = layout.match(/openGraph:\s*\{[^}]*\}/)?.[0] ?? ''
     expect(kaartje).toContain('siteName:')
-    expect(kaartje).not.toMatch(/\burl:/)
+    // Een eigen `url:` op het niveau van openGraph zou het adres van de
+    // startpagina zijn, want de layout kent het pad niet. De deelafbeelding
+    // heeft ook een `url:`, maar die zit genest in `images:` en staat niet
+    // los op een eigen regel zoals een top-level sleutel dat wel doet.
+    expect(kaartje).not.toMatch(/\n\s*url:/)
   })
 
   it('staan op de startpagina', () => {

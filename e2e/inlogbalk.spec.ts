@@ -1,6 +1,6 @@
 import { expect, test, type Page } from '@playwright/test'
 
-import { logIn, rondleidingWegklikken } from './leerling'
+import { logIn, menuMetUitloggen, rondleidingWegklikken } from './leerling'
 
 /**
  * Na inloggen stuurt de site je door zonder de pagina helemaal opnieuw te
@@ -33,14 +33,7 @@ test('de balk wisselt meteen na inloggen en uitloggen @telefoon', async ({ page 
 
   await rondleidingWegklikken(page)
 
-  const smal = (page.viewportSize()?.width ?? 1280) < 768
-  if (smal) {
-    const openen = page.getByRole('button', { name: 'Menu openen' })
-    if (await openen.isVisible()) await openen.click()
-  } else {
-    await page.locator('header button[aria-haspopup="menu"]').last().click()
-  }
-  await page.getByRole('button', { name: 'Uitloggen' }).click()
+  await (await menuMetUitloggen(page)).click()
   await expect(page).toHaveURL(/\/(nl)?\/?$/)
 
   // Ook hier geen herlaadbeurt: de balk moet meteen weer uitgelogd zijn.
