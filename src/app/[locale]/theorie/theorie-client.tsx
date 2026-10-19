@@ -52,26 +52,6 @@ function splitTitle(title: string): { code: string | null; short: string } {
   return m ? { code: m[1]!, short: m[2]! } : { code: null, short: title }
 }
 
-/**
- * Titels mogen `$...$` bevatten. Voor een aria-label willen we platte tekst:
- * alleen de `$` weghalen laat de LaTeX-commando's zelf staan ("\arctan"), dus
- * maken we er leesbare tekens van.
- */
-function platteTekst(s: string): string {
-  return s
-    .replace(/\\sqrt\s*\{([^{}]*)\}/g, '√($1)')
-    .replace(/\\ldots/g, '…')
-    .replace(/\\pi\b/g, 'π')
-    .replace(/\\cdot\b/g, '·')
-    // alle overige commando's: \arctan → arctan
-    .replace(/\\([a-zA-Z]+)/g, '$1')
-    .replace(/\^2/g, '²')
-    .replace(/\^3/g, '³')
-    .replace(/[${}]/g, '')
-    .replace(/\s+/g, ' ')
-    .trim()
-}
-
 /** Geen abonnement nodig: alleen gebruikt om de eerste stand te bepalen. */
 function useIsDesktop(): boolean {
   return useSyncExternalStore(
@@ -237,7 +217,7 @@ export function TheorieClient({
                           <button
                             type="button"
                             onClick={() => scrollToId(`kaart-${ch.slug}-${card.id}`)}
-                            aria-label={platteTekst(card.title)}
+                            aria-label={leesbareTekst(card.title)}
                             className="flex min-h-11 w-full items-center gap-2 rounded-md py-2 pl-7 pr-3 text-xs text-text-muted hover:text-text"
                           >
                             <span className="size-1.5 shrink-0 rounded-full bg-border" />
@@ -755,7 +735,7 @@ function TheoryCard({
           type="button"
           onClick={onToggle}
           aria-expanded={open}
-          aria-label={`${platteTekst(card.title)} — ${labels.detailsLabel}`}
+          aria-label={`${leesbareTekst(card.title)} — ${labels.detailsLabel}`}
           className="group flex w-full min-w-0 items-center justify-between gap-3 rounded-t-xl px-4 py-4 text-left sm:px-5"
         >
           <span className="min-w-0">
