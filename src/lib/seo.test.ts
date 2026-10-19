@@ -93,4 +93,34 @@ describe('eigenPagina', () => {
     })
     expect(m.robots).toEqual({ index: false, follow: false })
   })
+
+  it('geeft elk kaartje dezelfde deelafbeelding mee, ook voor WhatsApp en iMessage', () => {
+    const m = eigenPagina({
+      locale: 'nl',
+      pad: '/theorie',
+      titel: 'Theorie',
+      omschrijving: 'Alle regels op een rij.',
+    })
+
+    expect(m.openGraph?.images).toMatchObject([
+      { url: '/og-image.png', width: 1200, height: 630 },
+    ])
+    expect(m.twitter).toMatchObject({
+      card: 'summary_large_image',
+      images: ['/og-image.png'],
+    })
+  })
+
+  it('laat de vaste deelafbeelding weg als de pagina er al een eigen opengraph-image.tsx heeft', () => {
+    const m = eigenPagina({
+      locale: 'nl',
+      pad: '/theorie/primitieve',
+      titel: 'Primitieve functies',
+      omschrijving: 'Van integraal naar primitieve.',
+      eigenDeelafbeelding: true,
+    })
+
+    expect(m.openGraph?.images).toBeUndefined()
+    expect(m.twitter).toBeUndefined()
+  })
 })

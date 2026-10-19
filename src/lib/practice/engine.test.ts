@@ -23,6 +23,16 @@ describe('answersMatch', () => {
     expect(answersMatch('2·ln(x)', '2ln(x)')).toBe(true)
   })
 
+  it('plakt twee getallen niet aan elkaar bij een maalteken', () => {
+    expect(answersMatch('2*3', '6')).toBe(true)
+    expect(answersMatch('1/2*3', '1,5')).toBe(true)
+    expect(answersMatch('1/2·3', '1,5')).toBe(true)
+    expect(answersMatch('2*e^3*5', '10e^3')).toBe(true)
+    expect(answersMatch('1/2*x^2', '0,5x^2')).toBe(true)
+    // en fout blijft fout
+    expect(answersMatch('2*3', '23')).toBe(false)
+  })
+
   it('rekent haakjes om een simpele exponent goed', () => {
     expect(answersMatch('x^(-1)', 'x^-1')).toBe(true)
     expect(answersMatch('e^(x)', 'e^x')).toBe(true)
@@ -171,6 +181,22 @@ describe('normalizeAnswer', () => {
     expect(normalizeAnswer('π')).toBe('pi')
     expect(normalizeAnswer('2π')).toBe('2pi')
     expect(normalizeAnswer('sin(πx)')).toBe('sin(pix)')
+  })
+
+  it('haalt het maalteken weg waar dat niets verandert', () => {
+    expect(normalizeAnswer('2 * x')).toBe('2x')
+    expect(normalizeAnswer('2 · ln(x)')).toBe('2ln(x)')
+    expect(normalizeAnswer('(x+1)*3')).toBe('(x+1)3')
+    expect(normalizeAnswer('2*(x+1)')).toBe('2(x+1)')
+  })
+
+  it('laat het maalteken staan waar weglaten iets anders betekent', () => {
+    // anders wordt dit 1/23 in plaats van 1,5
+    expect(normalizeAnswer('1/2*3')).toBe('1/2*3')
+    expect(normalizeAnswer('1/2·3')).toBe('1/2*3')
+    expect(normalizeAnswer('2*3')).toBe('2*3')
+    expect(normalizeAnswer('x²*3')).toBe('x^2*3')
+    expect(normalizeAnswer('2*-3')).toBe('2*-3')
   })
 
   it('maakt van een getypte macht een macht met een dakje', () => {

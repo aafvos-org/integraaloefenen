@@ -10,7 +10,8 @@
  * moet klein blijven. (mathjs staat wel in de repo, maar alleen als
  * devDependency, voor `src/content/primitieven.test.ts`.)
  *
- * Hij kent de notatie uit `AGENTS.md`: `*` mag je weglaten, `^` voor machten,
+ * Hij kent de notatie uit `AGENTS.md`: `*` voor maal (dat mag je weglaten),
+ * `^` voor machten,
  * `sqrt(x)`, `sin(x)`, `asin(x)`, `e^x`, `pi`, `ln(x)` en `log10(x)`. In de les
  * heten de inverse functies `arctan`, `arcsin` en `arccos`; die rekent hij
  * hetzelfde als `atan`, `asin` en `acos`. `log(...)` kent hij niet — dat is te
@@ -58,7 +59,7 @@ type Token =
   | { soort: 'naam'; waarde: string }
   | { soort: 'teken'; waarde: string }
 
-const TEKENS = new Set(['+', '-', '/', '^', '(', ')'])
+const TEKENS = new Set(['+', '-', '*', '/', '^', '(', ')'])
 
 /**
  * Schoolnotatie `|x+2|` is hetzelfde als `abs(x+2)`. Ook `ln|x+2|`, zonder
@@ -120,7 +121,8 @@ function tokenize(bron: string): Token[] | null {
  * notatie is — dan valt het antwoord gewoon terug op de AI-stap.
  *
  * De invoer wordt verwacht zoals `normalizeAnswer` hem achterlaat: kleine
- * letters, zonder spaties en zonder maaltekens.
+ * letters en zonder spaties. Maaltekens die daar zijn blijven staan (tussen
+ * twee getallen, want `1/2*3` is niet `1/23`) leest hij gewoon als maal.
  */
 export function readFormula(bron: string): Formula | null {
   const metAbs = staafjesNaarAbs(bron)
@@ -155,7 +157,7 @@ export function readFormula(bron: string): Formula | null {
     }
   }
 
-  // product := min (('/' | niets) min)*  — het maalteken mag je weglaten
+  // product := min (('/' | '*' | niets) min)*  — het maalteken mag je weglaten
   function product(): Formula {
     let links = min()
     for (;;) {
@@ -164,6 +166,11 @@ export function readFormula(bron: string): Formula | null {
         const rechts = min()
         const a = links
         links = (x) => a(x) / rechts(x)
+      } else if (isTeken('*')) {
+        pos++
+        const rechts = min()
+        const a = links
+        links = (x) => a(x) * rechts(x)
       } else if (beginVanGetalOfNaam()) {
         const rechts = macht()
         const a = links

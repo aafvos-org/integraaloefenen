@@ -25,14 +25,36 @@ const MACHTCIJFERS: Record<string, string> = {
   ⁿ: 'n',
 }
 
+/**
+ * Haalt de maaltekens weg, want weglaten mag: zo is `2*x` hetzelfde antwoord
+ * als `2x` en hoeven we die twee niet door te rekenen.
+ *
+ * Alleen daar waar weglaten iets anders betekent, blijft het teken staan.
+ * Tussen twee getallen plakken de cijfers anders aan elkaar (`1/2*3` zou
+ * `1/23` worden), en voor een `-`, een `+` of het eind van het antwoord valt
+ * er niets te vermenigvuldigen. De rekenmachine in `expression.ts` leest zo'n
+ * achtergebleven maalteken gewoon als maal.
+ */
+function maaltekensWeg(genormaliseerd: string): string {
+  return genormaliseerd.replace(/\*/g, (teken, index: number, bron: string) => {
+    const ervoor = bron[index - 1] ?? ''
+    const erna = bron.slice(index + 1)
+    // `2*3` → `23`, maar ook `2*e5` → `2e5`: dat leest de tokenizer als 200000
+    const plaktGetallen = /[\d.,]/.test(ervoor) && /^(?:[\d.,]|e\d)/.test(erna)
+    // achter het maalteken hoort iets te staan om mee te vermenigvuldigen
+    const geenFactorErna = !/^[\d.,a-z(|]/.test(erna)
+    return plaktGetallen || geenFactorErna ? teken : ''
+  })
+}
+
 export function normalizeAnswer(raw: string): string {
-  return raw
+  const metMaaltekens = raw
     .toLowerCase()
     .replace(/\s+/g, '')
-    .replace(/\*/g, '')
-    .replace(/·/g, '')
     // het π-toetsje van een wiskundetoetsenbord
     .replace(/π/g, 'pi')
+    // het "echte" minteken dat een leerling meeplakt uit een pdf
+    .replace(/−/g, '-')
     // x² → x^2, x⁻¹ → x^-1: een hele rij machttekens wordt één exponent
     .replace(/[⁰¹²³⁴⁵⁶⁷⁸⁹⁻ⁿ]+/g, (reeks) =>
       '^' + [...reeks].map((teken) => MACHTCIJFERS[teken]).join(''),
@@ -40,10 +62,13 @@ export function normalizeAnswer(raw: string): string {
     // ^(5), ^(-1), ^(x) → ^5, ^-1, ^x — alleen simpele exponenten, zodat
     // bv. e^(x+1) niet gelijk wordt aan e^x+1
     .replace(/\^\((-?\d+|-?[a-z])\)/g, '^$1')
+    // het punt is hetzelfde maalteken als de ster
+    .replace(/·/g, '*')
+
+  // De machten staan al op `^`, zodat `x²*3` niet alsnog `x^23` wordt.
+  return maaltekensWeg(metMaaltekens)
     .replace(/x\^1\b/g, 'x')
     .replace(/\+-/g, '-')
-    // het "echte" minteken dat een leerling meeplakt uit een pdf
-    .replace(/−/g, '-')
 }
 
 export function answersMatch(

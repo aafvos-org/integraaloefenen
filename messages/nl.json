@@ -93,6 +93,7 @@
     "overzichtOmschrijving": "De primitieve van 1/x, ln(x), sin²(x) en e^(2x), plus de oppervlakte tussen een grafiek en de x-as of tussen twee grafieken, met uitwerking.",
     "overzichtKop": "Uitwerkingen waar je op zoekt",
     "overzichtIntro": "Elke pagina geeft meteen het antwoord, daarna vier stappen, en een knop naar sommen van hetzelfde soort.",
+    "proefKnop": "Oefen dit zelf — 3 sommen, geen account",
     "antwoord": "Antwoord",
     "antwoordZin": "Het antwoord is",
     "uitwerking": "Uitwerking",
@@ -103,8 +104,8 @@
     "theorie": "Lees de theorie"
   },
   "HoeHetWerkt": {
-    "title": "Hoe het werkt",
-    "description": "Oefenen per hoofdstuk, je eigen zelf-toets samenstellen, je voortgang bekijken en een vraag stellen: zo werkt __DOMAIN__.",
+    "title": "Hoe werkt integralen oefenen voor wiskunde B VWO",
+    "description": "Zo werkt __DOMAIN__: probeer eerst drie sommen zonder account, maak daarna een gratis account aan en bouw je voortgang op. Oefenen per hoofdstuk, een zelf-toets samenstellen, je voortgang bekijken en een vraag stellen.",
     "eyebrow": "Het idee achter deze site",
     "h1": "Zo oefen je hier integralen",
     "intro": "__DOMAIN__ heeft één doel: jou sneller en zekerder maken in integreren en primitiveren. Je hoeft vooraf niets in te stellen. Je maakt een gratis account, kiest een hoofdstuk en begint. Bij elke fout legt de site uit waar het misging.",
@@ -145,12 +146,13 @@
     "weten1": "Alles op de site is gratis. Je mag eerst drie sommen proberen zonder account. Een account heb je pas nodig om je voortgang te bewaren.",
     "weten2": "Notatie en volgorde volgen Getal & Ruimte. Gebruik je een andere methode, dan werkt de site net zo goed.",
     "weten3": "Je kunt op elk moment stoppen. Na opnieuw inloggen staan je antwoorden en je voortgang er gewoon weer.",
+    "ctaTry": "Probeer drie sommen",
     "ctaRegister": "Account aanmaken",
     "ctaBack": "← Terug naar home"
   },
   "Theorie": {
-    "title": "Integreren oefenen: alle routes (VWO)",
-    "description": "Alle integraalroutes voor wiskunde B VWO: substitutie, partieel integreren, arcsin en arctan. Met stappenplan, voorbeelden en gratis oefenvragen.",
+    "title": "Integreren en integraal berekenen — vwo wiskunde B",
+    "description": "Integreren en integraal berekenen voor vwo wiskunde B: substitutie, partieel integreren, arcsin en arctan. Met stappenplan en drie gratis oefensommen.",
     "eyebrow": "Theorie",
     "h1": "Integreren: alle routes op één pagina",
     "intro": "Een naslagwerk voor de integralen die je bij wiskunde B tegenkomt. Per vorm zie je de formule, een uitgewerkt voorbeeld en, als je het uitklapt, de stappen. Je kunt ook direct <practiceLink>oefenen</practiceLink>.",
@@ -361,11 +363,12 @@
     "terug": "Alle opgaven"
   },
   "ExamenUitleg": {
-    "title": "Examentraining integralen",
-    "description": "Oefen oppervlakte en inhoud voor het examen wiskunde B vwo. De opgaven staan achter een gratis account. Het examen is op vrijdag 28 mei 2027.",
+    "title": "Examentraining integralen — wiskunde B vwo, examen 2027",
+    "description": "Examentraining integralen oefenen voor het examen wiskunde B vwo van vrijdag 28 mei 2027: oppervlakte en inhoud. Begin direct met drie sommen, zonder account.",
     "eyebrow": "Wiskunde B · vwo",
     "h1": "Examentraining integralen",
     "intro": "Het centraal examen wiskunde B vwo is op vrijdag 28 mei 2027, van 13.30 tot 16.30 uur. Hier oefen je de integraalopgaven die daarbij horen. Het zijn onze eigen opgaven, in de stijl van het examen.",
+    "ctaProberen": "Probeer eerst drie sommen (geen account)",
     "examenbladVoor": "De officiële opgaven en het rooster staan op",
     "examenbladLink": "Examenblad: wiskunde B vwo 2027",
     "watH2": "Wat je oefent",
@@ -373,8 +376,8 @@
     "punt2": "De inhoud als je dat vlakdeel om de x-as wentelt: π keer de integraal van het kwadraat van f.",
     "punt3": "De inhoud als je het vlakdeel om de y-as wentelt: π keer de integraal van het kwadraat van x.",
     "punt4": "De grenzen. Geeft de vraag ze niet, dan bepaal je eerst de snijpunten.",
-    "opgavenH2": "De opgaven",
-    "opgaven": "De opgaven zelf staan achter een gratis account, zodat je antwoorden en je voortgang bewaard blijven.",
+    "opgavenH2": "Verder oefenen",
+    "opgaven": "Maak een gratis account aan en je antwoorden en je voortgang blijven bewaard.",
     "ctaRegister": "Gratis account aanmaken",
     "ctaLogin": "Ik heb al een account",
     "ctaOpgaven": "Naar de opgaven"

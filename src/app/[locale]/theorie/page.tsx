@@ -24,6 +24,7 @@ export async function generateMetadata({
     pad: '/theorie',
     titel: t('title'),
     omschrijving: t('description'),
+    eigenDeelafbeelding: true,
   })
 }
 

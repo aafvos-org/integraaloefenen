@@ -108,8 +108,15 @@ export default async function HoeHetWerktPage({
 
       <div className="mt-12 flex flex-wrap gap-4">
         <Link
-          href="/registreren"
+          href={'/proberen/primitieve' as '/proberen'}
+          data-meet="hoehetwerkt-proefsom"
           className="rounded-lg bg-accent px-5 py-3 text-sm font-medium text-white shadow-sm hover:bg-accent/90"
+        >
+          {t('ctaTry')}
+        </Link>
+        <Link
+          href="/registreren"
+          className="rounded-lg border border-border px-5 py-3 text-sm text-text hover:bg-surface-2"
         >
           {t('ctaRegister')}
         </Link>

@@ -41,6 +41,7 @@ export async function generateMetadata({ params }: { params: Params }) {
     pad: `/theorie/${hoofdstuk}`,
     titel: `${zoektitel} · ${t('eyebrow')}`,
     omschrijving: kaart.zoekomschrijving ?? hoofdstukOmschrijving(kaart.title, kaart.intro),
+    eigenDeelafbeelding: true,
   })
 }
 
