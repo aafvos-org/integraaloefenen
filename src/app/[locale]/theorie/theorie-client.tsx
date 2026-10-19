@@ -52,12 +52,21 @@ function splitTitle(title: string): { code: string | null; short: string } {
   return m ? { code: m[1]!, short: m[2]! } : { code: null, short: title }
 }
 
-/** Geen abonnement nodig: alleen gebruikt om de eerste stand te bepalen. */
-function useIsDesktop(): boolean {
+/**
+ * Alleen voor de aria/tekst van de toggle-knop, ná hydratatie: begint `false`
+ * (zelfde als de CSS-standaard op de telefoon) en synchroniseert daarna met
+ * het echte scherm. Bepaalt nooit de zichtbare opmaak zelf — dat doet CSS via
+ * het lg-breakpoint — dus dit geeft geen layout shift.
+ */
+function useDesktopHint(): boolean {
   return useSyncExternalStore(
-    () => () => {},
+    (onChange) => {
+      const mq = window.matchMedia('(min-width: 1024px)')
+      mq.addEventListener('change', onChange)
+      return () => mq.removeEventListener('change', onChange)
+    },
     () => window.matchMedia('(min-width: 1024px)').matches,
-    () => true,
+    () => false,
   )
 }
 
@@ -76,11 +85,15 @@ export function TheorieClient({
 }) {
   // Op de telefoon duwt de volledig opengeklapte zijbalk (alle hoofdstukken met
   // hun kaarten) de inhoud — en dus de "Probeer 3 sommen"-knop — buiten beeld.
-  // Staat de leerling nog niets zelf te hebben gekozen, volg dan het scherm:
-  // dicht op de telefoon, open op de computer.
-  const isDesktop = useIsDesktop()
+  // Heeft de leerling nog niets zelf gekozen (sidebarOverride === null), dan bepaalt
+  // alleen CSS (onder/vanaf het lg-breakpoint) hoe de zijbalk eruitziet: zo klopt de
+  // allereerste HTML al op de telefoon, zonder op hydratatie te wachten. `desktopHint`
+  // regelt daarna alleen de aria/tekst van de knop op de computer, niet de opmaak zelf.
   const [sidebarOverride, setSidebarOverride] = useState<boolean | null>(null)
-  const sidebarOpen = sidebarOverride ?? isDesktop
+  const sidebarOpen = sidebarOverride ?? false
+  const sidebarResponsive = sidebarOverride === null
+  const desktopHint = useDesktopHint()
+  const effectiveOpen = sidebarOpen || (sidebarResponsive && desktopHint)
   const [activeSlug, setActiveSlug] = useState<string | null>(chapters[0]?.slug ?? null)
   // Kaarten die aan een oefen-topic hangen staan standaard open: dat is de kern van de pagina.
   const [openCards, setOpenCards] = useState<Set<string>>(
@@ -135,26 +148,41 @@ export function TheorieClient({
           'nice-scrollbar border-b border-border bg-surface lg:h-full lg:border-b-0 lg:border-r',
           sidebarOpen
             ? 'overflow-x-auto p-4 lg:w-64 lg:overflow-x-visible lg:overflow-y-auto lg:py-8'
+            : sidebarResponsive
+            ? 'px-0.5 py-2 lg:w-64 lg:overflow-x-visible lg:overflow-y-auto lg:px-4 lg:py-8'
             : 'px-0.5 py-2 lg:w-12 lg:py-4',
         )}
       >
-        <div className={sidebarOpen ? 'flex items-center justify-between gap-2' : 'flex justify-center'}>
-          {sidebarOpen && (
-            <p className="text-xs font-medium uppercase tracking-wider text-text-muted">
+        <div
+          className={
+            sidebarOpen
+              ? 'flex items-center justify-between gap-2'
+              : sidebarResponsive
+              ? 'flex justify-center lg:items-center lg:justify-between lg:gap-2'
+              : 'flex justify-center'
+          }
+        >
+          {(sidebarOpen || sidebarResponsive) && (
+            <p
+              className={cn(
+                'text-xs font-medium uppercase tracking-wider text-text-muted',
+                sidebarResponsive && 'hidden lg:block',
+              )}
+            >
               {labels.chapterLabel}
             </p>
           )}
           <button
             type="button"
-            onClick={() => setSidebarOverride(!sidebarOpen)}
-            aria-expanded={sidebarOpen}
-            aria-label={sidebarOpen ? labels.collapseSidebar : labels.expandSidebar}
-            title={sidebarOpen ? labels.collapseSidebar : labels.expandSidebar}
+            onClick={() => setSidebarOverride(!effectiveOpen)}
+            aria-expanded={effectiveOpen}
+            aria-label={effectiveOpen ? labels.collapseSidebar : labels.expandSidebar}
+            title={effectiveOpen ? labels.collapseSidebar : labels.expandSidebar}
             className="inline-flex size-11 shrink-0 items-center justify-center rounded-md text-text-muted hover:bg-surface-2 hover:text-text"
           >
             <svg
               viewBox="0 0 24 24"
-              className={`size-4 transition-transform ${sidebarOpen ? '' : 'rotate-180'}`}
+              className={`size-4 transition-transform ${effectiveOpen ? '' : 'rotate-180'}`}
               fill="none"
               stroke="currentColor"
               strokeWidth="2"
@@ -168,8 +196,8 @@ export function TheorieClient({
           </button>
         </div>
 
-        {sidebarOpen && (
-          <ul className="mt-3 space-y-0.5">
+        {(sidebarOpen || sidebarResponsive) && (
+          <ul className={cn('mt-3 space-y-0.5', sidebarResponsive && 'hidden lg:block')}>
             {chapters.map((ch) => {
               const active = ch.slug === activeSlug
               const { code, short } = splitTitle(ch.title)
