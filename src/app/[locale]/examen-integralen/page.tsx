@@ -1,5 +1,6 @@
 import { getTranslations } from 'next-intl/server'
 
+import { Link } from '@/i18n/navigation'
 import { zetStatischeTaal } from '@/i18n/statisch'
 import { eigenPagina } from '@/lib/seo'
 
@@ -45,6 +46,17 @@ export default async function ExamenIntegralenPage({
         {t('h1')}
       </h1>
       <p className="mt-6 text-lg leading-relaxed text-text-muted">{t('intro')}</p>
+
+      <div className="mt-6">
+        <Link
+          href={'/proberen/oppervlakte' as '/proberen'}
+          data-meet="examen-proberen"
+          className="inline-flex min-h-11 items-center rounded-lg bg-accent px-5 text-sm font-medium text-white shadow-sm hover:bg-accent/90"
+        >
+          {t('ctaProberen')}
+        </Link>
+      </div>
+
       <p className="mt-4 text-base leading-relaxed text-text-muted">
         {t('examenbladVoor')}{' '}
         <a
