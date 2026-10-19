@@ -13,74 +13,34 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 Deze repo is de live site integraaloefenen.nl, voor vwo-leerlingen. Hij draait op Cloudflare Workers via OpenNext.
 
 ## Werkwijze
-- Werk nooit direct op `main` of op `volgende`. Altijd een eigen tak en een pull request met `gh pr create`.
+- Werk nooit direct op `main`. Altijd een eigen tak en een pull request met `gh pr create`.
 - Draai voor elke pull request `npm run lint`, `npx tsc --noEmit`, `npm test` en `npx opennextjs-cloudflare build`. Alle vier moeten slagen. Raak je iets aan dat een leerling ziet, draai dan ook `npm run test:e2e`.
 - Houd elke pull request klein en bij één onderwerp. Zet in de beschrijving wat je hebt veranderd en hoe je het hebt gecontroleerd.
 
-## Eén release per dag: `volgende` → `main`
+## Rechtstreeks naar `main`
 
-`main` is de live site. Gewoon werk gaat er niet rechtstreeks heen, maar via
-de tak **`volgende`**.
-
-1. Maak je werktak vanaf `origin/volgende` en open je pull request **naar
-   `volgende`**: `gh pr create --base volgende`.
-2. Zijn de verplichte controles groen, dan merge je die zelf (squash),
-   zichtbaar werk of niet.
-3. Elke ochtend om 05:00 UTC maakt de workflow
-   [`release-pr.yml`](.github/workflows/release-pr.yml) één pull request
-   `volgende` → `main`, met de titel `Release <datum>`. Daarin staat wat er
-   in zit (gesplitst in "Zichtbaar voor leerlingen" en "Onder de motorkap"),
-   welke migraties meekomen, en de voorbeeldversie van `volgende`:
-   <https://volgende-integraaloefenen.alhvos.workers.dev>.
-4. **Aaf merget die release-pull-request zelf**, met *Create a merge commit*
-   en nooit met squash: na een squash kent `main` een commit die `volgende`
-   niet heeft en lopen de takken uit elkaar. Een agent merget hem niet.
-
-Staat `volgende` niet voor op `main`, dan maakt de workflow niets en blijft
-hij groen. Je kunt hem ook zelf opstarten met
-`gh workflow run release-pr.yml`.
-
-### Wanneer iets kritiek is
-
-Alleen dit gaat buiten de release om, rechtstreeks naar `main`:
-
-- de site, het inloggen of het registreren werkt niet;
-- het nakijken rekent een goed antwoord fout of een fout antwoord goed;
-- een beveiligings- of privacylek, of gegevens die verloren gaan;
-- de bouw of de verplichte controles op `main` zijn stuk.
-
-Twijfel je, dan is het **niet** kritiek. Werkwijze bij kritiek: tak vanaf
-`origin/main`, pull request naar `main` met `[Kritiek]` vooraan de titel,
-zelf mergen zodra de controles groen zijn. Daarna opent de workflow
-[`terug-naar-volgende.yml`](.github/workflows/terug-naar-volgende.yml)
-vanzelf een pull request die `main` weer in `volgende` zet; die merget
-zichzelf zodra de controles groen zijn. Botst het samenvoegen, dan maakt hij
-een melding aan; los die met de hand op, anders mist `volgende` de reparatie
-en draait de volgende release hem terug.
-
-De workflows zelf (en alles wat op de standaardtak moet staan om te kunnen
-draaien) gaan ook rechtstreeks naar `main`: GitHub start een geplande
-workflow of een `workflow_dispatch` alleen vanaf de standaardtak.
+`main` is de live site. Maak je werktak vanaf `origin/main` en open je pull
+request naar `main` met `gh pr create`. Zijn de verplichte controles groen,
+dan merge je de pull request zelf (squash), zichtbaar werk of niet.
 
 ## Zelf controleren
 
 ### Controles op de pull request
 
 De controles **Lint en types**, **Tests** en **Weg van een leerling** draaien
-op de versie waarin jouw tak al met de doeltak is samengevoegd — meestal
-`volgende`, bij kritiek werk `main`. Botst de pull request met die doeltak,
-dan bestaat die versie niet en start GitHub die controles niet. Ze blijven
-dan ontbreken. **Workers Builds** kan intussen wél groen worden, en
-`gh pr checks` ziet eruit alsof alles in orde is.
+op de versie waarin jouw tak al met `main` is samengevoegd. Botst de pull
+request met `main`, dan bestaat die versie niet en start GitHub die controles
+niet. Ze blijven dan ontbreken. **Workers Builds** kan intussen wél groen
+worden, en `gh pr checks` ziet eruit alsof alles in orde is.
 
 Kijk daarom vóór `gh pr checks <nummer> --watch` eerst:
 
     gh pr view <nummer> --json mergeable,mergeStateStatus,baseRefName
 
 Is `mergeable` gelijk aan `CONFLICTING` (dan is `mergeStateStatus` meestal
-`DIRTY`), haal dan eerst de doeltak binnen en los het conflict op:
+`DIRTY`), haal dan eerst `main` binnen en los het conflict op:
 
-    git fetch origin && git merge origin/volgende
+    git fetch origin && git merge origin/main
 
 Wacht niet op controles die nooit starten. Pas als `mergeable` `MERGEABLE` is,
 wacht je de controles af. Is `mergeable` nog `UNKNOWN`, kijk dan even later
