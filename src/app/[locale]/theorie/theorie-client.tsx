@@ -1,6 +1,6 @@
 'use client'
 
-import { Fragment, useRef, useState } from 'react'
+import { Fragment, useRef, useState, useSyncExternalStore } from 'react'
 
 import { Link } from '@/i18n/navigation'
 import { Math as TeX, RichMath } from '@/components/math'
@@ -72,6 +72,15 @@ function platteTekst(s: string): string {
     .trim()
 }
 
+/** Geen abonnement nodig: alleen gebruikt om de eerste stand te bepalen. */
+function useIsDesktop(): boolean {
+  return useSyncExternalStore(
+    () => () => {},
+    () => window.matchMedia('(min-width: 1024px)').matches,
+    () => true,
+  )
+}
+
 export function TheorieClient({
   chapters,
   labels,
@@ -85,7 +94,13 @@ export function TheorieClient({
   /** true op een hoofdstukpagina: de h1 is dan de naam van dat hoofdstuk */
   eigenKop?: boolean
 }) {
-  const [sidebarOpen, setSidebarOpen] = useState(true)
+  // Op de telefoon duwt de volledig opengeklapte zijbalk (alle hoofdstukken met
+  // hun kaarten) de inhoud — en dus de "Probeer 3 sommen"-knop — buiten beeld.
+  // Staat de leerling nog niets zelf te hebben gekozen, volg dan het scherm:
+  // dicht op de telefoon, open op de computer.
+  const isDesktop = useIsDesktop()
+  const [sidebarOverride, setSidebarOverride] = useState<boolean | null>(null)
+  const sidebarOpen = sidebarOverride ?? isDesktop
   const [activeSlug, setActiveSlug] = useState<string | null>(chapters[0]?.slug ?? null)
   // Kaarten die aan een oefen-topic hangen staan standaard open: dat is de kern van de pagina.
   const [openCards, setOpenCards] = useState<Set<string>>(
@@ -151,7 +166,7 @@ export function TheorieClient({
           )}
           <button
             type="button"
-            onClick={() => setSidebarOpen((v) => !v)}
+            onClick={() => setSidebarOverride(!sidebarOpen)}
             aria-expanded={sidebarOpen}
             aria-label={sidebarOpen ? labels.collapseSidebar : labels.expandSidebar}
             title={sidebarOpen ? labels.collapseSidebar : labels.expandSidebar}
