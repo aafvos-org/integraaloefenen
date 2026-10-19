@@ -70,6 +70,15 @@ export default async function VoorbeeldPagina({ params }: { params: Params }) {
       </p>
       <h1 className="mt-2 font-serif text-4xl text-text sm:text-[2.75rem]">{voorbeeld.kop}</h1>
 
+      {proef && (
+        <Link
+          href={proef as '/proberen'}
+          className="mt-6 inline-flex min-h-11 items-center rounded-lg bg-accent px-5 py-3 font-medium text-white shadow-sm hover:bg-accent/90"
+        >
+          {t('proefKnop')}
+        </Link>
+      )}
+
       <section className="mt-8 rounded-xl border border-border bg-surface p-6">
         <p className="text-sm font-medium uppercase tracking-wider text-accent">{t('antwoord')}</p>
         <p className="mt-3 text-lg text-text">
@@ -110,14 +119,6 @@ export default async function VoorbeeldPagina({ params }: { params: Params }) {
       </section>
 
       <div className="mt-10 flex flex-wrap items-center gap-2">
-        {proef && (
-          <Link
-            href={proef as '/proberen'}
-            className="inline-flex min-h-11 items-center rounded-lg bg-accent px-5 py-3 text-white shadow-sm hover:bg-accent/90"
-          >
-            Probeer 3 sommen
-          </Link>
-        )}
         <Link
           href={oefenPad(voorbeeld) as '/oefenen'}
           className="inline-flex min-h-11 items-center rounded-lg border border-border bg-surface px-5 py-3 text-text hover:bg-surface-2"

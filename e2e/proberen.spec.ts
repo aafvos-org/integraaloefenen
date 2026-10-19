@@ -82,9 +82,9 @@ test('oefenen blijft achter de inlog', async ({ page }) => {
   await expect(page).toHaveURL(/\/nl\/inloggen$/)
 })
 
-test('een antwoordpagina heeft dezelfde proefknop', async ({ page }) => {
+test('een antwoordpagina heeft bovenaan een eigen proefknop', async ({ page }) => {
   await page.goto('/nl/voorbeeld/1-over-x')
-  await page.getByRole('link', { name: 'Probeer 3 sommen' }).click()
+  await page.getByRole('link', { name: 'Oefen dit zelf — 3 sommen, geen account' }).click()
   await expect(page).toHaveURL(/\/proberen\/primitieve/)
   await expect(page.getByRole('heading', { name: 'Som 1 van 3' })).toBeVisible()
 })
