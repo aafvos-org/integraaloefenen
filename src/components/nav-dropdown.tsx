@@ -6,7 +6,7 @@ import { useEffect, useId, useRef, useState } from 'react'
 /** Eén dropdown tegelijk: bij openen sluiten de anderen direct. */
 export const NAV_DROPDOWN_OPEN_EVENT = 'nav-dropdown-open'
 
-export type NavDropdownItem = {
+type NavDropdownItem = {
   href: string
   label: string
   code?: string
