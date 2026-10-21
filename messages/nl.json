@@ -208,6 +208,8 @@
     "description": "Maak een gratis account aan, zodat je voortgang bewaard blijft.",
     "h1": "Account aanmaken",
     "subtitle": "Gratis, in het Nederlands, en je kunt gelijk oefenen.",
+    "h1Proefsom": "Je proefsom staat er al op",
+    "subtitleProefsom": "Met een gratis account oefen je direct verder, met alle hoofdstukken en voortgang die bewaard blijft.",
     "usernameLabel": "Gebruikersnaam (optioneel)",
     "emailLabel": "E-mailadres",
     "passwordLabel": "Wachtwoord",
