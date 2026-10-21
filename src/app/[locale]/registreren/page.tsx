@@ -37,11 +37,19 @@ export default async function SignupPage({
   }
 
   const t = await getTranslations('Register')
+  // Komt de leerling net van de proefsom op de startpagina, dan is de
+  // generieke tekst niet motiverend: hij deed al een som en twijfelt of
+  // registreren wat toevoegt.
+  const uitProefsom = bron === 'proberen'
 
   return (
     <div className="mx-auto max-w-md px-4 py-16">
-      <h1 className="font-serif text-3xl text-text">{t('h1')}</h1>
-      <p className="mt-2 text-sm text-text-muted">{t('subtitle')}</p>
+      <h1 className="font-serif text-3xl text-text">
+        {uitProefsom ? t('h1Proefsom') : t('h1')}
+      </h1>
+      <p className="mt-2 text-sm text-text-muted">
+        {uitProefsom ? t('subtitleProefsom') : t('subtitle')}
+      </p>
 
       <div className="mt-8 rounded-xl border border-border bg-surface p-6">
         <GoogleBlok volgende={`/${locale}/oefenen`} bron={bron} />

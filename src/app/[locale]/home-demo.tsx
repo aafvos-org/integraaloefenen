@@ -8,6 +8,7 @@ import { Math as TeX, RichMath } from '@/components/math'
 import { useAntwoordInvoer } from '@/components/oefenkaart'
 import { Badge, Button } from '@/components/ui'
 import { Link } from '@/i18n/navigation'
+import { padNaarAanmelden } from '@/lib/bron'
 import { toLatexPreview } from '@/lib/practice/input'
 import { STARTPAGINA_VRAGEN, startpaginaKlopt } from '@/lib/practice/startpagina-demo'
 import type { DemoNiveau } from '@/lib/practice/startpagina-demo'
@@ -29,6 +30,9 @@ function DemoCard({
   const [answer, setAnswer] = useState('')
   const [state, setState] = useState<State>({ phase: 'input', error: null })
   const { invoerRef: inputRef, voegIn } = useAntwoordInvoer(answer, setAnswer)
+  // Deze klik komt pas ná een gemaakte proefsom: de registreerpagina toont
+  // daarom een andere koptekst dan bij een kale aanmeldlink.
+  const aanmeldLink = padNaarAanmelden(aanmelden, 'proberen')
 
   function submit(e: React.FormEvent) {
     e.preventDefault()
@@ -104,7 +108,7 @@ function DemoCard({
           <p className="mt-1 text-sm text-accent">{t('correctBody')}</p>
           <div className="mt-4 flex flex-wrap items-center gap-3">
             <Link
-              href={aanmelden}
+              href={aanmeldLink}
               data-meet="proefsom-goed-registreren"
               className="rounded-lg bg-accent px-5 py-2.5 font-medium text-white shadow-sm transition hover:bg-accent/90"
             >
@@ -160,7 +164,7 @@ function DemoCard({
 
           <div className="mt-4 flex flex-wrap items-center gap-3">
             <Link
-              href={aanmelden}
+              href={aanmeldLink}
               data-meet="proefsom-fout-registreren"
               className="rounded-lg bg-accent px-5 py-2.5 font-medium text-white shadow-sm transition hover:bg-accent/90"
             >
