@@ -100,9 +100,9 @@ export const VOORBEELDEN: Voorbeeld[] = [
   {
     slug: 'ln-x',
     kop: 'De primitieve van ln(x)',
-    titel: 'Primitieve van ln(x)',
+    titel: 'Integraal van ln(x) berekenen: uitleg',
     omschrijving:
-      'De primitieve van ln(x) is x ln(x) − x + c. Uitwerking met partieel integreren, en de fout waarbij de −x wegvalt.',
+      'De integraal (primitieve) van ln(x) is x·ln(x) − x + c. Bekijk de uitwerking met partieel integreren en oefen daarna gratis verder, zonder account.',
     vraagLatex: '\\int \\ln(x)\\,dx',
     antwoordLatex: 'x\\ln(x)-x+c',
     integrand: 'ln(x)',
