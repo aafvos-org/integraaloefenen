@@ -277,9 +277,9 @@ export const VOORBEELDEN: Voorbeeld[] = [
   {
     slug: 'e-tot-x',
     kop: 'De primitieve van e^x',
-    titel: 'Primitieve van e^x',
+    titel: 'Integraal van e^x (e tot de x) uitleg',
     omschrijving:
-      'De primitieve van e^x is e^x + c. De e-macht blijft dezelfde functie.',
+      'De integraal (primitieve) van e^x is e^x + c: de e-macht blijft zichzelf bij differentiëren. Bekijk de uitwerking en oefen gratis verder, zonder account.',
     vraagLatex: '\\int e^{x}\\,dx',
     antwoordLatex: 'e^{x}+c',
     integrand: 'e^x',
@@ -456,9 +456,9 @@ export const VOORBEELDEN: Voorbeeld[] = [
   {
     slug: 'e-tot-min-x',
     kop: 'De primitieve van e^(−x)',
-    titel: 'Primitieve van e^(−x)',
+    titel: 'Primitieve van e^(−x): e tot de min x',
     omschrijving:
-      'De primitieve van e^(−x) is −e^(−x) + c. De −1 in de exponent geeft het minteken vooraan.',
+      'De primitieve van e^(−x), oftewel e tot de min x, is −e^(−x) + c. Let op het minteken door de −1 in de exponent. Bekijk de uitwerking en oefen gratis verder.',
     vraagLatex: '\\int e^{-x}\\,dx',
     antwoordLatex: '-e^{-x}+c',
     integrand: 'e^(-x)',
