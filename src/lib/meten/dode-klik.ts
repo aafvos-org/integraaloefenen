@@ -41,10 +41,21 @@ export type Klikcontext = {
    * een woord selecteert dat woord; slepen over een zin selecteert die zin.
    */
   selectie: boolean
+  /**
+   * Of dit element met `data-geen-dode-klik` is gemarkeerd. Een wiskundeformule
+   * (KaTeX) bestaat uit tientallen kleine `span`'s; erop tikken om iets rustig
+   * te bekijken is heel gewoon en levert op de telefoon geen tekstselectie op
+   * (dat vraagt om een lange tik). De rand van het formuletoetsenbord krijgt
+   * om dezelfde reden een tik die bij de knoppen ernaast hoort, niet bij een
+   * kaart die klikbaar lijkt. Zet dit niet op een hele kaart: dan verdwijnen
+   * juist de dode klikken die we wél willen zien.
+   */
+  uitgezonderd: boolean
 }
 
-export function teltAlsDodeKlik({ tag, klikbaar, selectie }: Klikcontext): boolean {
+export function teltAlsDodeKlik({ tag, klikbaar, selectie, uitgezonderd }: Klikcontext): boolean {
   if (klikbaar) return false
   if (selectie) return false
+  if (uitgezonderd) return false
   return !INDELING.has(tag.toLowerCase())
 }

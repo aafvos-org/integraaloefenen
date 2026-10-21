@@ -275,6 +275,12 @@ const KLIKBAAR =
 /** Een veld waar je in typt. Daar is een paar keer tikken heel gewoon. */
 const INVOERVELD = 'input, textarea, [contenteditable]:not([contenteditable="false"])'
 
+/**
+ * Handmatig uitgezonderde plekken, zie `Klikcontext.uitgezonderd` in
+ * `dode-klik.ts`: een wiskundeformule en de rand van het formuletoetsenbord.
+ */
+const GEEN_DODE_KLIK = '[data-geen-dode-klik]'
+
 /** Of er op dit moment tekst geselecteerd staat. */
 function heeftSelectie(): boolean {
   try {
@@ -326,6 +332,7 @@ function opKlik(gebeurtenis: MouseEvent): void {
       klikbaar: false,
       // Slepen over een zin is hier al te zien; een dubbelklik pas straks.
       selectie,
+      uitgezonderd: doelElement.closest(GEEN_DODE_KLIK) !== null,
     })
   ) {
     // Wachten tot een eventuele dubbelklik af is. Een tweede klik vervangt de

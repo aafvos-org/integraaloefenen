@@ -52,7 +52,7 @@ export function MathKeyboard({
   const [showHelp, setShowHelp] = useState(false)
 
   return (
-    <div className="mt-2" aria-label="Wiskundig toetsenbord">
+    <div className="mt-2" aria-label="Wiskundig toetsenbord" data-geen-dode-klik>
     <div className="flex flex-wrap gap-1 sm:gap-1.5">
       {KEYS.map((k) => (
         <button

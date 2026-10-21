@@ -56,7 +56,7 @@ function DemoCard({
         </Badge>
       </div>
 
-      <div className="mb-6 font-serif text-2xl leading-snug text-text">
+      <div className="mb-6 font-serif text-2xl leading-snug text-text" data-geen-dode-klik>
         <RichMath source={t(`${difficulty}Question` as 'easyQuestion')} />
       </div>
 

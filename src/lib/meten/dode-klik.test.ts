@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest'
 import { teltAlsDodeKlik, type Klikcontext } from './dode-klik'
 
 function klik(overschrijf: Partial<Klikcontext> = {}): Klikcontext {
-  return { tag: 'span', klikbaar: false, selectie: false, ...overschrijf }
+  return { tag: 'span', klikbaar: false, selectie: false, uitgezonderd: false, ...overschrijf }
 }
 
 describe('teltAlsDodeKlik', () => {
@@ -34,5 +34,12 @@ describe('teltAlsDodeKlik', () => {
 
   it('telt een klik niet mee als er tekst geselecteerd staat', () => {
     expect(teltAlsDodeKlik(klik({ tag: 'span', selectie: true }))).toBe(false)
+  })
+
+  it('telt een tik op een met data-geen-dode-klik gemarkeerd element niet mee', () => {
+    // Een wiskundeformule (de somtekst) of de rand van het formuletoetsenbord:
+    // erop tikken tijdens het lezen is gewoon, ook zonder tekstselectie.
+    expect(teltAlsDodeKlik(klik({ tag: 'span', uitgezonderd: true }))).toBe(false)
+    expect(teltAlsDodeKlik(klik({ tag: 'div', uitgezonderd: true }))).toBe(false)
   })
 })
