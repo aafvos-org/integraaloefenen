@@ -135,7 +135,7 @@ export function ProberenClient({
       </h1>
       <div className="mt-3 min-w-0 overflow-x-auto rounded-2xl border border-border bg-surface p-4 sm:p-6">
         {opdracht && <p className="mb-1 text-sm font-medium text-text-muted">{t(opdracht)}</p>}
-        <div className="font-serif text-xl leading-snug text-text">
+        <div className="font-serif text-xl leading-snug text-text" data-geen-dode-klik>
           {som.latex.includes('$') ? <RichMath source={som.latex} /> : <TeX tex={som.latex} displayMode />}
         </div>
         <p className="sr-only">{som.leesbaar}</p>
