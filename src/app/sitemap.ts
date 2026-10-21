@@ -52,7 +52,7 @@ function openbarePaden(): Array<{
  */
 const LAATST_GEWIJZIGD: Record<string, string> = {
   '': '2026-10-14',
-  '/theorie': '2026-10-19',
+  '/theorie': '2026-10-21',
   '/examen-integralen': '2026-10-19',
   '/uitleg-videos': '2026-10-13',
   '/hoe-het-werkt': '2026-10-10',
@@ -60,7 +60,7 @@ const LAATST_GEWIJZIGD: Record<string, string> = {
   '/voorbeeld': '2026-10-16',
 }
 const THEORIE_HOOFDSTUK_GEWIJZIGD = '2026-10-14'
-const VOORBEELD_GEWIJZIGD = '2026-10-19'
+const VOORBEELD_GEWIJZIGD = '2026-10-21'
 
 function laatstGewijzigd(pad: string): Date {
   const dag = pad.startsWith('/theorie/')
