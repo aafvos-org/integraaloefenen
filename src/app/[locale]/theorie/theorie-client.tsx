@@ -7,7 +7,7 @@ import { Math as TeX, RichMath } from '@/components/math'
 import { cn } from '@/components/ui'
 import { DeelKnop } from '@/components/deel-knop'
 import type { Voorbeeldopgave } from '@/content/theory/voorbeeldopgaven'
-import { uitwerkingenVoor } from '@/content/voorbeelden'
+import { uitwerkingenVoor, type Voorbeeld } from '@/content/voorbeelden'
 import type { Oefenlink, OverviewCard, Stappenplan } from '@/lib/theory'
 
 import { leesbareTekst, leesbareWiskunde } from './leesbare-tekst'
@@ -75,6 +75,7 @@ export function TheorieClient({
   labels,
   sidebar = true,
   eigenKop = false,
+  vaakGezocht,
 }: {
   chapters: TheorieChapter[]
   labels: Labels
@@ -82,6 +83,8 @@ export function TheorieClient({
   sidebar?: boolean
   /** true op een hoofdstukpagina: de h1 is dan de naam van dat hoofdstuk */
   eigenKop?: boolean
+  /** Alleen op het overzicht: kortste route naar veelgezochte voorbeeldpagina's. */
+  vaakGezocht?: Voorbeeld[]
 }) {
   // Op de telefoon duwt de volledig opengeklapte zijbalk (alle hoofdstukken met
   // hun kaarten) de inhoud — en dus de "Probeer 3 sommen"-knop — buiten beeld.
@@ -274,6 +277,8 @@ export function TheorieClient({
         <div className="mx-auto max-w-5xl px-4 py-8">
           {eigenKop ? null : <h1 className="sr-only">{labels.h1}</h1>}
 
+          {vaakGezocht && vaakGezocht.length > 0 && <VaakGezocht voorbeelden={vaakGezocht} />}
+
           {chapters.map((ch) => {
             const { code, short } = splitTitle(ch.title)
             const Kop = eigenKop ? 'h1' : 'h2'
@@ -392,6 +397,34 @@ export function TheorieClient({
         </div>
       </div>
     </div>
+  )
+}
+
+/** Snelste route naar een paar voorbeeldpagina's die in Google al scoren, zodat een
+ * leerling die via de zoekmachine op /theorie belandt niet eerst een hoofdstuk hoeft
+ * te kiezen. */
+function VaakGezocht({ voorbeelden }: { voorbeelden: Voorbeeld[] }) {
+  return (
+    <section
+      className="mb-6 rounded-xl border border-border bg-surface px-4 py-4 sm:px-5"
+      aria-labelledby="vaak-gezocht"
+    >
+      <h2 id="vaak-gezocht" className="font-serif text-lg text-text">
+        Vaak gezocht
+      </h2>
+      <ul className="mt-2 space-y-1">
+        {voorbeelden.map((voorbeeld) => (
+          <li key={voorbeeld.slug}>
+            <Link
+              href={`/voorbeeld/${voorbeeld.slug}` as '/voorbeeld'}
+              className="inline-flex min-h-11 items-center text-sm font-medium text-accent underline-offset-2 hover:underline"
+            >
+              {voorbeeld.kop}
+            </Link>
+          </li>
+        ))}
+      </ul>
+    </section>
   )
 }
 
