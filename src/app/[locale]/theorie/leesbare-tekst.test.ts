@@ -53,7 +53,7 @@ describe('oefenlinks van de primitieve', () => {
   it('wijst naar de standaardprimitieven', () => {
     const prim = THEORY_OVERVIEW.find((ch) => ch.slug === 'primitieve')
     expect(prim?.oefenlinks?.map((link) => link.href)).toEqual(['/oefenen?blok=k0b'])
-    expect(prim?.zoektitel).toBe('Primitieve functie en standaardintegralen')
+    expect(prim?.zoektitel).toBe('Primitieve regels en standaardintegralen')
   })
 })
 
