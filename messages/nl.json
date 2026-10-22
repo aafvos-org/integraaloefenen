@@ -315,6 +315,10 @@
     "body": "Drie sommen, geen account.",
     "cta": "Probeer drie sommen"
   },
+  "VakantieBalk": {
+    "title": "Terug van vakantie? Drie sommen in een paar minuten — zonder account.",
+    "cta": "Probeer drie sommen"
+  },
   "PracticeCard": {
     "difficulty": "Moeilijkheid {n}",
     "promptPrimitieve": "Bepaal de primitieve van:",
