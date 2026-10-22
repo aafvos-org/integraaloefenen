@@ -37,9 +37,9 @@ export const THEORY_OVERVIEW: OverviewChapter[] = [
     slug: 'primitieve',
     code: 'Prim',
     title: 'De primitieve en de standaardintegralen',
-    zoektitel: 'Primitieve functie en standaardintegralen',
+    zoektitel: 'Primitieve regels en standaardintegralen',
     zoekomschrijving:
-      'Wat een primitieve is, en de standaardintegralen die je paraat moet hebben: machtsregel, somregel, sinus, cosinus, e-macht en 1/x.',
+      'Alle primitieve regels en standaardintegralen op een rij: machtsregel, somregel, sinus, cosinus, e-macht en 1/x. Probeer meteen 3 sommen, zonder account.',
     intro:
       'Een primitieve van $f$ is een functie $F$ waarvan de afgeleide weer $f$ is. Je zet $+c$ erbij, want de afgeleide van een constante is $0$. De vormen op deze pagina moet je paraat hebben. Het zijn kale integralen: alleen deel 2 van de driedeling.',
     oefenlinks: [
