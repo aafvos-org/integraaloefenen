@@ -123,9 +123,9 @@ export const VOORBEELDEN: Voorbeeld[] = [
   {
     slug: 'sin-kwadraat',
     kop: 'De primitieve van sin²(x)',
-    titel: 'Primitieve van sin²(x)',
+    titel: 'Integraal van sin²(x) berekenen: uitleg',
     omschrijving:
-      'De primitieve van sin²(x) is x/2 − sin(2x)/4 + c. Eerst de formule voor sin², daarna een lineaire kern.',
+      'De integraal (primitieve) van sin²(x) is x/2 − sin(2x)/4 + c. Bekijk de uitwerking met de formule voor sin² en oefen daarna gratis verder, zonder account.',
     vraagLatex: '\\int \\sin^2(x)\\,dx',
     antwoordLatex: '\\frac{1}{2}x-\\frac{1}{4}\\sin(2x)+c',
     integrand: 'sin(x)^2',
@@ -233,9 +233,9 @@ export const VOORBEELDEN: Voorbeeld[] = [
   {
     slug: 'sin-x',
     kop: 'De primitieve van sin(x)',
-    titel: 'Primitieve van sin(x)',
+    titel: 'Integraal van sin(x) berekenen: uitleg',
     omschrijving:
-      'De primitieve van sin(x) is −cos(x) + c. Het minteken hoort bij sinus, niet bij cosinus.',
+      'De integraal (primitieve) van sin(x) is −cos(x) + c. Bekijk de uitwerking met de standaardprimitieve en oefen daarna gratis verder, zonder account.',
     vraagLatex: '\\int \\sin(x)\\,dx',
     antwoordLatex: '-\\cos(x)+c',
     integrand: 'sin(x)',
@@ -255,9 +255,9 @@ export const VOORBEELDEN: Voorbeeld[] = [
   {
     slug: 'cos-x',
     kop: 'De primitieve van cos(x)',
-    titel: 'Primitieve van cos(x)',
+    titel: 'Integraal van cos(x) berekenen: uitleg',
     omschrijving:
-      'De primitieve van cos(x) is sin(x) + c. Hier komt geen minteken bij.',
+      'De integraal (primitieve) van cos(x) is sin(x) + c. Bekijk de uitwerking met de standaardprimitieve en oefen daarna gratis verder, zonder account.',
     vraagLatex: '\\int \\cos(x)\\,dx',
     antwoordLatex: '\\sin(x)+c',
     integrand: 'cos(x)',
@@ -637,9 +637,9 @@ export const VOORBEELDEN: Voorbeeld[] = [
   {
     slug: 'cos-kwadraat',
     kop: 'De primitieve van cos²(x)',
-    titel: 'Primitieve van cos²(x)',
+    titel: 'Integraal van cos²(x) berekenen: uitleg',
     omschrijving:
-      'De primitieve van cos²(x) is x/2 + sin(2x)/4 + c. Eerst de formule voor cos², daarna een lineaire kern.',
+      'De integraal (primitieve) van cos²(x) is x/2 + sin(2x)/4 + c. Bekijk de uitwerking met de formule voor cos² en oefen daarna gratis verder, zonder account.',
     vraagLatex: '\\int \\cos^2(x)\\,dx',
     antwoordLatex: '\\frac{1}{2}x+\\frac{1}{4}\\sin(2x)+c',
     integrand: 'cos(x)^2',
