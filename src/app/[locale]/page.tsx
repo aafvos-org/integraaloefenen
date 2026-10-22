@@ -116,14 +116,14 @@ export default async function HomePage({
             <Link
               href={aanmelden}
               data-meet="start-registreren"
-              className="rounded-lg border border-border bg-surface px-5 py-3 text-text hover:bg-surface-2"
+              className="rounded-lg bg-accent px-5 py-3 text-white shadow-sm hover:bg-accent/90"
             >
               {t('ctaRegister')}
             </Link>
             <Link
               href="/inloggen"
               data-meet="start-inloggen"
-              className="rounded-lg border border-border bg-surface px-5 py-3 text-text hover:bg-surface-2"
+              className="rounded-lg px-5 py-3 text-text-muted hover:bg-surface-2 hover:text-text"
             >
               {t('ctaLogin')}
             </Link>
