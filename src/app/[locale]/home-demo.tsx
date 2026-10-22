@@ -50,18 +50,36 @@ function DemoCard({
     requestAnimationFrame(() => inputRef.current?.focus())
   }
 
+  /**
+   * Een tik op de somtekst voelt klikbaar, maar er zat geen invoerveld onder.
+   * Zet de cursor daarom meteen in het antwoordveld, behalve als de bezoeker
+   * net tekst aan het selecteren is (lezen/kopiëren mag niet onderbroken
+   * worden).
+   */
+  function focusAntwoord() {
+    if (state.phase !== 'input') return
+    if (window.getSelection()?.toString()) return
+    inputRef.current?.focus()
+  }
+
   const tone = q.difficulty === 1 ? 'accent' : q.difficulty === 2 ? 'warn' : 'danger'
 
   return (
     <div className="rounded-2xl border-2 border-accent/30 bg-surface p-6 shadow-sm">
-      <div className="mb-4 flex items-center gap-2">
-        <Badge tone={tone}>
-          {t(`difficulty${q.difficulty}` as 'difficulty1')}
-        </Badge>
-      </div>
+      <div
+        className={state.phase === 'input' ? 'cursor-text' : undefined}
+        data-geen-dode-klik
+        onClick={focusAntwoord}
+      >
+        <div className="mb-4 flex items-center gap-2">
+          <Badge tone={tone}>
+            {t(`difficulty${q.difficulty}` as 'difficulty1')}
+          </Badge>
+        </div>
 
-      <div className="mb-6 font-serif text-2xl leading-snug text-text" data-geen-dode-klik>
-        <RichMath source={t(`${difficulty}Question` as 'easyQuestion')} />
+        <div className="mb-6 font-serif text-2xl leading-snug text-text">
+          <RichMath source={t(`${difficulty}Question` as 'easyQuestion')} />
+        </div>
       </div>
 
       {state.phase === 'input' && (
