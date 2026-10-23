@@ -181,11 +181,19 @@ export function TheorieClient({
             aria-expanded={effectiveOpen}
             aria-label={effectiveOpen ? labels.collapseSidebar : labels.expandSidebar}
             title={effectiveOpen ? labels.collapseSidebar : labels.expandSidebar}
-            className="inline-flex size-11 shrink-0 items-center justify-center rounded-md text-text-muted hover:bg-surface-2 hover:text-text"
+            className={cn(
+              'inline-flex h-11 shrink-0 items-center justify-center gap-1.5 whitespace-nowrap rounded-md text-text-muted hover:bg-surface-2 hover:text-text lg:size-11 lg:gap-0',
+              !sidebarOpen && 'border border-border bg-surface-2 px-3 lg:border-0 lg:bg-transparent lg:px-0',
+            )}
           >
+            {!sidebarOpen && (
+              <span className="text-xs font-medium uppercase tracking-wider lg:hidden">
+                {labels.chapterLabel}
+              </span>
+            )}
             <svg
               viewBox="0 0 24 24"
-              className={`size-4 transition-transform ${effectiveOpen ? '' : 'rotate-180'}`}
+              className={`size-4 shrink-0 transition-transform ${effectiveOpen ? '' : 'rotate-180'}`}
               fill="none"
               stroke="currentColor"
               strokeWidth="2"
