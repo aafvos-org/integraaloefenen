@@ -101,7 +101,7 @@ function DemoCard({
               ref={inputRef}
               value={answer}
               onChange={(e) => setAnswer(e.target.value)}
-              placeholder={t(`${difficulty}Placeholder` as 'easyPlaceholder')}
+              placeholder={t('placeholder')}
               className="w-full rounded-lg border border-border bg-surface px-4 py-3 font-mono text-lg text-text outline-none focus:border-accent focus:ring-2 focus:ring-accent/20"
               inputMode="text"
               autoCapitalize="off"
