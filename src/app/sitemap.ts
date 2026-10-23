@@ -49,6 +49,13 @@ function openbarePaden(): Array<{
  * Dag waarop de pagina voor het laatst echt veranderde (UTC).
  * Geen `new Date()`: dat zette bij elke aanvraag alles op "vandaag".
  * Theoriehoofdstukken delen één inhoudsbestand, dus één datum.
+ *
+ * Deze datum met de hand bijhouden ging twee keer stilzwijgend mis
+ * (INT-419, INT-446): iemand paste `voorbeelden.ts` of `content/theory/` aan
+ * maar vergat de datum hieronder. `sitemap.test.ts` rekent daarom een hash
+ * over diezelfde inhoud uit en vergelijkt die met `*_INHOUD_HASH`. Verschilt
+ * de hash, dan faalt de test en noemt hij welke datum en hash je moet
+ * bijwerken — net zo lang tot deze twee weer bij de inhoud passen.
  */
 const LAATST_GEWIJZIGD: Record<string, string> = {
   '': '2026-10-14',
@@ -59,8 +66,28 @@ const LAATST_GEWIJZIGD: Record<string, string> = {
   '/privacy': '2026-10-13',
   '/voorbeeld': '2026-10-16',
 }
-const THEORIE_HOOFDSTUK_GEWIJZIGD = '2026-10-14'
-const VOORBEELD_GEWIJZIGD = '2026-10-21'
+const THEORIE_HOOFDSTUK_GEWIJZIGD = '2026-10-22'
+const VOORBEELD_GEWIJZIGD = '2026-10-22'
+
+/** Hash over de content die bij `THEORIE_HOOFDSTUK_GEWIJZIGD` hoort. */
+export const THEORIE_HOOFDSTUK_INHOUD_HASH =
+  'bc820d1b916d8f995f6f25a77592813455d382c7b3be57e6e11ea7712457cefe'
+/** Hash over de content die bij `VOORBEELD_GEWIJZIGD` hoort. */
+export const VOORBEELD_INHOUD_HASH =
+  'bda0d6afb8273bd7716c7fd3f37670b2ecfe9ac7faa202f85442e8a93dfc3a34'
+
+/**
+ * Deterministische hash over content, voor `sitemap.test.ts`. Geen geheime
+ * sleutel nodig: dit is geen beveiliging, alleen een vingerafdruk om een
+ * vergeten datum te betrappen.
+ */
+export async function hashInhoud(data: unknown): Promise<string> {
+  const bytes = new TextEncoder().encode(JSON.stringify(data))
+  const digest = await crypto.subtle.digest('SHA-256', bytes)
+  return Array.from(new Uint8Array(digest))
+    .map((byte) => byte.toString(16).padStart(2, '0'))
+    .join('')
+}
 
 function laatstGewijzigd(pad: string): Date {
   const dag = pad.startsWith('/theorie/')
