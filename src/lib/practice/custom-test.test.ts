@@ -1,7 +1,12 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
+import { SITE } from '@/config/site'
+
 import {
   createCustomTest,
+  loadTestResults,
+  loadTestSessionState,
+  pickQuestionsForTest,
   removeEmptyCustomTests,
 } from './custom-test'
 
@@ -22,6 +27,12 @@ type NepDatabase = {
   sessions: Row[]
   testQuestions: Row[]
   answers: Row[]
+  questions: Row[]
+  clusters: Row[]
+  topics: Row[]
+  chapters: Row[]
+  blocks: Row[]
+  paragraphs: Row[]
 }
 
 /** Laat het wegschrijven van de vragen op commando mislukken. */
@@ -40,6 +51,12 @@ function tabel(naam: string): Row[] {
   if (naam === 'user_sessions_new') return data.sessions
   if (naam === 'custom_test_questions') return data.testQuestions
   if (naam === 'session_answers_new') return data.answers
+  if (naam === 'questions_new') return data.questions
+  if (naam === 'topic_clusters_new') return data.clusters
+  if (naam === 'topics_new') return data.topics
+  if (naam === 'chapters') return data.chapters
+  if (naam === 'theory_blocks') return data.blocks
+  if (naam === 'paragraphs') return data.paragraphs
   throw new Error(`onbekende tabel ${naam}`)
 }
 
@@ -50,6 +67,7 @@ function from(naam: string) {
   let op: 'select' | 'insert' | 'delete' = 'select'
   let teSchrijven: Row[] = []
   let telt = false
+  let enkelvoud = false
 
   function gefilterd(): Row[] {
     return rijen.filter((r) => filters.every((f) => f(r)))
@@ -98,6 +116,7 @@ function from(naam: string) {
 
     const gevonden = gefilterd()
     if (telt) return { data: null, error: null, count: gevonden.length }
+    if (enkelvoud) return { data: gevonden[0] ? { ...gevonden[0] } : null, error: null, count: null }
     return { data: gevonden.map((r) => ({ ...r })), error: null, count: null }
   }
 
@@ -136,8 +155,14 @@ function from(naam: string) {
       return builder
     },
     order: () => builder,
-    single: async () => run(),
-    maybeSingle: async () => run(),
+    single: async () => {
+      if (op === 'select') enkelvoud = true
+      return run()
+    },
+    maybeSingle: async () => {
+      if (op === 'select') enkelvoud = true
+      return run()
+    },
     then: (resolve: (value: ReturnType<typeof run>) => unknown) =>
       Promise.resolve(run()).then(resolve),
   }
@@ -166,7 +191,17 @@ function legeToetsen(): Row[] {
 }
 
 beforeEach(() => {
-  data = { sessions: [], testQuestions: [], answers: [] }
+  data = {
+    sessions: [],
+    testQuestions: [],
+    answers: [],
+    questions: [],
+    clusters: [],
+    topics: [],
+    chapters: [],
+    blocks: [],
+    paragraphs: [],
+  }
   storing = {}
   insertPogingen = 0
   vi.spyOn(console, 'error').mockImplementation(() => {})
@@ -302,5 +337,262 @@ describe('removeEmptyCustomTests', () => {
     data.sessions = data.sessions.filter((s) => s.id !== 'oud-leeg')
 
     expect(await removeEmptyCustomTests(nepClient, 'u1')).toBe(0)
+  })
+})
+
+// =====================================================================
+// Het kiezen van vragen voor een zelf-toets.
+//
+// Filtert op bron ('new'/'wrong'/'all') en levert nooit dubbele ids: de
+// UNIQUE op (session_id, question_id) laat de hele toets klappen als dat
+// wel gebeurt (INT-473).
+// =====================================================================
+
+describe('pickQuestionsForTest', () => {
+  beforeEach(() => {
+    data.questions = [
+      { id: 'q1', cluster_id: 'c1', site: SITE },
+      { id: 'q2', cluster_id: 'c1', site: SITE },
+      { id: 'q3', cluster_id: 'c1', site: SITE },
+      { id: 'q4', cluster_id: 'c2', site: SITE },
+      { id: 'q5', cluster_id: 'c2', site: SITE },
+      // andere site: moet nooit meegenomen worden
+      { id: 'q-afgeleiden', cluster_id: 'c1', site: 'afgeleiden' },
+    ]
+    data.sessions = [{ id: 's1', user_id: 'u1' }]
+    data.answers = [
+      { session_id: 's1', question_id: 'q1', is_correct: true },
+      { session_id: 's1', question_id: 'q2', is_correct: false },
+    ]
+  })
+
+  it('levert bij "all" alle vragen uit de gekozen clusters, zonder die van een andere site', async () => {
+    const result = await pickQuestionsForTest(nepClient, 'u1', ['c1', 'c2'], 'all', 10)
+
+    expect(result).toHaveLength(5)
+    expect(new Set(result)).toEqual(new Set(['q1', 'q2', 'q3', 'q4', 'q5']))
+  })
+
+  it('laat bij "new" de al beantwoorde vragen weg', async () => {
+    const result = await pickQuestionsForTest(nepClient, 'u1', ['c1', 'c2'], 'new', 10)
+
+    expect(new Set(result)).toEqual(new Set(['q3', 'q4', 'q5']))
+  })
+
+  it('levert bij "wrong" alleen de fout beantwoorde vragen', async () => {
+    const result = await pickQuestionsForTest(nepClient, 'u1', ['c1', 'c2'], 'wrong', 10)
+
+    expect(result).toEqual(['q2'])
+  })
+
+  it('levert niets bij "wrong" als er nog niets fout is gegaan', async () => {
+    data.answers = []
+
+    const result = await pickQuestionsForTest(nepClient, 'u1', ['c1', 'c2'], 'wrong', 10)
+
+    expect(result).toEqual([])
+  })
+
+  it('levert nooit dubbele ids, ook niet bij vervuilde data', async () => {
+    data.questions.push({ id: 'q1', cluster_id: 'c1', site: SITE })
+
+    const result = await pickQuestionsForTest(nepClient, 'u1', ['c1', 'c2'], 'all', 10)
+
+    expect(result.filter((id) => id === 'q1')).toHaveLength(1)
+  })
+
+  it('geeft niet meer vragen terug dan gevraagd', async () => {
+    const result = await pickQuestionsForTest(nepClient, 'u1', ['c1', 'c2'], 'all', 2)
+
+    expect(result).toHaveLength(2)
+  })
+
+  it('levert niets zonder gekozen clusters', async () => {
+    expect(await pickQuestionsForTest(nepClient, 'u1', [], 'all', 10)).toEqual([])
+  })
+
+  it('levert niets bij een aantal van nul of minder', async () => {
+    expect(await pickQuestionsForTest(nepClient, 'u1', ['c1'], 'all', 0)).toEqual([])
+  })
+
+  it('levert niets als er geen vraag in de gekozen clusters zit', async () => {
+    expect(await pickQuestionsForTest(nepClient, 'u1', ['c-leeg'], 'all', 10)).toEqual([])
+  })
+})
+
+// =====================================================================
+// De stand van een lopende zelf-toets.
+// =====================================================================
+
+describe('loadTestSessionState', () => {
+  beforeEach(() => {
+    data.sessions = [
+      {
+        id: 's1',
+        user_id: 'u1',
+        session_type: 'custom_test',
+        ended_at: null,
+        show_answers: 'immediate',
+      },
+      {
+        id: 's-oefenen',
+        user_id: 'u1',
+        session_type: 'practice',
+        ended_at: null,
+        show_answers: 'immediate',
+      },
+    ]
+    data.testQuestions = [
+      { session_id: 's1', question_id: 'q1', order_index: 0 },
+      { session_id: 's1', question_id: 'q2', order_index: 1 },
+      { session_id: 's1', question_id: 'q3', order_index: 2 },
+    ]
+    data.answers = [{ session_id: 's1', question_id: 'q1' }]
+  })
+
+  it('geeft de voortgang en de eerstvolgende onbeantwoorde vraag', async () => {
+    const state = await loadTestSessionState(nepClient, 'u1', 's1')
+
+    expect(state).toEqual({
+      sessionId: 's1',
+      totalCount: 3,
+      answeredCount: 1,
+      ended: false,
+      showAnswers: 'immediate',
+      nextQuestionId: 'q2',
+      nextOrdinal: 2,
+    })
+  })
+
+  it('geeft null bij een onbekende toets', async () => {
+    expect(await loadTestSessionState(nepClient, 'u1', 'nope')).toBeNull()
+  })
+
+  it('geeft null bij de toets van een andere leerling', async () => {
+    expect(await loadTestSessionState(nepClient, 'u2', 's1')).toBeNull()
+  })
+
+  it('geeft null als het geen zelf-toets is', async () => {
+    expect(await loadTestSessionState(nepClient, 'u1', 's-oefenen')).toBeNull()
+  })
+
+  it('zet nextQuestionId op null als alles beantwoord is', async () => {
+    data.answers = [
+      { session_id: 's1', question_id: 'q1' },
+      { session_id: 's1', question_id: 'q2' },
+      { session_id: 's1', question_id: 'q3' },
+    ]
+
+    const state = await loadTestSessionState(nepClient, 'u1', 's1')
+
+    expect(state).toMatchObject({
+      answeredCount: 3,
+      nextQuestionId: null,
+      nextOrdinal: null,
+    })
+  })
+
+  it('geeft ended terug als de toets afgesloten is', async () => {
+    data.sessions[0]!.ended_at = new Date().toISOString()
+
+    const state = await loadTestSessionState(nepClient, 'u1', 's1')
+
+    expect(state?.ended).toBe(true)
+  })
+})
+
+// =====================================================================
+// De uitslag van een afgeronde zelf-toets, per cluster/blok.
+// =====================================================================
+
+describe('loadTestResults', () => {
+  beforeEach(() => {
+    data.sessions = [{ id: 's1', user_id: 'u1', session_type: 'custom_test' }]
+    data.chapters = [{ id: 'ch1', slug: 'k' }]
+    data.paragraphs = [{ id: 'p1', label: 'K.1' }]
+    data.blocks = [{ id: 'b1', slug: 'blok-a', letter: 'A', paragraph_id: 'p1' }]
+    data.topics = [
+      { id: 't1', slug: 'topic-1', title: 'Topic 1', chapter_id: 'ch1', theory_block_id: 'b1' },
+    ]
+    data.clusters = [{ id: 'c1', slug: 'cluster-1', title: 'Cluster 1', topic_id: 't1' }]
+    data.questions = [
+      { id: 'q1', cluster_id: 'c1', latex_body: '\\int x\\,dx', answer: 'x^2/2', latex_answer: 'x^2/2' },
+      { id: 'q2', cluster_id: 'c1', latex_body: '\\int 1\\,dx', answer: 'x', latex_answer: 'x' },
+    ]
+    data.testQuestions = [
+      { session_id: 's1', question_id: 'q1', order_index: 0 },
+      { session_id: 's1', question_id: 'q2', order_index: 1 },
+    ]
+    data.answers = [
+      { session_id: 's1', question_id: 'q1', user_answer: 'x^2/2', is_correct: true },
+      { session_id: 's1', question_id: 'q2', user_answer: '3', is_correct: false },
+    ]
+  })
+
+  it('telt het aantal goed en bouwt de score per cluster op', async () => {
+    const result = await loadTestResults(nepClient, 'u1', 's1')
+
+    expect(result).toMatchObject({
+      totalCount: 2,
+      correctCount: 1,
+      perCluster: [
+        {
+          clusterId: 'c1',
+          clusterTitle: 'Cluster 1',
+          topicTitle: 'Topic 1',
+          chapterSlug: 'k',
+          topicSlug: 'topic-1',
+          clusterSlug: 'cluster-1',
+          blockSlug: 'blok-a',
+          blockLabel: 'K.1 A',
+          total: 2,
+          correct: 1,
+        },
+      ],
+    })
+    expect(result?.perCluster[0]?.items).toEqual([
+      {
+        questionId: 'q1',
+        latexBody: '\\int x\\,dx',
+        userAnswer: 'x^2/2',
+        correctAnswer: 'x^2/2',
+        latexAnswer: 'x^2/2',
+        isCorrect: true,
+      },
+      {
+        questionId: 'q2',
+        latexBody: '\\int 1\\,dx',
+        userAnswer: '3',
+        correctAnswer: 'x',
+        latexAnswer: 'x',
+        isCorrect: false,
+      },
+    ])
+  })
+
+  it('laat blockSlug en blockLabel leeg als de vraag niet aan een theorieblok hangt', async () => {
+    data.topics = [{ id: 't1', slug: 'topic-1', title: 'Topic 1', chapter_id: 'ch1', theory_block_id: null }]
+
+    const result = await loadTestResults(nepClient, 'u1', 's1')
+
+    expect(result?.perCluster[0]).toMatchObject({ blockSlug: '', blockLabel: '' })
+  })
+
+  it('geeft een lege uitslag als de toets geen vragen heeft', async () => {
+    data.testQuestions = []
+
+    expect(await loadTestResults(nepClient, 'u1', 's1')).toEqual({
+      totalCount: 0,
+      correctCount: 0,
+      perCluster: [],
+    })
+  })
+
+  it('geeft null bij een onbekende toets', async () => {
+    expect(await loadTestResults(nepClient, 'u1', 'nope')).toBeNull()
+  })
+
+  it('geeft null bij de toets van een andere leerling', async () => {
+    expect(await loadTestResults(nepClient, 'u2', 's1')).toBeNull()
   })
 })
