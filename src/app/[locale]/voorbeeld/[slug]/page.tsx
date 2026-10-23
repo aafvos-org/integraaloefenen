@@ -70,6 +70,12 @@ export default async function VoorbeeldPagina({ params }: { params: Params }) {
       </p>
       <h1 className="mt-2 font-serif text-4xl text-text sm:text-[2.75rem]">{voorbeeld.kop}</h1>
 
+      {voorbeeld.nietTeVerwarrenMet && (
+        <p className="mt-3 text-text-muted">
+          <RichMath source={voorbeeld.nietTeVerwarrenMet} />
+        </p>
+      )}
+
       {proef && (
         <Link
           href={proef as '/proberen'}

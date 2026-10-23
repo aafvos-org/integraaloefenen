@@ -35,6 +35,12 @@ export type Voorbeeld = {
   stappen: [string, string, string, string]
   /** Eén veelgemaakte fout. Mag $...$ bevatten. */
   fout: string
+  /**
+   * Korte zin die een naastliggend begrip uitsluit (meestal "dit is de
+   * primitieve, niet de afgeleide"), voor bezoekers die op de verkeerde term
+   * zochten. Optioneel, mag $...$ bevatten.
+   */
+  nietTeVerwarrenMet?: string
   /** Oefenblok, bijvoorbeeld k0b. */
   blok: string
   /** Cluster binnen dat blok. */
@@ -501,14 +507,16 @@ export const VOORBEELDEN: Voorbeeld[] = [
   {
     slug: 'ln-2x',
     kop: 'De primitieve van ln(2x)',
-    titel: 'Primitieve van ln(2x)',
+    titel: 'Primitieve van ln(2x), niet de afgeleide',
     omschrijving:
-      'De primitieve van ln(2x) is x ln(2x) − x + c. Zelfde vorm als bij ln(x), met 2x in de logaritme.',
+      'De primitieve van ln(2x) is x ln(2x) − x + c. Let op: dit is de primitieve, niet de afgeleide. De afgeleide van ln(2x) is 1/x.',
     vraagLatex: '\\int \\ln(2x)\\,dx',
     antwoordLatex: 'x\\ln(2x)-x+c',
     integrand: 'ln(2*x)',
     primitieve: 'x*ln(2*x) - x',
     domein: [0.2, 3],
+    nietTeVerwarrenMet:
+      'Dit is de primitieve (de integraal) van $\\ln(2x)$, niet de afgeleide. De afgeleide van $\\ln(2x)$ is $1/x$.',
     stappen: [
       'Alleen deel 2 speelt hier. $\\ln(2x)$ is de standaardfunctie $\\ln$ met kern $2x$. De primitieve van $\\ln(t)$ is $t\\ln(t)-t$.',
       'De kern is $2x$, dus $a=2$.',
