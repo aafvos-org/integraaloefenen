@@ -6,7 +6,7 @@ import { useTranslations } from 'next-intl'
 import { DeelKnop } from '@/components/deel-knop'
 import { MathKeyboard } from '@/components/math-keyboard'
 import { Math as TeX, RichMath } from '@/components/math'
-import { useAntwoordInvoer } from '@/components/oefenkaart'
+import { GoedAntwoord, OpgaveTekst, useAntwoordInvoer } from '@/components/oefenkaart'
 import { Button } from '@/components/ui'
 import { Link } from '@/i18n/navigation'
 import { padNaarAanmelden } from '@/lib/bron'
@@ -136,7 +136,7 @@ export function ProberenClient({
       <div className="mt-3 min-w-0 overflow-x-auto rounded-2xl border border-border bg-surface p-4 sm:p-6">
         {opdracht && <p className="mb-1 text-sm font-medium text-text-muted">{t(opdracht)}</p>}
         <div className="font-serif text-xl leading-snug text-text" data-geen-dode-klik>
-          {som.latex.includes('$') ? <RichMath source={som.latex} /> : <TeX tex={som.latex} displayMode />}
+          <OpgaveTekst latexBody={som.latex} />
         </div>
         <p className="sr-only">{som.leesbaar}</p>
 
@@ -149,7 +149,7 @@ export function ProberenClient({
         {fase.soort === 'fout' && fase.getoond && (
           <p className="mt-4 overflow-x-auto text-sm text-text">
             <span className="font-medium">Juiste antwoord: </span>
-            <RichMath source={fase.antwoordLatex.includes('$') ? fase.antwoordLatex : `$${fase.antwoordLatex}$`} />
+            <GoedAntwoord antwoord={fase.antwoordLatex} latexAntwoord={null} />
           </p>
         )}
 
