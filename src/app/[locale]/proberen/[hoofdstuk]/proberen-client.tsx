@@ -243,8 +243,8 @@ export function ProberenClient({
         <div className="fixed inset-x-0 bottom-0 z-40 border-t border-accent/30 bg-accent-light px-4 py-3 shadow-[0_-4px_12px_rgba(0,0,0,0.08)]">
           <div className="mx-auto flex max-w-2xl flex-wrap items-center justify-between gap-3">
             <p className="text-sm text-text">
-              <span className="font-medium">Goed!</span> Wil je dit bewaren? Gratis account, geen
-              creditcard.
+              <span className="font-medium">Goed gedaan!</span> Wil je dit bewaren? Gratis
+              account, geen creditcard.
             </p>
             <div className="flex items-center gap-2">
               <Link
