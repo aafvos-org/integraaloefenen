@@ -247,9 +247,9 @@ export const THEORY_OVERVIEW: OverviewChapter[] = [
     slug: 'substitutiemethode',
     code: 'K.1',
     title: 'K.1 — De substitutiemethode',
-    zoektitel: 'Substitutie bij integralen',
+    zoektitel: 'Substitutiemethode bij integralen',
     zoekomschrijving:
-      'Substitutie bij integralen: je ziet een binnenfunctie en zijn afgeleide naast elkaar, en primitiveert alleen de buitenkant.',
+      'Substitutiemethode bij integralen: een binnenfunctie en zijn afgeleide staan naast elkaar. Probeer meteen 3 sommen, zonder account.',
     intro:
       'Je ziet een binnenfunctie $g$ en zijn afgeleide $g\'$ naast elkaar. Dan primitiveer je alleen de buitenkant $f$. De basis oefen je in K.1 A, de toepassingen in K.1 B.',
     oefenlinks: [
@@ -374,9 +374,9 @@ export const THEORY_OVERVIEW: OverviewChapter[] = [
     slug: 'partieel-integreren',
     code: 'K.2',
     title: 'K.2 — Partieel integreren',
-    zoektitel: 'Partieel integreren',
+    zoektitel: 'Partieel integreren uitgelegd',
     zoekomschrijving:
-      'Partieel integreren: een product van twee factoren, waarvan je er één differentieert en de andere primitiveert.',
+      'Partieel integreren uitgelegd: één factor differentieer je, de andere primitiveer je. Probeer meteen 3 sommen, zonder account.',
     intro:
       'Je ziet een product van twee factoren. Eén factor differentieer je, de andere primitiveer je. Eén ronde oefen je in K.2 A, twee rondes in K.2 B.',
     oefenlinks: [

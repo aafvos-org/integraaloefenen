@@ -39,6 +39,8 @@ export function ProberenClient({
   const [antwoord, setAntwoord] = useState('')
   const [fase, setFase] = useState<Fase>({ soort: 'invoer', melding: null })
   const [bezig, setBezig] = useState(false)
+  const [toonBewaarBalk, setToonBewaarBalk] = useState(false)
+  const [bewaarBalkWeg, setBewaarBalkWeg] = useState(false)
   const { invoerRef: invoer, voegIn } = useAntwoordInvoer(antwoord, setAntwoord)
   const terugkoppeling = useRef<HTMLDivElement | null>(null)
 
@@ -77,7 +79,10 @@ export function ProberenClient({
     setBezig(true)
     try {
       const uitslag = await nakijkProefopgave(hoofdstuk, som.volgnummer, antwoord)
-      if (uitslag.soort === 'goed') setFase({ soort: 'goed' })
+      if (uitslag.soort === 'goed') {
+        setFase({ soort: 'goed' })
+        setToonBewaarBalk(true)
+      }
       else if (uitslag.soort === 'fout') {
         setFase({
           soort: 'fout',
@@ -128,8 +133,10 @@ export function ProberenClient({
   const opdracht = opdrachtSleutel(som.latex)
   const prefix = antwoordPrefix(som.latex)
 
+  const bewaarBalkZichtbaar = toonBewaarBalk && !bewaarBalkWeg
+
   return (
-    <main className="mx-auto max-w-2xl px-4 py-6">
+    <main className={`mx-auto max-w-2xl px-4 py-6 ${bewaarBalkZichtbaar ? 'pb-28' : ''}`}>
       <h1 className="font-serif text-2xl text-text">
         Som {index + 1} van {sommen.length}
       </h1>
@@ -231,6 +238,34 @@ export function ProberenClient({
           </div>
         )}
       </div>
+
+      {bewaarBalkZichtbaar && (
+        <div className="fixed inset-x-0 bottom-0 z-40 border-t border-accent/30 bg-accent-light px-4 py-3 shadow-[0_-4px_12px_rgba(0,0,0,0.08)]">
+          <div className="mx-auto flex max-w-2xl flex-wrap items-center justify-between gap-3">
+            <p className="text-sm text-text">
+              <span className="font-medium">Goed gedaan!</span> Wil je dit bewaren? Gratis
+              account, geen creditcard.
+            </p>
+            <div className="flex items-center gap-2">
+              <Link
+                href={aanmelden}
+                data-meet="proberen-bewaar-balk-registreren"
+                className="inline-flex min-h-11 items-center rounded-full bg-accent px-4 text-sm font-medium text-white"
+              >
+                Gratis account maken
+              </Link>
+              <button
+                type="button"
+                onClick={() => setBewaarBalkWeg(true)}
+                aria-label="Melding sluiten"
+                className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-text-muted hover:bg-surface-2 hover:text-text"
+              >
+                <span aria-hidden>×</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </main>
   )
 }
