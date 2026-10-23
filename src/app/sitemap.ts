@@ -67,14 +67,14 @@ const LAATST_GEWIJZIGD: Record<string, string> = {
   '/voorbeeld': '2026-10-16',
 }
 const THEORIE_HOOFDSTUK_GEWIJZIGD = '2026-10-22'
-const VOORBEELD_GEWIJZIGD = '2026-10-22'
+const VOORBEELD_GEWIJZIGD = '2026-10-23'
 
 /** Hash over de content die bij `THEORIE_HOOFDSTUK_GEWIJZIGD` hoort. */
 export const THEORIE_HOOFDSTUK_INHOUD_HASH =
   'bc820d1b916d8f995f6f25a77592813455d382c7b3be57e6e11ea7712457cefe'
 /** Hash over de content die bij `VOORBEELD_GEWIJZIGD` hoort. */
 export const VOORBEELD_INHOUD_HASH =
-  'bda0d6afb8273bd7716c7fd3f37670b2ecfe9ac7faa202f85442e8a93dfc3a34'
+  '80560c60c8c26e65a6ed325f720240d84f8d507ff6b35acaee3d98819d9c9ba3'
 
 /**
  * Deterministische hash over content, voor `sitemap.test.ts`. Geen geheime
