@@ -65,6 +65,17 @@ export function ProberenClient({
     requestAnimationFrame(() => invoer.current?.focus())
   }
 
+  /**
+   * Een tik op de opgavetekst of de formule voelt klikbaar, maar er zat geen
+   * invoerveld onder. Zet de cursor daarom meteen in het antwoordveld,
+   * behalve als de bezoeker net tekst aan het selecteren is.
+   */
+  function focusAntwoord() {
+    if (fase.soort !== 'invoer') return
+    if (window.getSelection()?.toString()) return
+    invoer.current?.focus()
+  }
+
   function toonStappen() {
     if (fase.soort !== 'fout') return
     setFase({ ...fase, getoond: true })
@@ -141,9 +152,15 @@ export function ProberenClient({
         Som {index + 1} van {sommen.length}
       </h1>
       <div className="mt-3 min-w-0 overflow-x-auto rounded-2xl border border-border bg-surface p-4 sm:p-6">
-        {opdracht && <p className="mb-1 text-sm font-medium text-text-muted">{t(opdracht)}</p>}
-        <div className="font-serif text-xl leading-snug text-text" data-geen-dode-klik>
-          <OpgaveTekst latexBody={som.latex} />
+        <div
+          className={fase.soort === 'invoer' ? 'cursor-text' : undefined}
+          data-geen-dode-klik
+          onClick={focusAntwoord}
+        >
+          {opdracht && <p className="mb-1 text-sm font-medium text-text-muted">{t(opdracht)}</p>}
+          <div className="font-serif text-xl leading-snug text-text">
+            <OpgaveTekst latexBody={som.latex} />
+          </div>
         </div>
         <p className="sr-only">{som.leesbaar}</p>
 
