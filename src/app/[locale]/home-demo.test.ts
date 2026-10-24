@@ -32,3 +32,18 @@ describe('home-demo klik op niveau-label en somtekst (INT-461)', () => {
     )
   })
 })
+
+describe('home-demo niveau-tabs klikbaar zonder hover (INT-467)', () => {
+  it('geeft niet-geselecteerde tabs een zichtbare rand, niet alleen een hover-kleur', () => {
+    const bron = readFileSync(join(process.cwd(), 'src/app/[locale]/home-demo.tsx'), 'utf8')
+
+    // Vóór deze fix kregen niet-geselecteerde tabs (Gemiddeld, Moeilijk) alleen
+    // `text-text-muted hover:text-text`: geen rand, geen achtergrond. Op een
+    // telefoon (geen hover) zagen ze er daardoor niet uit als knop (INT-467).
+    const tabClassName = bron.match(
+      /className=\{`flex min-h-11 flex-1[\s\S]*?`\}/,
+    )?.[0]
+    expect(tabClassName).toBeDefined()
+    expect(tabClassName).toMatch(/:\s*'border-border text-text-muted/)
+  })
+})

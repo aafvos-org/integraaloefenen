@@ -230,10 +230,10 @@ export function HomeDemo({ aanmelden }: { aanmelden: string }) {
             type="button"
             data-meet={`proefsom-niveau-${tab.id}`}
             onClick={() => setActive(tab.id)}
-            className={`flex min-h-11 flex-1 items-center justify-center rounded-lg px-3 py-1.5 text-sm font-medium transition ${
+            className={`flex min-h-11 flex-1 items-center justify-center rounded-lg border px-3 py-1.5 text-sm font-medium transition ${
               active === tab.id
-                ? 'bg-accent text-white shadow-sm'
-                : 'text-text-muted hover:text-text'
+                ? 'border-accent bg-accent text-white shadow-sm'
+                : 'border-border text-text-muted hover:text-text'
             }`}
           >
             {tab.label}
