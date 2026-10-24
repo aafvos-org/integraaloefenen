@@ -351,7 +351,7 @@ export const VOORBEELDEN: Voorbeeld[] = [
   {
     slug: '1-over-x-kwadraat-plus-1',
     kop: 'De primitieve van 1/(x²+1)',
-    titel: 'Primitieve van 1/(x²+1)',
+    titel: 'Primitieve van 1/(x²+1) = arctan(x)',
     omschrijving:
       'De primitieve van 1/(x²+1) is arctan(x) + c. De noemer x²+1 wijst op arctan, niet op een logaritme.',
     vraagLatex: '\\int \\frac{1}{x^2+1}\\,dx',
