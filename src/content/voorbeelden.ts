@@ -41,6 +41,8 @@ export type Voorbeeld = {
    * zochten. Optioneel, mag $...$ bevatten.
    */
   nietTeVerwarrenMet?: string
+  /** Slug van de pagina waar `nietTeVerwarrenMet` naar verwijst, voor een klikbare link. */
+  nietTeVerwarrenMetSlug?: string
   /** Oefenblok, bijvoorbeeld k0b. */
   blok: string
   /** Cluster binnen dat blok. */
@@ -283,13 +285,15 @@ export const VOORBEELDEN: Voorbeeld[] = [
   {
     slug: 'e-tot-x',
     kop: 'De primitieve van e^x',
-    titel: 'Integraal van e^x (e tot de x) uitleg',
+    titel: 'Primitieve van e^x (e tot de x), niet e^(−x)',
     omschrijving:
-      'De integraal (primitieve) van e^x is e^x + c: de e-macht blijft zichzelf bij differentiëren. Bekijk de uitwerking en oefen gratis verder, zonder account.',
+      'De primitieve van e^x is e^x + c: de e-macht blijft zichzelf bij differentiëren. Let op: dit is e^x, niet e^(−x). Bekijk de uitwerking en oefen gratis verder, zonder account.',
     vraagLatex: '\\int e^{x}\\,dx',
     antwoordLatex: 'e^{x}+c',
     integrand: 'e^x',
     primitieve: 'e^x',
+    nietTeVerwarrenMet: 'Let op: dit is $e^{x}$, niet $e^{-x}$.',
+    nietTeVerwarrenMetSlug: 'e-tot-min-x',
     stappen: [
       'Alleen deel 2 speelt hier. $e^{x}$ staat in de lijst met standaardprimitieven.',
       'Herschrijven is niet nodig. De kern is $x$, dus $a=1$.',
@@ -462,13 +466,15 @@ export const VOORBEELDEN: Voorbeeld[] = [
   {
     slug: 'e-tot-min-x',
     kop: 'De primitieve van e^(−x)',
-    titel: 'Primitieve van e^(−x): e tot de min x',
+    titel: 'Primitieve van e^(−x): e tot de min x, niet e^x',
     omschrijving:
-      'De primitieve van e^(−x), oftewel e tot de min x, is −e^(−x) + c. Let op het minteken door de −1 in de exponent. Bekijk de uitwerking en oefen gratis verder.',
+      'De primitieve van e^(−x), oftewel e tot de min x, is −e^(−x) + c. Let op het minteken door de −1 in de exponent, en let op: dit is niet e^x. Bekijk de uitwerking en oefen gratis verder.',
     vraagLatex: '\\int e^{-x}\\,dx',
     antwoordLatex: '-e^{-x}+c',
     integrand: 'e^(-x)',
     primitieve: '-e^(-x)',
+    nietTeVerwarrenMet: 'Let op: dit is $e^{-x}$ (e tot de min x), niet $e^{x}$.',
+    nietTeVerwarrenMetSlug: 'e-tot-x',
     stappen: [
       'Alleen deel 2 speelt hier. Lineaire kern in de exponent.',
       'De buitenkant is $e^{\\text{even}}$, de kern is $-x$. Dus $a=-1$.',

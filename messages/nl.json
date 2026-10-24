@@ -101,7 +101,8 @@
     "fout": "Veelgemaakte fout",
     "oefenen": "Oefen dit soort sommen",
     "verwant": "Zie ook",
-    "theorie": "Lees de theorie"
+    "theorie": "Lees de theorie",
+    "nietTeVerwarrenMetLink": "Bekijk: {kop}"
   },
   "HoeHetWerkt": {
     "title": "Hoe werkt integralen oefenen voor wiskunde B VWO",

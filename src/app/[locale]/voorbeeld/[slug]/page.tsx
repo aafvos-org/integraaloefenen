@@ -73,6 +73,19 @@ export default async function VoorbeeldPagina({ params }: { params: Params }) {
       {voorbeeld.nietTeVerwarrenMet && (
         <p className="mt-3 text-text-muted">
           <RichMath source={voorbeeld.nietTeVerwarrenMet} />
+          {voorbeeld.nietTeVerwarrenMetSlug && (
+            <>
+              {' '}
+              <Link
+                href={`/voorbeeld/${voorbeeld.nietTeVerwarrenMetSlug}` as '/voorbeeld'}
+                className="font-medium text-accent underline-offset-2 hover:underline"
+              >
+                {t('nietTeVerwarrenMetLink', {
+                  kop: vindVoorbeeld(voorbeeld.nietTeVerwarrenMetSlug)!.kop,
+                })}
+              </Link>
+            </>
+          )}
         </p>
       )}
 
