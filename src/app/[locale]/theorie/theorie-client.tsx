@@ -16,6 +16,7 @@ export type TheorieChapter = {
   slug: string
   title: string
   intro?: string
+  uitgelichtVoorbeeld?: { label: string; slug: string }
   stappenplan?: Stappenplan
   /** Vooraf op de server geformatteerd, bv. "Oefen De afgeleide functie →" */
   practiceLabel: string
@@ -354,6 +355,16 @@ export function TheorieClient({
                   <p className="mt-3 max-w-3xl text-sm leading-relaxed text-text-muted">
                     <RichMath source={ch.intro} />
                   </p>
+                )}
+
+                {ch.uitgelichtVoorbeeld && (
+                  <Link
+                    href={`/voorbeeld/${ch.uitgelichtVoorbeeld.slug}` as '/voorbeeld'}
+                    data-meet="theorie-uitgelicht-voorbeeld"
+                    className="mt-3 inline-flex min-h-11 max-w-3xl items-center rounded-lg border border-accent/40 bg-accent/5 px-4 py-2 text-sm font-medium text-accent underline-offset-2 hover:underline"
+                  >
+                    {ch.uitgelichtVoorbeeld.label}
+                  </Link>
                 )}
 
                 {ch.stappenplan && (

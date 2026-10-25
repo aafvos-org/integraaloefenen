@@ -109,6 +109,8 @@ export type OverviewChapter = {
   zoektitel?: string
   /** Meta-omschrijving, zonder boekcode vooraan. */
   zoekomschrijving?: string
+  /** Kaart bovenaan het hoofdstuk, doorlink naar een uitgewerkt voorbeeld dat in Google al scoort. */
+  uitgelichtVoorbeeld?: { label: string; slug: string }
   stappenplan?: Stappenplan
   /** Knoppen naar oefenen. Anders één link op het hoofdstuk zelf. */
   oefenlinks?: Oefenlink[]
