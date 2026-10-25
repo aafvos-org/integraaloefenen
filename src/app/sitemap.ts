@@ -66,12 +66,12 @@ const LAATST_GEWIJZIGD: Record<string, string> = {
   '/privacy': '2026-10-13',
   '/voorbeeld': '2026-10-16',
 }
-const THEORIE_HOOFDSTUK_GEWIJZIGD = '2026-10-23'
+const THEORIE_HOOFDSTUK_GEWIJZIGD = '2026-10-25'
 const VOORBEELD_GEWIJZIGD = '2026-10-25'
 
 /** Hash over de content die bij `THEORIE_HOOFDSTUK_GEWIJZIGD` hoort. */
 export const THEORIE_HOOFDSTUK_INHOUD_HASH =
-  '973037a2fce12608d5c2fff22c39a0bf9b17d41d7c023840fbe64610277ea8fe'
+  '12bd36c7d892ea01a52b8e4981ee0fad4e6830affd94bebac2b3ae02b60590b8'
 /** Hash over de content die bij `VOORBEELD_GEWIJZIGD` hoort. */
 export const VOORBEELD_INHOUD_HASH =
   '4ca6bac0dee4735e92585a84c9835db81bdd6b2236133fea5873bb1632faf9ca'

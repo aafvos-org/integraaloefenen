@@ -837,6 +837,10 @@ export const THEORY_OVERVIEW: OverviewChapter[] = [
     zoekomschrijving:
       'Integralen die arcsin of arctan worden: de noemer bepaalt welke. Met uitleg en voorbeelden. Probeer meteen 3 sommen, zonder account.',
     intro: 'Elke integraal hier wordt $\\arctan$ of $\\arcsin$. De noemer zegt welke van de twee.',
+    uitgelichtVoorbeeld: {
+      label: 'Voorbeeld: primitieve van 1/(x²+1) = arctan(x)',
+      slug: '1-over-x-kwadraat-plus-1',
+    },
     oefenlinks: [
       { label: 'Oefen K.3 A', href: '/oefenen?blok=k3a' },
       { label: 'Oefen K.3 B', href: '/oefenen?blok=k3b' },
