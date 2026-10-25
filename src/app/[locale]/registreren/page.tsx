@@ -52,7 +52,7 @@ export default async function SignupPage({
       </p>
 
       <div className="mt-8 rounded-xl border border-border bg-surface p-6">
-        <GoogleBlok volgende={`/${locale}/oefenen`} bron={bron} />
+        <GoogleBlok volgende={`/${locale}/oefenen`} />
         <SignupForm bronUitAdres={bron} />
       </div>
 

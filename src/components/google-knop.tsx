@@ -4,20 +4,18 @@ import { useState } from 'react'
 import { useTranslations } from 'next-intl'
 
 import { ErrorBanner } from '@/components/ui'
-import type { Bron } from '@/lib/bron'
+import { leesBron } from '@/lib/bron'
 import { veiligeVolgende } from '@/lib/google-login'
 import { createClient } from '@/lib/supabase/browser'
 
 /**
  * Knop "Doorgaan met Google". De pagina rendert hem alleen als de vlag aan staat.
+ *
+ * `bron` komt uit `?van=` in de adresregel. Die leest deze knop zelf, pas bij
+ * een klik: zo hoeft de paginaserver `searchParams` niet te lezen, en blijft
+ * inloggen/registreren statisch (zie INT-519).
  */
-export function GoogleKnop({
-  volgende,
-  bron = null,
-}: {
-  volgende: string
-  bron?: Bron | null
-}) {
+export function GoogleKnop({ volgende }: { volgende: string }) {
   const t = useTranslations('Google')
   const [bezig, setBezig] = useState(false)
   const [fout, setFout] = useState(false)
@@ -29,6 +27,7 @@ export function GoogleKnop({
       const supabase = createClient()
       const terug = new URL('/auth/callback', window.location.origin)
       terug.searchParams.set('next', veiligeVolgende(volgende))
+      const bron = leesBron(new URLSearchParams(window.location.search).get('van'))
       if (bron) terug.searchParams.set('bron', bron)
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
