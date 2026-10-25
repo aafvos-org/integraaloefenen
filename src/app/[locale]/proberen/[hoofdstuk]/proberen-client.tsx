@@ -128,7 +128,7 @@ export function ProberenClient({
             <Link
               href={aanmelden}
               data-meet="proberen-klaar-registreren"
-              className="inline-flex min-h-11 items-center rounded-full bg-accent px-5 text-sm font-medium text-white"
+              className="inline-flex min-h-11 items-center rounded-md bg-accent px-5 text-sm font-medium text-white"
             >
               Maak een gratis account
             </Link>
