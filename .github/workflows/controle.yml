@@ -164,6 +164,16 @@ jobs:
           path: ~/.cache/ms-playwright
           key: playwright-${{ runner.os }}-${{ steps.playwright.outputs.versie }}
 
+      # De GitHub-runner draait zelf af en toe apt-get (onder meer voor
+      # automatische beveiligingsupdates). Komt dat tegelijk met de
+      # systeembibliotheken hieronder, dan faalt de installatie meteen met
+      # "Could not get lock /var/lib/dpkg/lock-frontend" in plaats van even
+      # te wachten. Deze wachttijd laat apt-get tot twee minuten op die lock
+      # wachten voordat hij opgeeft.
+      - name: Wachttijd instellen voor de apt-lock
+        if: steps.nodig.outputs.draaien == 'ja'
+        run: echo 'DPkg::Lock::Timeout "120";' | sudo tee /etc/apt/apt.conf.d/99-lock-timeout
+
       # Stond de browser er al, dan hoeven alleen de systeembibliotheken nog.
       # Mislukt het of blijft het hangen, dan proberen we het één keer
       # opnieuw: dat is meestal een hapering bij de download.
