@@ -1,14 +1,14 @@
 import type { Metadata, ResolvingMetadata } from 'next'
-import { getTranslations, getLocale } from 'next-intl/server'
+import { Suspense } from 'react'
+import { getTranslations } from 'next-intl/server'
 import { Link } from '@/i18n/navigation'
-import { redirect } from 'next/navigation'
 
 import { GoogleBlok } from '@/components/google-blok'
-import { leesBron, padNaarAanmelden } from '@/lib/bron'
-import { getCurrentUser } from '@/lib/supabase/request-cache'
+import { zetStatischeTaal } from '@/i18n/statisch'
 
-import { BevestigingsMelding } from './bevestigings-melding'
-import { HerstelMelding } from './herstel-melding'
+import { AanmeldLink } from './aanmeld-link'
+import { AlIngelogd } from './al-ingelogd'
+import { InloggenMeldingen } from './inloggen-meldingen'
 import { LoginForm } from './login-form'
 
 export async function generateMetadata(
@@ -25,51 +25,52 @@ export async function generateMetadata(
   }
 }
 
+/**
+ * Geen `cookies()` en geen `searchParams` meer hier: die maakten deze pagina
+ * bij elk bezoek dynamisch, ook voor wie alleen komt inloggen (INT-519). De
+ * paar dingen die daarvan afhingen — alvast ingelogd, een melding na een
+ * mail-link, `?van=` bij "Account aanmaken" — leest de browser nu zelf, in
+ * AlIngelogd, InloggenMeldingen en AanmeldLink. Zo komt dit bezoek, net als
+ * theorie en de startpagina, uit de klaargezette versie.
+ */
 export default async function LoginPage({
-  searchParams,
+  params,
 }: {
-  searchParams: Promise<{
-    error?: string
-    bevestigd?: string
-    linkfout?: string
-    herstel?: string
-    van?: string
-  }>
+  params: Promise<{ locale: string }>
 }) {
-  const locale = await getLocale()
-  const user = await getCurrentUser()
-
-  if (user) {
-    redirect(`/${locale}/dashboard`)
-  }
-
+  const { locale } = await params
+  zetStatischeTaal(locale)
   const t = await getTranslations('Login')
-  const { error, bevestigd, linkfout, herstel, van } = await searchParams
-  const aanmelden = padNaarAanmelden('/registreren', leesBron(van))
-  const callbackError = error === 'auth_callback_failed'
-  const herstelFout = herstel === '1'
 
   return (
     <div className="mx-auto max-w-md px-4 py-16">
+      <AlIngelogd naar={`/${locale}/dashboard`} />
       <h1 className="font-serif text-3xl text-text">{t('h1')}</h1>
       <p className="mt-2 text-sm text-text-muted">{t('subtitle')}</p>
 
-      {(bevestigd || linkfout) && <BevestigingsMelding linkFout={Boolean(linkfout)} />}
-      {(callbackError || herstelFout) && <HerstelMelding kapot={herstelFout} />}
+      <Suspense fallback={null}>
+        <InloggenMeldingen />
+      </Suspense>
 
       <div className="mt-8 rounded-xl border border-border bg-surface p-6">
-        <GoogleBlok volgende={`/${locale}/dashboard`} bron={leesBron(van)} />
+        <GoogleBlok volgende={`/${locale}/dashboard`} />
         <LoginForm />
       </div>
 
       <p className="mt-4 text-center text-sm text-text-muted">
         {t('noAccount')}{' '}
-        <Link
-          href={aanmelden}
-          className="inline-flex min-h-11 items-center px-1 font-medium text-accent hover:underline"
+        <Suspense
+          fallback={
+            <Link
+              href="/registreren"
+              className="inline-flex min-h-11 items-center px-1 font-medium text-accent hover:underline"
+            >
+              {t('registerLink')}
+            </Link>
+          }
         >
-          {t('registerLink')}
-        </Link>
+          <AanmeldLink label={t('registerLink')} />
+        </Suspense>
       </p>
       <p className="text-center text-sm text-text-muted">
         <Link
