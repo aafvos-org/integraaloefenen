@@ -241,9 +241,9 @@ export const VOORBEELDEN: Voorbeeld[] = [
   {
     slug: 'sin-x',
     kop: 'De primitieve van sin(x)',
-    titel: 'Integraal van sin(x) berekenen: uitleg',
+    titel: 'Primitieve van sin(x) (integraal): uitleg',
     omschrijving:
-      'De integraal (primitieve) van sin(x) is −cos(x) + c. Bekijk de uitwerking met de standaardprimitieve en oefen daarna gratis verder, zonder account.',
+      'De primitieve van sin(x) is −cos(x) + c. Bekijk de uitwerking met de standaardprimitieve en oefen daarna gratis verder, zonder account.',
     vraagLatex: '\\int \\sin(x)\\,dx',
     antwoordLatex: '-\\cos(x)+c',
     integrand: 'sin(x)',
