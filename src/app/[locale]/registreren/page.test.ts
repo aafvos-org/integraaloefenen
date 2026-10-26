@@ -5,14 +5,14 @@ import { describe, expect, it } from 'vitest'
 
 describe('registreren-pagina met ?van=proberen', () => {
   it('toont een andere koptekst voor wie net een proefsom deed', () => {
-    const pagina = readFileSync(
-      join(process.cwd(), 'src/app/[locale]/registreren/page.tsx'),
+    const component = readFileSync(
+      join(process.cwd(), 'src/app/[locale]/registreren/kop-uit-adres.tsx'),
       'utf8',
     )
 
-    expect(pagina).toContain("bron === 'proberen'")
-    expect(pagina).toContain("t('h1Proefsom')")
-    expect(pagina).toContain("t('subtitleProefsom')")
+    expect(component).toContain("leesBron(searchParams.get('van')) === 'proberen'")
+    expect(component).toContain('h1Proefsom')
+    expect(component).toContain('subtitleProefsom')
   })
 
   it('heeft andere teksten dan de generieke koptekst', () => {

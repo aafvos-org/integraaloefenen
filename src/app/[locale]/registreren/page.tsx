@@ -1,12 +1,13 @@
 import type { Metadata, ResolvingMetadata } from 'next'
-import { getTranslations, getLocale } from 'next-intl/server'
+import { Suspense } from 'react'
+import { getTranslations } from 'next-intl/server'
 import { Link } from '@/i18n/navigation'
-import { redirect } from 'next/navigation'
 
+import { AlIngelogd } from '@/components/al-ingelogd'
 import { GoogleBlok } from '@/components/google-blok'
-import { leesBron } from '@/lib/bron'
-import { getCurrentUser } from '@/lib/supabase/request-cache'
 
+import { Kop } from './kop'
+import { KopUitAdres } from './kop-uit-adres'
 import { SignupForm } from './signup-form'
 
 export async function generateMetadata(
@@ -23,37 +24,34 @@ export async function generateMetadata(
   }
 }
 
-export default async function SignupPage({
-  searchParams,
-}: {
-  searchParams: Promise<{ van?: string }>
-}) {
-  const locale = await getLocale()
-  const user = await getCurrentUser()
-  const bron = leesBron((await searchParams).van)
-
-  if (user) {
-    redirect(`/${locale}/dashboard`)
-  }
-
-  const t = await getTranslations('Register')
-  // Komt de leerling net van de proefsom op de startpagina, dan is de
-  // generieke tekst niet motiverend: hij deed al een som en twijfelt of
-  // registreren wat toevoegt.
-  const uitProefsom = bron === 'proberen'
+/**
+ * Geen `cookies()` en geen `searchParams` meer hier: die maakten deze pagina
+ * bij elk bezoek dynamisch, ook voor wie alleen komt registreren (INT-549,
+ * zie ook INT-519 voor /inloggen). Alvast ingelogd leest de browser nu zelf
+ * (AlIngelogd), en ook `?van=` voor de proefsom-tekst en de bron bij het
+ * account (KopUitAdres, SignupForm). Zo komt dit bezoek, net als theorie en
+ * de startpagina, uit de klaargezette versie.
+ */
+export default async function SignupPage({ params }: { params: Promise<{ locale: string }> }) {
+  const { locale } = await params
+  const t = await getTranslations({ locale, namespace: 'Register' })
 
   return (
     <div className="mx-auto max-w-md px-4 py-16">
-      <h1 className="font-serif text-3xl text-text">
-        {uitProefsom ? t('h1Proefsom') : t('h1')}
-      </h1>
-      <p className="mt-2 text-sm text-text-muted">
-        {uitProefsom ? t('subtitleProefsom') : t('subtitle')}
-      </p>
+      <AlIngelogd naar={`/${locale}/dashboard`} />
+
+      <Suspense fallback={<Kop h1={t('h1')} subtitle={t('subtitle')} />}>
+        <KopUitAdres
+          h1={t('h1')}
+          h1Proefsom={t('h1Proefsom')}
+          subtitle={t('subtitle')}
+          subtitleProefsom={t('subtitleProefsom')}
+        />
+      </Suspense>
 
       <div className="mt-8 rounded-xl border border-border bg-surface p-6">
         <GoogleBlok volgende={`/${locale}/oefenen`} />
-        <SignupForm bronUitAdres={bron} />
+        <SignupForm />
       </div>
 
       <p className="text-center text-sm text-text-muted">

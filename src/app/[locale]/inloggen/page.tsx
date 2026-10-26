@@ -3,11 +3,11 @@ import { Suspense } from 'react'
 import { getTranslations } from 'next-intl/server'
 import { Link } from '@/i18n/navigation'
 
+import { AlIngelogd } from '@/components/al-ingelogd'
 import { GoogleBlok } from '@/components/google-blok'
 import { zetStatischeTaal } from '@/i18n/statisch'
 
 import { AanmeldLink } from './aanmeld-link'
-import { AlIngelogd } from './al-ingelogd'
 import { InloggenMeldingen } from './inloggen-meldingen'
 import { LoginForm } from './login-form'
 
