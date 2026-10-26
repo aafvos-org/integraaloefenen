@@ -466,9 +466,9 @@ export const VOORBEELDEN: Voorbeeld[] = [
   {
     slug: 'e-tot-min-x',
     kop: 'De primitieve van e^(−x)',
-    titel: 'Primitieve van e^(−x): e tot de min x, niet e^x',
+    titel: 'Primitieve van e^(−x): e tot de min x',
     omschrijving:
-      'De primitieve van e^(−x), oftewel e tot de min x, is −e^(−x) + c. Let op het minteken door de −1 in de exponent, en let op: dit is niet e^x. Bekijk de uitwerking en oefen gratis verder.',
+      'De primitieve van e^(−x), oftewel e tot de min x, is −e^(−x) + c. Let op het minteken door de −1 in de exponent. Bekijk de uitwerking en oefen gratis verder.',
     vraagLatex: '\\int e^{-x}\\,dx',
     antwoordLatex: '-e^{-x}+c',
     integrand: 'e^(-x)',
