@@ -626,5 +626,9 @@
     "who5": "Google (Gemini) krijgt alleen een foute opgave en het antwoord, zonder je naam.",
     "who6": "Cloudflare laat de site draaien en telt bezoeken zonder persoonsgegevens.",
     "updated": "Bijgewerkt op 16 oktober 2026."
+  },
+  "Meting": {
+    "uitMelding": "Dit apparaat telt niet meer mee in de meting.",
+    "aanMelding": "Dit apparaat telt weer mee in de meting."
   }
 }

@@ -2,7 +2,9 @@ import type { Metadata } from 'next'
 import { NextIntlClientProvider, hasLocale } from 'next-intl'
 import { getMessages, getTranslations } from 'next-intl/server'
 import { notFound } from 'next/navigation'
+import { Suspense } from 'react'
 
+import { MeetSchakelaar } from '@/components/meet-schakelaar'
 import { SiteFooter } from '@/components/site-footer'
 import { SiteHeader } from '@/components/site-header'
 import { SITE_CONFIG } from '@/config/site'
@@ -89,6 +91,9 @@ export default async function LocaleLayout({
       >
         {t('skipToContent')}
       </a>
+      <Suspense fallback={null}>
+        <MeetSchakelaar />
+      </Suspense>
       <SiteHeader locale={locale} />
       <main id="inhoud" tabIndex={-1} className="flex-1 focus:outline-none">
         {children}
