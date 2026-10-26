@@ -12,6 +12,8 @@ import { zetStatischeTaal } from '@/i18n/statisch'
 import { voorbeeldGegevens } from '@/lib/gestructureerde-gegevens'
 import { eigenPagina } from '@/lib/seo'
 
+import { YoutubeStrip } from '../../youtube-strip'
+
 type Params = Promise<{ locale: string; slug: string }>
 
 export const dynamicParams = false
@@ -63,6 +65,7 @@ export default async function VoorbeeldPagina({ params }: { params: Params }) {
           __html: JSON.stringify(gegevens).replace(/</g, '\\u003c'),
         }}
       />
+      <YoutubeStrip />
       <p className="text-sm font-medium uppercase tracking-wider text-accent">
         <Link href="/voorbeeld" className="hover:underline">
           {t('eyebrow')}
