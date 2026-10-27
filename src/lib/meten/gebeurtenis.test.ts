@@ -3,6 +3,7 @@ import { describe, expect, it } from 'vitest'
 import {
   MAX_PER_PAKKET,
   apparaatVanBreedte,
+  apparaatVoorSessie,
   hoogsteVolgnummer,
   isBeheerpad,
   isBot,
@@ -59,6 +60,24 @@ describe('apparaatVanBreedte', () => {
     expect(apparaatVanBreedte(640)).toBe('tablet')
     expect(apparaatVanBreedte(1023)).toBe('tablet')
     expect(apparaatVanBreedte(1280)).toBe('computer')
+  })
+})
+
+describe('apparaatVoorSessie', () => {
+  it('bepaalt het apparaat op de schermbreedte als er nog niets is opgeslagen', () => {
+    expect(apparaatVoorSessie(null, 1280)).toBe('computer')
+  })
+
+  it('houdt de eerder opgeslagen waarde aan, ook als de breedte intussen anders is', () => {
+    // Dit was de bug (INT-560): bij elk verstuurd pakketje werd de breedte
+    // opnieuw gelezen, zodat één sessie bijvoorbeeld eerst "computer" en
+    // even later "telefoon" kreeg door een resize zonder paginawissel.
+    expect(apparaatVoorSessie('telefoon', 1280)).toBe('telefoon')
+    expect(apparaatVoorSessie('computer', 390)).toBe('computer')
+  })
+
+  it('negeert een opgeslagen waarde die geen geldig apparaat is', () => {
+    expect(apparaatVoorSessie('onzin', 1280)).toBe('computer')
   })
 })
 
