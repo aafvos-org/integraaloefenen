@@ -4,11 +4,12 @@
  * `google.nl`, `google.co.uk`, `google.com.au`, … — maar niet voor een ander
  * domein dat toevallig met "google" begint of eindigt (zoals
  * `googleadservices.com`) of een vals verlengd domein (`google.com.voorbeeld.nl`).
- * Gebruikt door de proef-strip en door `scriptDatBronOnthoudt` in `bron.ts`
- * (dezelfde regel staat daar nog eens als losse string, omdat dat script geen
- * modules kan importeren).
+ * Deze regel staat ook, als losse string, in `scriptDatBronOnthoudt` in
+ * `bron.ts` — dat script draait in de browser en kan geen modules
+ * importeren. `bron.test.ts` vergelijkt die string met `GOOGLE_ZOEKDOMEIN`
+ * hieronder, zodat de twee niet uit elkaar kunnen groeien.
  */
-const GOOGLE_ZOEKDOMEIN = /^google\.[a-z]{2,3}(\.[a-z]{2,3})?$/
+export const GOOGLE_ZOEKDOMEIN = /^google\.[a-z]{2,3}(\.[a-z]{2,3})?$/
 
 export function isGoogleZoekdomein(verwijzerDomein: string | null): boolean {
   if (verwijzerDomein === null) return false
