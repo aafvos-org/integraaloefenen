@@ -15,6 +15,7 @@ import {
 } from '@/components/oefenkaart'
 import { Button, ErrorBanner } from '@/components/ui'
 import { VraagForm } from '@/components/vraag-form'
+import { YoutubeInsluiting } from '@/components/youtube-insluiting'
 import { toLatexPreview } from '@/lib/practice/input'
 import { nakijkenMetVangnet } from '@/lib/practice/vangnet'
 import { heeftInlogsessie } from '@/lib/supabase/sessie-cookie'
@@ -58,8 +59,10 @@ type VideoItem = {
   soort: 'algemeen' | 'vraaguitwerking'
   chapter: string | null
   duration: string
-  src: string
+  youtubeId: string
   href: string
+  theorieHref: string | null
+  videoOefenHref: string | null
   hasPractice: boolean
 }
 
@@ -106,6 +109,8 @@ type Labels = {
   askNoAccount: string
   askLogin: string
   askRegister: string
+  theorieCta: string
+  oefenCta: string
 }
 
 function IconPlay() {
@@ -340,19 +345,33 @@ export function UitlegVideosClient({
         <div className="mt-8 grid gap-6 lg:grid-cols-[280px_minmax(0,1fr)]">
           {/* Speler (rechts op desktop, bovenaan op mobiel) */}
           <div className="lg:order-2">
-            {active ? (
-              <video
-                key={active.src}
-                src={active.src}
-                controls
-                preload="metadata"
-                className="aspect-video w-full rounded-2xl border border-border bg-surface-2 shadow-sm"
-              />
-            ) : null}
+            {active ? <YoutubeInsluiting videoId={active.youtubeId} titel={active.title} /> : null}
             {active ? (
               <div className="mt-3">
                 <h2 className="font-serif text-xl text-text">{active.title}</h2>
                 <p className="mt-1 text-sm text-text-muted">{active.description}</p>
+                {active.theorieHref || active.videoOefenHref ? (
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    {active.theorieHref ? (
+                      <Link
+                        href={active.theorieHref as '/theorie'}
+                        data-meet="video-naar-theorie"
+                        className="inline-flex min-h-11 items-center rounded-lg border border-border px-4 py-2 text-sm font-medium text-text transition hover:bg-surface-2"
+                      >
+                        {labels.theorieCta}
+                      </Link>
+                    ) : null}
+                    {active.videoOefenHref ? (
+                      <Link
+                        href={active.videoOefenHref as '/oefenen'}
+                        data-meet="video-naar-oefenen"
+                        className="inline-flex min-h-11 items-center rounded-lg bg-accent px-4 py-2 text-sm font-medium text-white transition hover:bg-accent/90"
+                      >
+                        {labels.oefenCta}
+                      </Link>
+                    ) : null}
+                  </div>
+                ) : null}
               </div>
             ) : null}
           </div>

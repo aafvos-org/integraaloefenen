@@ -540,7 +540,7 @@
   "UitlegVideos": {
     "title": "Uitlegvideo's",
     "h1": "Uitlegvideo's",
-    "intro": "De eerste video's komen eraan. Stel je vraag: grote kans dat hij de eerste video wordt.",
+    "intro": "Korte video's van Aaf bij de lastigste onderdelen. Kies er een, en ga daarna meteen verder met de bijbehorende theorie of oefenstof.",
     "playlistTitle": "Video's",
     "practiceTitle": "Oefen meteen mee",
     "preview": "Voorbeeld",
@@ -570,6 +570,8 @@
     "askNoAccount": "Meld je aan om je vraag in te sturen. Nog geen account? Die maak je gratis aan.",
     "askLogin": "Inloggen",
     "askRegister": "Account maken",
+    "theorieCta": "Bekijk de theorie",
+    "oefenCta": "Ga oefenen",
     "askPhoto": "Foto van de opgave toevoegen",
     "askPhotoHint": "Staat je vraag in het boek? Maak een foto, dan hoef je hem niet over te typen. Maximaal 3 foto's; ze worden automatisch verkleind.",
     "askPhotoRemove": "Foto verwijderen",

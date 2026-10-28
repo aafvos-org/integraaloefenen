@@ -9,32 +9,44 @@ export type UitlegVideo = {
   title: string
   description: string
   soort: VideoSoort
-  /** Hoofdstuk waar de video bij hoort, bv. "H2". Null = niet hoofdstukgebonden. */
+  /** Hoofdstuk waar de video bij hoort, bv. "K". Null = niet hoofdstukgebonden. */
   chapter: string | null
   /** Weergaveduur, bv. "2:21". */
   duration: string
-  /** Publieke mp4-URL (Supabase Storage, bucket `videos`). */
-  src: string
+  /** YouTube-video-ID, bv. "VC22q6hNci0" uit youtu.be/VC22q6hNci0. */
+  youtubeId: string
+  /** Pad naar de bijpassende theoriepagina, bv. "/theorie/substitutiemethode". Null = geen koppeling. */
+  theorieHref: string | null
+  /** Pad naar de bijpassende oefenstof, bv. "/oefenen?blok=k1a". Null = geen koppeling. */
+  oefenHref: string | null
   /**
    * Clusters (topic_clusters_new.id) waar de oefenvragen bij deze video
-   * vandaan komen. Leeg = geen oefensectie tonen.
+   * vandaan komen. Leeg = geen embedded oefenkaart tonen (de links hierboven
+   * volstaan dan).
    */
   clusterIds: string[]
 }
 
 /**
- * De uitlegvideo's van integraaloefenen.nl. Nog leeg: de eerste video's over
- * integreren worden gemaakt. Zolang deze lijst leeg is toont de pagina een
- * uitnodiging om een vraag te stellen, in plaats van een speler.
- *
- * Een video toevoegen:
- * - zet de mp4 in de publieke Storage-bucket `videos` van élke omgeving waar je
- *   hem wilt zien (lokaal, dev en prod hebben een eigen bucket) en bouw `src`
- *   als `${NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/videos/<naam>.mp4`;
- * - vul `clusterIds` met clusters uit `topic_clusters_new` van dít project
- *   (IntegraalOefenen), anders blijft de oefenkaart eronder leeg.
+ * De uitlegvideo's van integraaloefenen.nl (INT-604). Ze staan op YouTube, het
+ * kanaal "Wiskunde met Aaf": integraal heeft geen eigen Storage-bucket voor
+ * video's en krijgt er ook geen (regelboek 6).
  */
-const VIDEOS: UitlegVideo[] = []
+const VIDEOS: UitlegVideo[] = [
+  {
+    slug: 'k1a-kettingregel',
+    title: 'K.1A — Primitiveren met de kettingregel',
+    description:
+      'Hoe je een integraal herkent waarbij de kern en zijn afgeleide naast elkaar staan, en hem dan met de kettingregel achterstevoren primitiveert.',
+    soort: 'algemeen',
+    chapter: 'K',
+    duration: '6:56',
+    youtubeId: 'VC22q6hNci0',
+    theorieHref: '/theorie/substitutiemethode',
+    oefenHref: '/oefenen?blok=k1a',
+    clusterIds: [],
+  },
+]
 
 export function getUitlegVideos(): UitlegVideo[] {
   return VIDEOS
