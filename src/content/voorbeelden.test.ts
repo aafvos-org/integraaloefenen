@@ -61,6 +61,12 @@ describe('antwoordpagina’s', () => {
         expect(slug, voorbeeld.slug).not.toBe(voorbeeld.slug)
       }
       expect(new Set(voorbeeld.verwant).size, voorbeeld.slug).toBe(2)
+      if (voorbeeld.nietTeVerwarrenMetSlug !== undefined) {
+        expect(
+          slugs.has(voorbeeld.nietTeVerwarrenMetSlug),
+          `${voorbeeld.slug} → ${voorbeeld.nietTeVerwarrenMetSlug}`,
+        ).toBe(true)
+      }
       const pad = oefenPad(voorbeeld)
       expect(pad, voorbeeld.slug).toContain('van=voorbeeld')
       expect(pad, voorbeeld.slug).toContain(`blok=${voorbeeld.blok}`)
