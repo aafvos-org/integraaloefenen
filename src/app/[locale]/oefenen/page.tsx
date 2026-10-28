@@ -21,9 +21,11 @@ import {
   clusterIdsVoorSelectie,
   losSelectieOp,
   oefenIndeling,
+  type Adres,
 } from '@/lib/practice/oefenen-indeling'
 import { getChapters, getIngelogdeLeerlingId } from '@/lib/supabase/request-cache'
 import { createClient } from '@/lib/supabase/server'
+import { metOpnieuw } from '@/lib/supabase/met-opnieuw'
 
 import { eigenPagina } from '@/lib/seo'
 
@@ -245,22 +247,18 @@ async function OnderwerpPagina({ searchParams }: PageProps) {
   )
 }
 
-async function BlokPagina({ searchParams }: PageProps) {
-  const [supabase, locale, userId] = await Promise.all([
-    createClient(),
-    getLocale(),
-    getIngelogdeLeerlingId(),
-  ])
-  if (!userId) redirect(`/${locale}/inloggen`)
-
-  const params = (await searchParams) ?? {}
-  const ruwAdres = {
-    blok: params.blok?.trim() || null,
-    topic: params.topic?.trim() || null,
-    cluster: params.cluster?.trim() || null,
-    chapter: params.chapter?.trim() || null,
-  }
-  const qParam = params.q?.trim() ?? null
+/**
+ * Zeven Supabase-rondes en een na-berekening op basis daarvan. Eén
+ * kortstondig falende ronde daarin crashte de hele pagina (INT-559).
+ * `metOpnieuw` rondom deze functie probeert zo'n ronde één keer opnieuw
+ * voordat de pagina het opgeeft.
+ */
+async function laadBlokData(
+  supabase: Awaited<ReturnType<typeof createClient>>,
+  userId: string,
+  ruwAdres: Adres,
+  qParam: string | null,
+) {
   const zelfGekozen = Boolean(
     ruwAdres.blok || ruwAdres.topic || ruwAdres.cluster || ruwAdres.chapter || qParam,
   )
@@ -323,6 +321,29 @@ async function BlokPagina({ searchParams }: PageProps) {
       ? await gekozenVraag
       : await loadQuestionNew(supabase, vraagId)
     : null
+
+  return { t, chapters, paragraphs, blocks, allTopics, allClusters, adres, allTiles, question, start }
+}
+
+async function BlokPagina({ searchParams }: PageProps) {
+  const [supabase, locale, userId] = await Promise.all([
+    createClient(),
+    getLocale(),
+    getIngelogdeLeerlingId(),
+  ])
+  if (!userId) redirect(`/${locale}/inloggen`)
+
+  const params = (await searchParams) ?? {}
+  const ruwAdres = {
+    blok: params.blok?.trim() || null,
+    topic: params.topic?.trim() || null,
+    cluster: params.cluster?.trim() || null,
+    chapter: params.chapter?.trim() || null,
+  }
+  const qParam = params.q?.trim() ?? null
+
+  const { t, chapters, paragraphs, blocks, allTopics, allClusters, adres, allTiles, question, start } =
+    await metOpnieuw(() => laadBlokData(supabase, userId, ruwAdres, qParam))
 
   return (
     <OefenenClient
