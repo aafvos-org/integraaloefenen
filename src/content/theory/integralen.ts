@@ -833,9 +833,9 @@ export const THEORY_OVERVIEW: OverviewChapter[] = [
     slug: 'k3',
     code: 'K.3',
     title: 'K.3 — Cyclometrische functies',
-    zoektitel: 'Arcsin en arctan integreren',
+    zoektitel: 'K.3 Cyclometrische integralen: uitleg met routes',
     zoekomschrijving:
-      'Integralen die arcsin of arctan worden: de noemer bepaalt welke. Met uitleg en voorbeelden. Probeer meteen 3 sommen, zonder account.',
+      'Theorie K.3: met 8 routes herken je of een integraal arcsin of arctan wordt. Snel antwoord nodig? Bekijk eerst het voorbeeld 1/(x²+1) = arctan(x).',
     intro: 'Elke integraal hier wordt $\\arctan$ of $\\arcsin$. De noemer zegt welke van de twee.',
     uitgelichtVoorbeeld: {
       label: 'Voorbeeld: primitieve van 1/(x²+1) = arctan(x)',
