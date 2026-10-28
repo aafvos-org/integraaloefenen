@@ -561,7 +561,7 @@ function OnderwerpWeergave({
                       href={baseHref as '/oefenen'}
                       aria-label={labels.backToAll}
                       title={labels.backToAll}
-                      className="inline-flex text-text-muted transition hover:-translate-x-0.5 hover:text-text"
+                      className="-m-2 inline-flex items-center justify-center p-2 text-text-muted transition hover:-translate-x-0.5 hover:text-text"
                     >
                       <svg
                         viewBox="0 0 24 24"
@@ -1157,7 +1157,7 @@ function BlokWeergave({
                       href={baseHref as '/oefenen'}
                       aria-label={labels.backToAll}
                       title={labels.backToAll}
-                      className="inline-flex text-text-muted transition hover:-translate-x-0.5 hover:text-text"
+                      className="-m-2 inline-flex items-center justify-center p-2 text-text-muted transition hover:-translate-x-0.5 hover:text-text"
                     >
                       <svg
                         viewBox="0 0 24 24"

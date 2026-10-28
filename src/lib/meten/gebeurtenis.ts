@@ -155,6 +155,21 @@ export function apparaatVanBreedte(breedte: number): Apparaat {
 }
 
 /**
+ * Het apparaat voor de rest van deze sessie: de eerder opgeslagen waarde als
+ * die er is, anders de schermbreedte van dit moment. Zo blijft `apparaat`
+ * binnen één sessie staan op wat het bij de eerste meting was, ook als de
+ * schermbreedte daarna verandert (bijvoorbeeld door het devtools-venster te
+ * resizen) zonder dat de leerling echt van apparaat wisselt.
+ */
+export function apparaatVoorSessie(
+  opgeslagen: string | null,
+  breedte: number,
+): Apparaat {
+  if (opgeslagen !== null && APPARAAT_SET.has(opgeslagen)) return opgeslagen as Apparaat
+  return apparaatVanBreedte(breedte)
+}
+
+/**
  * Het domein van de verwijzer, dus `google.com` en niet het hele adres met de
  * zoekopdracht erin. Een verwijzing vanaf de site zelf telt niet.
  */
