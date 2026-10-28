@@ -13,6 +13,7 @@ import { AfgeleideVerwijzing } from '@/components/afgeleide-verwijzing'
 import { ChatgptStrip } from './chatgpt-strip'
 import { HomeDemo } from './home-demo'
 import { VakantieBalk } from './vakantie-balk'
+import { YoutubeStrip } from './youtube-strip'
 
 export async function generateMetadata({
   params,
@@ -68,6 +69,7 @@ export default async function HomePage({
       <div className="mx-auto max-w-3xl px-4 py-16">
         <VakantieBalk />
         <ChatgptStrip />
+        <YoutubeStrip />
 
         <section className="text-center">
           <p className="mb-3 text-sm font-medium uppercase tracking-wider text-accent">
