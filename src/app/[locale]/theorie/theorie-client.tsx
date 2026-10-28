@@ -333,7 +333,7 @@ export function TheorieClient({
                             key={link.href}
                             href={link.href as '/oefenen'}
                             data-meet="theorie-oefenlink"
-                            className="inline-flex min-h-11 items-center rounded-full border border-border px-4 text-sm font-medium text-text"
+                            className="inline-flex min-h-11 items-center rounded-md border border-border px-4 text-sm font-medium text-text"
                           >
                             {link.label}
                           </Link>
@@ -708,7 +708,7 @@ function ProberenKnop({ slug }: { slug: string }) {
     <Link
       href={`/proberen/${slug}` as '/proberen'}
       data-meet="theorie-proefsom"
-      className="inline-flex min-h-11 items-center rounded-full bg-accent px-4 text-sm font-medium text-white"
+      className="inline-flex min-h-11 items-center rounded-md bg-accent px-4 text-sm font-medium text-white"
     >
       Probeer 3 sommen
     </Link>
