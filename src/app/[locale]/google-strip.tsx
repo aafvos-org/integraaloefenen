@@ -3,8 +3,9 @@
 import { useSyncExternalStore } from 'react'
 import { useTranslations } from 'next-intl'
 
-import { Link } from '@/i18n/navigation'
 import { bronUitTabblad, padNaarAanmelden } from '@/lib/bron'
+
+import { HomepageStrip } from './homepage-strip'
 
 /**
  * Geen abonnement nodig: de tabblad-opslag verandert niet terwijl de pagina
@@ -34,15 +35,11 @@ export function GoogleStrip() {
   if (!zichtbaar) return null
 
   return (
-    <div className="mb-8 rounded-xl border border-accent/30 bg-accent-light p-4 text-center">
-      <p className="font-medium text-text">{t('title')}</p>
-      <Link
-        href={padNaarAanmelden('/proberen/primitieve', 'google') as '/proberen'}
-        data-meet="google-strip-proefsom"
-        className="mt-3 inline-flex min-h-11 items-center justify-center rounded-lg bg-accent px-5 text-white shadow-sm hover:bg-accent/90"
-      >
-        {t('cta')}
-      </Link>
-    </div>
+    <HomepageStrip
+      titel={t('title')}
+      ctaTekst={t('cta')}
+      ctaHref={padNaarAanmelden('/proberen/primitieve', 'google') as '/proberen'}
+      dataMeet="google-strip-proefsom"
+    />
   )
 }
