@@ -84,7 +84,24 @@ test('oefenen blijft achter de inlog', async ({ page }) => {
 
 test('een antwoordpagina heeft bovenaan een eigen proefknop', async ({ page }) => {
   await page.goto('/nl/voorbeeld/1-over-x')
-  await page.getByRole('link', { name: 'Oefen dit zelf — 3 sommen, geen account' }).click()
+  const knoppen = page.getByRole('link', { name: 'Oefen dit zelf — 3 sommen, geen account' })
+  await expect(knoppen).toHaveCount(2)
+  await knoppen.first().click()
+  await expect(page).toHaveURL(/\/proberen\/primitieve/)
+  await expect(page.getByRole('heading', { name: 'Som 1 van 3' })).toBeVisible()
+})
+
+test('een antwoordpagina heeft de proefknop ook direct onder het antwoord', async ({ page }) => {
+  await page.goto('/nl/voorbeeld/1-over-x')
+  const knopOnderAntwoord = page.locator('[data-meet="voorbeeld-proefknop-onder-antwoord"]')
+  await expect(knopOnderAntwoord).toBeVisible()
+  const staatOnderAntwoordsectie = await page.evaluate(() => {
+    const knop = document.querySelector('[data-meet="voorbeeld-proefknop-onder-antwoord"]')!
+    const antwoordsectie = document.querySelectorAll('section')[0]
+    return !!(antwoordsectie.compareDocumentPosition(knop) & Node.DOCUMENT_POSITION_FOLLOWING)
+  })
+  expect(staatOnderAntwoordsectie).toBe(true)
+  await knopOnderAntwoord.click()
   await expect(page).toHaveURL(/\/proberen\/primitieve/)
   await expect(page.getByRole('heading', { name: 'Som 1 van 3' })).toBeVisible()
 })
