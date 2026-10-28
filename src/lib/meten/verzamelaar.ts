@@ -16,7 +16,7 @@
 
 import { teltAlsDodeKlik } from './dode-klik'
 import {
-  apparaatVanBreedte,
+  apparaatVoorSessie,
   isBeheerpad,
   schoonPad,
   verwijzerDomein,
@@ -24,6 +24,7 @@ import {
   MAX_PER_UUR,
   MAX_VOLGNUMMER,
   SCROLLDIEPTES,
+  type Apparaat,
   type RuweGebeurtenis,
   type RuwPakket,
   type Soort,
@@ -40,6 +41,7 @@ const SLEUTEL_UURVENSTER = 'integraal-meet-uur'
 const SLEUTEL_INGELOGD = 'integraal-meet-ingelogd'
 const SLEUTEL_VAN = 'integraal-meet-van'
 const SLEUTEL_UTM = 'integraal-meet-utm'
+const SLEUTEL_APPARAAT = 'integraal-meet-apparaat'
 
 /** Hoe lang we verzamelen voordat er een pakketje weggaat. */
 const WACHT_MS = 3000
@@ -91,6 +93,17 @@ function sessieId(): string | null {
   const nieuw = nieuwSessieId()
   schrijf(SLEUTEL_SESSIE, nieuw)
   return lees(SLEUTEL_SESSIE) === nieuw ? nieuw : null
+}
+
+/**
+ * Het apparaat voor dit bezoek. Eenmaal bepaald blijft het staan voor de rest
+ * van de sessie, ook als de schermbreedte daarna verandert — zie
+ * `apparaatVoorSessie`.
+ */
+function apparaat(): Apparaat {
+  const waarde = apparaatVoorSessie(lees(SLEUTEL_APPARAAT), window.innerWidth)
+  schrijf(SLEUTEL_APPARAAT, waarde)
+  return waarde
 }
 
 /**
@@ -223,7 +236,7 @@ function verstuur(): void {
 
   const pakket: RuwPakket = {
     s: sessie,
-    a: apparaatVanBreedte(window.innerWidth),
+    a: apparaat(),
     v: verwijzerDomein(document.referrer, location.hostname),
     b: lees(SLEUTEL_VAN),
     u: lees(SLEUTEL_UTM),
