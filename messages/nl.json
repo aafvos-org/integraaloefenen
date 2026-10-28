@@ -322,6 +322,10 @@
     "title": "Kom je van YouTube? Drie sommen gratis, zonder account.",
     "cta": "Probeer drie sommen"
   },
+  "GoogleStrip": {
+    "title": "Kom je uit Google? Probeer drie sommen gratis — geen account.",
+    "cta": "Probeer drie sommen"
+  },
   "PracticeCard": {
     "difficulty": "Moeilijkheid {n}",
     "promptPrimitieve": "Bepaal de primitieve van:",

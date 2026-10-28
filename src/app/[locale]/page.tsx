@@ -11,6 +11,7 @@ import { eigenPagina } from '@/lib/seo'
 import { AfgeleideVerwijzing } from '@/components/afgeleide-verwijzing'
 
 import { ChatgptStrip } from './chatgpt-strip'
+import { GoogleStrip } from './google-strip'
 import { HomeDemo } from './home-demo'
 import { VakantieBalk } from './vakantie-balk'
 import { YoutubeStrip } from './youtube-strip'
@@ -70,6 +71,7 @@ export default async function HomePage({
         <VakantieBalk />
         <ChatgptStrip />
         <YoutubeStrip />
+        <GoogleStrip />
 
         <section className="text-center">
           <p className="mb-3 text-sm font-medium uppercase tracking-wider text-accent">
