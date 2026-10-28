@@ -4,6 +4,7 @@ import { getTranslations } from 'next-intl/server'
 import { leesbareTekst, leesbareWiskunde } from '@/app/[locale]/theorie/leesbare-tekst'
 import { DeelKnop } from '@/components/deel-knop'
 import { Math, RichMath } from '@/components/math'
+import { ProefKnop } from '@/components/proef-knop'
 import { SITE_CONFIG } from '@/config/site'
 import { oefenPad, proefPad, vindVoorbeeld, VOORBEELDEN } from '@/content/voorbeelden'
 import { Link } from '@/i18n/navigation'
@@ -89,14 +90,7 @@ export default async function VoorbeeldPagina({ params }: { params: Params }) {
         </p>
       )}
 
-      {proef && (
-        <Link
-          href={proef as '/proberen'}
-          className="mt-6 inline-flex min-h-11 items-center rounded-lg bg-accent px-5 py-3 font-medium text-white shadow-sm hover:bg-accent/90"
-        >
-          {t('proefKnop')}
-        </Link>
-      )}
+      {proef && <ProefKnop pad={proef} tekst={t('proefKnop')} meet="voorbeeld-proefknop-boven" />}
 
       <section className="mt-8 rounded-xl border border-border bg-surface p-6">
         <p className="text-sm font-medium uppercase tracking-wider text-accent">{t('antwoord')}</p>
@@ -110,6 +104,15 @@ export default async function VoorbeeldPagina({ params }: { params: Params }) {
           {leesbareWiskunde(voorbeeld.vraagLatex)} = {antwoordTekst}
         </p>
       </section>
+
+      {proef && (
+        <ProefKnop
+          pad={proef}
+          tekst={t('proefKnop')}
+          meet="voorbeeld-proefknop-onder-antwoord"
+          className="mt-6 w-full justify-center sm:w-auto"
+        />
+      )}
 
       <section className="mt-10">
         <h2 className="font-serif text-2xl text-text">{t('uitwerking')}</h2>
