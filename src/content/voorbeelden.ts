@@ -175,9 +175,9 @@ export const VOORBEELDEN: Voorbeeld[] = [
   {
     slug: 'x-e-tot-x',
     kop: 'De primitieve van x·e^x',
-    titel: 'Primitieve van x e^x',
+    titel: 'Primitieve van x·e^x (partieel integreren): uitleg',
     omschrijving:
-      'De primitieve van x·e^x is e^x(x − 1) + c. Uitwerking met partieel integreren.',
+      'De primitieve van x·e^x is e^x(x − 1) + c. Bekijk de uitwerking met partieel integreren en oefen daarna gratis verder, zonder account.',
     vraagLatex: '\\int x e^{x}\\,dx',
     antwoordLatex: 'e^{x}(x-1)+c',
     integrand: 'x * e^x',
@@ -309,9 +309,9 @@ export const VOORBEELDEN: Voorbeeld[] = [
   {
     slug: 'wortel-x',
     kop: 'De primitieve van √x',
-    titel: 'Integraal wortel x (√x) uitgelegd',
+    titel: 'Primitieve van √x (integraal wortel x): uitleg',
     omschrijving:
-      'De integraal (primitieve) van √x is ⅔x√x + c: schrijf wortel x eerst als x^(1/2) en pas de machtsregel toe. Bekijk de uitwerking en oefen gratis verder.',
+      'De primitieve van √x is ⅔x√x + c: schrijf wortel x eerst als x^(1/2) en pas de machtsregel toe. Bekijk de uitwerking en oefen daarna gratis verder, zonder account.',
     vraagLatex: '\\int \\sqrt{x}\\,dx',
     antwoordLatex: '\\frac{2}{3}x\\sqrt{x}+c',
     integrand: 'sqrt(x)',
@@ -466,9 +466,9 @@ export const VOORBEELDEN: Voorbeeld[] = [
   {
     slug: 'e-tot-min-x',
     kop: 'De primitieve van e^(−x)',
-    titel: 'Primitieve van e^(−x): e tot de min x, niet e^x',
+    titel: 'Primitieve van e^(−x): e tot de min x',
     omschrijving:
-      'De primitieve van e^(−x), oftewel e tot de min x, is −e^(−x) + c. Let op het minteken door de −1 in de exponent, en let op: dit is niet e^x. Bekijk de uitwerking en oefen gratis verder.',
+      'De primitieve van e^(−x), oftewel e tot de min x, is −e^(−x) + c. Let op het minteken door de −1 in de exponent. Bekijk de uitwerking en oefen gratis verder.',
     vraagLatex: '\\int e^{-x}\\,dx',
     antwoordLatex: '-e^{-x}+c',
     integrand: 'e^(-x)',
