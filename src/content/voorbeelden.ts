@@ -175,9 +175,9 @@ export const VOORBEELDEN: Voorbeeld[] = [
   {
     slug: 'x-e-tot-x',
     kop: 'De primitieve van x·e^x',
-    titel: 'Primitieve van x e^x',
+    titel: 'Primitieve van x·e^x (partieel integreren): uitleg',
     omschrijving:
-      'De primitieve van x·e^x is e^x(x − 1) + c. Uitwerking met partieel integreren.',
+      'De primitieve van x·e^x is e^x(x − 1) + c. Bekijk de uitwerking met partieel integreren en oefen daarna gratis verder, zonder account.',
     vraagLatex: '\\int x e^{x}\\,dx',
     antwoordLatex: 'e^{x}(x-1)+c',
     integrand: 'x * e^x',
