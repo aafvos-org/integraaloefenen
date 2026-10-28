@@ -309,9 +309,9 @@ export const VOORBEELDEN: Voorbeeld[] = [
   {
     slug: 'wortel-x',
     kop: 'De primitieve van √x',
-    titel: 'Integraal wortel x (√x) uitgelegd',
+    titel: 'Primitieve van √x (integraal wortel x): uitleg',
     omschrijving:
-      'De integraal (primitieve) van √x is ⅔x√x + c: schrijf wortel x eerst als x^(1/2) en pas de machtsregel toe. Bekijk de uitwerking en oefen gratis verder.',
+      'De primitieve van √x is ⅔x√x + c: schrijf wortel x eerst als x^(1/2) en pas de machtsregel toe. Bekijk de uitwerking en oefen daarna gratis verder, zonder account.',
     vraagLatex: '\\int \\sqrt{x}\\,dx',
     antwoordLatex: '\\frac{2}{3}x\\sqrt{x}+c',
     integrand: 'sqrt(x)',
