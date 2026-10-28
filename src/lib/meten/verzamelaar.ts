@@ -30,6 +30,7 @@ import {
   type Soort,
 } from './gebeurtenis'
 import { legeWoedestaat, volgendeWoedestaat, type Woedestaat } from './woede-klik'
+import { metenIsUitgezet } from './voorkeur'
 import { heeftInlogsessie } from '@/lib/supabase/sessie-cookie'
 
 const ROUTE = '/api/meet'
@@ -144,12 +145,14 @@ function binnenUurgrens(): boolean {
 
 /**
  * Of we op deze computer mogen meten. De e2e-tests en een lokale dev-server
- * tellen niet mee; die zouden de cijfers vervuilen.
+ * tellen niet mee; die zouden de cijfers vervuilen. Hetzelfde geldt voor een
+ * apparaat met de schakelaar uit (INT-554): zie src/lib/meten/voorkeur.ts.
  */
 function magMeten(): boolean {
   if (typeof window === 'undefined') return false
   if (navigator.webdriver) return false
   if (typeof navigator.sendBeacon !== 'function') return false
+  if (metenIsUitgezet()) return false
   const host = location.hostname
   if (
     host === 'localhost' ||
@@ -170,6 +173,9 @@ function huidigPad(): string | null {
 }
 
 function noteer(soort: Soort, doel?: string | null, scrolldiepte?: number): void {
+  // Nogmaals kijken, niet alleen bij start(): de schakelaar kan ook omgaan
+  // terwijl dit tabblad al meet (?meten=uit, of de beheerder die inlogt).
+  if (metenIsUitgezet()) return
   const pad = huidigPad()
   if (pad === null) return
   if (!binnenUurgrens()) return

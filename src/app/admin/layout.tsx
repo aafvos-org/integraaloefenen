@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
 
+import { BeheerderMeetUit } from './beheerder-meet-uit'
 import { SITE_CONFIG } from '@/config/site'
 import { createClient } from '@/lib/supabase/server'
 
@@ -38,6 +39,7 @@ export default async function AdminLayout({
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-8">
+      <BeheerderMeetUit />
       <div className="mb-6 flex flex-wrap items-baseline justify-between gap-3">
         <div>
           <p className="text-xs font-medium uppercase tracking-wider text-accent">
