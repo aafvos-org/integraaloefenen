@@ -171,7 +171,7 @@ export function ProberenClient({
         )}
 
         {fase.soort === 'fout' && fase.getoond && (
-          <p className="mt-4 overflow-x-auto text-sm text-text">
+          <p className="mt-4 overflow-x-auto text-sm text-text" data-geen-dode-klik>
             <span className="font-medium">Juiste antwoord: </span>
             <GoedAntwoord antwoord={fase.antwoordLatex} latexAntwoord={null} />
           </p>
@@ -227,7 +227,7 @@ export function ProberenClient({
               </div>
             ) : (
               <>
-                <div className="rounded-lg border border-border bg-white/90">
+                <div className="rounded-lg border border-border bg-white/90" data-geen-dode-klik>
                   <p className="px-4 py-3 text-sm font-semibold text-text">{t('stepsTitle')}</p>
                   <ol className="space-y-1 border-t border-border px-3 py-3 text-sm text-text">
                     {fase.stappen.map((stap, i) => (

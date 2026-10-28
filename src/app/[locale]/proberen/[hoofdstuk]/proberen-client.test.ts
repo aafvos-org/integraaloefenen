@@ -22,3 +22,24 @@ describe('proberen-client klik op opgavetekst en formule (INT-504)', () => {
     )
   })
 })
+
+describe('proberen-client klik op formule in de uitwerking (INT-580)', () => {
+  it('markeert het goede antwoord en de uitwerkingsstappen als geen dode klik', () => {
+    const bron = readFileSync(
+      join(process.cwd(), "src/app/[locale]/proberen/[hoofdstuk]/proberen-client.tsx"),
+      'utf8',
+    )
+
+    // Na het tonen van de uitwerking bevat de kaart twee formuleblokken die
+    // geen invoerveld hebben om naar te focussen: "Juiste antwoord" en de
+    // genummerde stappenlijst (RichMath/KaTeX). Zonder data-geen-dode-klik
+    // telt de meting een tik daarop als dode klik (zie INT-434 voor hetzelfde
+    // patroon bij de opgavetekst).
+    expect(bron).toMatch(
+      /data-geen-dode-klik[\s\S]{0,120}Juiste antwoord[\s\S]{0,200}<GoedAntwoord/,
+    )
+    expect(bron).toMatch(
+      /data-geen-dode-klik[\s\S]{0,150}\{t\('stepsTitle'\)\}[\s\S]{0,600}<RichMath/,
+    )
+  })
+})
