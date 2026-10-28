@@ -45,10 +45,12 @@ export default async function UitlegVideosPage({
         title: v.title,
         description: v.description,
         duration: v.duration,
-        src: v.src,
+        youtubeId: v.youtubeId,
         href: `/${locale}/uitleg-videos?video=${encodeURIComponent(v.slug)}`,
         soort: v.soort,
         chapter: v.chapter,
+        theorieHref: v.theorieHref ? `/${locale}${v.theorieHref}` : null,
+        videoOefenHref: v.oefenHref ? `/${locale}${v.oefenHref}` : null,
         hasPractice: v.clusterIds.length > 0,
       }))}
       loginHref={`/${locale}/inloggen`}
@@ -97,6 +99,8 @@ export default async function UitlegVideosPage({
         askNoAccount: t('askNoAccount'),
         askLogin: t('askLogin'),
         askRegister: t('askRegister'),
+        theorieCta: t('theorieCta'),
+        oefenCta: t('oefenCta'),
       }}
     />
   )
