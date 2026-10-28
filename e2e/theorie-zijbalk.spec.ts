@@ -23,9 +23,10 @@ test('de hoofdstukkenzijbalk begint dicht op telefoon, open op computer @telefoo
   }
 
   // De titel en de knop om te oefenen moeten meteen in beeld staan, niet
-  // onder een opengeklapte hoofdstukkenlijst.
+  // onder een opengeklapte hoofdstukkenlijst. "Probeer 3 sommen" staat twee
+  // keer op de pagina (ook onderaan bij de voorbeeldopgaven), dus de eerste.
   await expect(page.getByRole('heading', { name: 'K.3 – Cyclometrische functies' })).toBeVisible()
-  await expect(page.getByRole('link', { name: 'Probeer 3 sommen' })).toBeVisible()
+  await expect(page.getByRole('link', { name: 'Probeer 3 sommen' }).first()).toBeVisible()
 
   if (!breed) {
     await toggle.click()
