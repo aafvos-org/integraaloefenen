@@ -1,9 +1,10 @@
 'use client'
 
-import { useState, useSyncExternalStore, type ReactNode } from 'react'
+import { useState, type ReactNode } from 'react'
 
 import { Link } from '@/i18n/navigation'
 import { cn } from '@/components/ui'
+import { useDesktopHint } from '@/lib/use-desktop-hint'
 
 export type TheorieNavItem = {
   slug: string
@@ -13,24 +14,6 @@ export type TheorieNavItem = {
 }
 
 type Labels = { chapterLabel: string; collapseSidebar: string; expandSidebar: string }
-
-/**
- * Alleen voor de aria/tekst van de toggle-knop, ná hydratatie: begint `false`
- * (zelfde als de CSS-standaard op de telefoon) en synchroniseert daarna met
- * het echte scherm. Bepaalt nooit de zichtbare opmaak zelf — dat doet CSS via
- * het lg-breakpoint — dus dit geeft geen layout shift.
- */
-function useDesktopHint(): boolean {
-  return useSyncExternalStore(
-    (onChange) => {
-      const mq = window.matchMedia('(min-width: 1024px)')
-      mq.addEventListener('change', onChange)
-      return () => mq.removeEventListener('change', onChange)
-    },
-    () => window.matchMedia('(min-width: 1024px)').matches,
-    () => false,
-  )
-}
 
 /**
  * Zijbalk + scrollende inhoud, in dezelfde vorm als de oefenpagina:
