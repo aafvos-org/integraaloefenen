@@ -11,6 +11,7 @@ import { THEORY_OVERVIEW } from '@/lib/theory'
 
 import { TheorieClient, type TheorieChapter } from './theorie-client'
 import { kaartLabels, stripChapterCode } from './theorie-shared'
+import { GoogleStrip } from '../google-strip'
 import { YoutubeStrip } from '../youtube-strip'
 
 // Deze drie voorbeeldpagina's krijgen vertoningen in Google (zoekwoorden als
@@ -72,6 +73,7 @@ export default async function TheoriePage({
       />
       <div className="mx-auto max-w-5xl px-4 pt-6">
         <YoutubeStrip />
+        <GoogleStrip />
       </div>
       <TheorieClient chapters={chapters} labels={kaartLabels(t)} vaakGezocht={vaakGezocht} />
     </>

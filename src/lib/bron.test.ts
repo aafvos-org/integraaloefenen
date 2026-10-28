@@ -81,4 +81,14 @@ describe('scriptDatBronOnthoudt', () => {
     expect(script).not.toContain('cookie')
     expect(script).not.toContain('bevestiging')
   })
+
+  it('kijkt alleen naar de verwijzer als er geen ?van= is, en leest geen zoekopdracht', () => {
+    const script = scriptDatBronOnthoudt()
+    expect(script).toContain('document.referrer')
+    expect(script).toContain('.hostname')
+    expect(script).toContain('google')
+    // Geen `.search` of `.href` op de verwijzer: alleen het domein, nooit de
+    // zoekopdracht of het hele adres.
+    expect(script).not.toContain('document.referrer.search')
+  })
 })

@@ -12,6 +12,7 @@ import { zetStatischeTaal } from '@/i18n/statisch'
 import { voorbeeldGegevens } from '@/lib/gestructureerde-gegevens'
 import { eigenPagina } from '@/lib/seo'
 
+import { GoogleStrip } from '../../google-strip'
 import { YoutubeStrip } from '../../youtube-strip'
 
 type Params = Promise<{ locale: string; slug: string }>
@@ -66,6 +67,7 @@ export default async function VoorbeeldPagina({ params }: { params: Params }) {
         }}
       />
       <YoutubeStrip />
+      <GoogleStrip />
       <p className="text-sm font-medium uppercase tracking-wider text-accent">
         <Link href="/voorbeeld" className="hover:underline">
           {t('eyebrow')}

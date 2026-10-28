@@ -48,10 +48,17 @@ export function bronUitTabblad(): Bron | null {
 /**
  * Draait vóór de pagina klikbaar is. Zet `?van=` in de tabblad-opslag, zodat
  * de bron blijft als de leerling eerst rondkijkt. Geen cookie.
+ *
+ * Is er geen `?van=` en komt de verwijzer van een Google-zoekdomein
+ * (`google.com`, `google.nl`, …), dan onthoudt dit script zelf de bron
+ * `google` — dit is de enige manier om Google-landingen zonder koppelteken
+ * toch toe te schrijven (zie `isGoogleZoekdomein` in `google-herkomst.ts`
+ * voor dezelfde regel, apart testbaar). We slaan alleen het kale hostname op,
+ * nooit de zoekopdracht of het hele verwijzer-adres.
  */
 export function scriptDatBronOnthoudt(): string {
   const woorden = BRONNEN.join('|')
-  return `try{var p=new URLSearchParams(location.search).get("van");if(typeof p==="string"){var s=p.trim().toLowerCase();if(/^(${woorden})$/.test(s))sessionStorage.setItem("${BRON_TABBLAD}",s)}}catch(e){}`
+  return `try{var p=new URLSearchParams(location.search).get("van");if(typeof p==="string"){var s=p.trim().toLowerCase();if(/^(${woorden})$/.test(s))sessionStorage.setItem("${BRON_TABBLAD}",s)}else if(document.referrer){var h=new URL(document.referrer).hostname.toLowerCase().replace(/^www\\./,"");if(/^google\\.[a-z]{2,3}(\\.[a-z]{2,3})?$/.test(h))sessionStorage.setItem("${BRON_TABBLAD}","google")}}catch(e){}`
 }
 
 /** Wat er bij het aanmelden in de metadata van het account komt. */
