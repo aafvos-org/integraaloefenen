@@ -52,9 +52,10 @@ export function bronUitTabblad(): Bron | null {
  * Is er geen `?van=` en komt de verwijzer van een Google-zoekdomein
  * (`google.com`, `google.nl`, …), dan onthoudt dit script zelf de bron
  * `google` — dit is de enige manier om Google-landingen zonder koppelteken
- * toch toe te schrijven (zie `isGoogleZoekdomein` in `google-herkomst.ts`
- * voor dezelfde regel, apart testbaar). We slaan alleen het kale hostname op,
- * nooit de zoekopdracht of het hele verwijzer-adres.
+ * toch toe te schrijven. De regel hieronder is dezelfde als
+ * `GOOGLE_ZOEKDOMEIN` in `google-herkomst.ts`; `bron.test.ts` bewaakt dat ze
+ * gelijk blijven. We slaan alleen het kale hostname op, nooit de
+ * zoekopdracht of het hele verwijzer-adres.
  */
 export function scriptDatBronOnthoudt(): string {
   const woorden = BRONNEN.join('|')
