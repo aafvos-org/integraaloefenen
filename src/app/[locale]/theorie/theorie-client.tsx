@@ -1,6 +1,6 @@
 'use client'
 
-import { Fragment, useRef, useState, useSyncExternalStore } from 'react'
+import { Fragment, useRef, useState } from 'react'
 
 import { Link } from '@/i18n/navigation'
 import { Math as TeX, RichMath } from '@/components/math'
@@ -9,6 +9,7 @@ import { DeelKnop } from '@/components/deel-knop'
 import type { Voorbeeldopgave } from '@/content/theory/voorbeeldopgaven'
 import { uitwerkingenVoor, type Voorbeeld } from '@/content/voorbeelden'
 import type { Oefenlink, OverviewCard, Stappenplan } from '@/lib/theory'
+import { useDesktopHint } from '@/lib/use-desktop-hint'
 
 import { leesbareTekst, leesbareWiskunde } from './leesbare-tekst'
 
@@ -51,24 +52,6 @@ type Labels = {
 function splitTitle(title: string): { code: string | null; short: string } {
   const m = title.match(/^([A-Z]\.?\d+(?:\.\d+)?)\s*[—–-]\s*(.+)$/)
   return m ? { code: m[1]!, short: m[2]! } : { code: null, short: title }
-}
-
-/**
- * Alleen voor de aria/tekst van de toggle-knop, ná hydratatie: begint `false`
- * (zelfde als de CSS-standaard op de telefoon) en synchroniseert daarna met
- * het echte scherm. Bepaalt nooit de zichtbare opmaak zelf — dat doet CSS via
- * het lg-breakpoint — dus dit geeft geen layout shift.
- */
-function useDesktopHint(): boolean {
-  return useSyncExternalStore(
-    (onChange) => {
-      const mq = window.matchMedia('(min-width: 1024px)')
-      mq.addEventListener('change', onChange)
-      return () => mq.removeEventListener('change', onChange)
-    },
-    () => window.matchMedia('(min-width: 1024px)').matches,
-    () => false,
-  )
 }
 
 export function TheorieClient({
