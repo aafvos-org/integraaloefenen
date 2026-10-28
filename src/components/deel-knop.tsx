@@ -34,7 +34,7 @@ export function DeelKnop({ pad }: { pad?: string }) {
         type="button"
         data-meet="deel-knop"
         onClick={() => void deel()}
-        className="inline-flex min-h-11 items-center rounded-full border border-border bg-surface px-4 text-sm font-medium text-text"
+        className="inline-flex min-h-11 items-center rounded-md border border-border bg-surface px-4 text-sm font-medium text-text"
       >
         Stuur naar een klasgenoot
       </button>
