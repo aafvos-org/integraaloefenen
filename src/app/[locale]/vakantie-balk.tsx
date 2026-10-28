@@ -3,8 +3,9 @@
 import { useSyncExternalStore } from 'react'
 import { useTranslations } from 'next-intl'
 
-import { Link } from '@/i18n/navigation'
 import { isTerugVanVakantiePeriode } from '@/lib/vakantiebalk'
+
+import { HomepageStrip } from './homepage-strip'
 
 function leesIsVakantiePeriode(): boolean {
   return isTerugVanVakantiePeriode(new Date())
@@ -33,15 +34,11 @@ export function VakantieBalk() {
   if (!zichtbaar) return null
 
   return (
-    <div className="mb-8 rounded-xl border border-accent/30 bg-accent-light p-4 text-center">
-      <p className="font-medium text-text">{t('title')}</p>
-      <Link
-        href={'/proberen/primitieve' as '/proberen'}
-        data-meet="start-proefsom-vakantie"
-        className="mt-3 inline-flex min-h-11 items-center justify-center rounded-lg bg-accent px-5 text-white shadow-sm hover:bg-accent/90"
-      >
-        {t('cta')}
-      </Link>
-    </div>
+    <HomepageStrip
+      titel={t('title')}
+      ctaTekst={t('cta')}
+      ctaHref={'/proberen/primitieve' as '/proberen'}
+      dataMeet="start-proefsom-vakantie"
+    />
   )
 }
