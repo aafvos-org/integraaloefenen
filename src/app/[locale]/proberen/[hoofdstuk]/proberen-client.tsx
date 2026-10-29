@@ -208,9 +208,15 @@ export function ProberenClient({
         )}
 
         {fase.soort === 'goed' && (
-          <div className="mt-4 rounded-xl border border-accent/30 bg-accent-light p-4">
+          <div
+            className="mt-4 cursor-pointer rounded-xl border border-accent/30 bg-accent-light p-4"
+            data-geen-dode-klik
+            onClick={verder}
+          >
             <p className="font-serif text-xl text-accent">{t('correct')}</p>
-            <Button className="mt-4" data-meet="proberen-volgende" onClick={verder}>
+            {/* Geen eigen onClick: een tik erop bubbelt naar het vlak hierboven,
+               dat `verder` al aanroept. Nog een keer zou een som overslaan. */}
+            <Button className="mt-4" data-meet="proberen-volgende">
               {laatste ? t('done') : t('nextQuestion')}
             </Button>
           </div>
