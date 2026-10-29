@@ -108,7 +108,7 @@ export const VOORBEELDEN: Voorbeeld[] = [
   {
     slug: 'ln-x',
     kop: 'De primitieve van ln(x)',
-    titel: 'Primitieve van ln(x) (integraal): uitleg',
+    titel: 'Primitieve van ln(x) = x·ln(x) − x (integraal)',
     omschrijving:
       'De primitieve van ln(x) is x·ln(x) − x + c. Bekijk de uitwerking met partieel integreren en oefen daarna gratis verder, zonder account.',
     vraagLatex: '\\int \\ln(x)\\,dx',
