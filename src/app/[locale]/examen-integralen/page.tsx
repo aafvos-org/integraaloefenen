@@ -91,6 +91,20 @@ export default async function ExamenIntegralenPage({
           ctaLogin={t('ctaLogin')}
         />
       </section>
+
+      <section className="mt-12 rounded-2xl border border-border bg-surface p-5 sm:p-6">
+        <h2 className="font-serif text-2xl text-text">{t('videoH2')}</h2>
+        <p className="mt-3 text-base leading-relaxed text-text-muted">{t('videoBody')}</p>
+        <div className="mt-4">
+          <Link
+            href="/video-aanvragen"
+            data-meet="examen-video-aanvragen"
+            className="inline-flex min-h-11 items-center rounded-lg border border-border bg-surface-2 px-5 text-sm font-medium text-text hover:bg-surface"
+          >
+            {t('videoCta')}
+          </Link>
+        </div>
+      </section>
     </div>
   )
 }
