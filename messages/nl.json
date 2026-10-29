@@ -25,6 +25,7 @@
   },
   "Footer": {
     "brand": "__BRAND__",
+    "videoAanvraag": "Vraag een video aan",
     "privacy": "Privacy"
   },
   "Home": {
@@ -393,7 +394,10 @@
     "opgaven": "Maak een gratis account aan en je antwoorden en je voortgang blijven bewaard.",
     "ctaRegister": "Gratis account aanmaken",
     "ctaLogin": "Ik heb al een account",
-    "ctaOpgaven": "Naar de opgaven"
+    "ctaOpgaven": "Naar de opgaven",
+    "videoH2": "Loop je vast op een examenvraag?",
+    "videoBody": "Stuur de vraag in met jaar, tijdvak en vraagnummer, dan maak ik er een video over. Een account heb je er niet voor nodig.",
+    "videoCta": "Vraag een video aan"
   },
   "FreeExercise": {
     "title": "Oefenen",
@@ -584,6 +588,30 @@
     "emptyBody": "Hier komen korte video's over integreren en primitiveren, met oefenvragen eronder om meteen mee te doen. Die worden nu gemaakt. Wil jij iets uitgelegd zien? Stel je vraag hieronder: grote kans dat hij de eerste video wordt.",
     "emptyPractice": "Ga oefenen"
   },
+  "VideoAanvragen": {
+    "title": "Vraag een video aan",
+    "description": "Loop je vast op een vraag uit een oud eindexamen vwo wiskunde B? Zeg welk jaar, welk tijdvak en welke vraag, dan komt de uitleg erbij. Een account heb je er niet voor nodig.",
+    "eyebrow": "Examenvideo",
+    "h1": "Vraag een uitlegvideo aan",
+    "intro": "Loop je vast op een vraag uit een oud eindexamen vwo wiskunde B? Zeg welk jaar, welk tijdvak en welke vraag, dan komt de uitleg erbij. Een account heb je er niet voor nodig.",
+    "jaarLabel": "Examenjaar",
+    "tijdvakLabel": "Tijdvak",
+    "vraagnummerLabel": "Vraagnummer",
+    "vraagnummerPlaceholder": "6 of 12a",
+    "toelichtingLabel": "Waar loop je vast?",
+    "toelichtingHint": "Mag kort. Hoe preciezer, hoe beter de uitleg aansluit.",
+    "toelichtingPlaceholder": "Ik snap niet hoe je bij b aan de integraal komt.",
+    "magMailenLabel": "Stuur me een mailtje zodra de video er is. Je adres wordt alleen daarvoor gebruikt en verder aan niemand gegeven.",
+    "emailLabel": "Je e-mailadres",
+    "emailPlaceholder": "jij@voorbeeld.nl",
+    "submit": "Vraag deze video aan",
+    "submitPending": "Bezig met versturen…",
+    "thanks": "Dank je wel, je aanvraag staat genoteerd. Hoe vaker een vraag gevraagd wordt, hoe eerder de video er is.",
+    "videosLinkBefore": "Video's die er al zijn, staan bij",
+    "videosLinkText": "de uitlegvideo's",
+    "privacyLinkBefore": "Hoe we met je gegevens omgaan, staat op de",
+    "privacyLinkText": "privacypagina"
+  },
   "NotFound": {
     "eyebrow": "Fout 404",
     "title": "Deze pagina bestaat niet",
@@ -615,6 +643,7 @@
     "mailH2": "Berichten en foto's",
     "mailBody": "Stuur je een vraag voor een uitlegvideo, feedback, of een vraag aan Aaf, dan gaat dat per e-mail naar degene die de site bijhoudt. Een foto van een opgave uit je boek mag mee. Die foto slaan we niet op in de site: hij zit alleen in die e-mail.",
     "mailResend": "De mails verstuurt de dienst Resend. De site zelf bewaart ze niet. Bij een nieuw account krijgt degene die de site bijhoudt ook een seintje, met je e-mailadres en je gebruikersnaam.",
+    "videoAanvraagBody": "Vraag je op de pagina 'Vraag een video aan' een uitlegvideo aan bij een examenvraag, dan hoef je niet in te loggen. We bewaren dan het jaar, het tijdvak, het vraagnummer en je toelichting, en je e-mailadres alleen als je zelf aanvinkt dat je bericht wilt zodra de video er is. We bewaren geen IP-adres.",
     "visitH2": "Bezoeken en cookies",
     "analytics": "Cloudflare Web Analytics telt hoeveel mensen de site bezoeken. Die dienst gebruikt geen cookies en slaat geen persoonsgegevens op.",
     "klikmeting": "Daarnaast houden we zelf bij hoe de site gebruikt wordt: welke pagina je bekijkt, waar je klikt, hoe ver je scrolt, of er iets misging, en of je een telefoon of een computer gebruikt. Dat helpt ons zien waar leerlingen vastlopen. Er gaat geen cookie aan te pas, we bewaren geen IP-adres en geen antwoorden die je intypt. Bij elk bezoek hoort een willekeurig nummer dat alleen in dit tabblad bestaat en verdwijnt zodra je het tabblad sluit. Deze gegevens bewaren we 90 dagen; daarna blijven alleen aantallen over.",
@@ -635,7 +664,7 @@
     "who4": "Resend verstuurt de mails.",
     "who5": "Google (Gemini) krijgt alleen een foute opgave en het antwoord, zonder je naam.",
     "who6": "Cloudflare laat de site draaien en telt bezoeken zonder persoonsgegevens.",
-    "updated": "Bijgewerkt op 16 oktober 2026."
+    "updated": "Bijgewerkt op 29 oktober 2026."
   },
   "Meting": {
     "uitMelding": "Dit apparaat telt niet meer mee in de meting.",
