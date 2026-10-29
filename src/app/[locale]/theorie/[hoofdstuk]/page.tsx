@@ -58,6 +58,7 @@ export default async function HoofdstukPage({ params }: { params: Params }) {
     title: kaart.title,
     intro: kaart.intro,
     uitgelichtVoorbeeld: kaart.uitgelichtVoorbeeld,
+    video: kaart.video,
     stappenplan: kaart.stappenplan,
     practiceLabel: t('practiceLink', { topic: stripChapterCode(kaart.title) }),
     oefenlinks: kaart.oefenlinks,

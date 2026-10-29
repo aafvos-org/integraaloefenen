@@ -6,9 +6,11 @@ import { Link } from '@/i18n/navigation'
 import { Math as TeX, RichMath } from '@/components/math'
 import { cn } from '@/components/ui'
 import { DeelKnop } from '@/components/deel-knop'
+import { VideoKaart } from '@/components/video-kaart'
 import type { Voorbeeldopgave } from '@/content/theory/voorbeeldopgaven'
 import { uitwerkingenVoor, type Voorbeeld } from '@/content/voorbeelden'
 import type { Oefenlink, OverviewCard, Stappenplan } from '@/lib/theory'
+import { getUitlegVideos } from '@/lib/videos'
 import { useDesktopHint } from '@/lib/use-desktop-hint'
 
 import { leesbareTekst, leesbareWiskunde } from './leesbare-tekst'
@@ -18,6 +20,8 @@ export type TheorieChapter = {
   title: string
   intro?: string
   uitgelichtVoorbeeld?: { label: string; slug: string }
+  /** Uitlegvideo-slug uit lib/videos.ts */
+  video?: string
   stappenplan?: Stappenplan
   /** Vooraf op de server geformatteerd, bv. "Oefen De afgeleide functie →" */
   practiceLabel: string
@@ -349,6 +353,29 @@ export function TheorieClient({
                     {ch.uitgelichtVoorbeeld.label}
                   </Link>
                 )}
+
+                {ch.video && (() => {
+                  const video = getUitlegVideos().find((v) => v.slug === ch.video)
+                  if (!video) return null
+                  const oefenlink = ch.oefenlinks?.[0]
+                  return (
+                    <VideoKaart
+                      video={video}
+                      cta={
+                        <Link
+                          href={
+                            (oefenlink?.href ??
+                              `/oefenen?chapter=${encodeURIComponent(ch.slug)}`) as '/oefenen'
+                          }
+                          data-meet="theorie-video-oefenen"
+                          className="inline-flex min-h-11 items-center rounded-lg bg-accent px-4 text-sm font-medium text-white hover:bg-accent/90"
+                        >
+                          {oefenlink?.label ?? ch.practiceLabel}
+                        </Link>
+                      }
+                    />
+                  )
+                })()}
 
                 {ch.stappenplan && (
                   <StappenplanKaart

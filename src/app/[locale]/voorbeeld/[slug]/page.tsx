@@ -4,6 +4,7 @@ import { getTranslations } from 'next-intl/server'
 import { leesbareTekst, leesbareWiskunde } from '@/app/[locale]/theorie/leesbare-tekst'
 import { DeelKnop } from '@/components/deel-knop'
 import { Math, RichMath } from '@/components/math'
+import { VideoKaart } from '@/components/video-kaart'
 import { SITE_CONFIG } from '@/config/site'
 import { oefenPad, proefPad, vindVoorbeeld, VOORBEELDEN } from '@/content/voorbeelden'
 import { Link } from '@/i18n/navigation'
@@ -11,6 +12,7 @@ import { routing } from '@/i18n/routing'
 import { zetStatischeTaal } from '@/i18n/statisch'
 import { voorbeeldGegevens } from '@/lib/gestructureerde-gegevens'
 import { eigenPagina } from '@/lib/seo'
+import { getUitlegVideos } from '@/lib/videos'
 
 import { GoogleStrip } from '../../google-strip'
 import { YoutubeStrip } from '../../youtube-strip'
@@ -57,6 +59,9 @@ export default async function VoorbeeldPagina({ params }: { params: Params }) {
     stappen: stappenTekst,
   })
   const verwant = voorbeeld.verwant.map((ander) => vindVoorbeeld(ander)!)
+  const video = voorbeeld.video
+    ? getUitlegVideos().find((v) => v.slug === voorbeeld.video)
+    : undefined
 
   return (
     <article className="mx-auto max-w-3xl px-4 py-12">
@@ -141,6 +146,21 @@ export default async function VoorbeeldPagina({ params }: { params: Params }) {
           <RichMath source={voorbeeld.fout} />
         </p>
       </section>
+
+      {video && (
+        <VideoKaart
+          video={video}
+          cta={
+            <Link
+              href={oefenPad(voorbeeld) as '/oefenen'}
+              data-meet="voorbeeld-video-oefenen"
+              className="inline-flex min-h-11 items-center rounded-lg bg-accent px-4 text-sm font-medium text-white hover:bg-accent/90"
+            >
+              {t('oefenen')}
+            </Link>
+          }
+        />
+      )}
 
       <div className="mt-10 flex flex-wrap items-center gap-2">
         <Link

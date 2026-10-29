@@ -1,10 +1,14 @@
 import { getTranslations } from 'next-intl/server'
 
+import { VideoKaart } from '@/components/video-kaart'
 import { Link } from '@/i18n/navigation'
 import { zetStatischeTaal } from '@/i18n/statisch'
 import { eigenPagina } from '@/lib/seo'
+import { getUitlegVideos } from '@/lib/videos'
 
 import { ExamenKnoppen } from './examen-knoppen'
+
+const EXAMENVIDEO = getUitlegVideos().find((v) => v.slug === 'examen-2024-1-wachttijden')
 
 /** Officiële pagina van het examen. Geen opgaven overnemen, alleen hierheen linken. */
 const EXAMENBLAD =
@@ -81,6 +85,25 @@ export default async function ExamenIntegralenPage({
           ))}
         </ol>
       </section>
+
+      {EXAMENVIDEO && (
+        <section className="mt-12">
+          <h2 className="font-serif text-2xl text-text">{t('videoH2')}</h2>
+          <VideoKaart
+            video={EXAMENVIDEO}
+            bron={t('videoBron')}
+            cta={
+              <Link
+                href={'/proberen/oppervlakte' as '/proberen'}
+                data-meet="examen-video-proberen"
+                className="inline-flex min-h-11 items-center rounded-lg bg-accent px-4 text-sm font-medium text-white hover:bg-accent/90"
+              >
+                {t('ctaProberen')}
+              </Link>
+            }
+          />
+        </section>
+      )}
 
       <section className="mt-12">
         <h2 className="font-serif text-2xl text-text">{t('opgavenH2')}</h2>
