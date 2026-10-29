@@ -643,14 +643,14 @@ function OnderwerpWeergave({
                                   'ring-2 ring-offset-1 ring-offset-[var(--color-bg)]',
                                 active &&
                                   (q.lastCorrect === true
-                                    ? 'ring-emerald-500/80'
+                                    ? 'ring-accent/80'
                                     : q.lastCorrect === false
-                                      ? 'ring-rose-500/80'
+                                      ? 'ring-accent-2/80'
                                       : 'ring-neutral-400'),
                                 q.lastCorrect === true &&
-                                  'border-emerald-300/70 bg-emerald-50 text-emerald-900 hover:border-emerald-400',
+                                  'border-accent/40 bg-accent-light text-accent hover:border-accent/70',
                                 q.lastCorrect === false &&
-                                  'border-rose-300/70 bg-rose-50/90 text-rose-900 hover:border-rose-400',
+                                  'border-accent-2/40 bg-accent-2-light text-accent-2 hover:border-accent-2/70',
                                 q.lastCorrect == null &&
                                   'border-border bg-surface text-text-muted hover:bg-surface-2 hover:text-text',
                               )}
@@ -1217,14 +1217,14 @@ function BlokWeergave({
                           active && 'ring-2 ring-offset-1 ring-offset-[var(--color-bg)]',
                           active &&
                             (q.lastCorrect === true
-                              ? 'ring-emerald-500/80'
+                              ? 'ring-accent/80'
                               : q.lastCorrect === false
-                                ? 'ring-rose-500/80'
+                                ? 'ring-accent-2/80'
                                 : 'ring-neutral-400'),
                           q.lastCorrect === true &&
-                            'border-emerald-300/70 bg-emerald-50 text-emerald-900 hover:border-emerald-400',
+                            'border-accent/40 bg-accent-light text-accent hover:border-accent/70',
                           q.lastCorrect === false &&
-                            'border-rose-300/70 bg-rose-50/90 text-rose-900 hover:border-rose-400',
+                            'border-accent-2/40 bg-accent-2-light text-accent-2 hover:border-accent-2/70',
                           q.lastCorrect == null &&
                             'border-border bg-surface text-text-muted hover:bg-surface-2 hover:text-text',
                         )}
