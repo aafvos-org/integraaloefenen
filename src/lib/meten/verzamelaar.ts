@@ -300,6 +300,18 @@ const INVOERVELD = 'input, textarea, [contenteditable]:not([contenteditable="fal
  */
 const GEEN_DODE_KLIK = '[data-geen-dode-klik]'
 
+/**
+ * Of een klik in een invoerveld landt, of op het label eromheen (INT-616).
+ * Een `<label>` die een veld omvat — zie `login-form.tsx` en `ui.tsx` —
+ * focust dat veld al bij een tik op de tekst. Dat werkt, dus telt net als een
+ * tik in het veld zelf niet als woede.
+ */
+function landtOpInvoerveldOfLabel(element: Element): boolean {
+  if (element.closest(INVOERVELD) !== null) return true
+  const label = element.closest('label')
+  return label !== null && label.querySelector(INVOERVELD) !== null
+}
+
 /** Of er op dit moment tekst geselecteerd staat. */
 function heeftSelectie(): boolean {
   try {
@@ -367,7 +379,7 @@ function opKlik(gebeurtenis: MouseEvent): void {
     x: gebeurtenis.clientX,
     y: gebeurtenis.clientY,
     t: Date.now(),
-    invoerveld: doelElement.closest(INVOERVELD) !== null,
+    invoerveld: landtOpInvoerveldOfLabel(doelElement),
     selectie,
   })
   woede = stap.staat

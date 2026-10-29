@@ -73,6 +73,14 @@ describe('volgendeWoedestaat', () => {
     expect(gemeld).toEqual([false, false, true])
   })
 
+  it('meldt niet bij tikken op het label van een veld (INT-616)', () => {
+    // Een <label> dat een veld omvat — zoals "E-mailadres" op /nl/inloggen —
+    // focust dat veld al bij een tik op de tekst. verzamelaar.ts geeft zo'n
+    // tik daarom ook `invoerveld: true` mee, net als een tik in het veld zelf.
+    const gemeld = reeks([0, 200, 400].map((t) => klik({ t, invoerveld: true })))
+    expect(gemeld).toEqual([false, false, false])
+  })
+
   it('kan na het invoerveld nog een woedeklik elders melden', () => {
     let staat = legeWoedestaat()
     for (const t of [0, 100, 200]) {
