@@ -85,9 +85,9 @@ export const VOORBEELDEN: Voorbeeld[] = [
   {
     slug: '1-over-x',
     kop: 'De primitieve van 1/x',
-    titel: 'Integraal en primitieve van 1/x: uitleg',
+    titel: 'Primitieve van 1/x (integraal één over x): uitleg',
     omschrijving:
-      'De integraal (primitieve) van 1/x, ook wel "één over x", is ln|x| + c. Bekijk de uitwerking met de standaardprimitieve en oefen daarna gratis verder.',
+      'De primitieve van 1/x is ln|x| + c. Bekijk de uitwerking met de standaardprimitieve en oefen daarna gratis verder.',
     vraagLatex: '\\int \\frac{1}{x}\\,dx',
     antwoordLatex: '\\ln|x|+c',
     integrand: '1/x',
