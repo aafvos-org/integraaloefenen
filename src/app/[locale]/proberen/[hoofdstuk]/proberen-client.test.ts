@@ -43,3 +43,28 @@ describe('proberen-client klik op formule in de uitwerking (INT-580)', () => {
     )
   })
 })
+
+describe('proberen-client klik op het succesvlak na een goed antwoord (INT-615)', () => {
+  it('stuurt een tik op "Goed!" of het vlak eromheen ook naar de volgende som', () => {
+    const bron = readFileSync(
+      join(process.cwd(), "src/app/[locale]/proberen/[hoofdstuk]/proberen-client.tsx"),
+      'utf8',
+    )
+
+    // Vóór deze fix werkte alleen de knop zelf: een tik op het groene vlak of
+    // op de tekst "Goed!" deed niets (dode klik, zie INT-609). Het vlak krijgt
+    // nu dezelfde onClick als de knop, plus data-geen-dode-klik — zelfde
+    // patroon als focusAntwoord hierboven (INT-504).
+    expect(bron).toMatch(
+      /data-geen-dode-klik\s*\n\s*onClick=\{verder\}[\s\S]{0,200}\{t\('correct'\)\}/,
+    )
+
+    // De knop zelf mag geen eigen onClick meer hebben: anders bubbelt een tik
+    // erop naar het vlak eromheen en wordt verder() twee keer aangeroepen,
+    // waardoor er een som wordt overgeslagen.
+    const goedBlok = bron.slice(bron.indexOf("soort === 'goed'"))
+    const knopBlok = goedBlok.slice(0, goedBlok.indexOf('</div>'))
+    expect(knopBlok).not.toMatch(/data-meet="proberen-volgende"[^>]*onClick=/)
+    expect(knopBlok).not.toMatch(/onClick=\{verder\}[^>]*data-meet="proberen-volgende"/)
+  })
+})
