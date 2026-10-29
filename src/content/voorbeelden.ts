@@ -51,6 +51,8 @@ export type Voorbeeld = {
   theorie: string
   /** Twee andere slugs uit deze lijst. */
   verwant: [string, string]
+  /** Uitlegvideo-slug uit lib/videos.ts, ingesloten onder de uitwerking. */
+  video?: string
 }
 
 /** Knop "Oefen dit soort sommen". `van=voorbeeld` blijft in het adres staan. */
@@ -104,6 +106,7 @@ export const VOORBEELDEN: Voorbeeld[] = [
     cluster: 'k0b_machten_gonio',
     theorie: '/theorie/primitieve',
     verwant: ['1-over-x-kwadraat', '1-over-2x-plus-1'],
+    video: 'ln-afgeleide-primitieve',
   },
   {
     slug: 'ln-x',
@@ -127,6 +130,7 @@ export const VOORBEELDEN: Voorbeeld[] = [
     cluster: 'k2a_ln',
     theorie: '/theorie/partieel-integreren',
     verwant: ['x-ln-x', 'ln-2x'],
+    video: 'ln-afgeleide-primitieve',
   },
   {
     slug: 'sin-kwadraat',

@@ -56,6 +56,7 @@ export default async function TheoriePage({
     title: ch.title,
     intro: ch.intro,
     uitgelichtVoorbeeld: ch.uitgelichtVoorbeeld,
+    video: ch.video,
     stappenplan: ch.stappenplan,
     practiceLabel: t('practiceLink', { topic: stripChapterCode(ch.title) }),
     oefenlinks: ch.oefenlinks,

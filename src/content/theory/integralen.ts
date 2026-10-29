@@ -42,6 +42,7 @@ export const THEORY_OVERVIEW: OverviewChapter[] = [
       'Alle primitieve regels en standaardintegralen op een rij: machtsregel, somregel, sinus, cosinus, e-macht en 1/x. Probeer meteen 3 sommen, zonder account.',
     intro:
       'Een primitieve van $f$ is een functie $F$ waarvan de afgeleide weer $f$ is. Je zet $+c$ erbij, want de afgeleide van een constante is $0$. De vormen op deze pagina moet je paraat hebben. Het zijn kale integralen: alleen deel 2 van de driedeling.',
+    video: 'ln-afgeleide-primitieve',
     oefenlinks: [
       { label: 'Oefen de standaardprimitieven', href: '/oefenen?blok=k0b' },
     ],
@@ -252,6 +253,7 @@ export const THEORY_OVERVIEW: OverviewChapter[] = [
       'Substitutiemethode bij integralen: een binnenfunctie en zijn afgeleide staan naast elkaar. Probeer meteen 3 sommen, zonder account.',
     intro:
       'Je ziet een binnenfunctie $g$ en zijn afgeleide $g\'$ naast elkaar. Dan primitiveer je alleen de buitenkant $f$. De basis oefen je in K.1 A, de toepassingen in K.1 B.',
+    video: 'substitutie-6-stappen',
     oefenlinks: [
       { label: 'Oefen K.1 A', href: '/oefenen?blok=k1a' },
       { label: 'Oefen K.1 B', href: '/oefenen?blok=k1b' },
@@ -513,6 +515,7 @@ export const THEORY_OVERVIEW: OverviewChapter[] = [
       'Oppervlakte tussen een grafiek en de x-as, of tussen twee grafieken, omzetten naar een integraal en die uitrekenen.',
     intro:
       'Eerst maak je van het verhaaltje een integraal. Daarna reken je die uit, met de substitutiemethode of met partieel integreren.',
+    video: 'examen-2024-1-wachttijden',
     oefenlinks: [
       { label: 'Oefen met substitutie', href: '/oefenen?blok=k1b&cluster=k1b_opp_p' },
       { label: 'Oefen met partieel integreren', href: '/oefenen?blok=k2a&cluster=k2a_opp' },
