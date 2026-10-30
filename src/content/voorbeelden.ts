@@ -336,9 +336,9 @@ export const VOORBEELDEN: Voorbeeld[] = [
   {
     slug: '1-over-x-kwadraat',
     kop: 'De primitieve van 1/x²',
-    titel: 'Primitieve van 1/x²',
+    titel: 'Primitieve van 1/x² = −1/x (integraal)',
     omschrijving:
-      'De primitieve van 1/x² is −1/x + c. Schrijf de breuk als x^(−2) en gebruik de machtsregel.',
+      'De primitieve van 1/x² is −1/x + c. Bekijk de uitwerking met de machtsregel en oefen daarna gratis verder, zonder account.',
     vraagLatex: '\\int \\frac{1}{x^2}\\,dx',
     antwoordLatex: '-\\frac{1}{x}+c',
     integrand: '1/x^2',
