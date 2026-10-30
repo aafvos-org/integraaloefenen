@@ -15,6 +15,8 @@ export function layoutLabels(t: T) {
     chapterLabel: t('chapterLabel'),
     collapseSidebar: t('collapseSidebar'),
     expandSidebar: t('expandSidebar'),
+    chooseChapter: t('chooseChapter'),
+    closeChapterList: t('closeChapterList'),
   }
 }
 
