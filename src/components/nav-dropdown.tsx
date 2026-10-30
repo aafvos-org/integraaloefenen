@@ -1,7 +1,9 @@
 'use client'
 
 import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 import { useEffect, useId, useRef, useState } from 'react'
+import { isActiveNavHref } from '@/lib/nav-active'
 
 /** Eén dropdown tegelijk: bij openen sluiten de anderen direct. */
 export const NAV_DROPDOWN_OPEN_EVENT = 'nav-dropdown-open'
@@ -35,6 +37,8 @@ export function NavDropdown({
   const rootRef = useRef<HTMLDivElement | null>(null)
   const closeTimer = useRef<number | null>(null)
   const menuId = useId()
+  const pathname = usePathname()
+  const sectionActive = isActiveNavHref(pathname, overviewHref)
 
   useEffect(() => {
     function onSiblingOpen(e: Event) {
@@ -91,9 +95,14 @@ export function NavDropdown({
         data-meet={dataMeet}
         aria-expanded={open}
         aria-haspopup="menu"
+        aria-current={sectionActive ? 'page' : undefined}
         onClick={() => setOpen(false)}
         className={`flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-md px-3 py-1.5 ${
-          open ? 'bg-surface-2 text-text' : 'text-text-muted'
+          open
+            ? 'bg-surface-2 text-text'
+            : sectionActive
+              ? 'text-accent font-medium'
+              : 'text-text-muted'
         } hover:bg-surface-2 hover:text-text`}
       >
         {icon}
@@ -124,27 +133,35 @@ export function NavDropdown({
           </Link>
           <div className="my-1.5 border-t border-border" />
           <ul className="space-y-0.5">
-            {items.map((item) => (
-              <li key={item.href}>
-                <Link
-                  href={item.href}
-                  data-meet={
-                    dataMeet
-                      ? `${dataMeet}-${(item.code ?? item.label).toLowerCase()}`
-                      : undefined
-                  }
-                  onClick={() => setOpen(false)}
-                  className="flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm text-text-muted hover:bg-surface-2 hover:text-text"
-                >
-                  {item.code && (
-                    <span className="w-9 shrink-0 rounded-md bg-accent-light px-1.5 py-0.5 text-center font-mono text-[11px] font-semibold text-accent">
-                      {item.code}
-                    </span>
-                  )}
-                  <span className="truncate">{item.label}</span>
-                </Link>
-              </li>
-            ))}
+            {items.map((item) => {
+              const itemActive = isActiveNavHref(pathname, item.href)
+              return (
+                <li key={item.href}>
+                  <Link
+                    href={item.href}
+                    data-meet={
+                      dataMeet
+                        ? `${dataMeet}-${(item.code ?? item.label).toLowerCase()}`
+                        : undefined
+                    }
+                    aria-current={itemActive ? 'page' : undefined}
+                    onClick={() => setOpen(false)}
+                    className={
+                      itemActive
+                        ? 'flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm font-medium text-accent hover:bg-surface-2'
+                        : 'flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm text-text-muted hover:bg-surface-2 hover:text-text'
+                    }
+                  >
+                    {item.code && (
+                      <span className="w-9 shrink-0 rounded-md bg-accent-light px-1.5 py-0.5 text-center font-mono text-[11px] font-semibold text-accent">
+                        {item.code}
+                      </span>
+                    )}
+                    <span className="truncate">{item.label}</span>
+                  </Link>
+                </li>
+              )
+            })}
           </ul>
         </div>
       )}
