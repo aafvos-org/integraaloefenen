@@ -154,6 +154,26 @@ describe('answersMatch', () => {
     expect(answersMatch('arcsin(x)', 'arctan(x) + c')).toBe(false)
   })
 
+  it('rekent een kale formule goed bij een beginvoorwaarde-antwoord met F(x) =', () => {
+    // INT-644: bij "bereken F(x), grafiek door punt ..." staat het canonieke
+    // antwoord in de database als "F(x) = ...", maar het invoerveld heeft
+    // daar geen voorvoegsel voor. De leerling typt dus alleen de formule.
+    expect(answersMatch('x^2-3x+5', 'F(x) = x^2 - 3x + 5', [])).toBe(true)
+    expect(answersMatch('F(x) = x^2 - 3x + 5', 'x^2-3x+5', [])).toBe(true)
+    expect(answersMatch('e^x+2', 'F(x) = e^x + 2', [])).toBe(true)
+    // de zes vragen uit INT-643 zonder alternatieven
+    expect(answersMatch('x^3+7', 'F(x) = x^3 + 7', [])).toBe(true)
+    expect(answersMatch('2x^2-x+6', 'F(x) = 2x^2 - x + 6', [])).toBe(true)
+    expect(
+      answersMatch('x^5/5-2x^3/3+x+6+7/15', 'F(x) = x^5/5 - 2x^3/3 + x + 6 + 7/15', []),
+    ).toBe(true)
+    expect(answersMatch('2x^2-xln(x)+x-3', 'F(x) = 2x^2 - x ln(x) + x - 3', [])).toBe(true)
+    // andere functieletter en variabele
+    expect(answersMatch('t^2+1', 'H(t) = t^2 + 1', [])).toBe(true)
+    // een echt andere formule blijft fout
+    expect(answersMatch('x^2+1', 'F(x) = x^2 + 2', [])).toBe(false)
+  })
+
   it('rekent staafjes hetzelfde als abs', () => {
     expect(answersMatch('ln|x+2|', 'ln(abs(x+2))')).toBe(true)
     expect(answersMatch('ln(|x+2|)', 'ln(abs(x+2))')).toBe(true)

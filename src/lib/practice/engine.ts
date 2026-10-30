@@ -47,10 +47,23 @@ function maaltekensWeg(genormaliseerd: string): string {
   })
 }
 
+/**
+ * Bij beginvoorwaarde-vragen ("de grafiek van F gaat door...") staat het
+ * canonieke antwoord in de database als `F(x) = ...`, maar het invoerveld
+ * heeft daar geen voorvoegsel voor (`antwoordPrefix` in `opdracht.ts` is dan
+ * leeg). De leerling typt dus alleen de formule. Zonder deze stap kan
+ * `readFormula` het `=`-teken niet lezen en wordt een goed antwoord afgekeurd.
+ */
+function zonderFunctienotatie(genormaliseerd: string): string {
+  return genormaliseerd.replace(/^[a-z]\([a-z]\)=/, '')
+}
+
 export function normalizeAnswer(raw: string): string {
-  const metMaaltekens = raw
-    .toLowerCase()
-    .replace(/\s+/g, '')
+  const metMaaltekens = zonderFunctienotatie(
+    raw
+      .toLowerCase()
+      .replace(/\s+/g, ''),
+  )
     // het π-toetsje van een wiskundetoetsenbord
     .replace(/π/g, 'pi')
     // het "echte" minteken dat een leerling meeplakt uit een pdf
