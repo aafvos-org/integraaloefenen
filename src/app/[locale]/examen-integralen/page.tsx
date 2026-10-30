@@ -116,7 +116,7 @@ export default async function ExamenIntegralenPage({
       </section>
 
       <section className="mt-12 rounded-2xl border border-border bg-surface p-5 sm:p-6">
-        <h2 className="font-serif text-2xl text-text">{t('videoH2')}</h2>
+        <h2 className="font-serif text-2xl text-text">{t('videoAanvraagH2')}</h2>
         <p className="mt-3 text-base leading-relaxed text-text-muted">{t('videoBody')}</p>
         <div className="mt-4">
           <Link
