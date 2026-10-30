@@ -253,9 +253,16 @@ export function TheorieClient({
           <button
             type="button"
             onClick={() => setMobileListOpen(true)}
+            aria-label={`${labels.chooseChapter}: ${
+              activeChapterSplit
+                ? activeChapterSplit.code
+                  ? `${activeChapterSplit.code} – ${activeChapterSplit.short}`
+                  : activeChapterSplit.short
+                : labels.chapterLabel
+            }`}
             className="sticky top-14 z-20 flex min-h-11 w-full items-center justify-between gap-3 border-b border-border bg-surface px-4 text-left text-sm font-medium lg:hidden"
           >
-            <span className="min-w-0 truncate">
+            <span className="min-w-0 truncate" aria-hidden>
               {activeChapterSplit
                 ? activeChapterSplit.code
                   ? `${activeChapterSplit.code} – ${activeChapterSplit.short}`
