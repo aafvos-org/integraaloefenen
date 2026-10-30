@@ -71,7 +71,7 @@ test('scrollpositie op een hoofdstukpagina blijft bewaard na terugknop @telefoon
   await page.goto('/nl/theorie/k3')
 
   await page.mouse.wheel(0, 700)
-  await expect(page.evaluate(() => window.scrollY)).resolves.toBeGreaterThan(300)
+  await expect.poll(() => page.evaluate(() => window.scrollY)).toBeGreaterThan(300)
   // De scrollpositie wordt gedebouncet opgeslagen (150ms); wacht dat af voor
   // we wegnavigeren.
   await page.waitForTimeout(300)
@@ -83,5 +83,5 @@ test('scrollpositie op een hoofdstukpagina blijft bewaard na terugknop @telefoon
 
   await page.goBack()
   await expect(page).toHaveURL(/k3$/)
-  await expect(page.evaluate(() => window.scrollY)).resolves.toBeGreaterThan(positieVoorWeg - 50)
+  await expect.poll(() => page.evaluate(() => window.scrollY)).toBeGreaterThan(positieVoorWeg - 50)
 })
