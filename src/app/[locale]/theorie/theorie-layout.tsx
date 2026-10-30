@@ -1,8 +1,8 @@
 'use client'
 
-import { useState, type ReactNode } from 'react'
+import { useEffect, useRef, useState, type ReactNode, type RefObject } from 'react'
 
-import { Link } from '@/i18n/navigation'
+import { Link, usePathname } from '@/i18n/navigation'
 import { cn } from '@/components/ui'
 
 export type TheorieNavItem = {
@@ -18,6 +18,70 @@ type Labels = {
   expandSidebar: string
   chooseChapter: string
   closeChapterList: string
+}
+
+const SCROLL_SLEUTEL_VOORVOEGSEL = 'theorie-scroll:'
+
+// Op modulenniveau, niet in de component: een hoofdstukpagina is een eigen
+// route (page.tsx, geen gedeelde layout.tsx) en wordt dus bij elke navigatie
+// volledig ver- en hermonteerd. Zonder cacheComponents (zie AGENTS.md) bewaart
+// Next.js hier zelf geen scrollpositie; deze vlag overleeft wél de remount,
+// zolang het tabblad openblijft.
+let laatsteNavigatieWasTerug = false
+if (typeof window !== 'undefined') {
+  window.addEventListener('popstate', () => {
+    laatsteNavigatieWasTerug = true
+  })
+}
+
+/**
+ * Zet de scrollpositie van deze hoofdstukpagina terug na de terugknop, en
+ * onthoudt hem weer zodra de leerling verder scrolt. `scrollRef` scrolt zelf
+ * op de computer (vaste hoogte, eigen scrollbalk); op de telefoon scrolt de
+ * hele pagina, dus kijken we dan naar `window`.
+ */
+function useScrollrestauratie(scrollRef: RefObject<HTMLDivElement | null>) {
+  const pathname = usePathname()
+
+  useEffect(() => {
+    const sleutel = SCROLL_SLEUTEL_VOORVOEGSEL + pathname
+    const terug = laatsteNavigatieWasTerug
+    laatsteNavigatieWasTerug = false
+
+    if (terug) {
+      const opgeslagen = window.sessionStorage.getItem(sleutel)
+      if (opgeslagen !== null) {
+        const positie = Number(opgeslagen)
+        // Next.js scrolt bij elke overgang eerst zelf naar boven; pas een
+        // frame later de oude positie terugzetten, anders wint Next.js.
+        requestAnimationFrame(() => {
+          window.scrollTo(0, positie)
+          scrollRef.current?.scrollTo(0, positie)
+        })
+      }
+    }
+
+    // Vlak vóór het wegnavigeren stuurt de browser hier soms nog een scroll-
+    // event met een kortstondige 0 (de oude inhoud verdwijnt al terwijl de
+    // nieuwe nog niet staat). Een kleine vertraging voorkomt dat zo'n nepwaarde
+    // de echte positie overschrijft: de cleanup hieronder annuleert hem dan.
+    let timer: ReturnType<typeof setTimeout> | undefined
+    function onScroll() {
+      if (timer) clearTimeout(timer)
+      timer = setTimeout(() => {
+        const positie = scrollRef.current?.scrollTop || window.scrollY
+        window.sessionStorage.setItem(sleutel, String(positie))
+      }, 150)
+    }
+    const container = scrollRef.current
+    window.addEventListener('scroll', onScroll, { passive: true })
+    container?.addEventListener('scroll', onScroll, { passive: true })
+    return () => {
+      if (timer) clearTimeout(timer)
+      window.removeEventListener('scroll', onScroll)
+      container?.removeEventListener('scroll', onScroll)
+    }
+  }, [pathname, scrollRef])
 }
 
 /**
@@ -44,6 +108,8 @@ export function TheorieLayout({
   const [sidebarOpen, setSidebarOpen] = useState(true)
   const [mobileListOpen, setMobileListOpen] = useState(false)
   const activeItem = items.find((it) => it.slug === active)
+  const contentRef = useRef<HTMLDivElement | null>(null)
+  useScrollrestauratie(contentRef)
 
   function chapterList(onNavigate?: () => void) {
     return (
@@ -117,7 +183,7 @@ export function TheorieLayout({
       </aside>
 
       {/* ── Content ─────────────────────────────────────────────────── */}
-      <div className="nice-scrollbar flex-1 lg:h-full lg:overflow-y-auto">
+      <div ref={contentRef} className="nice-scrollbar flex-1 lg:h-full lg:overflow-y-auto">
         <button
           type="button"
           onClick={() => setMobileListOpen(true)}
