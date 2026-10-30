@@ -36,10 +36,15 @@ export const ZONDER_TAAL = ['admin', 'api', 'auth', 'uitloggen'] as const
 
 // OPENBAAR is wat een leerling zonder inloggen kan lezen, en dus het enige wat
 // een zoekmachine in de index hoort te zetten. sitemap.ts loopt deze lijst af.
+//
+// 'proberen' staat hier ook in (INT-649): de proefsommen op /proberen/<hoofdstuk>
+// vragen geen account en mogen dus net als de theorie geïndexeerd worden, ook
+// door AI-bots (die volgen dezelfde `User-agent: *`-regel).
 export const OPENBAAR = [
   'examen-integralen',
   'hoe-het-werkt',
   'privacy',
+  'proberen',
   'theorie',
   'uitleg-videos',
   'video-aanvragen',

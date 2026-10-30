@@ -32,6 +32,14 @@ function openbarePaden(): Array<{
       changeFrequency: 'monthly' as const,
       priority: 0.7,
     })),
+    // Geen /proberen zelf: die pagina stuurt alleen door naar het eerste
+    // hoofdstuk (src/app/[locale]/proberen/page.tsx) en heeft geen eigen
+    // inhoud. De proefsommen staan op /proberen/<hoofdstuk>.
+    ...THEORIE_HOOFDSTUKKEN.map((h) => ({
+      pad: `/proberen/${h.slug}`,
+      changeFrequency: 'monthly' as const,
+      priority: 0.7,
+    })),
     { pad: '/examen-integralen', changeFrequency: 'monthly', priority: 0.7 },
     { pad: '/uitleg-videos', changeFrequency: 'monthly', priority: 0.7 },
     { pad: '/video-aanvragen', changeFrequency: 'monthly', priority: 0.6 },
@@ -70,6 +78,9 @@ const LAATST_GEWIJZIGD: Record<string, string> = {
 }
 const THEORIE_HOOFDSTUK_GEWIJZIGD = '2026-10-29'
 const VOORBEELD_GEWIJZIGD = '2026-10-29'
+// Datum waarop de proefsommen in de sitemap kwamen (INT-649), niet wanneer de
+// opgaven zelf voor het laatst veranderden.
+const PROBEREN_GEWIJZIGD = '2026-10-30'
 
 /** Hash over de content die bij `THEORIE_HOOFDSTUK_GEWIJZIGD` hoort. */
 export const THEORIE_HOOFDSTUK_INHOUD_HASH =
@@ -94,9 +105,11 @@ export async function hashInhoud(data: unknown): Promise<string> {
 function laatstGewijzigd(pad: string): Date {
   const dag = pad.startsWith('/theorie/')
     ? THEORIE_HOOFDSTUK_GEWIJZIGD
-    : pad.startsWith('/voorbeeld/')
-      ? VOORBEELD_GEWIJZIGD
-      : LAATST_GEWIJZIGD[pad]
+    : pad.startsWith('/proberen/')
+      ? PROBEREN_GEWIJZIGD
+      : pad.startsWith('/voorbeeld/')
+        ? VOORBEELD_GEWIJZIGD
+        : LAATST_GEWIJZIGD[pad]
   return new Date(`${dag}T00:00:00.000Z`)
 }
 

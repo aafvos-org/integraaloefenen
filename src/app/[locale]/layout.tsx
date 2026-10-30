@@ -36,7 +36,7 @@ export async function generateMetadata({
     // openbare pagina zet ze zelf, met eigenPagina() uit src/lib/seo.ts.
     //
     // Wat hieronder blijft staan is de terugval voor de afgeschermde pagina's
-    // (dashboard, inloggen, proberen): die horen niet in een zoekmachine en
+    // (dashboard, inloggen, oefenen): die horen niet in een zoekmachine en
     // hebben geen eigen kaartje nodig. Openbare pagina's overschrijven dit
     // via eigenPagina() met index, follow.
     openGraph: {
