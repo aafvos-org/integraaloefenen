@@ -77,7 +77,7 @@ const LAATST_GEWIJZIGD: Record<string, string> = {
   '/voorbeeld': '2026-10-16',
 }
 const THEORIE_HOOFDSTUK_GEWIJZIGD = '2026-10-29'
-const VOORBEELD_GEWIJZIGD = '2026-10-29'
+const VOORBEELD_GEWIJZIGD = '2026-10-30'
 // Datum waarop de proefsommen in de sitemap kwamen (INT-649), niet wanneer de
 // opgaven zelf voor het laatst veranderden.
 const PROBEREN_GEWIJZIGD = '2026-10-30'
@@ -87,7 +87,7 @@ export const THEORIE_HOOFDSTUK_INHOUD_HASH =
   '443bad9661c8b202005a346f7799164c4d6d917845ff16f840de9552a75e4779'
 /** Hash over de content die bij `VOORBEELD_GEWIJZIGD` hoort. */
 export const VOORBEELD_INHOUD_HASH =
-  'ce457476b872d76bd410466626fc44dc452c5580adb77fb9d3e7c9a28ec7d318'
+  '7b30bdcc0777ec55faff4b3b543a4938d1131e2d891e2b17ec932e0b607cd42d'
 
 /**
  * Deterministische hash over content, voor `sitemap.test.ts`. Geen geheime
