@@ -1,8 +1,8 @@
-import type { Metadata, ResolvingMetadata } from 'next'
 import { notFound } from 'next/navigation'
 
 import { routing } from '@/i18n/routing'
 import { zetStatischeTaal } from '@/i18n/statisch'
+import { eigenPagina } from '@/lib/seo'
 import { proefSommen } from '@/lib/proberen/opgaven'
 import { THEORIE_SLUGS } from '@/lib/theorie-slugs'
 
@@ -22,19 +22,16 @@ export function generateStaticParams() {
 const PROEFSOM_OMSCHRIJVING =
   'Maak drie sommen zonder account en kijk of je de primitieve vindt.'
 
-export async function generateMetadata(
-  { params }: { params: Params },
-  parent: ResolvingMetadata,
-): Promise<Metadata> {
+export async function generateMetadata({ params }: { params: Params }) {
   const { locale, hoofdstuk } = await params
   zetStatischeTaal(locale)
   if (!proefSommen(hoofdstuk)) notFound()
-  const vorige = await parent
-  return {
-    title: 'Probeer 3 sommen',
-    description: PROEFSOM_OMSCHRIJVING,
-    openGraph: { ...vorige.openGraph, description: PROEFSOM_OMSCHRIJVING },
-  }
+  return eigenPagina({
+    locale,
+    pad: `/proberen/${hoofdstuk}`,
+    titel: 'Probeer 3 sommen',
+    omschrijving: PROEFSOM_OMSCHRIJVING,
+  })
 }
 
 export default async function ProberenPage({ params }: { params: Params }) {

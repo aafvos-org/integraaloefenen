@@ -75,7 +75,13 @@ describe('sitemap.xml', () => {
   })
 
   it('noemt elke openbare pagina', () => {
+    // Behalve 'proberen': die bladzijde stuurt alleen door naar het eerste
+    // hoofdstuk (geen eigen inhoud) en hoort dus zelf niet in de sitemap.
+    // Google raadt af om een doorverwijzend adres in een sitemap te zetten;
+    // de echte proefsommen op /proberen/<hoofdstuk> staan er wel in, zie
+    // 'noemt elke proefsom' hieronder.
     for (const pad of OPENBAAR) {
+      if (pad === 'proberen') continue
       expect(inSitemap()).toContain(`/${TAAL}/${pad}`)
     }
   })
@@ -83,6 +89,12 @@ describe('sitemap.xml', () => {
   it('noemt elk theorie-hoofdstuk', () => {
     for (const h of THEORIE_HOOFDSTUKKEN) {
       expect(inSitemap()).toContain(`/${TAAL}/theorie/${h.slug}`)
+    }
+  })
+
+  it('noemt elke proefsom', () => {
+    for (const h of THEORIE_HOOFDSTUKKEN) {
+      expect(inSitemap()).toContain(`/${TAAL}/proberen/${h.slug}`)
     }
   })
 
@@ -161,7 +173,12 @@ describe('eigen adres en deelkaartje', () => {
   })
 
   it('staan op elke openbare pagina, met het eigen pad', () => {
+    // Behalve 'proberen': die bladzijde doet alleen redirect() naar het
+    // eerste hoofdstuk en stuurt daarom nooit een gerenderde pagina (met
+    // metadata) naar een bezoeker. De echte pagina's staan op
+    // /proberen/<hoofdstuk>, zie de losse test hieronder.
     for (const pad of OPENBAAR) {
+      if (pad === 'proberen') continue
       expect(broncode(pad)).toMatch(/eigenPagina\(\{\s*locale,/)
       expect(broncode(pad)).toContain(`pad: '/${pad}',`)
     }
@@ -171,6 +188,12 @@ describe('eigen adres en deelkaartje', () => {
     const bron = broncode('theorie', '[hoofdstuk]')
     expect(bron).toMatch(/eigenPagina\(\{\s*locale,/)
     expect(bron).toContain('pad: `/theorie/${hoofdstuk}`,')
+  })
+
+  it('staan op een proefsom, met het hoofdstuk erin', () => {
+    const bron = broncode('proberen', '[hoofdstuk]')
+    expect(bron).toMatch(/eigenPagina\(\{\s*locale,/)
+    expect(bron).toContain('pad: `/proberen/${hoofdstuk}`,')
   })
 
   it('staan op een voorbeeldpagina, met de slug erin', () => {
