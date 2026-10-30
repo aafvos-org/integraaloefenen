@@ -47,7 +47,7 @@ test('de hoofdstukknop op telefoon blijft bereikbaar na scrollen en wisselt van 
   await expect(hoofdstukKnop).toBeInViewport()
 
   await page.mouse.wheel(0, 700)
-  await expect(page.evaluate(() => window.scrollY)).resolves.toBeGreaterThan(300)
+  await expect.poll(() => page.evaluate(() => window.scrollY)).toBeGreaterThan(300)
   await expect(hoofdstukKnop).toBeInViewport()
 
   await hoofdstukKnop.click()
