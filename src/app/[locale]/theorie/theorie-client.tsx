@@ -11,7 +11,6 @@ import type { Voorbeeldopgave } from '@/content/theory/voorbeeldopgaven'
 import { uitwerkingenVoor, type Voorbeeld } from '@/content/voorbeelden'
 import type { Oefenlink, OverviewCard, Stappenplan } from '@/lib/theory'
 import { getUitlegVideos } from '@/lib/videos'
-import { useDesktopHint } from '@/lib/use-desktop-hint'
 
 import { leesbareTekst, leesbareWiskunde } from './leesbare-tekst'
 
@@ -35,6 +34,8 @@ type Labels = {
   chapterLabel: string
   collapseSidebar: string
   expandSidebar: string
+  chooseChapter: string
+  closeChapterList: string
   exampleLabel: string
   detailsLabel: string
   /** "Stap {n}" */
@@ -74,17 +75,14 @@ export function TheorieClient({
   /** Alleen op het overzicht: kortste route naar veelgezochte voorbeeldpagina's. */
   vaakGezocht?: Voorbeeld[]
 }) {
-  // Op de telefoon duwt de volledig opengeklapte zijbalk (alle hoofdstukken met
-  // hun kaarten) de inhoud — en dus de "Probeer 3 sommen"-knop — buiten beeld.
-  // Heeft de leerling nog niets zelf gekozen (sidebarOverride === null), dan bepaalt
-  // alleen CSS (onder/vanaf het lg-breakpoint) hoe de zijbalk eruitziet: zo klopt de
-  // allereerste HTML al op de telefoon, zonder op hydratatie te wachten. `desktopHint`
-  // regelt daarna alleen de aria/tekst van de knop op de computer, niet de opmaak zelf.
-  const [sidebarOverride, setSidebarOverride] = useState<boolean | null>(null)
-  const sidebarOpen = sidebarOverride ?? false
-  const sidebarResponsive = sidebarOverride === null
-  const desktopHint = useDesktopHint()
-  const effectiveOpen = sidebarOpen || (sidebarResponsive && desktopHint)
+  // De zijbalk (met alle hoofdstukken en hun kaarten) is alleen vanaf het
+  // lg-breakpoint zichtbaar. Op de telefoon staat in plaats daarvan een sticky
+  // knop die het huidige hoofdstuk toont, als eerste kind van de lange
+  // scrollcontainer, die een scherm met de hoofdstukkenlijst opent (INT-661,
+  // zelfde patroon als de mobiele hoofdstukkiezer op de oefenpagina en op
+  // theorie-layout.tsx).
+  const [sidebarOpen, setSidebarOpen] = useState(true)
+  const [mobileListOpen, setMobileListOpen] = useState(false)
   const [activeSlug, setActiveSlug] = useState<string | null>(chapters[0]?.slug ?? null)
   // Kaarten die aan een oefen-topic hangen staan standaard open: dat is de kern van de pagina.
   const [openCards, setOpenCards] = useState<Set<string>>(
@@ -110,6 +108,12 @@ export function TheorieClient({
     document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
   }
 
+  function goToChapter(slug: string) {
+    setActiveSlug(slug)
+    setMobileListOpen(false)
+    scrollToId(`hoofdstuk-${slug}`)
+  }
+
   /** Keuzehulp: klap de gekozen kaart open en spring ernaartoe. */
   function kiesKaart(chapterSlug: string, cardId: string) {
     setOpenCards((prev) => new Set(prev).add(`${chapterSlug}/${cardId}`))
@@ -130,58 +134,36 @@ export function TheorieClient({
     if (current && current !== activeSlug) setActiveSlug(current)
   }
 
+  const activeChapter = chapters.find((ch) => ch.slug === activeSlug)
+  const activeChapterSplit = activeChapter ? splitTitle(activeChapter.title) : null
+
   return (
     <div className={sidebar ? 'flex min-h-[calc(100vh-3.5rem)] flex-col lg:h-[calc(100vh-3.5rem)] lg:flex-row lg:overflow-hidden' : undefined}>
       {/* ── Sidebar ─────────────────────────────────────────────────── */}
       {sidebar && (
       <aside
         className={cn(
-          'nice-scrollbar border-b border-border bg-surface lg:h-full lg:border-b-0 lg:border-r',
-          sidebarOpen
-            ? 'overflow-x-auto p-4 lg:w-64 lg:overflow-x-visible lg:overflow-y-auto lg:py-8'
-            : sidebarResponsive
-            ? 'px-0.5 py-2 lg:w-64 lg:overflow-x-visible lg:overflow-y-auto lg:px-4 lg:py-8'
-            : 'px-0.5 py-2 lg:w-12 lg:py-4',
+          'nice-scrollbar hidden border-border bg-surface lg:block lg:h-full lg:border-r',
+          sidebarOpen ? 'lg:w-64 lg:overflow-y-auto lg:px-4 lg:py-8' : 'lg:w-12 lg:py-4',
         )}
       >
-        <div
-          className={
-            sidebarOpen
-              ? 'flex items-center justify-between gap-2'
-              : sidebarResponsive
-              ? 'flex justify-center lg:items-center lg:justify-between lg:gap-2'
-              : 'flex justify-center'
-          }
-        >
-          {(sidebarOpen || sidebarResponsive) && (
-            <p
-              className={cn(
-                'text-xs font-medium uppercase tracking-wider text-text-muted',
-                sidebarResponsive && 'hidden lg:block',
-              )}
-            >
+        <div className={sidebarOpen ? 'flex items-center justify-between gap-2' : 'flex justify-center'}>
+          {sidebarOpen && (
+            <p className="text-xs font-medium uppercase tracking-wider text-text-muted">
               {labels.chapterLabel}
             </p>
           )}
           <button
             type="button"
-            onClick={() => setSidebarOverride(!effectiveOpen)}
-            aria-expanded={effectiveOpen}
-            aria-label={effectiveOpen ? labels.collapseSidebar : labels.expandSidebar}
-            title={effectiveOpen ? labels.collapseSidebar : labels.expandSidebar}
-            className={cn(
-              'inline-flex h-11 shrink-0 items-center justify-center gap-1.5 whitespace-nowrap rounded-md text-text-muted hover:bg-surface-2 hover:text-text lg:size-11 lg:gap-0',
-              !sidebarOpen && 'border border-border bg-surface-2 px-3 lg:border-0 lg:bg-transparent lg:px-0',
-            )}
+            onClick={() => setSidebarOpen((v) => !v)}
+            aria-expanded={sidebarOpen}
+            aria-label={sidebarOpen ? labels.collapseSidebar : labels.expandSidebar}
+            title={sidebarOpen ? labels.collapseSidebar : labels.expandSidebar}
+            className="rounded-md p-1.5 text-text-muted hover:bg-surface-2 hover:text-text lg:size-11"
           >
-            {!sidebarOpen && (
-              <span className="text-xs font-medium uppercase tracking-wider lg:hidden">
-                {labels.chapterLabel}
-              </span>
-            )}
             <svg
               viewBox="0 0 24 24"
-              className={`size-4 shrink-0 transition-transform ${effectiveOpen ? '' : 'rotate-180'}`}
+              className={`size-4 transition-transform ${sidebarOpen ? '' : 'rotate-180'}`}
               fill="none"
               stroke="currentColor"
               strokeWidth="2"
@@ -195,8 +177,8 @@ export function TheorieClient({
           </button>
         </div>
 
-        {(sidebarOpen || sidebarResponsive) && (
-          <ul className={cn('mt-3 space-y-0.5', sidebarResponsive && 'hidden lg:block')}>
+        {sidebarOpen && (
+          <ul className="mt-3 space-y-0.5">
             {chapters.map((ch) => {
               const active = ch.slug === activeSlug
               const { code, short } = splitTitle(ch.title)
@@ -204,10 +186,7 @@ export function TheorieClient({
                 <li key={ch.slug}>
                   <button
                     type="button"
-                    onClick={() => {
-                      setActiveSlug(ch.slug)
-                      scrollToId(`hoofdstuk-${ch.slug}`)
-                    }}
+                    onClick={() => goToChapter(ch.slug)}
                     className={
                       active
                         ? 'flex min-h-11 w-full items-center gap-2 rounded-md bg-accent px-3 py-2 text-sm font-medium text-white'
@@ -270,6 +249,32 @@ export function TheorieClient({
         onScroll={handleMainScroll}
         className={sidebar ? 'nice-scrollbar flex-1 lg:h-full lg:overflow-y-auto' : undefined}
       >
+        {sidebar && (
+          <button
+            type="button"
+            onClick={() => setMobileListOpen(true)}
+            aria-label={`${labels.chooseChapter}: ${
+              activeChapterSplit
+                ? activeChapterSplit.code
+                  ? `${activeChapterSplit.code} – ${activeChapterSplit.short}`
+                  : activeChapterSplit.short
+                : labels.chapterLabel
+            }`}
+            className="sticky top-14 z-20 flex min-h-11 w-full items-center justify-between gap-3 border-b border-border bg-surface px-4 text-left text-sm font-medium lg:hidden"
+          >
+            <span className="min-w-0 truncate" aria-hidden>
+              {activeChapterSplit
+                ? activeChapterSplit.code
+                  ? `${activeChapterSplit.code} – ${activeChapterSplit.short}`
+                  : activeChapterSplit.short
+                : labels.chapterLabel}
+            </span>
+            <svg viewBox="0 0 24 24" className="size-4 shrink-0" fill="currentColor" aria-hidden>
+              <path d="M7 10l5 5 5-5H7z" />
+            </svg>
+          </button>
+        )}
+
         <div className="mx-auto max-w-5xl px-4 py-8">
           {eigenKop ? null : <h1 className="sr-only">{labels.h1}</h1>}
 
@@ -425,6 +430,58 @@ export function TheorieClient({
           })}
         </div>
       </div>
+
+      {sidebar && mobileListOpen && (
+        <div
+          className="fixed inset-0 z-50 flex flex-col bg-surface lg:hidden"
+          role="dialog"
+          aria-modal="true"
+          aria-label={labels.chooseChapter}
+        >
+          <div className="flex items-center justify-between border-b border-border px-4">
+            <p className="text-sm font-medium">{labels.chooseChapter}</p>
+            <button
+              type="button"
+              onClick={() => setMobileListOpen(false)}
+              className="min-h-11 px-3 text-sm font-medium text-text"
+            >
+              {labels.closeChapterList}
+            </button>
+          </div>
+          <div className="nice-scrollbar flex-1 overflow-y-auto p-4">
+            <ul className="space-y-0.5">
+              {chapters.map((ch) => {
+                const active = ch.slug === activeSlug
+                const { code, short } = splitTitle(ch.title)
+                return (
+                  <li key={ch.slug}>
+                    <button
+                      type="button"
+                      onClick={() => goToChapter(ch.slug)}
+                      aria-current={active ? 'page' : undefined}
+                      className={
+                        active
+                          ? 'flex min-h-11 w-full items-center gap-2 rounded-md bg-accent px-3 py-2 text-sm font-medium text-white'
+                          : 'flex min-h-11 w-full items-center gap-2 rounded-md px-3 py-2 text-sm text-text-muted hover:bg-surface-2 hover:text-text'
+                      }
+                    >
+                      <span className="min-w-0 break-words text-left">
+                        {code && (
+                          <>
+                            <span className="font-mono font-semibold">{code}</span>
+                            {' – '}
+                          </>
+                        )}
+                        {short}
+                      </span>
+                    </button>
+                  </li>
+                )
+              })}
+            </ul>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
