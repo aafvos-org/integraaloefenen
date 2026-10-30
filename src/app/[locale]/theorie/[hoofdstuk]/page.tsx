@@ -14,6 +14,8 @@ import { hoofdstukOmschrijving } from '../hoofdstuk-omschrijving'
 import { TheorieClient, type TheorieChapter } from '../theorie-client'
 import { TheorieLayout } from '../theorie-layout'
 import { kaartLabels, layoutLabels, stripChapterCode, theorieNavItems } from '../theorie-shared'
+import { GoogleStrip } from '../../google-strip'
+import { YoutubeStrip } from '../../youtube-strip'
 
 type Params = Promise<{ locale: string; hoofdstuk: string }>
 
@@ -79,6 +81,10 @@ export default async function HoofdstukPage({ params }: { params: Params }) {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(gegevens) }}
       />
+      <div className="mx-auto max-w-5xl px-4 pt-6">
+        <YoutubeStrip />
+        <GoogleStrip />
+      </div>
       <TheorieClient chapters={[chapter]} labels={kaartLabels(t)} sidebar={false} eigenKop />
     </TheorieLayout>
   )
