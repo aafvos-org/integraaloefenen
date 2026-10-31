@@ -245,7 +245,7 @@ export const VOORBEELDEN: Voorbeeld[] = [
   {
     slug: 'sin-x',
     kop: 'De primitieve van sin(x)',
-    titel: 'Primitieve van sin(x) (integraal): uitleg',
+    titel: 'Primitieve van sin(x) = −cos(x) (integraal): uitleg',
     omschrijving:
       'De primitieve van sin(x) is −cos(x) + c. Bekijk de uitwerking met de standaardprimitieve en oefen daarna gratis verder, zonder account.',
     vraagLatex: '\\int \\sin(x)\\,dx',
