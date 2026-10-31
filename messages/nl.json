@@ -101,6 +101,8 @@
     "stap": "Stap {n}",
     "fout": "Veelgemaakte fout",
     "oefenen": "Oefen dit soort sommen",
+    "stickyTekst": "Liever dit zelf proberen?",
+    "stickyKnop": "Oefen dit zelf",
     "verwant": "Zie ook",
     "theorie": "Lees de theorie",
     "nietTeVerwarrenMetLink": "Bekijk: {kop}"
