@@ -48,14 +48,18 @@ export function VoorbeeldStickyBalk({
   useEffect(() => {
     const doel = document.getElementById(dismissElementId)
     if (!doel) return
-    // threshold 0.5: pas verbergen zodra die knop voor de helft zichtbaar is,
-    // niet al bij een paar pixels die nog net de onderkant van het scherm
-    // raken (anders knippert de balk op een korte pagina meteen weer weg).
+    // rootMargin in vaste pixels, niet in procenten: die knop telt pas als
+    // "in beeld" zodra hij ruim boven de onderkant van het scherm staat, niet
+    // zodra hij die net raakt. Een percentage zou hier meeschalen met de
+    // schermhoogte en op een korte voorbeeldpagina (zoals wortel-x, zonder
+    // video) viel die knop daardoor al bij de 75%-drempel hierboven samen met
+    // "in beeld" — de balk verscheen dan nooit (INT-678, Controle #119). Een
+    // vaste pixelmarge geeft op telefoon en computer hetzelfde gedrag.
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) setVerborgen(true)
       },
-      { threshold: 0.5 },
+      { rootMargin: '0px 0px -200px 0px' },
     )
     observer.observe(doel)
     return () => observer.disconnect()
