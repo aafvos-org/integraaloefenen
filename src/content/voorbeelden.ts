@@ -404,9 +404,9 @@ export const VOORBEELDEN: Voorbeeld[] = [
   {
     slug: '2-tot-x',
     kop: 'De primitieve van 2^x',
-    titel: 'Primitieve van 2^x',
+    titel: 'Primitieve van 2^x = 2^x / ln(2) (integraal)',
     omschrijving:
-      'De primitieve van 2^x is 2^x / ln(2) + c. Deel door de natuurlijke logaritme van het grondtal.',
+      'De primitieve van 2^x is 2^x / ln(2) + c. Deel door de natuurlijke logaritme van het grondtal. Bekijk de uitwerking en oefen daarna gratis verder, zonder account.',
     vraagLatex: '\\int 2^{x}\\,dx',
     antwoordLatex: '\\frac{2^{x}}{\\ln 2}+c',
     integrand: '2^x',
