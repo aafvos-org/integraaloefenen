@@ -655,9 +655,9 @@ export const VOORBEELDEN: Voorbeeld[] = [
   {
     slug: 'cos-kwadraat',
     kop: 'De primitieve van cos²(x)',
-    titel: 'Integraal van cos²(x) berekenen: uitleg',
+    titel: 'Primitieve van cos²(x) = x/2 + sin(2x)/4',
     omschrijving:
-      'De integraal (primitieve) van cos²(x) is x/2 + sin(2x)/4 + c. Bekijk de uitwerking met de formule voor cos² en oefen daarna gratis verder, zonder account.',
+      'De primitieve van cos²(x) is x/2 + sin(2x)/4 + c. Bekijk de uitwerking met de formule voor cos² en oefen daarna gratis verder, zonder account.',
     vraagLatex: '\\int \\cos^2(x)\\,dx',
     antwoordLatex: '\\frac{1}{2}x+\\frac{1}{4}\\sin(2x)+c',
     integrand: 'cos(x)^2',
