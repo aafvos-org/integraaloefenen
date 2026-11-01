@@ -157,7 +157,7 @@ export const VOORBEELDEN: Voorbeeld[] = [
   {
     slug: 'e-tot-2x',
     kop: 'De primitieve van e^(2x)',
-    titel: 'Primitieve van e^(2x): e tot de 2x (integraal)',
+    titel: 'Primitieve van e^(2x) = ½e^(2x): e tot de 2x',
     omschrijving:
       'De primitieve van e^(2x), oftewel e tot de 2x, is ½e^(2x) + c. De 2 in de exponent deel je aan het eind weer weg. Bekijk de uitwerking en oefen gratis verder, zonder account.',
     vraagLatex: '\\int e^{2x}\\,dx',
