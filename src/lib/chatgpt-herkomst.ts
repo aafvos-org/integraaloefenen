@@ -4,7 +4,10 @@
  * ChatGPT-domein. Gebruikt door de proef-strip op de startpagina, niet door
  * de klikmeting.
  */
-const CHATGPT_DOMEINEN = new Set(['chatgpt.com', 'chat.openai.com'])
+/** Ook gebruikt door `vakantiebalk.ts` (INT-710), zodat de domeinlijst op één plek staat. */
+export const CHATGPT_DOMEINEN_LIJST = ['chatgpt.com', 'chat.openai.com'] as const
+
+const CHATGPT_DOMEINEN = new Set<string>(CHATGPT_DOMEINEN_LIJST)
 
 export function isChatgptHerkomst(
   utmSource: string | null,
