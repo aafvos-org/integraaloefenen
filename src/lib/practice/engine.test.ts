@@ -166,6 +166,37 @@ describe('answersMatch', () => {
     expect(answersMatch('arcsin(x)', 'arctan(x) + c')).toBe(false)
   })
 
+  it('herkent de schoolnotatie voor een breuk in een ln of een macht (INT-695)', () => {
+    // Op papier staat een breuk met de teller boven de noemer. Op één regel
+    // zet een leerling daar losse haakjes omheen, zonder te bedenken dat de
+    // rekenmachine `ln(1)/(3)` leest als "ln(1) gedeeld door 3" (0) en niet
+    // als `ln(1/3)`.
+    expect(answersMatch('ln(1)/(3)', 'ln(1/3)')).toBe(true)
+    expect(answersMatch('ln(3)/(2)', 'ln(3/2)')).toBe(true)
+    // Diezelfde reflex bij een macht: de noemer hoort nog bij de teller,
+    // niet alleen bij de exponent.
+    expect(answersMatch('(3)/(2)^(x)', '(3/2)^x')).toBe(true)
+    expect(answersMatch('(3)/(2)^x', '(3/2)^x')).toBe(true)
+    // De twee herschrijvingen mogen ook samen voorkomen in één antwoord.
+    expect(answersMatch('(3)/(2)^(x)/(ln(3)/(2))', '(3/2)^x / ln(3/2)')).toBe(true)
+    expect(answersMatch('xln(1)/(3)+2xln(x)-2x', 'xln(x^2/3)-2x')).toBe(true)
+    // Een bewust andere breuk blijft gewoon fout: de herschrijving wordt
+    // alleen gebruikt als die ook echt bij het goede antwoord past.
+    expect(answersMatch('ln(1)/3', 'ln(x)/3')).toBe(false)
+    expect(answersMatch('ln(1)/(3)', 'x^2')).toBe(false)
+    expect(answersMatch('(3)/(2)^(x)', 'x^2')).toBe(false)
+  })
+
+  it('leest een functienaam zonder haakjes om het argument (INT-697)', () => {
+    // lnx en ln6 faalden eerder voor de hele formule (readFormula gaf null),
+    // ook als de rest prima leesbaar was. Nu telt dat als ln(x) en ln(6).
+    expect(answersMatch('lnx', 'ln(x)')).toBe(true)
+    expect(answersMatch('ln6', 'ln(6)')).toBe(true)
+    // de letterlijke invoer uit INT-695, nu zonder haakjes om `lnx`
+    expect(answersMatch('xln(1)/(3)+2xlnx-2x', 'xln(1)/(3)+2xln(x)-2x')).toBe(true)
+    expect(answersMatch('(6^x)/(ln6)', '(6^x)/(ln(6))')).toBe(true)
+  })
+
   it('rekent een kale formule goed bij een beginvoorwaarde-antwoord met F(x) =', () => {
     // INT-644: bij "bereken F(x), grafiek door punt ..." staat het canonieke
     // antwoord in de database als "F(x) = ...", maar het invoerveld heeft
