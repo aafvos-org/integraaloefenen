@@ -16,7 +16,8 @@
  * heten de inverse functies `arctan`, `arcsin` en `arccos`; die rekent hij
  * hetzelfde als `atan`, `asin` en `acos`. `log(...)` kent hij niet — dat is te
  * verwarrend — en een formule daarmee gaat dus langs de AI-stap. Staafjes
- * `|x|` zijn hetzelfde als `abs(x)`, ook in `ln|x+2|`.
+ * `|x|` zijn hetzelfde als `abs(x)`, ook in `ln|x+2|`. Schoolnotatie
+ * `ln^2(x)` is hetzelfde als `(ln(x))^2`, ook bij `sin`, `arctan`, enzovoort.
  *
  * De `e` van een rekenmachine: `1e5` is 100000, want een getal maal e maal een
  * getal schrijft niemand zo. Staat er een teken achter de `e`, dan blijft het
@@ -236,11 +237,24 @@ export function readFormula(bron: string): Formula | null {
       const naam = token.waarde
       const functie = FUNCTIES[naam]
       if (functie) {
+        // Schoolnotatie: `ln^2(x)` betekent `(ln(x))^2`, niet `ln(x^2)` of
+        // `ln(x)^2` (al zijn die twee wel hetzelfde). Alleen bij een functie
+        // mag de macht vóór de haakjes staan; `x^2` blijft gewoon `x` tot de
+        // macht `2`.
+        let exponent: Formula | null = null
+        if (isTeken('^')) {
+          pos++
+          exponent = min()
+        }
         if (!isTeken('(')) throw new Error(`${naam} zonder haakjes`)
         pos++
         const argument = som()
         if (!isTeken(')')) throw new Error('haakje niet gesloten')
         pos++
+        if (exponent) {
+          const macht = exponent
+          return (x) => Math.pow(functie(argument(x)), macht(x))
+        }
         return (x) => functie(argument(x))
       }
       if (naam === 'x') return (x) => x

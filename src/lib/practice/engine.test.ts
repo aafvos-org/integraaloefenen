@@ -55,6 +55,18 @@ describe('answersMatch', () => {
     expect(answersMatch('3x+-2', '3x-2')).toBe(true)
   })
 
+  it('rekent schoolnotatie f^n(x) gelijk aan (f(x))^n', () => {
+    // Op school schrijf je ln^2(x) voor (ln(x))^2 (INT-690).
+    expect(answersMatch('x ln(x)^2 - 2x ln(x) + 2x + c', 'x ln^2(x) - 2x ln(x) + 2x + c')).toBe(
+      true,
+    )
+    expect(answersMatch('3 sin(x)^2 cos(x)', '3 sin^2(x) cos(x)')).toBe(true)
+    // ook zonder + c
+    expect(answersMatch('x ln(x)^2 - 2x ln(x) + 2x', 'x ln^2(x) - 2x ln(x) + 2x')).toBe(true)
+    expect(answersMatch('1/2 arctan(x)^2', '1/2 arctan^2(x) + c')).toBe(true)
+    expect(answersMatch('1/3 arcsin(x)^3', '1/3 arcsin^3(x) + c')).toBe(true)
+  })
+
   it('rekent een alternatieve schrijfwijze uit de vraag goed', () => {
     // De alternatieven staan bij de vraag in de database; daar belandt ook
     // wat de AI-controle eerder als "anders opgeschreven" heeft goedgekeurd.
