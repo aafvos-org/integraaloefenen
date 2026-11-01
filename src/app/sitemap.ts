@@ -87,7 +87,7 @@ export const THEORIE_HOOFDSTUK_INHOUD_HASH =
   '443bad9661c8b202005a346f7799164c4d6d917845ff16f840de9552a75e4779'
 /** Hash over de content die bij `VOORBEELD_GEWIJZIGD` hoort. */
 export const VOORBEELD_INHOUD_HASH =
-  '9574d83e8f1d73b5bce712a26bcd3d4a8960ca65afecad358664dc1ab1914a92'
+  '78c606c59b41c558789d93829dc5d80f65087b589ddd394aa96cb7029a1a5f80'
 
 /**
  * Deterministische hash over content, voor `sitemap.test.ts`. Geen geheime
