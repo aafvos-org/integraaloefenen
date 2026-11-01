@@ -5,6 +5,7 @@ import { moetGebruikersnaamVragen, veiligeVolgende } from '@/lib/google-login'
 import { getCurrentProfile, getCurrentUser } from '@/lib/supabase/request-cache'
 
 import { GebruikersnaamForm } from './form'
+import { genereerStandaardNaam } from './standaard-naam'
 
 export async function generateMetadata({
   params,
@@ -39,7 +40,7 @@ export default async function GebruikersnaamPage({
       <p className="mt-2 text-sm text-text-muted">{t('nameSubtitle')}</p>
 
       <div className="mt-8 rounded-xl border border-border bg-surface p-6">
-        <GebruikersnaamForm volgende={volgende} />
+        <GebruikersnaamForm volgende={volgende} standaardNaam={genereerStandaardNaam()} />
       </div>
     </div>
   )

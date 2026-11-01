@@ -237,9 +237,9 @@
     "error": "Aanmelden met Google lukt nu niet. Probeer het opnieuw, of gebruik je e-mailadres.",
     "of": "of",
     "nameTitle": "Hoe mogen we je noemen?",
-    "nameSubtitle": "Kies een gebruikersnaam. Dat mag ook leeg blijven; je kunt hem later nog aanpassen bij Instellingen.",
+    "nameSubtitle": "We hebben vast een naam gekozen. Pas hem aan als je wilt, of ga meteen verder.",
     "usernameLabel": "Gebruikersnaam (optioneel)",
-    "continue": "Doorgaan",
+    "continue": "Verder oefenen",
     "continuePending": "Bezig…"
   },
   "ForgotPassword": {

@@ -8,7 +8,13 @@ import { kiesGebruikersnaamAction, type NaamState } from './actions'
 
 const initialState: NaamState = { error: null }
 
-export function GebruikersnaamForm({ volgende }: { volgende: string }) {
+export function GebruikersnaamForm({
+  volgende,
+  standaardNaam,
+}: {
+  volgende: string
+  standaardNaam: string
+}) {
   const [state, formAction, pending] = useActionState(kiesGebruikersnaamAction, initialState)
   const t = useTranslations('Google')
 
@@ -22,6 +28,7 @@ export function GebruikersnaamForm({ volgende }: { volgende: string }) {
           type="text"
           autoComplete="username"
           maxLength={40}
+          defaultValue={state.values?.username ?? standaardNaam}
           className="w-full rounded-md border border-border bg-surface px-3 py-2 text-text outline-none focus:border-accent focus:ring-2 focus:ring-accent/20"
         />
       </label>
