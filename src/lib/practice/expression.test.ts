@@ -67,6 +67,16 @@ describe('readFormula', () => {
     expect(reken('1/2e^(2x)', 0.5)).toBeCloseTo(Math.E / 2, 12)
   })
 
+  it('leest schoolnotatie f^n(x) als (f(x))^n', () => {
+    expect(reken('ln^2(x)', Math.E)).toBeCloseTo(1, 12)
+    expect(reken('ln^2(x)', 2)).toBeCloseTo(Math.log(2) ** 2, 12)
+    expect(reken('sin^2(x)', 1)).toBeCloseTo(Math.sin(1) ** 2, 12)
+    expect(reken('arctan^2(x)', 1)).toBeCloseTo(Math.atan(1) ** 2, 12)
+    expect(reken('arcsin^3(x)', 0.5)).toBeCloseTo(Math.asin(0.5) ** 3, 12)
+    // dezelfde uitkomst als de haakjesvorm
+    expect(reken('ln^2(x)', 2)).toBeCloseTo(reken('ln(x)^2', 2)!, 12)
+  })
+
   it('leest staafjes als absolute waarde', () => {
     expect(reken('|x|', -3)).toBe(3)
     expect(reken('2|x|', -3)).toBe(6)
