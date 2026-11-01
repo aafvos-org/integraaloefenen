@@ -175,6 +175,16 @@ describe('answersMatch', () => {
     expect(answersMatch('(3)/(2)^(x)', 'x^2')).toBe(false)
   })
 
+  it('leest een functienaam zonder haakjes om het argument (INT-697)', () => {
+    // lnx en ln6 faalden eerder voor de hele formule (readFormula gaf null),
+    // ook als de rest prima leesbaar was. Nu telt dat als ln(x) en ln(6).
+    expect(answersMatch('lnx', 'ln(x)')).toBe(true)
+    expect(answersMatch('ln6', 'ln(6)')).toBe(true)
+    // de letterlijke invoer uit INT-695, nu zonder haakjes om `lnx`
+    expect(answersMatch('xln(1)/(3)+2xlnx-2x', 'xln(1)/(3)+2xln(x)-2x')).toBe(true)
+    expect(answersMatch('(6^x)/(ln6)', '(6^x)/(ln(6))')).toBe(true)
+  })
+
   it('rekent een kale formule goed bij een beginvoorwaarde-antwoord met F(x) =', () => {
     // INT-644: bij "bereken F(x), grafiek door punt ..." staat het canonieke
     // antwoord in de database als "F(x) = ...", maar het invoerveld heeft
