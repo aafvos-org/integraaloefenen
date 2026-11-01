@@ -128,4 +128,38 @@ describe('scriptDatVakantieBalkToont', () => {
       expect(draaiScript(MIDDEN_IN_PERIODE, { bronInTabblad: 'docent' }).hidden).toBe(false)
     })
   })
+
+  describe('voorrang voor de ChatGPT-strip (INT-710)', () => {
+    const MIDDEN_IN_PERIODE = new Date(2026, 10, 1, 12, 0)
+
+    it('blijft verborgen bij ?utm_source=chatgpt.com', () => {
+      expect(
+        draaiScript(MIDDEN_IN_PERIODE, { zoekreeks: '?utm_source=chatgpt.com' }).hidden,
+      ).toBe(true)
+    })
+
+    it('negeert hoofdletters en spaties in ?utm_source=', () => {
+      expect(
+        draaiScript(MIDDEN_IN_PERIODE, { zoekreeks: '?utm_source=  ChatGPT ' }).hidden,
+      ).toBe(true)
+    })
+
+    it('blijft verborgen bij een verwijzer vanaf chatgpt.com', () => {
+      expect(
+        draaiScript(MIDDEN_IN_PERIODE, { referrer: 'https://chatgpt.com/c/iets' }).hidden,
+      ).toBe(true)
+    })
+
+    it('blijft verborgen bij een verwijzer vanaf chat.openai.com', () => {
+      expect(
+        draaiScript(MIDDEN_IN_PERIODE, { referrer: 'https://chat.openai.com/c/iets' }).hidden,
+      ).toBe(true)
+    })
+
+    it('toont de balk gewoon bij een andere utm_source', () => {
+      expect(draaiScript(MIDDEN_IN_PERIODE, { zoekreeks: '?utm_source=nieuwsbrief' }).hidden).toBe(
+        false,
+      )
+    })
+  })
 })
