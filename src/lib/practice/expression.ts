@@ -16,7 +16,9 @@
  * heten de inverse functies `arctan`, `arcsin` en `arccos`; die rekent hij
  * hetzelfde als `atan`, `asin` en `acos`. `log(...)` kent hij niet — dat is te
  * verwarrend — en een formule daarmee gaat dus langs de AI-stap. Staafjes
- * `|x|` zijn hetzelfde als `abs(x)`, ook in `ln|x+2|`.
+ * `|x|` zijn hetzelfde als `abs(x)`, ook in `ln|x+2|`. Schoolnotatie zonder
+ * haakjes om het argument werkt ook voor één los token: `lnx` is `ln(x)` en
+ * `ln6` is `ln(6)`, maar niet verder: `lnx^2` is `ln(x)^2`.
  *
  * De `e` van een rekenmachine: `1e5` is 100000, want een getal maal e maal een
  * getal schrijft niemand zo. Staat er een teken achter de `e`, dan blijft het
@@ -212,7 +214,32 @@ export function readFormula(bron: string): Formula | null {
     return basis
   }
 
-  // deel := '(' som ')' | getal | functie '(' som ')' | x | e | pi
+  /**
+   * Schoolnotatie zonder haakjes om het argument: `ln6` is `ln(6)`, `lnx` is
+   * `ln(x)`. Alleen dat ene volgende token, niet verder — `lnx^2` wordt dus
+   * `ln(x)^2`, niet `ln(x^2)`.
+   */
+  function eenToken(): Formula | null {
+    const token = kijk()
+    if (!token) return null
+    if (token.soort === 'getal') {
+      pos++
+      const waarde = token.waarde
+      return () => waarde
+    }
+    if (token.soort === 'naam' && token.waarde === 'x') {
+      pos++
+      return (x) => x
+    }
+    if (token.soort === 'naam' && token.waarde in CONSTANTEN) {
+      pos++
+      const constante = CONSTANTEN[token.waarde]
+      return () => constante
+    }
+    return null
+  }
+
+  // deel := '(' som ')' | getal | functie '(' som ')' | functie eenToken | x | e | pi
   function deel(): Formula {
     const token = kijk()
     if (!token) throw new Error('formule houdt te vroeg op')
@@ -236,11 +263,15 @@ export function readFormula(bron: string): Formula | null {
       const naam = token.waarde
       const functie = FUNCTIES[naam]
       if (functie) {
-        if (!isTeken('(')) throw new Error(`${naam} zonder haakjes`)
-        pos++
-        const argument = som()
-        if (!isTeken(')')) throw new Error('haakje niet gesloten')
-        pos++
+        if (isTeken('(')) {
+          pos++
+          const argument = som()
+          if (!isTeken(')')) throw new Error('haakje niet gesloten')
+          pos++
+          return (x) => functie(argument(x))
+        }
+        const argument = eenToken()
+        if (!argument) throw new Error(`${naam} zonder haakjes`)
         return (x) => functie(argument(x))
       }
       if (naam === 'x') return (x) => x
