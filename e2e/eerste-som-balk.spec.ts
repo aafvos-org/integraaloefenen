@@ -90,8 +90,16 @@ test('leerling met 0 antwoorden ziet de balk op dashboard en theorie, en die ver
     await expect(page.getByText('Bepaal de primitieve van:')).toBeVisible()
   })
 
-  await test.step('een eerste antwoord geven (goed of fout maakt niet uit)', async () => {
-    await geefAntwoord(page, 'onzin')
+  await test.step('een eerste antwoord geven (fout maakt niet uit, moet wel geldige wiskunde zijn)', async () => {
+    await geefAntwoord(page, 'x^99')
+
+    // Wachten tot het antwoord echt verwerkt is (goed of fout), anders
+    // race je tegen het wegschrijven van session_answers_new.
+    await expect(
+      page
+        .getByText('Goed!', { exact: true })
+        .or(page.getByRole('button', { name: 'Laat het goede antwoord zien' })),
+    ).toBeVisible()
   })
 
   await test.step('balk weg op dashboard en theorie na dat antwoord', async () => {
