@@ -151,6 +151,78 @@ from (values
 ) as q(cluster_slug, latex_body, answer, latex_answer, order_index)
 join public.topic_clusters_new tc on tc.slug = q.cluster_slug;
 
+-- ---------------------------------------------------------------------
+-- Hoofdstuk mét paragraaf en theorieblok (e2e), voor INT-722: de hele
+-- hoofdstukregel moet het hoofdstuk meteen openen, niet alleen de
+-- paragraaflijst uitklappen. Los van het hoofdstuk 'e2e' hierboven, dat
+-- juist geen paragrafen heeft (zoals H11).
+-- ---------------------------------------------------------------------
+insert into public.chapters (slug, title, book_part, order_index, site)
+values ('e2eblok', 'Testhoofdstuk met paragraaf (e2e)', 1, 98, 'integralen')
+on conflict (slug) do update
+  set title       = excluded.title,
+      order_index = excluded.order_index,
+      site        = excluded.site;
+
+insert into public.paragraphs (chapter_id, site, slug, label, title, order_index)
+values (
+  (select id from public.chapters where slug = 'e2eblok'),
+  'integralen', 'e2eblok-1', '99.1', 'Testparagraaf (e2e)', 1
+)
+on conflict (slug) do update
+  set chapter_id  = excluded.chapter_id,
+      label       = excluded.label,
+      title       = excluded.title,
+      order_index = excluded.order_index;
+
+insert into public.theory_blocks (paragraph_id, site, slug, letter, title, order_index)
+values (
+  (select id from public.paragraphs where slug = 'e2eblok-1'),
+  'integralen', 'e2eblokb', 'A', 'Testblok (e2e)', 1
+)
+on conflict (slug) do update
+  set paragraph_id = excluded.paragraph_id,
+      letter       = excluded.letter,
+      title        = excluded.title,
+      order_index  = excluded.order_index;
+
+insert into public.topics_new
+  (slug, title, chapter_id, theory_block_id, order_index, is_unlocked_by_default, site, category)
+values (
+  'e2eblok_som', 'Testonderwerp (e2e)',
+  (select id from public.chapters where slug = 'e2eblok'),
+  (select id from public.theory_blocks where slug = 'e2eblokb'),
+  1, true, 'integralen', 'primitiveren'
+)
+on conflict (slug) do update
+  set title           = excluded.title,
+      chapter_id      = excluded.chapter_id,
+      theory_block_id = excluded.theory_block_id,
+      order_index     = excluded.order_index,
+      site            = excluded.site,
+      category        = excluded.category;
+
+insert into public.topic_clusters_new (topic_id, slug, title, order_index, site)
+values (
+  (select id from public.topics_new where slug = 'e2eblok_som'),
+  'e2eblok_som', 'Testcluster (e2e)', 1, 'integralen'
+)
+on conflict (topic_id, slug) do update
+  set title       = excluded.title,
+      order_index = excluded.order_index,
+      site        = excluded.site;
+
+delete from public.questions_new
+ where topic_id in (select id from public.topics_new where slug = 'e2eblok_som');
+
+insert into public.questions_new
+  (topic_id, cluster_id, latex_body, answer, latex_answer, difficulty, order_index, site)
+values (
+  (select id from public.topics_new where slug = 'e2eblok_som'),
+  (select id from public.topic_clusters_new where slug = 'e2eblok_som'),
+  'f(x) = x', '1/2x^2 + c', '\tfrac{1}{2}x^{2} + c', 1, 1, 'integralen'
+);
+
 -- =====================================================================
 -- De webhooks lokaal: waar ze heen mogen en met welk geheim
 -- =====================================================================
