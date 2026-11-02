@@ -46,11 +46,12 @@ export const VAKANTIE_BALK_ID = 'vakantie-balk'
  * `?van=`/`?utm_source=`/verwijzer, niet naar de sessionStorage, dus die
  * verdwijnen vanzelf weer — de toetsweekbalk moet dan ook weer verschijnen,
  * niet blijven verbergen. Die late check is dus bewust alleen voor `google`
- * en `klas`. De Google-regel staat ook, als losse string, in
- * `scriptDatBronOnthoudt`; `bron.test.ts` bewaakt dat ze gelijk blijven aan
- * `GOOGLE_ZOEKDOMEIN` in `google-herkomst.ts`. De ChatGPT-regels komen uit
- * `CHATGPT_DOMEINEN_LIJST` in `chatgpt-herkomst.ts`, dezelfde bron als
- * `isChatgptHerkomst` gebruikt.
+ * en `klas`. De Google-regel staat, als losse string, ook in
+ * `scriptDatBronOnthoudt` (`bron.ts`); `vakantiebalk.test.ts` en
+ * `bron.test.ts` bewaken elk voor hun eigen kopie dat ze gelijk blijven aan
+ * `GOOGLE_ZOEKDOMEIN` in `google-herkomst.ts` (INT-727). De ChatGPT-regels
+ * komen uit `CHATGPT_DOMEINEN_LIJST` in `chatgpt-herkomst.ts`, dezelfde bron
+ * als `isChatgptHerkomst` gebruikt.
  */
 export function scriptDatVakantieBalkToont(): string {
   return `try{var d=new Date();var v=d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");if(v>="${PERIODE_START}"&&v<="${PERIODE_EIND}"){var sp=new URLSearchParams(location.search);var p=sp.get("van");var r=false;if(typeof p==="string"){var s=p.trim().toLowerCase();r=(s==="youtube"||s==="google"||s==="klas")}var u=sp.get("utm_source");if(!r&&typeof u==="string"&&u.trim().toLowerCase().indexOf("chatgpt")===0){r=true}if(!r&&document.referrer){try{var h=new URL(document.referrer).hostname.toLowerCase().replace(/^www\\./,"");r=/^google\\.[a-z]{2,3}(\\.[a-z]{2,3})?$/.test(h)||${CHATGPT_DOMEIN_CHECK}}catch(e){}}if(!r){try{var b=sessionStorage.getItem("${BRON_TABBLAD}");r=(b==="google"||b==="klas")}catch(e){}}if(!r){var el=document.getElementById("${VAKANTIE_BALK_ID}");if(el)el.hidden=false}}}catch(e){}`

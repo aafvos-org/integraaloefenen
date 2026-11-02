@@ -1,6 +1,7 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
 
 import { BRON_TABBLAD } from './bron'
+import { GOOGLE_ZOEKDOMEIN } from './google-herkomst'
 import { VAKANTIE_BALK_ID, scriptDatVakantieBalkToont } from './vakantiebalk'
 
 describe('scriptDatVakantieBalkToont', () => {
@@ -67,6 +68,13 @@ describe('scriptDatVakantieBalkToont', () => {
 
   it('zoekt op hetzelfde id als de balk in vakantie-balk.tsx', () => {
     expect(scriptDatVakantieBalkToont()).toContain(VAKANTIE_BALK_ID)
+  })
+
+  it('gebruikt dezelfde Google-regel als GOOGLE_ZOEKDOMEIN in google-herkomst.ts (INT-727)', () => {
+    const script = scriptDatVakantieBalkToont()
+    const match = script.match(/\/(\^google.+?)\/\.test\(h\)/)
+    expect(match).not.toBeNull()
+    expect(match?.[1]).toBe(GOOGLE_ZOEKDOMEIN.source)
   })
 
   describe('voorrang voor de YouTube- en Google-strip (INT-709)', () => {
