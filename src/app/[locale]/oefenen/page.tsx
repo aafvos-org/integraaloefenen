@@ -17,6 +17,7 @@ import {
   eersteSomVoorLegeLeerling,
   makkelijksteSomInBlok,
 } from '@/lib/practice/eerste-som'
+import { heeftAlEenAntwoord } from '@/lib/practice/heeft-al-een-antwoord'
 import {
   clusterIdsVoorSelectie,
   losSelectieOp,
@@ -42,40 +43,6 @@ const CATEGORY_LABELS: Record<TopicCategory, string> = {
   integralen: 'Integralen',
   vergelijkingen: 'Vergelijkingen',
   toepassingen: 'Toepassingen',
-}
-
-/**
- * Of deze leerling al een antwoord heeft opgeslagen.
- * Een fout telt als "al geoefend", zodat een vaste leerling het keuzescherm niet kwijtraakt.
- */
-async function heeftAlEenAntwoord(
-  supabase: Awaited<ReturnType<typeof createClient>>,
-  userId: string,
-): Promise<boolean> {
-  const { data: sessies, error: sessieFout } = await supabase
-    .from('user_sessions_new')
-    .select('id')
-    .eq('user_id', userId)
-  if (sessieFout) {
-    console.error('[oefenen] sessies tellen mislukt', sessieFout.code ?? 'geen code')
-    return true
-  }
-  const ids = (sessies ?? []).map((sessie) => sessie.id)
-  if (ids.length === 0) return false
-
-  for (let i = 0; i < ids.length; i += 100) {
-    const { data, error } = await supabase
-      .from('session_answers_new')
-      .select('id')
-      .in('session_id', ids.slice(i, i + 100))
-      .limit(1)
-    if (error) {
-      console.error('[oefenen] antwoorden tellen mislukt', error.code ?? 'geen code')
-      return true
-    }
-    if ((data ?? []).length > 0) return true
-  }
-  return false
 }
 
 function isCategory(v: string | null): v is TopicCategory {

@@ -5,6 +5,7 @@ import { zetStatischeTaal } from '@/i18n/statisch'
 
 import { SITE_CONFIG } from '@/config/site'
 import { routing } from '@/i18n/routing'
+import { EersteSomBalkClient } from '@/components/eerste-som-balk-client'
 import { leermiddel } from '@/lib/gestructureerde-gegevens'
 import { eigenPagina } from '@/lib/seo'
 import { VOORBEELDOPGAVEN } from '@/content/theory/voorbeeldopgaven'
@@ -86,6 +87,7 @@ export default async function HoofdstukPage({ params }: { params: Params }) {
         <GoogleStrip />
       </div>
       <TheorieClient chapters={[chapter]} labels={kaartLabels(t)} sidebar={false} eigenKop />
+      <EersteSomBalkClient />
     </TheorieLayout>
   )
 }

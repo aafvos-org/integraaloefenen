@@ -3,7 +3,9 @@ import { redirect } from 'next/navigation'
 
 import { SITE } from '@/config/site'
 import { Link } from '@/i18n/navigation'
+import { EersteSomBalk } from '@/components/eerste-som-balk'
 import { bouwDashboardIndeling, kiesBijnaBeheerst } from '@/lib/dashboard/indeling'
+import { heeftAlEenAntwoord } from '@/lib/practice/heeft-al-een-antwoord'
 import {
   getChapters,
   getCurrentProfile,
@@ -41,8 +43,10 @@ export default async function DashboardPage() {
   const [
     t,
     tv,
+    teersteSom,
     profile,
     chapters,
+    heeftAntwoord,
     topicsRes,
     paragraphsRes,
     blocksRes,
@@ -52,8 +56,10 @@ export default async function DashboardPage() {
   ] = await Promise.all([
       getTranslations('Dashboard'),
       getTranslations('UitlegVideos'),
+      getTranslations('EersteSomBalk'),
       getCurrentProfile(),
       getChapters(),
+      heeftAlEenAntwoord(supabase, userId),
       supabase
         .from('topics_new')
         .select('id, title, slug, chapter_id, order_index, theory_block_id')
@@ -146,7 +152,8 @@ export default async function DashboardPage() {
   })
 
   return (
-    <div className="mx-auto max-w-[1400px] px-3 py-6">
+    <div className={`mx-auto max-w-[1400px] px-3 py-6 ${!heeftAntwoord ? 'pb-20' : ''}`}>
+      {!heeftAntwoord && <EersteSomBalk tekst={teersteSom('tekst')} knop={teersteSom('knop')} />}
       <div className="mb-2">
         <h1 className="font-serif text-2xl text-text">
           {firstName

@@ -323,6 +323,10 @@
     "title": "Toetsweek? Drie sommen in een paar minuten — zonder account.",
     "cta": "Probeer drie primitieven"
   },
+  "EersteSomBalk": {
+    "tekst": "Je hebt nog geen enkele som gemaakt.",
+    "knop": "Maak je eerste som"
+  },
   "YoutubeStrip": {
     "title": "Kom je van YouTube? Drie sommen gratis, zonder account.",
     "cta": "Probeer drie sommen"

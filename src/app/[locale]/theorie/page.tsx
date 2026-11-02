@@ -3,6 +3,7 @@ import { getTranslations } from 'next-intl/server'
 import { zetStatischeTaal } from '@/i18n/statisch'
 
 import { SITE_CONFIG } from '@/config/site'
+import { EersteSomBalkClient } from '@/components/eerste-som-balk-client'
 import { leermiddel } from '@/lib/gestructureerde-gegevens'
 import { eigenPagina } from '@/lib/seo'
 import { VOORBEELDOPGAVEN } from '@/content/theory/voorbeeldopgaven'
@@ -77,6 +78,7 @@ export default async function TheoriePage({
         <GoogleStrip />
       </div>
       <TheorieClient chapters={chapters} labels={kaartLabels(t)} vaakGezocht={vaakGezocht} />
+      <EersteSomBalkClient />
     </>
   )
 }
