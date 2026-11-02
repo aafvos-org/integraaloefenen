@@ -29,5 +29,13 @@ export function EersteSomBalkClient() {
   }, [])
 
   if (!toon) return null
-  return <EersteSomBalk tekst={t('tekst')} knop={t('knop')} />
+  return (
+    <>
+      {/* Reserveert ruimte onderaan de pagina-inhoud, anders dekt de fixed
+          balk de onderste kaarten/links af (Controle op PR #144) — zelfde
+          hoogte als de pb-20 op het dashboard. */}
+      <div aria-hidden className="h-20" />
+      <EersteSomBalk tekst={t('tekst')} knop={t('knop')} />
+    </>
+  )
 }

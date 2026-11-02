@@ -42,6 +42,20 @@ function balk(page: Page) {
   return page.locator('[data-meet="eerste-som-balk"]')
 }
 
+/**
+ * Scrolt naar de onderkant van de pagina en klikt de onderste link ernaartoe.
+ * Lukt die klik niet (Playwright's actionability-check ziet dan dat het
+ * element "intercepted" wordt door een ander element), dan ligt er iets
+ * overheen — precies wat een `fixed` balk zonder onderruimte doet.
+ */
+async function onderkantIsKlikbaar(page: Page) {
+  const link = page.locator('[data-meet="theorie-voorbeeld"]').last()
+  await link.scrollIntoViewIfNeeded()
+  await link.click({ timeout: 5_000 })
+  await expect(page).toHaveURL(/\/nl\/voorbeeld\//)
+  await page.goBack()
+}
+
 test('leerling met 0 antwoorden ziet de balk op dashboard en theorie, en die verdwijnt na zijn eerste antwoord @telefoon', async ({
   page,
 }) => {
@@ -55,13 +69,19 @@ test('leerling met 0 antwoorden ziet de balk op dashboard en theorie, en die ver
     await expect(balk(page)).toBeVisible()
   })
 
-  await test.step('balk zichtbaar op het theorie-overzicht', async () => {
+  await test.step('balk zichtbaar op het theorie-overzicht, en dekt de onderste inhoud niet af', async () => {
     await page.goto('/nl/theorie')
     await expect(page.getByText(BALKTEKST)).toBeVisible()
+    await onderkantIsKlikbaar(page)
   })
 
-  await test.step('balk zichtbaar op een theorie-hoofdstukpagina, en opent de eerste som', async () => {
+  await test.step('balk zichtbaar op een theorie-hoofdstukpagina, en dekt de onderste inhoud niet af', async () => {
     await page.goto('/nl/theorie/primitieve')
+    await expect(balk(page)).toBeVisible()
+    await onderkantIsKlikbaar(page)
+  })
+
+  await test.step('balk op de hoofdstukpagina opent de eerste som', async () => {
     const knop = balk(page)
     await expect(knop).toBeVisible()
 
