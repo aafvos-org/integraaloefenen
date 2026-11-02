@@ -272,10 +272,14 @@ export function WelcomeTour({ tourSeen }: { tourSeen: boolean }) {
         </div>
         {/* De hele ballon zet de tour verder, niet alleen de knop (INT-721):
             anders voelt de tekst kapot aan. De knoppen erin regelen zelf hun
-            klik (stopPropagation) zodat een tik niet twee stappen overslaat. */}
+            klik (stopPropagation) zodat een tik niet twee stappen overslaat.
+            Een eigen aria-label voorkomt dat de naam van deze ballon de tekst
+            van de knoppen erin overneemt (anders vindt "Volgende" twee
+            elementen: de knop én de ballon eromheen). */}
         <div
           role="button"
           tabIndex={0}
+          aria-label={step.text}
           onClick={advance}
           onKeyDown={onBallonKeyDown}
           className="min-w-0 rounded-2xl rounded-tl-sm border border-border bg-surface px-4 py-3 shadow-xl"
