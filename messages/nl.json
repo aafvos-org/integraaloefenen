@@ -331,6 +331,10 @@
     "title": "Kom je uit Google? Probeer drie sommen gratis — geen account.",
     "cta": "Probeer drie sommen"
   },
+  "KlasStrip": {
+    "title": "Een klasgenoot stuurde je hierheen? Probeer drie sommen gratis — geen account.",
+    "cta": "Probeer drie sommen"
+  },
   "PracticeCard": {
     "difficulty": "Moeilijkheid {n}",
     "promptPrimitieve": "Bepaal de primitieve van:",
