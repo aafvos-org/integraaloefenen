@@ -7,6 +7,7 @@ import { VOORBEELDEN } from '@/content/voorbeelden'
 import { eigenPagina } from '@/lib/seo'
 
 import { GoogleStrip } from '../google-strip'
+import { KlasStrip } from '../klas-strip'
 import { YoutubeStrip } from '../youtube-strip'
 
 export async function generateMetadata({
@@ -38,6 +39,7 @@ export default async function VoorbeeldenOverzicht({
     <div className="mx-auto max-w-3xl px-4 py-12">
       <YoutubeStrip />
       <GoogleStrip />
+      <KlasStrip />
       <p className="text-sm font-medium uppercase tracking-wider text-accent">{t('eyebrow')}</p>
       <h1 className="mt-2 font-serif text-4xl text-text sm:text-[2.75rem]">{t('overzichtKop')}</h1>
       <p className="mt-6 text-lg text-text-muted">{t('overzichtIntro')}</p>

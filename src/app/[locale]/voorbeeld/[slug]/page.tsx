@@ -16,6 +16,7 @@ import { eigenPagina } from '@/lib/seo'
 import { getUitlegVideos } from '@/lib/videos'
 
 import { GoogleStrip } from '../../google-strip'
+import { KlasStrip } from '../../klas-strip'
 import { YoutubeStrip } from '../../youtube-strip'
 
 type Params = Promise<{ locale: string; slug: string }>
@@ -74,6 +75,7 @@ export default async function VoorbeeldPagina({ params }: { params: Params }) {
       />
       <YoutubeStrip />
       <GoogleStrip />
+      <KlasStrip />
       <p className="text-sm font-medium uppercase tracking-wider text-accent">
         <Link href="/voorbeeld" className="hover:underline">
           {t('eyebrow')}

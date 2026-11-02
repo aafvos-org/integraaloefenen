@@ -15,6 +15,7 @@ import { TheorieClient, type TheorieChapter } from '../theorie-client'
 import { TheorieLayout } from '../theorie-layout'
 import { kaartLabels, layoutLabels, stripChapterCode, theorieNavItems } from '../theorie-shared'
 import { GoogleStrip } from '../../google-strip'
+import { KlasStrip } from '../../klas-strip'
 import { YoutubeStrip } from '../../youtube-strip'
 
 type Params = Promise<{ locale: string; hoofdstuk: string }>
@@ -84,6 +85,7 @@ export default async function HoofdstukPage({ params }: { params: Params }) {
       <div className="mx-auto max-w-5xl px-4 pt-6">
         <YoutubeStrip />
         <GoogleStrip />
+        <KlasStrip />
       </div>
       <TheorieClient chapters={[chapter]} labels={kaartLabels(t)} sidebar={false} eigenKop />
     </TheorieLayout>

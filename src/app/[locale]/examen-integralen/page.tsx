@@ -8,6 +8,7 @@ import { getUitlegVideos } from '@/lib/videos'
 
 import { ExamenKnoppen } from './examen-knoppen'
 import { GoogleStrip } from '../google-strip'
+import { KlasStrip } from '../klas-strip'
 import { YoutubeStrip } from '../youtube-strip'
 
 const EXAMENVIDEO = getUitlegVideos().find((v) => v.slug === 'examen-2024-1-wachttijden')
@@ -47,6 +48,7 @@ export default async function ExamenIntegralenPage({
     <div className="mx-auto max-w-3xl px-4 py-12">
       <YoutubeStrip />
       <GoogleStrip />
+      <KlasStrip />
       <p className="text-sm font-medium uppercase tracking-wider text-accent">
         {t('eyebrow')}
       </p>

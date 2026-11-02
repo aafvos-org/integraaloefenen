@@ -80,6 +80,10 @@ describe('scriptDatVakantieBalkToont', () => {
       expect(draaiScript(MIDDEN_IN_PERIODE, { zoekreeks: '?van=google' }).hidden).toBe(true)
     })
 
+    it('blijft verborgen bij ?van=klas (INT-732)', () => {
+      expect(draaiScript(MIDDEN_IN_PERIODE, { zoekreeks: '?van=klas' }).hidden).toBe(true)
+    })
+
     it('negeert hoofdletters en spaties in ?van=', () => {
       expect(draaiScript(MIDDEN_IN_PERIODE, { zoekreeks: '?van=  YouTube ' }).hidden).toBe(true)
     })
@@ -115,6 +119,11 @@ describe('scriptDatVakantieBalkToont', () => {
       // `bronUitTabblad`) blijft zichtbaar omdat sessionStorage de bron van de eerste landing nog
       // onthoudt. Zonder deze check stonden hier weer twee balken (INT-709, Controle-FAIL).
       expect(draaiScript(MIDDEN_IN_PERIODE, { bronInTabblad: 'google' }).hidden).toBe(true)
+    })
+
+    it('blijft verborgen op een later bezoek zonder ?van=, als het tabblad nog klas als bron onthoudt (INT-732)', () => {
+      // Zelfde patroon als Google hierboven: KlasStrip gebruikt ook bronUitTabblad().
+      expect(draaiScript(MIDDEN_IN_PERIODE, { bronInTabblad: 'klas' }).hidden).toBe(true)
     })
 
     it('toont de balk weer op een later bezoek zonder ?van=, als het tabblad youtube als bron onthoudt', () => {
