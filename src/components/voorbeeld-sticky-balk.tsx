@@ -4,9 +4,10 @@ import { ComponentProps, useEffect, useState } from 'react'
 import { useTranslations } from 'next-intl'
 
 import { Link } from '@/i18n/navigation'
+import { SCROLLDIEPTES } from '@/lib/meten/gebeurtenis'
 
 /** Zelfde scrolldiepte als de 75%-stap in de klikmeting (`SCROLLDIEPTES`). */
-const SCROLL_DREMPEL = 75
+const SCROLL_DREMPEL: number = SCROLLDIEPTES[2]
 
 /**
  * Plakkerige balk onderaan een voorbeeldpagina, met een knop naar de
