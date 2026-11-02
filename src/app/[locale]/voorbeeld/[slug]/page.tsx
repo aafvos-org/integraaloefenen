@@ -15,6 +15,7 @@ import { voorbeeldGegevens } from '@/lib/gestructureerde-gegevens'
 import { eigenPagina } from '@/lib/seo'
 import { getUitlegVideos } from '@/lib/videos'
 
+import { ChatgptStrip } from '../../chatgpt-strip'
 import { GoogleStrip } from '../../google-strip'
 import { KlasStrip } from '../../klas-strip'
 import { YoutubeStrip } from '../../youtube-strip'
@@ -73,6 +74,7 @@ export default async function VoorbeeldPagina({ params }: { params: Params }) {
           __html: JSON.stringify(gegevens).replace(/</g, '\\u003c'),
         }}
       />
+      <ChatgptStrip />
       <YoutubeStrip />
       <GoogleStrip />
       <KlasStrip />

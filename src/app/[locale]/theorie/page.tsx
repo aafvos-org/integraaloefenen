@@ -11,6 +11,7 @@ import { THEORY_OVERVIEW } from '@/lib/theory'
 
 import { TheorieClient, type TheorieChapter } from './theorie-client'
 import { kaartLabels, stripChapterCode } from './theorie-shared'
+import { ChatgptStrip } from '../chatgpt-strip'
 import { GoogleStrip } from '../google-strip'
 import { KlasStrip } from '../klas-strip'
 import { YoutubeStrip } from '../youtube-strip'
@@ -74,6 +75,7 @@ export default async function TheoriePage({
         dangerouslySetInnerHTML={{ __html: JSON.stringify(gegevens) }}
       />
       <div className="mx-auto max-w-5xl px-4 pt-6">
+        <ChatgptStrip />
         <YoutubeStrip />
         <GoogleStrip />
         <KlasStrip />

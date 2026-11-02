@@ -6,6 +6,7 @@ import { leesbareWiskunde } from '@/app/[locale]/theorie/leesbare-tekst'
 import { VOORBEELDEN } from '@/content/voorbeelden'
 import { eigenPagina } from '@/lib/seo'
 
+import { ChatgptStrip } from '../chatgpt-strip'
 import { GoogleStrip } from '../google-strip'
 import { KlasStrip } from '../klas-strip'
 import { YoutubeStrip } from '../youtube-strip'
@@ -37,6 +38,7 @@ export default async function VoorbeeldenOverzicht({
 
   return (
     <div className="mx-auto max-w-3xl px-4 py-12">
+      <ChatgptStrip />
       <YoutubeStrip />
       <GoogleStrip />
       <KlasStrip />
