@@ -207,7 +207,9 @@
     "confirmedNotice": "Je account is bevestigd! Je kunt nu inloggen.",
     "expiredLinkNotice": "Deze link werkt niet meer. Meld je aan met je e-mailadres en wachtwoord; lukt dat niet, laat de bevestigingsmail dan opnieuw sturen.",
     "expiredResetNotice": "Deze link om je wachtwoord opnieuw in te stellen werkt niet meer.",
-    "requestNewResetLink": "Vraag een nieuwe aan"
+    "requestNewResetLink": "Vraag een nieuwe aan",
+    "tryCaption": "Toetsweek? Hier hoef je niet voor in te loggen.",
+    "tryCta": "Eerst 3 sommen zonder account"
   },
   "Register": {
     "title": "Registreren",
