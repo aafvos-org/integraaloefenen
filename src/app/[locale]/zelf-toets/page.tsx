@@ -2,7 +2,9 @@ import { getTranslations, getLocale } from 'next-intl/server'
 import { Link } from '@/i18n/navigation'
 import { redirect } from 'next/navigation'
 
+import { EersteSomBalk } from '@/components/eerste-som-balk'
 import { loadConfigData } from '@/lib/practice/custom-test'
+import { heeftAlEenAntwoord } from '@/lib/practice/heeft-al-een-antwoord'
 import { getIngelogdeLeerlingId } from '@/lib/supabase/request-cache'
 import { createClient } from '@/lib/supabase/server'
 
@@ -26,9 +28,11 @@ export default async function ZelfToetsPage() {
   ])
   if (!userId) redirect(`/${locale}/inloggen`)
 
-  const [t, config, { data: existingTests }] = await Promise.all([
+  const [t, teersteSom, config, heeftAntwoord, { data: existingTests }] = await Promise.all([
     getTranslations('ZelfToets'),
+    getTranslations('EersteSomBalk'),
     loadConfigData(supabase, userId),
+    heeftAlEenAntwoord(supabase, userId),
     supabase
       .from('user_sessions_new')
       .select('id, name, started_at, ended_at')
@@ -40,12 +44,18 @@ export default async function ZelfToetsPage() {
   const defaultName = `Zelf-toets-${(existingTests?.length ?? 0) + 1}`
 
   return (
-    <div className="mx-auto max-w-3xl px-4 py-10">
+    <div className={`mx-auto max-w-3xl px-4 py-10 ${!heeftAntwoord ? 'pb-20' : ''}`}>
+      {!heeftAntwoord && (
+        <EersteSomBalk tekst={teersteSom('tekst')} knop={teersteSom('knop')} />
+      )}
       <p className="text-sm font-medium uppercase tracking-wider text-accent">
         {t('eyebrow')}
       </p>
       <h1 className="mt-2 font-serif text-3xl text-text">{t('h1')}</h1>
       <p className="mt-3 max-w-2xl text-text-muted">{t('intro')}</p>
+      {!heeftAntwoord && (
+        <p className="mt-2 max-w-2xl text-sm text-text-muted">{t('eersteSomHint')}</p>
+      )}
 
       {existingTests && existingTests.length > 0 && (
         <section className="mt-10">

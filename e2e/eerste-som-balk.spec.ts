@@ -56,6 +56,21 @@ async function onderkantIsKlikbaar(page: Page) {
   await page.goBack()
 }
 
+/**
+ * Zelf-toets heeft geen `data-meet="theorie-voorbeeld"'-link om op te
+ * klikken; de onderste bedienbare invoer van het configuratieformulier is
+ * het aantal-veld, vlak boven de knop "Start toets" (die pas klikbaar wordt
+ * na een keuze bij Bronnen). Focus lukt niet als de vaste balk eroverheen
+ * ligt — zelfde soort check als `onderkantIsKlikbaar`, maar zonder
+ * destructieve navigatie.
+ */
+async function onderkantZelfToetsIsKlikbaar(page: Page) {
+  const countInput = page.locator('input[type="number"]')
+  await countInput.scrollIntoViewIfNeeded()
+  await countInput.click({ timeout: 5_000 })
+  await expect(countInput).toBeFocused()
+}
+
 test('leerling met 0 antwoorden ziet de balk op dashboard en theorie, en die verdwijnt na zijn eerste antwoord @telefoon', async ({
   page,
 }) => {
@@ -81,6 +96,15 @@ test('leerling met 0 antwoorden ziet de balk op dashboard en theorie, en die ver
     await onderkantIsKlikbaar(page)
   })
 
+  await test.step('balk zichtbaar op zelf-toets, met korte toelichting, en dekt de onderste inhoud niet af (INT-750)', async () => {
+    await page.goto('/nl/zelf-toets')
+    await expect(page.getByText(BALKTEKST)).toBeVisible()
+    await expect(
+      page.getByText('Een zelf-toets werkt beter als je eerst een paar sommen hebt gemaakt.'),
+    ).toBeVisible()
+    await onderkantZelfToetsIsKlikbaar(page)
+  })
+
   await test.step('balk op de hoofdstukpagina opent de eerste som', async () => {
     const knop = balk(page)
     await expect(knop).toBeVisible()
@@ -102,7 +126,7 @@ test('leerling met 0 antwoorden ziet de balk op dashboard en theorie, en die ver
     ).toBeVisible()
   })
 
-  await test.step('balk weg op dashboard en theorie na dat antwoord', async () => {
+  await test.step('balk weg op dashboard, theorie en zelf-toets na dat antwoord', async () => {
     await page.goto('/nl/dashboard')
     await expect(balk(page)).toBeHidden()
 
@@ -111,6 +135,9 @@ test('leerling met 0 antwoorden ziet de balk op dashboard en theorie, en die ver
     // Geen race met de client-fetch: even de tijd geven om "toon: false" op
     // te halen voordat we concluderen dat hij écht nooit verschijnt.
     await page.waitForTimeout(1_000)
+    await expect(balk(page)).toBeHidden()
+
+    await page.goto('/nl/zelf-toets')
     await expect(balk(page)).toBeHidden()
   })
 })
