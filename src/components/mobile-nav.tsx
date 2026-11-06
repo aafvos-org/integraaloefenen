@@ -44,9 +44,13 @@ export function MobileNav({
         createPortal(
           // Vangt de tik buiten het paneel zelf af (geen achterliggende
           // pagina-inhoud die hem doorlaat). Laat de header (hoogte h-14)
-          // vrij, zodat de menuknop zelf bereikbaar blijft.
+          // vrij, zodat de menuknop zelf bereikbaar blijft. z-20, niet hoger:
+          // de header zelf is `z-30` en vormt zijn eigen stapelcontext, dus
+          // alles daarbinnen (ook het paneel met zijn eigen `z-50`) telt al
+          // als "z-30" in de hoofdstapelcontext — een hogere waarde hier zou
+          // het paneel zelf overdekken en de menu-links onklikbaar maken.
           <div
-            className="fixed inset-x-0 bottom-0 top-14 z-40 bg-black/20"
+            className="fixed inset-x-0 bottom-0 top-14 z-20 bg-black/20"
             onClick={() => setOpen(false)}
             aria-hidden
           />,
