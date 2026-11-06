@@ -2,8 +2,9 @@
  * Waar een nieuw account vandaan kwam.
  *
  * Alleen deze woorden. Een link met `?van=youtube` (of docent, klas, forum,
- * proberen, voorbeeld, google) onthouden we op het profiel. Iets anders — ook
- * `bevestiging`, dat de bevestigingsmail al gebruikt — negeren we. Geen vrije tekst.
+ * proberen, voorbeeld, google, inloggen) onthouden we op het profiel. Iets
+ * anders — ook `bevestiging`, dat de bevestigingsmail al gebruikt — negeren
+ * we. Geen vrije tekst.
  */
 export const BRONNEN = [
   'docent',
@@ -13,6 +14,7 @@ export const BRONNEN = [
   'proberen',
   'voorbeeld',
   'google',
+  'inloggen',
 ] as const
 
 export type Bron = (typeof BRONNEN)[number]
@@ -26,8 +28,9 @@ export const BRON_TABBLAD = 'integraal-bron'
 const TOEGESTAAN = new Set<string>(BRONNEN)
 
 /**
- * Alleen docent, youtube, klas, forum, proberen, voorbeeld of google. Leeg, onbekend of
- * een lange tekst wordt niets. Hoofdletters en spaties eromheen tellen niet.
+ * Alleen docent, youtube, klas, forum, proberen, voorbeeld, google of inloggen.
+ * Leeg, onbekend of een lange tekst wordt niets. Hoofdletters en spaties
+ * eromheen tellen niet.
  */
 export function leesBron(waarde: unknown): Bron | null {
   if (typeof waarde !== 'string') return null
