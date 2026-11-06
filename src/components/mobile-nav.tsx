@@ -1,6 +1,7 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import { createPortal } from 'react-dom'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useTranslations } from 'next-intl'
@@ -23,8 +24,38 @@ export function MobileNav({
   const t = useTranslations('Header')
   const pathname = usePathname()
 
+  useEffect(() => {
+    if (!open) return
+    function onKey(e: KeyboardEvent) {
+      if (e.key === 'Escape') setOpen(false)
+    }
+    document.addEventListener('keydown', onKey)
+    return () => document.removeEventListener('keydown', onKey)
+  }, [open])
+
   return (
     <div className="relative md:hidden">
+      {open &&
+        // Via een portal naar `document.body`: de header heeft `backdrop-blur`
+        // (backdrop-filter), wat een eigen containing block voor
+        // `position: fixed`-afstammelingen vormt. Binnen de header zou deze
+        // laag daardoor tegen de 56px-hoge header opgerekt worden in plaats
+        // van tegen het hele scherm — onzichtbaar en zonder effect.
+        createPortal(
+          // Vangt de tik buiten het paneel zelf af (geen achterliggende
+          // pagina-inhoud die hem doorlaat). Laat de header (hoogte h-14)
+          // vrij, zodat de menuknop zelf bereikbaar blijft. z-20, niet hoger:
+          // de header zelf is `z-30` en vormt zijn eigen stapelcontext, dus
+          // alles daarbinnen (ook het paneel met zijn eigen `z-50`) telt al
+          // als "z-30" in de hoofdstapelcontext — een hogere waarde hier zou
+          // het paneel zelf overdekken en de menu-links onklikbaar maken.
+          <div
+            className="fixed inset-x-0 bottom-0 top-14 z-20 bg-black/20"
+            onClick={() => setOpen(false)}
+            aria-hidden
+          />,
+          document.body,
+        )}
       <button
         type="button"
         data-meet="mobiel-menu"
