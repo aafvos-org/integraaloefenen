@@ -44,6 +44,25 @@ describe('proberen-client klik op formule in de uitwerking (INT-580)', () => {
   })
 })
 
+describe('proberen-client onthoudt de echte bron bij aanmelden (INT-767)', () => {
+  it('gebruikt bronUitTabblad in plaats van de bron hardcoded op "proberen" te zetten', () => {
+    const bron = readFileSync(
+      join(process.cwd(), "src/app/[locale]/proberen/[hoofdstuk]/proberen-client.tsx"),
+      'utf8',
+    )
+
+    // Vóór deze fix riep de pagina padNaarAanmelden('/registreren', 'proberen')
+    // aan: elke registratie vanuit de proefsom kreeg dus altijd bron
+    // "proberen", ook als de leerling via /nl/inloggen?van=inloggen binnenkwam
+    // (INT-751). Nu leest de pagina de bron die het tabblad al onthield, met
+    // "proberen" alleen nog als terugval voor wie rechtstreeks vanaf de
+    // homepage start.
+    expect(bron).not.toMatch(/padNaarAanmelden\(['"]\/registreren['"],\s*['"]proberen['"]\)/)
+    expect(bron).toMatch(/bronUitTabblad\(\)\s*\?\?\s*['"]proberen['"]/)
+    expect(bron).toMatch(/padNaarAanmelden\(['"]\/registreren['"],\s*bron\)/)
+  })
+})
+
 describe('proberen-client klik op het succesvlak na een goed antwoord (INT-615)', () => {
   it('stuurt een tik op "Goed!" of het vlak eromheen ook naar de volgende som', () => {
     const bron = readFileSync(
