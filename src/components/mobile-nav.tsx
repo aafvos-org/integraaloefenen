@@ -1,6 +1,7 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
+import { createPortal } from 'react-dom'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useTranslations } from 'next-intl'
@@ -20,28 +21,37 @@ export function MobileNav({
   registerHref: string
 }) {
   const [open, setOpen] = useState(false)
-  const rootRef = useRef<HTMLDivElement | null>(null)
   const t = useTranslations('Header')
   const pathname = usePathname()
 
   useEffect(() => {
     if (!open) return
-    function onDocClick(e: MouseEvent) {
-      if (!rootRef.current?.contains(e.target as Node)) setOpen(false)
-    }
     function onKey(e: KeyboardEvent) {
       if (e.key === 'Escape') setOpen(false)
     }
-    document.addEventListener('mousedown', onDocClick)
     document.addEventListener('keydown', onKey)
-    return () => {
-      document.removeEventListener('mousedown', onDocClick)
-      document.removeEventListener('keydown', onKey)
-    }
+    return () => document.removeEventListener('keydown', onKey)
   }, [open])
 
   return (
-    <div ref={rootRef} className="relative md:hidden">
+    <div className="relative md:hidden">
+      {open &&
+        // Via een portal naar `document.body`: de header heeft `backdrop-blur`
+        // (backdrop-filter), wat een eigen containing block voor
+        // `position: fixed`-afstammelingen vormt. Binnen de header zou deze
+        // laag daardoor tegen de 56px-hoge header opgerekt worden in plaats
+        // van tegen het hele scherm — onzichtbaar en zonder effect.
+        createPortal(
+          // Vangt de tik buiten het paneel zelf af (geen achterliggende
+          // pagina-inhoud die hem doorlaat). Laat de header (hoogte h-14)
+          // vrij, zodat de menuknop zelf bereikbaar blijft.
+          <div
+            className="fixed inset-x-0 bottom-0 top-14 z-40 bg-black/20"
+            onClick={() => setOpen(false)}
+            aria-hidden
+          />,
+          document.body,
+        )}
       <button
         type="button"
         data-meet="mobiel-menu"
