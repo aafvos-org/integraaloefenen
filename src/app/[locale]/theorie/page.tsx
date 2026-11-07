@@ -3,6 +3,7 @@ import { getTranslations } from 'next-intl/server'
 import { zetStatischeTaal } from '@/i18n/statisch'
 
 import { SITE_CONFIG } from '@/config/site'
+import { EersteSomBalkClient } from '@/components/eerste-som-balk-client'
 import { leermiddel } from '@/lib/gestructureerde-gegevens'
 import { eigenPagina } from '@/lib/seo'
 import { VOORBEELDOPGAVEN } from '@/content/theory/voorbeeldopgaven'
@@ -11,6 +12,10 @@ import { THEORY_OVERVIEW } from '@/lib/theory'
 
 import { TheorieClient, type TheorieChapter } from './theorie-client'
 import { kaartLabels, stripChapterCode } from './theorie-shared'
+import { ChatgptStrip } from '../chatgpt-strip'
+import { GoogleStrip } from '../google-strip'
+import { KlasStrip } from '../klas-strip'
+import { YoutubeStrip } from '../youtube-strip'
 
 // Deze drie voorbeeldpagina's krijgen vertoningen in Google (zoekwoorden als
 // "integraal wortel x"), terwijl /theorie zelf nauwelijks wordt aangeklikt.
@@ -54,6 +59,7 @@ export default async function TheoriePage({
     title: ch.title,
     intro: ch.intro,
     uitgelichtVoorbeeld: ch.uitgelichtVoorbeeld,
+    video: ch.video,
     stappenplan: ch.stappenplan,
     practiceLabel: t('practiceLink', { topic: stripChapterCode(ch.title) }),
     oefenlinks: ch.oefenlinks,
@@ -69,7 +75,14 @@ export default async function TheoriePage({
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(gegevens) }}
       />
+      <div className="mx-auto max-w-5xl px-4 pt-6">
+        <ChatgptStrip />
+        <YoutubeStrip />
+        <GoogleStrip />
+        <KlasStrip />
+      </div>
       <TheorieClient chapters={chapters} labels={kaartLabels(t)} vaakGezocht={vaakGezocht} />
+      <EersteSomBalkClient />
     </>
   )
 }

@@ -47,10 +47,23 @@ function maaltekensWeg(genormaliseerd: string): string {
   })
 }
 
+/**
+ * Bij beginvoorwaarde-vragen ("de grafiek van F gaat door...") staat het
+ * canonieke antwoord in de database als `F(x) = ...`, maar het invoerveld
+ * heeft daar geen voorvoegsel voor (`antwoordPrefix` in `opdracht.ts` is dan
+ * leeg). De leerling typt dus alleen de formule. Zonder deze stap kan
+ * `readFormula` het `=`-teken niet lezen en wordt een goed antwoord afgekeurd.
+ */
+function zonderFunctienotatie(genormaliseerd: string): string {
+  return genormaliseerd.replace(/^[a-z]\([a-z]\)=/, '')
+}
+
 export function normalizeAnswer(raw: string): string {
-  const metMaaltekens = raw
-    .toLowerCase()
-    .replace(/\s+/g, '')
+  const metMaaltekens = zonderFunctienotatie(
+    raw
+      .toLowerCase()
+      .replace(/\s+/g, ''),
+  )
     // het π-toetsje van een wiskundetoetsenbord
     .replace(/π/g, 'pi')
     // het "echte" minteken dat een leerling meeplakt uit een pdf
@@ -134,6 +147,100 @@ function zonderIntegratieconstante(genormaliseerd: string): string {
   return match ? match[1] : genormaliseerd
 }
 
+// =====================================================================
+// Schoolbreuken: `ln(1)/(3)` bedoeld als `ln(1/3)`
+//
+// Op papier schrijf je een breuk met een teller boven een streep boven een
+// noemer. Typt een leerling dat op één regel, dan zet die vaak losse haakjes
+// om teller én noemer — `ln(1)/(3)` voor `ln(1/3)`, `(3)/(2)^(x)` voor
+// `(3/2)^x` — zonder te bedenken dat de rekenmachine dat anders leest dan
+// bedoeld. `readFormula` leest dat letterlijk (`ln(1)` gedeeld door 3, 3
+// gedeeld door `2^x`), met een andere uitkomst tot gevolg.
+//
+// We passen dit nooit toe op het goede antwoord, en nooit blind op het
+// antwoord van de leerling: we proberen het alléén als extra lezing ná de
+// letterlijke, en `vergelijkPuntsgewijs` hieronder beslist of die lezing ook
+// echt bij het goede antwoord hoort. Een bewust andere breuk (`ln(1)/3` als
+// apart, fout antwoord) blijft dus gewoon fout: die lezing komt dan niet
+// overeen met het goede antwoord.
+// =====================================================================
+
+/** Index van de `)` die bij de `(` op `open` hoort, of -1 als die ontbreekt. */
+function vindSluithaak(bron: string, open: number): number {
+  let diepte = 0
+  for (let i = open; i < bron.length; i++) {
+    if (bron[i] === '(') diepte++
+    else if (bron[i] === ')') {
+      diepte--
+      if (diepte === 0) return i
+    }
+  }
+  return -1
+}
+
+/** `ln(A)/(B)` → `ln((A)/(B))`, voor elke zo'n plek in de hele formule. */
+function lnBreukFix(bron: string): string {
+  let resultaat = ''
+  let i = 0
+  while (i < bron.length) {
+    if (bron.startsWith('ln(', i)) {
+      const openTeller = i + 2
+      const sluitTeller = vindSluithaak(bron, openTeller)
+      if (sluitTeller !== -1 && bron.startsWith('/(', sluitTeller + 1)) {
+        const openNoemer = sluitTeller + 2
+        const sluitNoemer = vindSluithaak(bron, openNoemer)
+        if (sluitNoemer !== -1) {
+          const teller = bron.slice(openTeller + 1, sluitTeller)
+          const noemer = bron.slice(openNoemer + 1, sluitNoemer)
+          resultaat += `ln((${teller})/(${noemer}))`
+          i = sluitNoemer + 1
+          continue
+        }
+      }
+    }
+    resultaat += bron[i]
+    i++
+  }
+  return resultaat
+}
+
+/** `(A)/(B)^` → `((A)/(B))^`, voor elke zo'n plek in de hele formule. */
+function basisBreukMachtFix(bron: string): string {
+  let resultaat = ''
+  let i = 0
+  while (i < bron.length) {
+    if (bron[i] === '(') {
+      const sluitTeller = vindSluithaak(bron, i)
+      if (sluitTeller !== -1 && bron.startsWith('/(', sluitTeller + 1)) {
+        const openNoemer = sluitTeller + 2
+        const sluitNoemer = vindSluithaak(bron, openNoemer)
+        if (sluitNoemer !== -1 && bron[sluitNoemer + 1] === '^') {
+          const teller = bron.slice(i + 1, sluitTeller)
+          const noemer = bron.slice(openNoemer + 1, sluitNoemer)
+          resultaat += `((${teller})/(${noemer}))^`
+          i = sluitNoemer + 2
+          continue
+        }
+      }
+    }
+    resultaat += bron[i]
+    i++
+  }
+  return resultaat
+}
+
+/**
+ * Lezingen van het antwoord van de leerling, letterlijk eerst. De twee fixes
+ * mogen ook samen: zo komt een antwoord met allebei de schoolbreuken (zoals
+ * in INT-695) ook met de combinatie overeen.
+ */
+function schoolbreukLezingen(student: string): string[] {
+  const metLnFix = lnBreukFix(student)
+  const metMachtFix = basisBreukMachtFix(student)
+  const metBeideFixes = basisBreukMachtFix(metLnFix)
+  return [...new Set([student, metLnFix, metMachtFix, metBeideFixes])]
+}
+
 /** Rekent een formule uit, of geeft `null` waar hij niet bestaat. */
 function uitkomst(formule: Formula, x: number): number | null {
   let waarde: number
@@ -165,18 +272,30 @@ function zelfdeFunctie(student: string, correct: string): boolean {
   const kaalCorrect = zonderIntegratieconstante(correct)
   const vrijeConstante = kaalCorrect !== correct
 
-  const formuleStudent = readFormula(zonderIntegratieconstante(student))
-  if (!formuleStudent) return false
   const formuleCorrect = readFormula(kaalCorrect)
   if (!formuleCorrect) return false
 
+  const kaleStudent = zonderIntegratieconstante(student)
+  return schoolbreukLezingen(kaleStudent).some((lezing) => {
+    const formuleStudent = readFormula(lezing)
+    if (!formuleStudent) return false
+    return vergelijkPuntsgewijs(formuleStudent, formuleCorrect, vrijeConstante)
+  })
+}
+
+/** Rekenen `student` en `correct` overal (bijna) hetzelfde uit? */
+function vergelijkPuntsgewijs(
+  student: Formula,
+  correct: Formula,
+  vrijeConstante: boolean,
+): boolean {
   let bruikbaar = 0
   /** Hoeveel de twee mogen schelen: 0, of bij een vrije constante het verschil
    *  op het eerste bruikbare punt. */
   let mag: number | null = null
   for (const x of PROEFPUNTEN) {
-    const a = uitkomst(formuleStudent, x)
-    const b = uitkomst(formuleCorrect, x)
+    const a = uitkomst(student, x)
+    const b = uitkomst(correct, x)
     if (a === null || b === null) continue
     const verschil = a - b
     if (mag === null) mag = vrijeConstante ? verschil : 0

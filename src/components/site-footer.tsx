@@ -14,12 +14,21 @@ export async function SiteFooter() {
         </p>
         <div className="flex items-center justify-between gap-4">
           <p className="text-sm text-text-muted">{t('brand')}</p>
-          <Link
-            href="/privacy"
-            className="inline-flex min-h-11 items-center px-2 text-sm font-medium text-text-muted hover:text-text"
-          >
-            {t('privacy')}
-          </Link>
+          <div className="flex items-center gap-2">
+            <Link
+              href="/video-aanvragen"
+              data-meet="footer-video-aanvraag"
+              className="inline-flex min-h-11 items-center px-2 text-sm font-medium text-text-muted hover:text-text"
+            >
+              {t('videoAanvraag')}
+            </Link>
+            <Link
+              href="/privacy"
+              className="inline-flex min-h-11 items-center px-2 text-sm font-medium text-text-muted hover:text-text"
+            >
+              {t('privacy')}
+            </Link>
+          </div>
         </div>
       </div>
     </footer>

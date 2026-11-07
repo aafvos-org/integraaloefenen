@@ -111,6 +111,8 @@ export type OverviewChapter = {
   zoekomschrijving?: string
   /** Kaart bovenaan het hoofdstuk, doorlink naar een uitgewerkt voorbeeld dat in Google al scoort. */
   uitgelichtVoorbeeld?: { label: string; slug: string }
+  /** Uitlegvideo die bij dit hele hoofdstuk hoort (slug uit lib/videos.ts), ingesloten boven het stappenplan. */
+  video?: string
   stappenplan?: Stappenplan
   /** Knoppen naar oefenen. Anders één link op het hoofdstuk zelf. */
   oefenlinks?: Oefenlink[]

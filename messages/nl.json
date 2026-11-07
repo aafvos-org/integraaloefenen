@@ -25,6 +25,7 @@
   },
   "Footer": {
     "brand": "__BRAND__",
+    "videoAanvraag": "Vraag een video aan",
     "privacy": "Privacy"
   },
   "Home": {
@@ -100,6 +101,8 @@
     "stap": "Stap {n}",
     "fout": "Veelgemaakte fout",
     "oefenen": "Oefen dit soort sommen",
+    "stickyTekst": "Liever dit zelf proberen?",
+    "stickyKnop": "Oefen dit zelf",
     "verwant": "Zie ook",
     "theorie": "Lees de theorie",
     "nietTeVerwarrenMetLink": "Bekijk: {kop}"
@@ -163,6 +166,8 @@
     "chapterLabel": "Hoofdstuk",
     "collapseSidebar": "Zijbalk inklappen",
     "expandSidebar": "Zijbalk uitklappen",
+    "chooseChapter": "Kies een hoofdstuk",
+    "closeChapterList": "Sluiten",
     "detailsLabel": "Uitleg en voorbeelden",
     "practiceTopicLink": "Oefen dit onderdeel →",
     "stappenplanTitle": "Het stappenplan",
@@ -202,7 +207,9 @@
     "confirmedNotice": "Je account is bevestigd! Je kunt nu inloggen.",
     "expiredLinkNotice": "Deze link werkt niet meer. Meld je aan met je e-mailadres en wachtwoord; lukt dat niet, laat de bevestigingsmail dan opnieuw sturen.",
     "expiredResetNotice": "Deze link om je wachtwoord opnieuw in te stellen werkt niet meer.",
-    "requestNewResetLink": "Vraag een nieuwe aan"
+    "requestNewResetLink": "Vraag een nieuwe aan",
+    "tryCaption": "Toetsweek? Hier hoef je niet voor in te loggen.",
+    "tryCta": "Eerst 3 sommen zonder account"
   },
   "Register": {
     "title": "Registreren",
@@ -232,9 +239,9 @@
     "error": "Aanmelden met Google lukt nu niet. Probeer het opnieuw, of gebruik je e-mailadres.",
     "of": "of",
     "nameTitle": "Hoe mogen we je noemen?",
-    "nameSubtitle": "Kies een gebruikersnaam. Dat mag ook leeg blijven; je kunt hem later nog aanpassen bij Instellingen.",
+    "nameSubtitle": "We hebben vast een naam gekozen. Pas hem aan als je wilt, of ga meteen verder.",
     "usernameLabel": "Gebruikersnaam (optioneel)",
-    "continue": "Doorgaan",
+    "continue": "Verder oefenen",
     "continuePending": "Bezig…"
   },
   "ForgotPassword": {
@@ -315,7 +322,23 @@
     "cta": "Probeer drie sommen"
   },
   "VakantieBalk": {
-    "title": "Terug van vakantie? Drie sommen in een paar minuten — zonder account.",
+    "title": "Toetsweek? Drie sommen in een paar minuten — zonder account.",
+    "cta": "Probeer drie primitieven"
+  },
+  "EersteSomBalk": {
+    "tekst": "Je hebt nog geen enkele som gemaakt.",
+    "knop": "Maak je eerste som"
+  },
+  "YoutubeStrip": {
+    "title": "Kom je van YouTube? Drie sommen gratis, zonder account.",
+    "cta": "Probeer drie sommen"
+  },
+  "GoogleStrip": {
+    "title": "Kom je uit Google? Probeer drie sommen gratis — geen account.",
+    "cta": "Probeer drie sommen"
+  },
+  "KlasStrip": {
+    "title": "Een klasgenoot stuurde je hierheen? Probeer drie sommen gratis — geen account.",
     "cta": "Probeer drie sommen"
   },
   "PracticeCard": {
@@ -368,14 +391,16 @@
     "terug": "Alle opgaven"
   },
   "ExamenUitleg": {
-    "title": "Examentraining integralen — wiskunde B vwo, examen 2027",
-    "description": "Examentraining integralen oefenen voor het examen wiskunde B vwo van vrijdag 28 mei 2027: oppervlakte en inhoud. Begin direct met drie sommen, zonder account.",
+    "title": "Examentraining wiskunde B (integralen) — vwo, examen 2027",
+    "description": "Examentraining wiskunde B: oefen integralen (oppervlakte en inhoud) voor het examen vwo, vrijdag 28 mei 2027. Begin direct met drie sommen, zonder account.",
     "eyebrow": "Wiskunde B · vwo",
     "h1": "Examentraining integralen",
     "intro": "Het centraal examen wiskunde B vwo is op vrijdag 28 mei 2027, van 13.30 tot 16.30 uur. Hier oefen je de integraalopgaven die daarbij horen. Het zijn onze eigen opgaven, in de stijl van het examen.",
     "ctaProberen": "Probeer eerst drie sommen (geen account)",
     "examenbladVoor": "De officiële opgaven en het rooster staan op",
     "examenbladLink": "Examenblad: wiskunde B vwo 2027",
+    "videoH2": "Bekijk de uitwerking",
+    "videoBron": "Bron: eindexamen vwo wiskunde B 2024, tijdvak I, vraag 3.",
     "watH2": "Wat je oefent",
     "punt1": "De oppervlakte van een vlakdeel. Tussen de grafiek van f en de x-as is dat de integraal van f. Tussen twee grafieken is dat de integraal van het verschil. Ligt de grafiek onder de x-as, dan neem je de uitkomst positief.",
     "punt2": "De inhoud als je dat vlakdeel om de x-as wentelt: π keer de integraal van het kwadraat van f.",
@@ -385,7 +410,10 @@
     "opgaven": "Maak een gratis account aan en je antwoorden en je voortgang blijven bewaard.",
     "ctaRegister": "Gratis account aanmaken",
     "ctaLogin": "Ik heb al een account",
-    "ctaOpgaven": "Naar de opgaven"
+    "ctaOpgaven": "Naar de opgaven",
+    "videoAanvraagH2": "Loop je vast op een examenvraag?",
+    "videoBody": "Stuur de vraag in met jaar, tijdvak en vraagnummer, dan maak ik er een video over. Een account heb je er niet voor nodig.",
+    "videoCta": "Vraag een video aan"
   },
   "FreeExercise": {
     "title": "Oefenen",
@@ -479,7 +507,8 @@
     "finishedHeadlineGood": "Goed bezig",
     "finishedHeadlineKeepGoing": "Toets afgerond",
     "finishedScoreLine": "Je hebt {pct}% goed beantwoord.",
-    "runnerNotFound": "Deze toets-sessie bestaat niet meer."
+    "runnerNotFound": "Deze toets-sessie bestaat niet meer.",
+    "eersteSomHint": "Een zelf-toets werkt beter als je eerst een paar sommen hebt gemaakt."
   },
   "Settings": {
     "title": "Instellingen",
@@ -532,7 +561,7 @@
   "UitlegVideos": {
     "title": "Uitlegvideo's",
     "h1": "Uitlegvideo's",
-    "intro": "De eerste video's komen eraan. Stel je vraag: grote kans dat hij de eerste video wordt.",
+    "intro": "Korte video's van Aaf bij de lastigste onderdelen. Kies er een, en ga daarna meteen verder met de bijbehorende theorie of oefenstof.",
     "playlistTitle": "Video's",
     "practiceTitle": "Oefen meteen mee",
     "preview": "Voorbeeld",
@@ -542,7 +571,7 @@
     "correct": "Goed gedaan!",
     "wrongTitle": "Nog niet helemaal…",
     "yourAnswer": "Jouw antwoord",
-    "correctAnswer": "Goede antwoord",
+    "correctAnswer": "Juiste antwoord",
     "stepsTitle": "Uitwerking",
     "nextQuestion": "Volgende",
     "morePractice": "Meer oefenen met dit onderwerp",
@@ -562,6 +591,8 @@
     "askNoAccount": "Meld je aan om je vraag in te sturen. Nog geen account? Die maak je gratis aan.",
     "askLogin": "Inloggen",
     "askRegister": "Account maken",
+    "theorieCta": "Bekijk de theorie",
+    "oefenCta": "Ga oefenen",
     "askPhoto": "Foto van de opgave toevoegen",
     "askPhotoHint": "Staat je vraag in het boek? Maak een foto, dan hoef je hem niet over te typen. Maximaal 3 foto's; ze worden automatisch verkleind.",
     "askPhotoRemove": "Foto verwijderen",
@@ -573,6 +604,30 @@
     "emptyTitle": "De eerste video's komen eraan",
     "emptyBody": "Hier komen korte video's over integreren en primitiveren, met oefenvragen eronder om meteen mee te doen. Die worden nu gemaakt. Wil jij iets uitgelegd zien? Stel je vraag hieronder: grote kans dat hij de eerste video wordt.",
     "emptyPractice": "Ga oefenen"
+  },
+  "VideoAanvragen": {
+    "title": "Vraag een video aan",
+    "description": "Loop je vast op een vraag uit een oud eindexamen vwo wiskunde B? Zeg welk jaar, welk tijdvak en welke vraag, dan komt de uitleg erbij. Een account heb je er niet voor nodig.",
+    "eyebrow": "Examenvideo",
+    "h1": "Vraag een uitlegvideo aan",
+    "intro": "Loop je vast op een vraag uit een oud eindexamen vwo wiskunde B? Zeg welk jaar, welk tijdvak en welke vraag, dan komt de uitleg erbij. Een account heb je er niet voor nodig.",
+    "jaarLabel": "Examenjaar",
+    "tijdvakLabel": "Tijdvak",
+    "vraagnummerLabel": "Vraagnummer",
+    "vraagnummerPlaceholder": "6 of 12a",
+    "toelichtingLabel": "Waar loop je vast?",
+    "toelichtingHint": "Mag kort. Hoe preciezer, hoe beter de uitleg aansluit.",
+    "toelichtingPlaceholder": "Ik snap niet hoe je bij b aan de integraal komt.",
+    "magMailenLabel": "Stuur me een mailtje zodra de video er is. Je adres wordt alleen daarvoor gebruikt en verder aan niemand gegeven.",
+    "emailLabel": "Je e-mailadres",
+    "emailPlaceholder": "jij@voorbeeld.nl",
+    "submit": "Vraag deze video aan",
+    "submitPending": "Bezig met versturen…",
+    "thanks": "Dank je wel, je aanvraag staat genoteerd. Hoe vaker een vraag gevraagd wordt, hoe eerder de video er is.",
+    "videosLinkBefore": "Video's die er al zijn, staan bij",
+    "videosLinkText": "de uitlegvideo's",
+    "privacyLinkBefore": "Hoe we met je gegevens omgaan, staat op de",
+    "privacyLinkText": "privacypagina"
   },
   "NotFound": {
     "eyebrow": "Fout 404",
@@ -605,6 +660,7 @@
     "mailH2": "Berichten en foto's",
     "mailBody": "Stuur je een vraag voor een uitlegvideo, feedback, of een vraag aan Aaf, dan gaat dat per e-mail naar degene die de site bijhoudt. Een foto van een opgave uit je boek mag mee. Die foto slaan we niet op in de site: hij zit alleen in die e-mail.",
     "mailResend": "De mails verstuurt de dienst Resend. De site zelf bewaart ze niet. Bij een nieuw account krijgt degene die de site bijhoudt ook een seintje, met je e-mailadres en je gebruikersnaam.",
+    "videoAanvraagBody": "Vraag je op de pagina 'Vraag een video aan' een uitlegvideo aan bij een examenvraag, dan hoef je niet in te loggen. We bewaren dan het jaar, het tijdvak, het vraagnummer en je toelichting, en je e-mailadres alleen als je zelf aanvinkt dat je bericht wilt zodra de video er is. We bewaren geen IP-adres.",
     "visitH2": "Bezoeken en cookies",
     "analytics": "Cloudflare Web Analytics telt hoeveel mensen de site bezoeken. Die dienst gebruikt geen cookies en slaat geen persoonsgegevens op.",
     "klikmeting": "Daarnaast houden we zelf bij hoe de site gebruikt wordt: welke pagina je bekijkt, waar je klikt, hoe ver je scrolt, of er iets misging, en of je een telefoon of een computer gebruikt. Dat helpt ons zien waar leerlingen vastlopen. Er gaat geen cookie aan te pas, we bewaren geen IP-adres en geen antwoorden die je intypt. Bij elk bezoek hoort een willekeurig nummer dat alleen in dit tabblad bestaat en verdwijnt zodra je het tabblad sluit. Deze gegevens bewaren we 90 dagen; daarna blijven alleen aantallen over.",
@@ -625,6 +681,10 @@
     "who4": "Resend verstuurt de mails.",
     "who5": "Google (Gemini) krijgt alleen een foute opgave en het antwoord, zonder je naam.",
     "who6": "Cloudflare laat de site draaien en telt bezoeken zonder persoonsgegevens.",
-    "updated": "Bijgewerkt op 16 oktober 2026."
+    "updated": "Bijgewerkt op 29 oktober 2026."
+  },
+  "Meting": {
+    "uitMelding": "Dit apparaat telt niet meer mee in de meting.",
+    "aanMelding": "Dit apparaat telt weer mee in de meting."
   }
 }

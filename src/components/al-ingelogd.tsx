@@ -13,14 +13,15 @@ function cookiesUitDocument(): { name: string }[] {
 }
 
 /**
- * Een leerling met een geldige sessie die toch op /nl/inloggen belandt
- * (terugknop, oude link) hoort meteen naar het dashboard. Dat deed voorheen
- * de server met `getCurrentUser()` (`cookies()`), en dat maakte de hele
- * pagina dynamisch: geen bezoek kon uit de klaargezette versie komen (INT-519).
+ * Een leerling met een geldige sessie die toch op /nl/inloggen of
+ * /nl/registreren belandt (terugknop, oude link) hoort meteen naar het
+ * dashboard. Dat deed voorheen de server met `getCurrentUser()` (`cookies()`),
+ * en dat maakte de hele pagina dynamisch: geen bezoek kon uit de
+ * klaargezette versie komen (INT-519, INT-549).
  *
  * De browser kan deze controle net zo goed doen. De meeste bezoekers hebben
  * toch geen sessie en zien dan niets extra's; wie wel is ingelogd ziet heel
- * even het inlogformulier voordat de doorverwijzing komt.
+ * even het formulier voordat de doorverwijzing komt.
  */
 export function AlIngelogd({ naar }: { naar: string }) {
   const router = useRouter()

@@ -3,10 +3,12 @@
  *
  * Een woedeklik hoort te betekenen: hier gebeurt niets en de leerling ramt
  * erop. Drie tikken binnen een seconde op bijna dezelfde plek zijn daar een
- * goed teken van — behalve in een invoerveld. Op de telefoon tikt een leerling
- * makkelijk een paar keer in het antwoordveld om het toetsenbord te krijgen of
- * de cursor te verzetten. Dat is precies wat de bedoeling is, en net als bij de
- * dode klik verbergt zo'n vals signaal de klikken waar wél iets mis is.
+ * goed teken van — behalve in een invoerveld, of op het label dat ernaar
+ * verwijst. Op de telefoon tikt een leerling makkelijk een paar keer in het
+ * antwoordveld om het toetsenbord te krijgen of de cursor te verzetten, of een
+ * paar keer op de labeltekst erboven om het veld te focussen. Dat is precies
+ * wat de bedoeling is, en net als bij de dode klik verbergt zo'n vals signaal
+ * de klikken waar wél iets mis is.
  *
  * Deze regels staan apart zodat `npm test` ze kan narekenen zonder browser.
  */
@@ -32,7 +34,10 @@ export type Woedestaat = {
 }
 
 export type Woedecontext = Klikpunt & {
-  /** Of de klik in een invoerveld landde: het antwoordveld of een tekstvak. */
+  /**
+   * Of de klik in een invoerveld landde, of op het label eromheen: het
+   * antwoordveld, een tekstvak, of de tekst die ernaar verwijst (INT-616).
+   */
   invoerveld: boolean
   /** Of er tekst geselecteerd staat. */
   selectie: boolean

@@ -51,6 +51,8 @@ export type Voorbeeld = {
   theorie: string
   /** Twee andere slugs uit deze lijst. */
   verwant: [string, string]
+  /** Uitlegvideo-slug uit lib/videos.ts, ingesloten onder de uitwerking. */
+  video?: string
 }
 
 /** Knop "Oefen dit soort sommen". `van=voorbeeld` blijft in het adres staan. */
@@ -85,9 +87,9 @@ export const VOORBEELDEN: Voorbeeld[] = [
   {
     slug: '1-over-x',
     kop: 'De primitieve van 1/x',
-    titel: 'Integraal en primitieve van 1/x: uitleg',
+    titel: 'Primitieve van 1/x (integraal één over x): uitleg',
     omschrijving:
-      'De integraal (primitieve) van 1/x, ook wel "één over x", is ln|x| + c. Bekijk de uitwerking met de standaardprimitieve en oefen daarna gratis verder.',
+      'De primitieve van 1/x is ln|x| + c. Bekijk de uitwerking met de standaardprimitieve en oefen daarna gratis verder.',
     vraagLatex: '\\int \\frac{1}{x}\\,dx',
     antwoordLatex: '\\ln|x|+c',
     integrand: '1/x',
@@ -104,11 +106,12 @@ export const VOORBEELDEN: Voorbeeld[] = [
     cluster: 'k0b_machten_gonio',
     theorie: '/theorie/primitieve',
     verwant: ['1-over-x-kwadraat', '1-over-2x-plus-1'],
+    video: 'ln-afgeleide-primitieve',
   },
   {
     slug: 'ln-x',
     kop: 'De primitieve van ln(x)',
-    titel: 'Primitieve van ln(x) (integraal): uitleg',
+    titel: 'Primitieve van ln(x) = x·ln(x) − x (integraal)',
     omschrijving:
       'De primitieve van ln(x) is x·ln(x) − x + c. Bekijk de uitwerking met partieel integreren en oefen daarna gratis verder, zonder account.',
     vraagLatex: '\\int \\ln(x)\\,dx',
@@ -127,6 +130,7 @@ export const VOORBEELDEN: Voorbeeld[] = [
     cluster: 'k2a_ln',
     theorie: '/theorie/partieel-integreren',
     verwant: ['x-ln-x', 'ln-2x'],
+    video: 'ln-afgeleide-primitieve',
   },
   {
     slug: 'sin-kwadraat',
@@ -153,7 +157,7 @@ export const VOORBEELDEN: Voorbeeld[] = [
   {
     slug: 'e-tot-2x',
     kop: 'De primitieve van e^(2x)',
-    titel: 'Primitieve van e^(2x): e tot de 2x (integraal)',
+    titel: 'Primitieve van e^(2x) = ½e^(2x): e tot de 2x',
     omschrijving:
       'De primitieve van e^(2x), oftewel e tot de 2x, is ½e^(2x) + c. De 2 in de exponent deel je aan het eind weer weg. Bekijk de uitwerking en oefen gratis verder, zonder account.',
     vraagLatex: '\\int e^{2x}\\,dx',
@@ -241,7 +245,7 @@ export const VOORBEELDEN: Voorbeeld[] = [
   {
     slug: 'sin-x',
     kop: 'De primitieve van sin(x)',
-    titel: 'Primitieve van sin(x) (integraal): uitleg',
+    titel: 'Primitieve van sin(x) = −cos(x) (integraal): uitleg',
     omschrijving:
       'De primitieve van sin(x) is −cos(x) + c. Bekijk de uitwerking met de standaardprimitieve en oefen daarna gratis verder, zonder account.',
     vraagLatex: '\\int \\sin(x)\\,dx',
@@ -332,9 +336,9 @@ export const VOORBEELDEN: Voorbeeld[] = [
   {
     slug: '1-over-x-kwadraat',
     kop: 'De primitieve van 1/x²',
-    titel: 'Primitieve van 1/x²',
+    titel: 'Primitieve van 1/x² = −1/x (integraal)',
     omschrijving:
-      'De primitieve van 1/x² is −1/x + c. Schrijf de breuk als x^(−2) en gebruik de machtsregel.',
+      'De primitieve van 1/x² is −1/x + c. Bekijk de uitwerking met de machtsregel en oefen daarna gratis verder, zonder account.',
     vraagLatex: '\\int \\frac{1}{x^2}\\,dx',
     antwoordLatex: '-\\frac{1}{x}+c',
     integrand: '1/x^2',
@@ -400,9 +404,9 @@ export const VOORBEELDEN: Voorbeeld[] = [
   {
     slug: '2-tot-x',
     kop: 'De primitieve van 2^x',
-    titel: 'Primitieve van 2^x',
+    titel: 'Primitieve van 2^x = 2^x / ln(2) (integraal)',
     omschrijving:
-      'De primitieve van 2^x is 2^x / ln(2) + c. Deel door de natuurlijke logaritme van het grondtal.',
+      'De primitieve van 2^x is 2^x / ln(2) + c. Deel door de natuurlijke logaritme van het grondtal. Bekijk de uitwerking en oefen daarna gratis verder, zonder account.',
     vraagLatex: '\\int 2^{x}\\,dx',
     antwoordLatex: '\\frac{2^{x}}{\\ln 2}+c',
     integrand: '2^x',
@@ -651,9 +655,9 @@ export const VOORBEELDEN: Voorbeeld[] = [
   {
     slug: 'cos-kwadraat',
     kop: 'De primitieve van cos²(x)',
-    titel: 'Integraal van cos²(x) berekenen: uitleg',
+    titel: 'Primitieve van cos²(x) = x/2 + sin(2x)/4',
     omschrijving:
-      'De integraal (primitieve) van cos²(x) is x/2 + sin(2x)/4 + c. Bekijk de uitwerking met de formule voor cos² en oefen daarna gratis verder, zonder account.',
+      'De primitieve van cos²(x) is x/2 + sin(2x)/4 + c. Bekijk de uitwerking met de formule voor cos² en oefen daarna gratis verder, zonder account.',
     vraagLatex: '\\int \\cos^2(x)\\,dx',
     antwoordLatex: '\\frac{1}{2}x+\\frac{1}{4}\\sin(2x)+c',
     integrand: 'cos(x)^2',

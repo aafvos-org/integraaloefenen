@@ -15,6 +15,8 @@ export function layoutLabels(t: T) {
     chapterLabel: t('chapterLabel'),
     collapseSidebar: t('collapseSidebar'),
     expandSidebar: t('expandSidebar'),
+    chooseChapter: t('chooseChapter'),
+    closeChapterList: t('closeChapterList'),
   }
 }
 
@@ -22,9 +24,7 @@ export function layoutLabels(t: T) {
 export function kaartLabels(t: T) {
   return {
     h1: t('h1'),
-    chapterLabel: t('chapterLabel'),
-    collapseSidebar: t('collapseSidebar'),
-    expandSidebar: t('expandSidebar'),
+    ...layoutLabels(t),
     exampleLabel: t('example'),
     detailsLabel: t('detailsLabel'),
     stepLabel: t('step', { n: '{n}' }),

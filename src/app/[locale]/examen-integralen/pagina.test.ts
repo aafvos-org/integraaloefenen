@@ -22,4 +22,9 @@ describe('openbare pagina over de examentraining', () => {
     expect(teksten).toContain('vrijdag 28 mei 2027')
     expect(teksten).toContain('13.30 tot 16.30')
   })
+
+  it('toont de ChatGPT-strip, net als op de homepage (INT-733)', () => {
+    expect(bron).toContain("import { ChatgptStrip } from '../chatgpt-strip'")
+    expect(bron).toContain('<ChatgptStrip />')
+  })
 })

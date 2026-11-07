@@ -10,6 +10,7 @@ import { loadChapters, type ChapterInfo } from '@/lib/practice/chapter-overview'
 import { heeftInlogsessie } from '@/lib/supabase/sessie-cookie'
 import { createClient } from '@/lib/supabase/browser'
 import { THEORIE_HOOFDSTUKKEN } from '@/lib/theory'
+import { isActiveNavHref } from '@/lib/nav-active'
 import { MobileNav } from './mobile-nav'
 import { NavDropdown } from './nav-dropdown'
 import { UserMenu } from './user-menu'
@@ -35,6 +36,12 @@ type Sessie = {
 /** "H2 — De afgeleide functie" → "De afgeleide functie" (code staat al in de badge) */
 function stripChapterCode(title: string): string {
   return title.replace(/^H\d+\s*[—–-]\s*/, '')
+}
+
+function navLinkClass(active: boolean): string {
+  return active
+    ? 'flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-md px-3 py-1.5 font-medium text-accent hover:bg-surface-2'
+    : 'flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-md px-3 py-1.5 text-text-muted hover:bg-surface-2 hover:text-text'
 }
 
 function cookiesUitDocument(): { name: string }[] {
@@ -211,12 +218,14 @@ export function SiteHeader({ locale }: { locale: string }) {
     />
   )
 
+  const videosActive = isActiveNavHref(pathname, `/${locale}/uitleg-videos`)
   const videosLink = (
     <Link
       href={`/${locale}/uitleg-videos`}
       data-tour="videos"
       data-meet="menu-videos"
-      className="flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-md px-3 py-1.5 text-text-muted hover:bg-surface-2 hover:text-text"
+      aria-current={videosActive ? 'page' : undefined}
+      className={navLinkClass(videosActive)}
     >
       <IconPlayCircle />
       {t('videos')}
@@ -258,7 +267,8 @@ export function SiteHeader({ locale }: { locale: string }) {
               <Link
                 href={`/${locale}/examentraining`}
                 data-meet="menu-examentraining"
-                className="flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-md px-3 py-1.5 text-text-muted hover:bg-surface-2 hover:text-text"
+                aria-current={isActiveNavHref(pathname, `/${locale}/examentraining`) ? 'page' : undefined}
+                className={navLinkClass(isActiveNavHref(pathname, `/${locale}/examentraining`))}
               >
                 <IconExamen />
                 {t('examentraining')}
@@ -267,7 +277,8 @@ export function SiteHeader({ locale }: { locale: string }) {
                 href={`/${locale}/zelf-toets`}
                 data-tour="zelftoets"
                 data-meet="menu-zelftoets"
-                className="flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-md px-3 py-1.5 text-text-muted hover:bg-surface-2 hover:text-text"
+                aria-current={isActiveNavHref(pathname, `/${locale}/zelf-toets`) ? 'page' : undefined}
+                className={navLinkClass(isActiveNavHref(pathname, `/${locale}/zelf-toets`))}
               >
                 <IconClipboardCheck />
                 {t('zelfToets')}
@@ -276,7 +287,8 @@ export function SiteHeader({ locale }: { locale: string }) {
                 href={`/${locale}/dashboard`}
                 data-tour="voortgang"
                 data-meet="menu-dashboard"
-                className="flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-md px-3 py-1.5 text-text-muted hover:bg-surface-2 hover:text-text"
+                aria-current={isActiveNavHref(pathname, `/${locale}/dashboard`) ? 'page' : undefined}
+                className={navLinkClass(isActiveNavHref(pathname, `/${locale}/dashboard`))}
               >
                 <IconChart />
                 {t('dashboard')}
@@ -284,7 +296,12 @@ export function SiteHeader({ locale }: { locale: string }) {
               {sessie.role === 'admin' && (
                 <Link
                   href="/admin"
-                  className="shrink-0 whitespace-nowrap rounded-md px-3 py-1.5 text-text-muted hover:bg-surface-2 hover:text-text"
+                  aria-current={isActiveNavHref(pathname, '/admin') ? 'page' : undefined}
+                  className={
+                    isActiveNavHref(pathname, '/admin')
+                      ? 'shrink-0 whitespace-nowrap rounded-md px-3 py-1.5 font-medium text-accent hover:bg-surface-2'
+                      : 'shrink-0 whitespace-nowrap rounded-md px-3 py-1.5 text-text-muted hover:bg-surface-2 hover:text-text'
+                  }
                 >
                   {t('admin')}
                 </Link>
@@ -308,7 +325,8 @@ export function SiteHeader({ locale }: { locale: string }) {
               <Link
                 href={`/${locale}/examen-integralen`}
                 data-meet="menu-examen-integralen"
-                className="flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-md px-3 py-1.5 text-text-muted hover:bg-surface-2 hover:text-text"
+                aria-current={isActiveNavHref(pathname, `/${locale}/examen-integralen`) ? 'page' : undefined}
+                className={navLinkClass(isActiveNavHref(pathname, `/${locale}/examen-integralen`))}
               >
                 <IconExamen />
                 {t('examentraining')}

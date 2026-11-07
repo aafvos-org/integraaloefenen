@@ -55,6 +55,18 @@ describe('answersMatch', () => {
     expect(answersMatch('3x+-2', '3x-2')).toBe(true)
   })
 
+  it('rekent schoolnotatie f^n(x) gelijk aan (f(x))^n', () => {
+    // Op school schrijf je ln^2(x) voor (ln(x))^2 (INT-690).
+    expect(answersMatch('x ln(x)^2 - 2x ln(x) + 2x + c', 'x ln^2(x) - 2x ln(x) + 2x + c')).toBe(
+      true,
+    )
+    expect(answersMatch('3 sin(x)^2 cos(x)', '3 sin^2(x) cos(x)')).toBe(true)
+    // ook zonder + c
+    expect(answersMatch('x ln(x)^2 - 2x ln(x) + 2x', 'x ln^2(x) - 2x ln(x) + 2x')).toBe(true)
+    expect(answersMatch('1/2 arctan(x)^2', '1/2 arctan^2(x) + c')).toBe(true)
+    expect(answersMatch('1/3 arcsin(x)^3', '1/3 arcsin^3(x) + c')).toBe(true)
+  })
+
   it('rekent een alternatieve schrijfwijze uit de vraag goed', () => {
     // De alternatieven staan bij de vraag in de database; daar belandt ook
     // wat de AI-controle eerder als "anders opgeschreven" heeft goedgekeurd.
@@ -152,6 +164,57 @@ describe('answersMatch', () => {
     expect(answersMatch('asin(x)', 'arcsin(x) + c')).toBe(true)
     expect(answersMatch('acos(x)', 'arccos(x)')).toBe(true)
     expect(answersMatch('arcsin(x)', 'arctan(x) + c')).toBe(false)
+  })
+
+  it('herkent de schoolnotatie voor een breuk in een ln of een macht (INT-695)', () => {
+    // Op papier staat een breuk met de teller boven de noemer. Op één regel
+    // zet een leerling daar losse haakjes omheen, zonder te bedenken dat de
+    // rekenmachine `ln(1)/(3)` leest als "ln(1) gedeeld door 3" (0) en niet
+    // als `ln(1/3)`.
+    expect(answersMatch('ln(1)/(3)', 'ln(1/3)')).toBe(true)
+    expect(answersMatch('ln(3)/(2)', 'ln(3/2)')).toBe(true)
+    // Diezelfde reflex bij een macht: de noemer hoort nog bij de teller,
+    // niet alleen bij de exponent.
+    expect(answersMatch('(3)/(2)^(x)', '(3/2)^x')).toBe(true)
+    expect(answersMatch('(3)/(2)^x', '(3/2)^x')).toBe(true)
+    // De twee herschrijvingen mogen ook samen voorkomen in één antwoord.
+    expect(answersMatch('(3)/(2)^(x)/(ln(3)/(2))', '(3/2)^x / ln(3/2)')).toBe(true)
+    expect(answersMatch('xln(1)/(3)+2xln(x)-2x', 'xln(x^2/3)-2x')).toBe(true)
+    // Een bewust andere breuk blijft gewoon fout: de herschrijving wordt
+    // alleen gebruikt als die ook echt bij het goede antwoord past.
+    expect(answersMatch('ln(1)/3', 'ln(x)/3')).toBe(false)
+    expect(answersMatch('ln(1)/(3)', 'x^2')).toBe(false)
+    expect(answersMatch('(3)/(2)^(x)', 'x^2')).toBe(false)
+  })
+
+  it('leest een functienaam zonder haakjes om het argument (INT-697)', () => {
+    // lnx en ln6 faalden eerder voor de hele formule (readFormula gaf null),
+    // ook als de rest prima leesbaar was. Nu telt dat als ln(x) en ln(6).
+    expect(answersMatch('lnx', 'ln(x)')).toBe(true)
+    expect(answersMatch('ln6', 'ln(6)')).toBe(true)
+    // de letterlijke invoer uit INT-695, nu zonder haakjes om `lnx`
+    expect(answersMatch('xln(1)/(3)+2xlnx-2x', 'xln(1)/(3)+2xln(x)-2x')).toBe(true)
+    expect(answersMatch('(6^x)/(ln6)', '(6^x)/(ln(6))')).toBe(true)
+  })
+
+  it('rekent een kale formule goed bij een beginvoorwaarde-antwoord met F(x) =', () => {
+    // INT-644: bij "bereken F(x), grafiek door punt ..." staat het canonieke
+    // antwoord in de database als "F(x) = ...", maar het invoerveld heeft
+    // daar geen voorvoegsel voor. De leerling typt dus alleen de formule.
+    expect(answersMatch('x^2-3x+5', 'F(x) = x^2 - 3x + 5', [])).toBe(true)
+    expect(answersMatch('F(x) = x^2 - 3x + 5', 'x^2-3x+5', [])).toBe(true)
+    expect(answersMatch('e^x+2', 'F(x) = e^x + 2', [])).toBe(true)
+    // de zes vragen uit INT-643 zonder alternatieven
+    expect(answersMatch('x^3+7', 'F(x) = x^3 + 7', [])).toBe(true)
+    expect(answersMatch('2x^2-x+6', 'F(x) = 2x^2 - x + 6', [])).toBe(true)
+    expect(
+      answersMatch('x^5/5-2x^3/3+x+6+7/15', 'F(x) = x^5/5 - 2x^3/3 + x + 6 + 7/15', []),
+    ).toBe(true)
+    expect(answersMatch('2x^2-xln(x)+x-3', 'F(x) = 2x^2 - x ln(x) + x - 3', [])).toBe(true)
+    // andere functieletter en variabele
+    expect(answersMatch('t^2+1', 'H(t) = t^2 + 1', [])).toBe(true)
+    // een echt andere formule blijft fout
+    expect(answersMatch('x^2+1', 'F(x) = x^2 + 2', [])).toBe(false)
   })
 
   it('rekent staafjes hetzelfde als abs', () => {

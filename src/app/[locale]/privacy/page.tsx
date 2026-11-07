@@ -60,6 +60,7 @@ export default async function PrivacyPage({
       <Blok titel={t('mailH2')}>
         <p>{t('mailBody')}</p>
         <p>{t('mailResend')}</p>
+        <p>{t('videoAanvraagBody')}</p>
       </Blok>
 
       <Blok titel={t('visitH2')}>

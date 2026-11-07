@@ -3,9 +3,10 @@
 import { useSyncExternalStore } from 'react'
 import { useTranslations } from 'next-intl'
 
-import { Link } from '@/i18n/navigation'
 import { isChatgptHerkomst } from '@/lib/chatgpt-herkomst'
 import { verwijzerDomein } from '@/lib/meten/gebeurtenis'
+
+import { HomepageStrip } from './homepage-strip'
 
 function leesChatgptHerkomst(): boolean {
   const utmSource = new URLSearchParams(location.search).get('utm_source')
@@ -35,16 +36,12 @@ export function ChatgptStrip() {
   if (!zichtbaar) return null
 
   return (
-    <div className="mb-8 rounded-xl border border-accent/30 bg-accent-light p-4 text-center">
-      <p className="font-medium text-text">{t('title')}</p>
-      <p className="mt-1 text-sm text-text-muted">{t('body')}</p>
-      <Link
-        href={'/proberen/primitieve' as '/proberen'}
-        data-meet="start-proefsom-chatgpt"
-        className="mt-3 inline-flex min-h-11 items-center justify-center rounded-lg bg-accent px-5 text-white shadow-sm hover:bg-accent/90"
-      >
-        {t('cta')}
-      </Link>
-    </div>
+    <HomepageStrip
+      titel={t('title')}
+      beschrijving={t('body')}
+      ctaTekst={t('cta')}
+      ctaHref={'/proberen/primitieve' as '/proberen'}
+      dataMeet="start-proefsom-chatgpt"
+    />
   )
 }

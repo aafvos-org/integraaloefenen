@@ -164,6 +164,29 @@ iets niet, dan noemt de melding het bestand, het vraagnummer en de x-waarde.
 Deze test draait mee in `npm test` en dus in de verplichte controle **Tests**:
 een rekenfout in een primitieve kan niet naar `main`.
 
+## Klikmeting
+
+De klikmeting staat in `src/lib/meten/` (de rekenregels, zie `gebeurtenis.ts`)
+en `src/components/klikmeting.tsx` + `src/lib/meten/verzamelaar.ts` (het
+scriptje in de browser dat ze verzamelt en naar `/api/meet` stuurt). Geen
+cookie: alles staat in `sessionStorage` en verdwijnt met het tabblad.
+
+Sinds INT-554 telt niet elk apparaat automatisch mee:
+
+- **Schakelaar per apparaat.** Een bezoek aan `/nl?meten=uit` zet een vlag in
+  `localStorage` (`src/lib/meten/voorkeur.ts`); zolang die er staat, stuurt
+  `verzamelaar.ts` niets. `/nl?meten=aan` zet hem weer aan. Beide keren toont
+  `src/components/meet-schakelaar.tsx` één keer een bevestiging
+  (`messages/nl.json`, namespace `Meting`).
+- **Automatisch voor de beheerder.** Wie bij `/admin` inlogt, krijgt de vlag
+  erbij op dat apparaat (`src/app/admin/beheerder-meet-uit.tsx`). Geen
+  berichtje hierbij: `/admin/*` telt sowieso al niet mee (`isBeheerpad` in
+  `gebeurtenis.ts`), dus dit is alleen voor de rest van de site die de
+  beheerder daarna bezoekt.
+- Ook deze vlag is geen cookie en geen persoonsgegeven: alleen een `1` in
+  `localStorage` onder de sleutel `integraal-meet-uit`, nooit naar de server
+  verstuurd.
+
 ## Wat je niet zelf doet
 - Wijzigingen aan de database (`supabase/migrations/`, `supabase/sql/`, `supabase/config.toml`) eerst in de taak vragen. Integraaloefenen.nl heeft een eigen Supabase-project (IntegraalOefenen, `oyevapifmenqjuklprws`); de database wordt niet meer gedeeld met afgeleideoefenen.nl.
 - Niet deployen met `wrangler` of `opennextjs-cloudflare deploy`. Live zetten gebeurt alleen via een merge naar `main`.

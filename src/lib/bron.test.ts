@@ -10,6 +10,7 @@ import {
   padNaarAanmelden,
   scriptDatBronOnthoudt,
 } from './bron'
+import { GOOGLE_ZOEKDOMEIN } from './google-herkomst'
 
 describe('leesBron', () => {
   it('herkent de vaste woorden', () => {
@@ -80,5 +81,22 @@ describe('scriptDatBronOnthoudt', () => {
     expect(script).toContain('sessionStorage')
     expect(script).not.toContain('cookie')
     expect(script).not.toContain('bevestiging')
+  })
+
+  it('kijkt alleen naar de verwijzer als er geen ?van= is, en leest geen zoekopdracht', () => {
+    const script = scriptDatBronOnthoudt()
+    expect(script).toContain('document.referrer')
+    expect(script).toContain('.hostname')
+    expect(script).toContain('google')
+    // Geen `.search` of `.href` op de verwijzer: alleen het domein, nooit de
+    // zoekopdracht of het hele adres.
+    expect(script).not.toContain('document.referrer.search')
+  })
+
+  it('gebruikt dezelfde Google-regel als GOOGLE_ZOEKDOMEIN in google-herkomst.ts', () => {
+    const script = scriptDatBronOnthoudt()
+    const match = script.match(/if\(\/(\^google.+?)\/\.test\(h\)\)/)
+    expect(match).not.toBeNull()
+    expect(match?.[1]).toBe(GOOGLE_ZOEKDOMEIN.source)
   })
 })

@@ -7,7 +7,11 @@ import { veiligeVolgende } from '@/lib/google-login'
 import { AUTH_FOUT_ZINNEN } from '@/lib/supabase/auth-fouten'
 import { createClient } from '@/lib/supabase/server'
 
-export type NaamState = { error: string | null }
+export type NaamState = {
+  error: string | null
+  /** Ingevulde naam terugzetten na een foutmelding */
+  values?: { username: string }
+}
 
 export async function kiesGebruikersnaamAction(
   _prev: NaamState,
@@ -15,9 +19,10 @@ export async function kiesGebruikersnaamAction(
 ): Promise<NaamState> {
   const username = (formData.get('username') ?? '').toString().trim()
   const next = veiligeVolgende((formData.get('next') ?? '').toString())
+  const values = { username }
 
   if (username.length > 40) {
-    return { error: 'Gebruik maximaal 40 tekens.' }
+    return { error: 'Gebruik maximaal 40 tekens.', values }
   }
 
   const supabase = await createClient()
@@ -31,10 +36,10 @@ export async function kiesGebruikersnaamAction(
 
     if (error) {
       if (error.code === '23505' || /duplicate key|unique/i.test(error.message)) {
-        return { error: 'Deze gebruikersnaam is al bezet. Kies een andere.' }
+        return { error: 'Deze gebruikersnaam is al bezet. Kies een andere.', values }
       }
       console.error('[gebruikersnaam google]', error.code, error.message)
-      return { error: AUTH_FOUT_ZINNEN.onbekend }
+      return { error: AUTH_FOUT_ZINNEN.onbekend, values }
     }
   }
 

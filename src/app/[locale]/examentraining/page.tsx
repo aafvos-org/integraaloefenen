@@ -15,34 +15,17 @@ import {
 import { EXAMEN_HOOFDSTUK } from '@/lib/practice/examentraining'
 import { getIngelogdeLeerlingId } from '@/lib/supabase/request-cache'
 import { createClient } from '@/lib/supabase/server'
+import { metOpnieuw } from '@/lib/supabase/met-opnieuw'
 
-const REGELS = ['regel1', 'regel2', 'regel3', 'regel4'] as const
+type DB = Awaited<ReturnType<typeof createClient>>
 
-export async function generateMetadata({
-  params,
-}: {
-  params: Promise<{ locale: string }>
-}) {
-  const { locale } = await params
-  const t = await getTranslations({ locale, namespace: 'Examentraining' })
-  return { title: t('title') }
-}
-
-export default async function ExamentrainingPage({
-  params,
-  searchParams,
-}: {
-  params: Promise<{ locale: string }>
-  searchParams?: Promise<{ q?: string }>
-}) {
-  const { locale } = await params
-  const userId = await getIngelogdeLeerlingId()
-  if (!userId) redirect(`/${locale}/inloggen`)
-
-  const t = await getTranslations('Examentraining')
-  const supabase = await createClient()
-  const qParam = ((await searchParams)?.q ?? '').trim()
-
+/**
+ * Vier Supabase-rondes na elkaar: hoofdstuk, onderwerpen, clusters, tegels.
+ * Eén kortstondig falende ronde daarin crashte de hele pagina (INT-559).
+ * `metOpnieuw` rondom deze functie probeert zo'n ronde één keer opnieuw
+ * voordat de pagina het opgeeft.
+ */
+async function laadExamentrainingData(supabase: DB, qParam: string) {
   const { data: hoofdstuk } = await supabase
     .from('chapters')
     .select('id')
@@ -74,6 +57,40 @@ export default async function ExamentrainingPage({
       : null
   const index = vraag ? tiles.findIndex((tegel) => tegel.questionId === vraag.id) : -1
   const volgende = index >= 0 ? tiles[index + 1] : undefined
+
+  return { topics, clusters, tiles, vraag, index, volgende }
+}
+
+const REGELS = ['regel1', 'regel2', 'regel3', 'regel4'] as const
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>
+}) {
+  const { locale } = await params
+  const t = await getTranslations({ locale, namespace: 'Examentraining' })
+  return { title: t('title') }
+}
+
+export default async function ExamentrainingPage({
+  params,
+  searchParams,
+}: {
+  params: Promise<{ locale: string }>
+  searchParams?: Promise<{ q?: string }>
+}) {
+  const { locale } = await params
+  const userId = await getIngelogdeLeerlingId()
+  if (!userId) redirect(`/${locale}/inloggen`)
+
+  const t = await getTranslations('Examentraining')
+  const supabase = await createClient()
+  const qParam = ((await searchParams)?.q ?? '').trim()
+
+  const { topics, clusters, tiles, vraag, index, volgende } = await metOpnieuw(() =>
+    laadExamentrainingData(supabase, qParam),
+  )
 
   return (
     <div className="mx-auto min-w-0 max-w-3xl px-4 py-8 sm:py-12">

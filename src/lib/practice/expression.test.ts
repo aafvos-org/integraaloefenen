@@ -67,6 +67,16 @@ describe('readFormula', () => {
     expect(reken('1/2e^(2x)', 0.5)).toBeCloseTo(Math.E / 2, 12)
   })
 
+  it('leest schoolnotatie f^n(x) als (f(x))^n', () => {
+    expect(reken('ln^2(x)', Math.E)).toBeCloseTo(1, 12)
+    expect(reken('ln^2(x)', 2)).toBeCloseTo(Math.log(2) ** 2, 12)
+    expect(reken('sin^2(x)', 1)).toBeCloseTo(Math.sin(1) ** 2, 12)
+    expect(reken('arctan^2(x)', 1)).toBeCloseTo(Math.atan(1) ** 2, 12)
+    expect(reken('arcsin^3(x)', 0.5)).toBeCloseTo(Math.asin(0.5) ** 3, 12)
+    // dezelfde uitkomst als de haakjesvorm
+    expect(reken('ln^2(x)', 2)).toBeCloseTo(reken('ln(x)^2', 2)!, 12)
+  })
+
   it('leest staafjes als absolute waarde', () => {
     expect(reken('|x|', -3)).toBe(3)
     expect(reken('2|x|', -3)).toBe(6)
@@ -74,6 +84,21 @@ describe('readFormula', () => {
     expect(reken('ln|x+2|', 1)).toBeCloseTo(Math.log(3), 12)
     expect(reken('ln(|x+2|)', 1)).toBeCloseTo(Math.log(3), 12)
     expect(readFormula('ln|x+2')).toBeNull()
+  })
+
+  it('leest een functienaam zonder haakjes om één los token (INT-697)', () => {
+    expect(reken('lnx', Math.E)).toBeCloseTo(1, 12)
+    expect(reken('ln6', 0)).toBeCloseTo(Math.log(6), 12)
+    expect(reken('lnpi', 0)).toBeCloseTo(Math.log(Math.PI), 12)
+    expect(reken('lne', 0)).toBeCloseTo(1, 12)
+    expect(reken('sin6', 0)).toBeCloseTo(Math.sin(6), 12)
+    // alleen dat ene token: lnx^2 is ln(x)^2, niet ln(x^2)
+    expect(reken('lnx^2', Math.E)).toBeCloseTo(1, 12)
+    // het weggelaten maalteken erna werkt gewoon door
+    expect(reken('2xlnx', Math.E)).toBeCloseTo(2 * Math.E, 12)
+    // het letterlijke voorbeeld uit INT-695: faalde eerder helemaal op `lnx`
+    // (xln(1)/(3) is (x·ln(1))/3 = 0, want ln(1) = 0)
+    expect(reken('xln(1)/(3)+2xlnx-2x', Math.E)).toBeCloseTo(0, 9)
   })
 
   it('weigert wat hij niet kent', () => {

@@ -643,14 +643,14 @@ function OnderwerpWeergave({
                                   'ring-2 ring-offset-1 ring-offset-[var(--color-bg)]',
                                 active &&
                                   (q.lastCorrect === true
-                                    ? 'ring-emerald-500/80'
+                                    ? 'ring-accent/80'
                                     : q.lastCorrect === false
-                                      ? 'ring-rose-500/80'
+                                      ? 'ring-accent-2/80'
                                       : 'ring-neutral-400'),
                                 q.lastCorrect === true &&
-                                  'border-emerald-300/70 bg-emerald-50 text-emerald-900 hover:border-emerald-400',
+                                  'border-accent/40 bg-accent-light text-accent hover:border-accent/70',
                                 q.lastCorrect === false &&
-                                  'border-rose-300/70 bg-rose-50/90 text-rose-900 hover:border-rose-400',
+                                  'border-accent-2/40 bg-accent-2-light text-accent-2 hover:border-accent-2/70',
                                 q.lastCorrect == null &&
                                   'border-border bg-surface text-text-muted hover:bg-surface-2 hover:text-text',
                               )}
@@ -894,15 +894,24 @@ function BlokWeergave({
               )
             }
             const open = openHoofdstukken.has(h.chapter.id)
+            const actief = selectie?.chapter.id === h.chapter.id
             return (
               <li key={h.chapter.id}>
                 <button
                   type="button"
-                  onClick={() =>
+                  onClick={() => {
+                    // Niet alleen de lijst uitklappen: de regel moet het hoofdstuk
+                    // ook meteen openen, net als bij een hoofdstuk zonder paragrafen.
+                    gaNaar({ blok: null, topic: null, cluster: null, chapter: h.chapter.slug })
                     toggleInSet(openHoofdstukken, h.chapter.id, setOpenHoofdstukken)
-                  }
-                  className="flex min-h-11 w-full items-center gap-2 rounded-md px-3 py-2 text-left text-sm font-medium text-text hover:bg-surface-2"
+                  }}
+                  aria-current={actief ? 'true' : undefined}
                   aria-expanded={open}
+                  className={
+                    actief
+                      ? 'flex min-h-11 w-full items-center gap-2 rounded-md px-3 py-2 text-left text-sm font-semibold text-accent'
+                      : 'flex min-h-11 w-full items-center gap-2 rounded-md px-3 py-2 text-left text-sm font-medium text-text hover:bg-surface-2'
+                  }
                 >
                   <Chevron open={open} />
                   <span className="min-w-0 break-words">
@@ -1084,6 +1093,7 @@ function BlokWeergave({
         <button
           type="button"
           onClick={() => setBoomOpen(true)}
+          aria-label={labels.kiesOnderdeel}
           className="sticky top-14 z-20 flex min-h-11 w-full items-center justify-between gap-3 border-b border-border bg-surface px-4 text-left text-sm font-medium lg:hidden"
         >
           <span className="min-w-0 truncate">
@@ -1217,14 +1227,14 @@ function BlokWeergave({
                           active && 'ring-2 ring-offset-1 ring-offset-[var(--color-bg)]',
                           active &&
                             (q.lastCorrect === true
-                              ? 'ring-emerald-500/80'
+                              ? 'ring-accent/80'
                               : q.lastCorrect === false
-                                ? 'ring-rose-500/80'
+                                ? 'ring-accent-2/80'
                                 : 'ring-neutral-400'),
                           q.lastCorrect === true &&
-                            'border-emerald-300/70 bg-emerald-50 text-emerald-900 hover:border-emerald-400',
+                            'border-accent/40 bg-accent-light text-accent hover:border-accent/70',
                           q.lastCorrect === false &&
-                            'border-rose-300/70 bg-rose-50/90 text-rose-900 hover:border-rose-400',
+                            'border-accent-2/40 bg-accent-2-light text-accent-2 hover:border-accent-2/70',
                           q.lastCorrect == null &&
                             'border-border bg-surface text-text-muted hover:bg-surface-2 hover:text-text',
                         )}

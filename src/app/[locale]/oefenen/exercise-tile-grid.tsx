@@ -49,9 +49,9 @@ function TileGrid({
                 active &&
                   'ring-2 ring-accent ring-offset-2 ring-offset-[var(--color-bg)]',
                 tile.lastCorrect === true &&
-                  'border-emerald-300/70 bg-emerald-50 hover:border-emerald-400',
+                  'border-accent/40 bg-accent-light hover:border-accent/70',
                 tile.lastCorrect === false &&
-                  'border-rose-300/70 bg-rose-50/90 hover:border-rose-400',
+                  'border-accent-2/40 bg-accent-2-light hover:border-accent-2/70',
                 tile.lastCorrect == null &&
                   'border-border bg-surface hover:bg-surface-2',
               )}

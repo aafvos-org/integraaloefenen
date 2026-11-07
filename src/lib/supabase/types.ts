@@ -408,8 +408,48 @@ export type Database = {
         Update: Partial<Database['public']['Tables']['site_gebeurtenissen']['Insert']>
         Relationships: []
       }
+      /** Verzoeken om een uitlegvideo bij een examenvraag; zie migratie 0081. */
+      video_aanvragen: {
+        Row: {
+          id: number
+          aangevraagd_op: string
+          jaar: number
+          tijdvak: number
+          vraagnummer: string
+          toelichting: string | null
+          email: string | null
+          mag_mailen: boolean
+          afgehandeld: boolean
+        }
+        Insert: {
+          id?: number
+          aangevraagd_op?: string
+          jaar: number
+          tijdvak: number
+          vraagnummer: string
+          toelichting?: string | null
+          email?: string | null
+          mag_mailen?: boolean
+          afgehandeld?: boolean
+        }
+        Update: Partial<Database['public']['Tables']['video_aanvragen']['Insert']>
+        Relationships: []
+      }
     }
-    Views: Record<string, never>
+    Views: {
+      /** Aantal video-aanvragen per examenvraag; zie migratie 0081. */
+      video_aanvragen_per_vraag: {
+        Row: {
+          jaar: number
+          tijdvak: number
+          vraagnummer: string
+          aantal: number
+          laatste: string
+          afgehandeld: boolean
+        }
+        Relationships: []
+      }
+    }
     Functions: Record<string, never>
     Enums: Record<string, never>
     CompositeTypes: Record<string, never>

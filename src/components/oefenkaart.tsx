@@ -88,6 +88,7 @@ export function Stappenplan({
         'rounded-lg border border-border bg-white/90 shadow-sm',
         className,
       )}
+      data-geen-dode-klik
     >
       <div className="px-4 py-3">
         <p className="text-sm font-semibold text-text">{titel}</p>

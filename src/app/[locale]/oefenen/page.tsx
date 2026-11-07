@@ -17,13 +17,16 @@ import {
   eersteSomVoorLegeLeerling,
   makkelijksteSomInBlok,
 } from '@/lib/practice/eerste-som'
+import { heeftAlEenAntwoord } from '@/lib/practice/heeft-al-een-antwoord'
 import {
   clusterIdsVoorSelectie,
   losSelectieOp,
   oefenIndeling,
+  type Adres,
 } from '@/lib/practice/oefenen-indeling'
 import { getChapters, getIngelogdeLeerlingId } from '@/lib/supabase/request-cache'
 import { createClient } from '@/lib/supabase/server'
+import { metOpnieuw } from '@/lib/supabase/met-opnieuw'
 
 import { eigenPagina } from '@/lib/seo'
 
@@ -40,40 +43,6 @@ const CATEGORY_LABELS: Record<TopicCategory, string> = {
   integralen: 'Integralen',
   vergelijkingen: 'Vergelijkingen',
   toepassingen: 'Toepassingen',
-}
-
-/**
- * Of deze leerling al een antwoord heeft opgeslagen.
- * Een fout telt als "al geoefend", zodat een vaste leerling het keuzescherm niet kwijtraakt.
- */
-async function heeftAlEenAntwoord(
-  supabase: Awaited<ReturnType<typeof createClient>>,
-  userId: string,
-): Promise<boolean> {
-  const { data: sessies, error: sessieFout } = await supabase
-    .from('user_sessions_new')
-    .select('id')
-    .eq('user_id', userId)
-  if (sessieFout) {
-    console.error('[oefenen] sessies tellen mislukt', sessieFout.code ?? 'geen code')
-    return true
-  }
-  const ids = (sessies ?? []).map((sessie) => sessie.id)
-  if (ids.length === 0) return false
-
-  for (let i = 0; i < ids.length; i += 100) {
-    const { data, error } = await supabase
-      .from('session_answers_new')
-      .select('id')
-      .in('session_id', ids.slice(i, i + 100))
-      .limit(1)
-    if (error) {
-      console.error('[oefenen] antwoorden tellen mislukt', error.code ?? 'geen code')
-      return true
-    }
-    if ((data ?? []).length > 0) return true
-  }
-  return false
 }
 
 function isCategory(v: string | null): v is TopicCategory {
@@ -245,22 +214,18 @@ async function OnderwerpPagina({ searchParams }: PageProps) {
   )
 }
 
-async function BlokPagina({ searchParams }: PageProps) {
-  const [supabase, locale, userId] = await Promise.all([
-    createClient(),
-    getLocale(),
-    getIngelogdeLeerlingId(),
-  ])
-  if (!userId) redirect(`/${locale}/inloggen`)
-
-  const params = (await searchParams) ?? {}
-  const ruwAdres = {
-    blok: params.blok?.trim() || null,
-    topic: params.topic?.trim() || null,
-    cluster: params.cluster?.trim() || null,
-    chapter: params.chapter?.trim() || null,
-  }
-  const qParam = params.q?.trim() ?? null
+/**
+ * Zeven Supabase-rondes en een na-berekening op basis daarvan. Eén
+ * kortstondig falende ronde daarin crashte de hele pagina (INT-559).
+ * `metOpnieuw` rondom deze functie probeert zo'n ronde één keer opnieuw
+ * voordat de pagina het opgeeft.
+ */
+async function laadBlokData(
+  supabase: Awaited<ReturnType<typeof createClient>>,
+  userId: string,
+  ruwAdres: Adres,
+  qParam: string | null,
+) {
   const zelfGekozen = Boolean(
     ruwAdres.blok || ruwAdres.topic || ruwAdres.cluster || ruwAdres.chapter || qParam,
   )
@@ -323,6 +288,29 @@ async function BlokPagina({ searchParams }: PageProps) {
       ? await gekozenVraag
       : await loadQuestionNew(supabase, vraagId)
     : null
+
+  return { t, chapters, paragraphs, blocks, allTopics, allClusters, adres, allTiles, question, start }
+}
+
+async function BlokPagina({ searchParams }: PageProps) {
+  const [supabase, locale, userId] = await Promise.all([
+    createClient(),
+    getLocale(),
+    getIngelogdeLeerlingId(),
+  ])
+  if (!userId) redirect(`/${locale}/inloggen`)
+
+  const params = (await searchParams) ?? {}
+  const ruwAdres = {
+    blok: params.blok?.trim() || null,
+    topic: params.topic?.trim() || null,
+    cluster: params.cluster?.trim() || null,
+    chapter: params.chapter?.trim() || null,
+  }
+  const qParam = params.q?.trim() ?? null
+
+  const { t, chapters, paragraphs, blocks, allTopics, allClusters, adres, allTiles, question, start } =
+    await metOpnieuw(() => laadBlokData(supabase, userId, ruwAdres, qParam))
 
   return (
     <OefenenClient

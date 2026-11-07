@@ -1,6 +1,6 @@
 'use client'
 
-import { useRef, useState, type FormEvent } from 'react'
+import { useRef, useState, useSyncExternalStore, type FormEvent } from 'react'
 import { useTranslations } from 'next-intl'
 
 import { DeelKnop } from '@/components/deel-knop'
@@ -9,7 +9,7 @@ import { Math as TeX, RichMath } from '@/components/math'
 import { GoedAntwoord, OpgaveTekst, useAntwoordInvoer } from '@/components/oefenkaart'
 import { Button } from '@/components/ui'
 import { Link } from '@/i18n/navigation'
-import { padNaarAanmelden } from '@/lib/bron'
+import { bronUitTabblad, padNaarAanmelden } from '@/lib/bron'
 import { toLatexPreview } from '@/lib/practice/input'
 import { antwoordPrefix, opdrachtSleutel } from '@/lib/practice/opdracht'
 
@@ -46,7 +46,16 @@ export function ProberenClient({
 
   const som = sommen[index]
   const laatste = index >= sommen.length - 1
-  const aanmelden = padNaarAanmelden('/registreren', 'proberen')
+  // Bron die het tabblad onthield (`scriptDatBronOnthoudt` in de root-layout),
+  // bijvoorbeeld `inloggen` via de link op /nl/inloggen (INT-767). Op de
+  // server is die er niet; `proberen` is de terugval voor wie rechtstreeks
+  // vanaf de homepage start.
+  const bron = useSyncExternalStore(
+    () => () => {},
+    () => bronUitTabblad() ?? 'proberen',
+    () => 'proberen' as const,
+  )
+  const aanmelden = padNaarAanmelden('/registreren', bron)
 
   function verder() {
     if (laatste) {
@@ -171,7 +180,7 @@ export function ProberenClient({
         )}
 
         {fase.soort === 'fout' && fase.getoond && (
-          <p className="mt-4 overflow-x-auto text-sm text-text">
+          <p className="mt-4 overflow-x-auto text-sm text-text" data-geen-dode-klik>
             <span className="font-medium">Juiste antwoord: </span>
             <GoedAntwoord antwoord={fase.antwoordLatex} latexAntwoord={null} />
           </p>
@@ -208,9 +217,15 @@ export function ProberenClient({
         )}
 
         {fase.soort === 'goed' && (
-          <div className="mt-4 rounded-xl border border-accent/30 bg-accent-light p-4">
+          <div
+            className="mt-4 cursor-pointer rounded-xl border border-accent/30 bg-accent-light p-4"
+            data-geen-dode-klik
+            onClick={verder}
+          >
             <p className="font-serif text-xl text-accent">{t('correct')}</p>
-            <Button className="mt-4" data-meet="proberen-volgende" onClick={verder}>
+            {/* Geen eigen onClick: een tik erop bubbelt naar het vlak hierboven,
+               dat `verder` al aanroept. Nog een keer zou een som overslaan. */}
+            <Button className="mt-4" data-meet="proberen-volgende">
               {laatste ? t('done') : t('nextQuestion')}
             </Button>
           </div>
@@ -227,7 +242,7 @@ export function ProberenClient({
               </div>
             ) : (
               <>
-                <div className="rounded-lg border border-border bg-white/90">
+                <div className="rounded-lg border border-border bg-white/90" data-geen-dode-klik>
                   <p className="px-4 py-3 text-sm font-semibold text-text">{t('stepsTitle')}</p>
                   <ol className="space-y-1 border-t border-border px-3 py-3 text-sm text-text">
                     {fase.stappen.map((stap, i) => (

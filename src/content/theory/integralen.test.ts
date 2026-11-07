@@ -11,6 +11,7 @@ import {
   leesArgument,
 } from '../narekenen.testhulp'
 import type { OverviewCard, OverviewChapter, OverviewExample } from './types'
+import { getUitlegVideos } from '@/lib/videos'
 
 // =====================================================================
 // Elke uitgewerkte opgave in de theorie wordt nagerekend.
@@ -362,6 +363,23 @@ describe('de tabellen met exacte waarden', () => {
         }
       }
       if (problemen.length > 0) expect.fail(problemen.join('\n'))
+    })
+  }
+})
+
+describe('de hoofdstukvideo’s in de theorie', () => {
+  const videoSlugs = new Set(getUitlegVideos().map((video) => video.slug))
+  const hoofdstukkenMetVideo = THEORY_OVERVIEW.filter(
+    (hoofdstuk): hoofdstuk is OverviewChapter & { video: string } => hoofdstuk.video !== undefined,
+  )
+
+  it('heeft minstens één hoofdstuk met een video om te controleren', () => {
+    expect(hoofdstukkenMetVideo.length).toBeGreaterThan(0)
+  })
+
+  for (const hoofdstuk of hoofdstukkenMetVideo) {
+    it(`${hoofdstuk.slug}: video \`${hoofdstuk.video}\` bestaat in lib/videos.ts`, () => {
+      expect(videoSlugs.has(hoofdstuk.video)).toBe(true)
     })
   }
 })

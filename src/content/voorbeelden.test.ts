@@ -16,6 +16,7 @@ import {
   vindVoorbeeld,
   type Voorbeeld,
 } from './voorbeelden'
+import { getUitlegVideos } from '@/lib/videos'
 
 const AANTAL_PUNTEN = 13
 const MINIMAAL_BRUIKBAAR = 3
@@ -61,6 +62,12 @@ describe('antwoordpagina’s', () => {
         expect(slug, voorbeeld.slug).not.toBe(voorbeeld.slug)
       }
       expect(new Set(voorbeeld.verwant).size, voorbeeld.slug).toBe(2)
+      if (voorbeeld.nietTeVerwarrenMetSlug !== undefined) {
+        expect(
+          slugs.has(voorbeeld.nietTeVerwarrenMetSlug),
+          `${voorbeeld.slug} → ${voorbeeld.nietTeVerwarrenMetSlug}`,
+        ).toBe(true)
+      }
       const pad = oefenPad(voorbeeld)
       expect(pad, voorbeeld.slug).toContain('van=voorbeeld')
       expect(pad, voorbeeld.slug).toContain(`blok=${voorbeeld.blok}`)
@@ -92,4 +99,21 @@ describe('antwoordpagina’s', () => {
     expect(vindVoorbeeld('1-over-x')?.kop).toBe('De primitieve van 1/x')
     expect(vindVoorbeeld('bestaat-niet')).toBeUndefined()
   })
+})
+
+describe('de video’s bij de antwoordpagina’s', () => {
+  const videoSlugs = new Set(getUitlegVideos().map((video) => video.slug))
+  const voorbeeldenMetVideo = VOORBEELDEN.filter(
+    (voorbeeld): voorbeeld is Voorbeeld & { video: string } => voorbeeld.video !== undefined,
+  )
+
+  it('heeft minstens één voorbeeld met een video om te controleren', () => {
+    expect(voorbeeldenMetVideo.length).toBeGreaterThan(0)
+  })
+
+  for (const voorbeeld of voorbeeldenMetVideo) {
+    it(`${voorbeeld.slug}: video \`${voorbeeld.video}\` bestaat in lib/videos.ts`, () => {
+      expect(videoSlugs.has(voorbeeld.video)).toBe(true)
+    })
+  }
 })

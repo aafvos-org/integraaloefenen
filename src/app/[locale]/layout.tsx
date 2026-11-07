@@ -2,7 +2,9 @@ import type { Metadata } from 'next'
 import { NextIntlClientProvider, hasLocale } from 'next-intl'
 import { getMessages, getTranslations } from 'next-intl/server'
 import { notFound } from 'next/navigation'
+import { Suspense } from 'react'
 
+import { MeetSchakelaar } from '@/components/meet-schakelaar'
 import { SiteFooter } from '@/components/site-footer'
 import { SiteHeader } from '@/components/site-header'
 import { SITE_CONFIG } from '@/config/site'
@@ -34,7 +36,7 @@ export async function generateMetadata({
     // openbare pagina zet ze zelf, met eigenPagina() uit src/lib/seo.ts.
     //
     // Wat hieronder blijft staan is de terugval voor de afgeschermde pagina's
-    // (dashboard, inloggen, proberen): die horen niet in een zoekmachine en
+    // (dashboard, inloggen, oefenen): die horen niet in een zoekmachine en
     // hebben geen eigen kaartje nodig. Openbare pagina's overschrijven dit
     // via eigenPagina() met index, follow.
     openGraph: {
@@ -89,6 +91,9 @@ export default async function LocaleLayout({
       >
         {t('skipToContent')}
       </a>
+      <Suspense fallback={null}>
+        <MeetSchakelaar />
+      </Suspense>
       <SiteHeader locale={locale} />
       <main id="inhoud" tabIndex={-1} className="flex-1 focus:outline-none">
         {children}
