@@ -1,6 +1,5 @@
 import type { Metadata, ResolvingMetadata } from 'next'
 import { getTranslations, getLocale } from 'next-intl/server'
-import { Link } from '@/i18n/navigation'
 import { redirect } from 'next/navigation'
 
 import { GoogleBlok } from '@/components/google-blok'
@@ -55,15 +54,6 @@ export default async function SignupPage({
         <GoogleBlok volgende={`/${locale}/oefenen`} />
         <SignupForm bronUitAdres={bron} />
       </div>
-
-      <p className="text-center text-sm text-text-muted">
-        <Link
-          href="/wachtwoord-vergeten"
-          className="inline-flex min-h-11 items-center px-2 text-accent hover:underline"
-        >
-          {t('forgotPassword')}
-        </Link>
-      </p>
     </div>
   )
 }
