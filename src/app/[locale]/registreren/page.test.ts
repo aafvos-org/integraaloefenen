@@ -27,3 +27,33 @@ describe('registreren-pagina met ?van=proberen', () => {
     expect(subtitleProefsom).not.toBe(subtitle)
   })
 })
+
+describe('registreren-pagina zonder Wachtwoord vergeten-link (INT-735)', () => {
+  it('toont geen link naar /wachtwoord-vergeten: wie net registreert heeft nog geen wachtwoord om te vergeten', () => {
+    const pagina = readFileSync(
+      join(process.cwd(), 'src/app/[locale]/registreren/page.tsx'),
+      'utf8',
+    )
+
+    expect(pagina).not.toContain('wachtwoord-vergeten')
+    expect(pagina).not.toContain('forgotPassword')
+  })
+
+  it('laat de vertaalsleutel Register.forgotPassword niet meer bestaan', () => {
+    const teksten = JSON.parse(
+      readFileSync(join(process.cwd(), 'messages/nl.json'), 'utf8'),
+    ) as { Register: Record<string, string> }
+
+    expect(teksten.Register.forgotPassword).toBeUndefined()
+  })
+
+  it('laat de link op /nl/inloggen ongewijzigd staan: daar is hij wel relevant', () => {
+    const inloggenPagina = readFileSync(
+      join(process.cwd(), 'src/app/[locale]/inloggen/page.tsx'),
+      'utf8',
+    )
+
+    expect(inloggenPagina).toContain('wachtwoord-vergeten')
+    expect(inloggenPagina).toContain('forgotPassword')
+  })
+})

@@ -1,7 +1,6 @@
 import type { Metadata, ResolvingMetadata } from 'next'
 import { Suspense } from 'react'
 import { getTranslations } from 'next-intl/server'
-import { Link } from '@/i18n/navigation'
 
 import { AlIngelogd } from '@/components/al-ingelogd'
 import { GoogleBlok } from '@/components/google-blok'
@@ -53,15 +52,6 @@ export default async function SignupPage({ params }: { params: Promise<{ locale:
         <GoogleBlok volgende={`/${locale}/oefenen`} />
         <SignupForm />
       </div>
-
-      <p className="text-center text-sm text-text-muted">
-        <Link
-          href="/wachtwoord-vergeten"
-          className="inline-flex min-h-11 items-center px-2 text-accent hover:underline"
-        >
-          {t('forgotPassword')}
-        </Link>
-      </p>
     </div>
   )
 }
