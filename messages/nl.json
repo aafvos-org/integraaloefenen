@@ -207,7 +207,9 @@
     "confirmedNotice": "Je account is bevestigd! Je kunt nu inloggen.",
     "expiredLinkNotice": "Deze link werkt niet meer. Meld je aan met je e-mailadres en wachtwoord; lukt dat niet, laat de bevestigingsmail dan opnieuw sturen.",
     "expiredResetNotice": "Deze link om je wachtwoord opnieuw in te stellen werkt niet meer.",
-    "requestNewResetLink": "Vraag een nieuwe aan"
+    "requestNewResetLink": "Vraag een nieuwe aan",
+    "tryCaption": "Toetsweek? Hier hoef je niet voor in te loggen.",
+    "tryCta": "Eerst 3 sommen zonder account"
   },
   "Register": {
     "title": "Registreren",
@@ -322,12 +324,20 @@
     "title": "Toetsweek? Drie sommen in een paar minuten — zonder account.",
     "cta": "Probeer drie primitieven"
   },
+  "EersteSomBalk": {
+    "tekst": "Je hebt nog geen enkele som gemaakt.",
+    "knop": "Maak je eerste som"
+  },
   "YoutubeStrip": {
     "title": "Kom je van YouTube? Drie sommen gratis, zonder account.",
     "cta": "Probeer drie sommen"
   },
   "GoogleStrip": {
     "title": "Kom je uit Google? Probeer drie sommen gratis — geen account.",
+    "cta": "Probeer drie sommen"
+  },
+  "KlasStrip": {
+    "title": "Een klasgenoot stuurde je hierheen? Probeer drie sommen gratis — geen account.",
     "cta": "Probeer drie sommen"
   },
   "PracticeCard": {
@@ -496,7 +506,8 @@
     "finishedHeadlineGood": "Goed bezig",
     "finishedHeadlineKeepGoing": "Toets afgerond",
     "finishedScoreLine": "Je hebt {pct}% goed beantwoord.",
-    "runnerNotFound": "Deze toets-sessie bestaat niet meer."
+    "runnerNotFound": "Deze toets-sessie bestaat niet meer.",
+    "eersteSomHint": "Een zelf-toets werkt beter als je eerst een paar sommen hebt gemaakt."
   },
   "Settings": {
     "title": "Instellingen",

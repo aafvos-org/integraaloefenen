@@ -223,6 +223,22 @@ export function WelcomeTour({ tourSeen }: { tourSeen: boolean }) {
     setPhase('tour')
   }
 
+  /** Volgende stap (of klaar op de laatste): ook wat tikken op de ballon doet. */
+  function advance() {
+    if (isLast) finish()
+    else setStepIdx((i) => i + 1)
+  }
+
+  /** Enter/spatie op de ballon doet hetzelfde als een tik — maar niet als het
+   * van een knop ín de ballon komt, die regelt zijn eigen klik al. */
+  function onBallonKeyDown(e: React.KeyboardEvent<HTMLDivElement>) {
+    if (e.target !== e.currentTarget) return
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault()
+      advance()
+    }
+  }
+
   if (phase === 'rest') {
     return <AafHelper onRestartTour={restart} />
   }
@@ -231,13 +247,17 @@ export function WelcomeTour({ tourSeen }: { tourSeen: boolean }) {
 
   return (
     <>
-      {/* Dim de pagina; zonder doelwit in de header dimmen we het hele scherm */}
+      {/* Dim de pagina; zonder doelwit in de header dimmen we het hele scherm.
+          Tikken hierop telt als "verder": decoratief (aria-hidden) en zonder
+          toetsenbordpad, want de knoppen in de ballon doen hetzelfde. */}
       <div
         className={
           step.target
             ? 'fixed inset-x-0 bottom-0 top-14 z-20 bg-[#101820]/30'
             : 'fixed inset-0 z-40 bg-[#101820]/30'
         }
+        role="button"
+        onClick={advance}
         aria-hidden
       />
 
@@ -250,7 +270,20 @@ export function WelcomeTour({ tourSeen }: { tourSeen: boolean }) {
         <div className="shrink-0">
           <Aaf size={pos.breedte < MAX_GUIDE_WIDTH ? 44 : 72} />
         </div>
-        <div className="min-w-0 rounded-2xl rounded-tl-sm border border-border bg-surface px-4 py-3 shadow-xl">
+        {/* De hele ballon zet de tour verder, niet alleen de knop (INT-721):
+            anders voelt de tekst kapot aan. De knoppen erin regelen zelf hun
+            klik (stopPropagation) zodat een tik niet twee stappen overslaat.
+            Een eigen aria-label voorkomt dat de naam van deze ballon de tekst
+            van de knoppen erin overneemt (anders vindt "Volgende" twee
+            elementen: de knop én de ballon eromheen). */}
+        <div
+          role="button"
+          tabIndex={0}
+          aria-label={step.text}
+          onClick={advance}
+          onKeyDown={onBallonKeyDown}
+          className="min-w-0 rounded-2xl rounded-tl-sm border border-border bg-surface px-4 py-3 shadow-xl"
+        >
           <p className="text-sm leading-relaxed text-text">{step.text}</p>
           {pos.viaMenu && (
             <p className="mt-1.5 text-xs leading-relaxed text-text-muted">{t('menuHint')}</p>
@@ -258,7 +291,10 @@ export function WelcomeTour({ tourSeen }: { tourSeen: boolean }) {
           <div className="mt-3 flex items-center gap-3">
             <button
               type="button"
-              onClick={() => (isLast ? finish() : setStepIdx((i) => i + 1))}
+              onClick={(e) => {
+                e.stopPropagation()
+                advance()
+              }}
               className="rounded-lg bg-accent px-4 py-2.5 text-sm font-medium text-white transition hover:bg-accent/90 sm:py-1.5"
             >
               {isLast ? t('finish') : stepIdx === 0 ? t('start') : t('next')}
@@ -266,7 +302,10 @@ export function WelcomeTour({ tourSeen }: { tourSeen: boolean }) {
             {!isLast && (
               <button
                 type="button"
-                onClick={finish}
+                onClick={(e) => {
+                  e.stopPropagation()
+                  finish()
+                }}
                 className="px-1 py-2 text-xs font-medium text-text-muted underline-offset-2 hover:text-text hover:underline sm:py-0"
               >
                 {t('skip')}

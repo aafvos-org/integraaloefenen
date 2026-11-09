@@ -3,11 +3,11 @@ import { Suspense } from 'react'
 import { getTranslations } from 'next-intl/server'
 import { Link } from '@/i18n/navigation'
 
+import { AlIngelogd } from '@/components/al-ingelogd'
 import { GoogleBlok } from '@/components/google-blok'
 import { zetStatischeTaal } from '@/i18n/statisch'
 
 import { AanmeldLink } from './aanmeld-link'
-import { AlIngelogd } from './al-ingelogd'
 import { InloggenMeldingen } from './inloggen-meldingen'
 import { LoginForm } from './login-form'
 
@@ -78,6 +78,17 @@ export default async function LoginPage({
           className="inline-flex min-h-11 items-center px-2 text-accent hover:underline"
         >
           {t('forgotPassword')}
+        </Link>
+      </p>
+
+      <p className="mt-8 text-center text-sm text-text-muted">{t('tryCaption')}</p>
+      <p className="mt-2 text-center">
+        <Link
+          href={'/proberen/primitieve?van=inloggen' as '/proberen'}
+          data-meet="inloggen-proefsom"
+          className="inline-flex min-h-11 items-center justify-center rounded-lg border border-border bg-surface px-5 font-medium text-text hover:bg-surface-2"
+        >
+          {t('tryCta')}
         </Link>
       </p>
     </div>

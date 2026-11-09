@@ -1,6 +1,7 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
 
 import { BRON_TABBLAD } from './bron'
+import { GOOGLE_ZOEKDOMEIN } from './google-herkomst'
 import { VAKANTIE_BALK_ID, scriptDatVakantieBalkToont } from './vakantiebalk'
 
 describe('scriptDatVakantieBalkToont', () => {
@@ -69,6 +70,13 @@ describe('scriptDatVakantieBalkToont', () => {
     expect(scriptDatVakantieBalkToont()).toContain(VAKANTIE_BALK_ID)
   })
 
+  it('gebruikt dezelfde Google-regel als GOOGLE_ZOEKDOMEIN in google-herkomst.ts (INT-727)', () => {
+    const script = scriptDatVakantieBalkToont()
+    const match = script.match(/\/(\^google.+?)\/\.test\(h\)/)
+    expect(match).not.toBeNull()
+    expect(match?.[1]).toBe(GOOGLE_ZOEKDOMEIN.source)
+  })
+
   describe('voorrang voor de YouTube- en Google-strip (INT-709)', () => {
     const MIDDEN_IN_PERIODE = new Date(2026, 10, 1, 12, 0)
 
@@ -78,6 +86,10 @@ describe('scriptDatVakantieBalkToont', () => {
 
     it('blijft verborgen bij ?van=google', () => {
       expect(draaiScript(MIDDEN_IN_PERIODE, { zoekreeks: '?van=google' }).hidden).toBe(true)
+    })
+
+    it('blijft verborgen bij ?van=klas (INT-732)', () => {
+      expect(draaiScript(MIDDEN_IN_PERIODE, { zoekreeks: '?van=klas' }).hidden).toBe(true)
     })
 
     it('negeert hoofdletters en spaties in ?van=', () => {
@@ -115,6 +127,11 @@ describe('scriptDatVakantieBalkToont', () => {
       // `bronUitTabblad`) blijft zichtbaar omdat sessionStorage de bron van de eerste landing nog
       // onthoudt. Zonder deze check stonden hier weer twee balken (INT-709, Controle-FAIL).
       expect(draaiScript(MIDDEN_IN_PERIODE, { bronInTabblad: 'google' }).hidden).toBe(true)
+    })
+
+    it('blijft verborgen op een later bezoek zonder ?van=, als het tabblad nog klas als bron onthoudt (INT-732)', () => {
+      // Zelfde patroon als Google hierboven: KlasStrip gebruikt ook bronUitTabblad().
+      expect(draaiScript(MIDDEN_IN_PERIODE, { bronInTabblad: 'klas' }).hidden).toBe(true)
     })
 
     it('toont de balk weer op een later bezoek zonder ?van=, als het tabblad youtube als bron onthoudt', () => {

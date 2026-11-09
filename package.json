@@ -18,40 +18,44 @@
     "cf-typegen": "wrangler types --env-interface CloudflareEnv cloudflare-env.d.ts"
   },
   "dependencies": {
-    "@opennextjs/cloudflare": "^1.20.13",
+    "@opennextjs/cloudflare": "^1.20.16",
     "@supabase/ssr": "^0.10.3",
-    "@supabase/supabase-js": "^2.118.0",
-    "katex": "^0.18.2",
+    "@supabase/supabase-js": "^2.119.0",
+    "katex": "^0.19.1",
     "katex-font-display-postcss": "file:./scripts/katex-font-display",
-    "next": "^16.4.2",
+    "next": "^16.4.5",
     "next-intl": "^4.14.9",
-    "react": "19.2.4",
-    "react-dom": "19.2.4",
+    "react": "19.3.1",
+    "react-dom": "19.3.1",
     "resend": "^6.37.0"
   },
   "devDependencies": {
-    "@playwright/test": "^1.64.1",
-    "@tailwindcss/postcss": "^4.3.3",
+    "@playwright/test": "^1.65.0",
+    "@tailwindcss/postcss": "^4.3.5",
     "@types/katex": "^0.16.8",
     "@types/node": "^20",
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
     "eslint": "^9",
-    "eslint-config-next": "^16.4.3",
+    "eslint-config-next": "^16.4.5",
     "mathjs": "^15.2.0",
     "supabase": "^2.122.0",
-    "tailwindcss": "^4.3.3",
+    "tailwindcss": "^4.3.5",
     "typescript": "^5",
     "vitest": "^4.1.12",
-    "wrangler": "^4.152.0"
+    "wrangler": "^4.158.0"
   },
   "overrides": {
     "wrangler": {
       "undici": "7.30.1"
     },
     "zod": ">=4.6.6",
-    "@node-minify/core": {
-      "glob": "^14.0.3"
+    "glob": "^14.0.3",
+    "eslint-plugin-react-hooks": {
+      "@babel/core": "^7.29.6"
+    },
+    "@typescript-eslint/typescript-estree": {
+      "minimatch": "^11.0.1"
     }
   },
   "packageManager": "npm@11.21.1"

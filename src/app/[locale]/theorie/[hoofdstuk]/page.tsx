@@ -5,6 +5,7 @@ import { zetStatischeTaal } from '@/i18n/statisch'
 
 import { SITE_CONFIG } from '@/config/site'
 import { routing } from '@/i18n/routing'
+import { EersteSomBalkClient } from '@/components/eerste-som-balk-client'
 import { leermiddel } from '@/lib/gestructureerde-gegevens'
 import { eigenPagina } from '@/lib/seo'
 import { VOORBEELDOPGAVEN } from '@/content/theory/voorbeeldopgaven'
@@ -14,7 +15,9 @@ import { hoofdstukOmschrijving } from '../hoofdstuk-omschrijving'
 import { TheorieClient, type TheorieChapter } from '../theorie-client'
 import { TheorieLayout } from '../theorie-layout'
 import { kaartLabels, layoutLabels, stripChapterCode, theorieNavItems } from '../theorie-shared'
+import { ChatgptStrip } from '../../chatgpt-strip'
 import { GoogleStrip } from '../../google-strip'
+import { KlasStrip } from '../../klas-strip'
 import { YoutubeStrip } from '../../youtube-strip'
 
 type Params = Promise<{ locale: string; hoofdstuk: string }>
@@ -82,10 +85,13 @@ export default async function HoofdstukPage({ params }: { params: Params }) {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(gegevens) }}
       />
       <div className="mx-auto max-w-5xl px-4 pt-6">
+        <ChatgptStrip />
         <YoutubeStrip />
         <GoogleStrip />
+        <KlasStrip />
       </div>
       <TheorieClient chapters={[chapter]} labels={kaartLabels(t)} sidebar={false} eigenKop />
+      <EersteSomBalkClient />
     </TheorieLayout>
   )
 }

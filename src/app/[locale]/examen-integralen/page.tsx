@@ -7,7 +7,9 @@ import { eigenPagina } from '@/lib/seo'
 import { getUitlegVideos } from '@/lib/videos'
 
 import { ExamenKnoppen } from './examen-knoppen'
+import { ChatgptStrip } from '../chatgpt-strip'
 import { GoogleStrip } from '../google-strip'
+import { KlasStrip } from '../klas-strip'
 import { YoutubeStrip } from '../youtube-strip'
 
 const EXAMENVIDEO = getUitlegVideos().find((v) => v.slug === 'examen-2024-1-wachttijden')
@@ -45,8 +47,10 @@ export default async function ExamenIntegralenPage({
 
   return (
     <div className="mx-auto max-w-3xl px-4 py-12">
+      <ChatgptStrip />
       <YoutubeStrip />
       <GoogleStrip />
+      <KlasStrip />
       <p className="text-sm font-medium uppercase tracking-wider text-accent">
         {t('eyebrow')}
       </p>

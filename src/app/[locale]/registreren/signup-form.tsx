@@ -19,14 +19,14 @@ function useBronUitTabblad(): string {
   )
 }
 
-export function SignupForm({ bronUitAdres = null }: { bronUitAdres?: string | null }) {
+export function SignupForm() {
   const [state, formAction, pending] = useActionState(signupAction, initialState)
   const t = useTranslations('Register')
   const [showPassword, setShowPassword] = useState(false)
-  // Het adres van deze pagina gaat voor. Anders de bron die het tabblad
-  // onthield toen de leerling via de link binnenkwam. Geen cookie.
-  const uitTabblad = useBronUitTabblad()
-  const bron = bronUitAdres || uitTabblad
+  // Bron die het tabblad onthield toen de leerling via de link binnenkwam
+  // (`scriptDatBronOnthoudt` in de root-layout). Geen cookie, en geen
+  // `searchParams` meer hier: zo blijft /registreren statisch (INT-549).
+  const bron = useBronUitTabblad()
 
   // De klikmeting legt vast dat er in dit bezoek een account is aangemaakt.
   // Alleen dát, zonder naam of e-mailadres: zo is de route naar een account

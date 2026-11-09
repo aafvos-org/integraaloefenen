@@ -1,6 +1,6 @@
 'use client'
 
-import { useRef, useState, type FormEvent } from 'react'
+import { useRef, useState, useSyncExternalStore, type FormEvent } from 'react'
 import { useTranslations } from 'next-intl'
 
 import { DeelKnop } from '@/components/deel-knop'
@@ -9,7 +9,7 @@ import { Math as TeX, RichMath } from '@/components/math'
 import { GoedAntwoord, OpgaveTekst, useAntwoordInvoer } from '@/components/oefenkaart'
 import { Button } from '@/components/ui'
 import { Link } from '@/i18n/navigation'
-import { padNaarAanmelden } from '@/lib/bron'
+import { bronUitTabblad, padNaarAanmelden } from '@/lib/bron'
 import { toLatexPreview } from '@/lib/practice/input'
 import { antwoordPrefix, opdrachtSleutel } from '@/lib/practice/opdracht'
 
@@ -46,7 +46,16 @@ export function ProberenClient({
 
   const som = sommen[index]
   const laatste = index >= sommen.length - 1
-  const aanmelden = padNaarAanmelden('/registreren', 'proberen')
+  // Bron die het tabblad onthield (`scriptDatBronOnthoudt` in de root-layout),
+  // bijvoorbeeld `inloggen` via de link op /nl/inloggen (INT-767). Op de
+  // server is die er niet; `proberen` is de terugval voor wie rechtstreeks
+  // vanaf de homepage start.
+  const bron = useSyncExternalStore(
+    () => () => {},
+    () => bronUitTabblad() ?? 'proberen',
+    () => 'proberen' as const,
+  )
+  const aanmelden = padNaarAanmelden('/registreren', bron)
 
   function verder() {
     if (laatste) {

@@ -894,15 +894,24 @@ function BlokWeergave({
               )
             }
             const open = openHoofdstukken.has(h.chapter.id)
+            const actief = selectie?.chapter.id === h.chapter.id
             return (
               <li key={h.chapter.id}>
                 <button
                   type="button"
-                  onClick={() =>
+                  onClick={() => {
+                    // Niet alleen de lijst uitklappen: de regel moet het hoofdstuk
+                    // ook meteen openen, net als bij een hoofdstuk zonder paragrafen.
+                    gaNaar({ blok: null, topic: null, cluster: null, chapter: h.chapter.slug })
                     toggleInSet(openHoofdstukken, h.chapter.id, setOpenHoofdstukken)
-                  }
-                  className="flex min-h-11 w-full items-center gap-2 rounded-md px-3 py-2 text-left text-sm font-medium text-text hover:bg-surface-2"
+                  }}
+                  aria-current={actief ? 'true' : undefined}
                   aria-expanded={open}
+                  className={
+                    actief
+                      ? 'flex min-h-11 w-full items-center gap-2 rounded-md px-3 py-2 text-left text-sm font-semibold text-accent'
+                      : 'flex min-h-11 w-full items-center gap-2 rounded-md px-3 py-2 text-left text-sm font-medium text-text hover:bg-surface-2'
+                  }
                 >
                   <Chevron open={open} />
                   <span className="min-w-0 break-words">
@@ -1084,6 +1093,7 @@ function BlokWeergave({
         <button
           type="button"
           onClick={() => setBoomOpen(true)}
+          aria-label={labels.kiesOnderdeel}
           className="sticky top-14 z-20 flex min-h-11 w-full items-center justify-between gap-3 border-b border-border bg-surface px-4 text-left text-sm font-medium lg:hidden"
         >
           <span className="min-w-0 truncate">

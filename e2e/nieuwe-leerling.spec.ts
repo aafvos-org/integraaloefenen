@@ -108,9 +108,20 @@ test('een nieuwe leerling registreert zich, bevestigt zijn mail en maakt zijn ee
 
   await test.step('5. de rondleiding van Aaf begroet hem', async () => {
     // Ook op telefoonformaat: daar begint de meeste leerlingen (INT-358).
-    await expect(page.getByText('Hoi! Ik ben Aaf.')).toBeVisible()
-    await page.getByRole('button', { name: 'Ja, graag!' }).click()
+    const welkomstTekst = page.getByText('Hoi! Ik ben Aaf.')
+    await expect(welkomstTekst).toBeVisible()
+
+    // Tikken op de tekst zet de tour ook vooruit, niet alleen de knop
+    // (INT-721): anders voelt de ballon kapot aan.
+    await welkomstTekst.click()
     await expect(page.getByText('Bij Theorie vind je per hoofdstuk')).toBeVisible()
+
+    // En dat tikt precies één stap vooruit: de echte knop in de ballon stopt
+    // zijn klik (stopPropagation), anders slaat hij er twee over.
+    await page.getByRole('button', { name: 'Volgende' }).click()
+    await expect(page.getByText("Uitlegvideo's komen er nog aan")).toBeVisible()
+    await expect(page.getByText('Bij Oefenen maak je opgaven')).toBeHidden()
+
     await rondleidingWegklikken(page)
   })
 
