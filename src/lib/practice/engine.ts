@@ -90,9 +90,15 @@ export function answersMatch(
   alternatives: string[] = [],
 ): boolean {
   const norm = normalizeAnswer(student)
-  if (norm === normalizeAnswer(correct)) return true
+  const normCorrect = normalizeAnswer(correct)
+  if (norm === normCorrect) return true
   if (alternatives.some((alt) => norm === normalizeAnswer(alt))) return true
-  if (zelfdeFunctie(norm, normalizeAnswer(correct))) return true
+  // Een verhouding ("2 : 1") is geen functie: `zelfdeFunctie` zou '2' of
+  // '0,5' via `2/1` of `1/2` numeriek narekenen en zo'n los getal of
+  // decimaal alsnog goedkeuren. Alleen de letterlijke schrijfwijzen hierboven
+  // tellen dan nog mee.
+  if (normCorrect.includes(':')) return false
+  if (zelfdeFunctie(norm, normCorrect)) return true
   return alternatives.some((alt) => zelfdeFunctie(norm, normalizeAnswer(alt)))
 }
 
