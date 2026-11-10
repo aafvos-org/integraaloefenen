@@ -59,6 +59,8 @@ export default async function UitlegVideosPage({
       labels={{
         h1: t('h1'),
         intro: t('intro'),
+        tryStripTitle: t('tryStripTitle'),
+        tryStripCta: t('tryStripCta'),
         playlistTitle: t('playlistTitle'),
         practiceTitle: t('practiceTitle'),
         questionTile: t.raw('questionTile') as string,

@@ -20,6 +20,7 @@ import { toLatexPreview } from '@/lib/practice/input'
 import { nakijkenMetVangnet } from '@/lib/practice/vangnet'
 import { heeftInlogsessie } from '@/lib/supabase/sessie-cookie'
 
+import { HomepageStrip } from '../homepage-strip'
 import { ExerciseTileMathPreview } from '../oefenen/exercise-tile-preview'
 
 import { checkVideoAnswerAction, haalVideoOefenvragenAction } from './actions'
@@ -68,6 +69,8 @@ type VideoItem = {
 
 type Labels = {
   h1: string
+  tryStripTitle: string
+  tryStripCta: string
   intro: string
   playlistTitle: string
   practiceTitle: string
@@ -292,6 +295,14 @@ export function UitlegVideosClient({
       <Suspense fallback={null}>
         <VideoUitAdres onGevonden={setUitAdres} />
       </Suspense>
+      {!ingelogd && (
+        <HomepageStrip
+          titel={labels.tryStripTitle}
+          ctaTekst={labels.tryStripCta}
+          ctaHref={'/proberen/primitieve?van=youtube' as '/proberen'}
+          dataMeet="uitleg-videos-proberen"
+        />
+      )}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div>
           <h1 className="font-serif text-3xl text-text sm:text-4xl">{labels.h1}</h1>
