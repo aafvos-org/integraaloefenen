@@ -14,6 +14,8 @@ import {
   type Stap,
 } from '@/components/oefenkaart'
 import { Button, ErrorBanner } from '@/components/ui'
+import { DeelKnop } from '@/components/deel-knop'
+import { magEersteGoedeTipTonen, onthoudEersteGoedeTipGetoond } from '@/lib/deel-tip'
 import { submitStudyAnswerAction } from '@/lib/practice/chapter-actions'
 import { toLatexPreview } from '@/lib/practice/input'
 import { antwoordPrefix, opdrachtSleutel } from '@/lib/practice/opdracht'
@@ -73,6 +75,7 @@ export function StudyCard({
   const [state, setState] = useState<State>({ phase: 'input', error: null })
   const [lastAttempt, setLastAttempt] = useState<string | null>(null)
   const [revealed, setRevealed] = useState(false)
+  const [toonDeelTip, setToonDeelTip] = useState(false)
   const { invoerRef: inputRef, voegIn } = useAntwoordInvoer(answer, setAnswer)
   const feedbackRef = useRef<HTMLDivElement | null>(null)
   const shownAtRef = useRef(0)
@@ -134,6 +137,12 @@ export function StudyCard({
         onAnswered?.(question.id, true)
         setLastAttempt(submitted)
         setState({ phase: 'correct', streak: result.streak, mastered: result.mastered })
+        // Alleen het allereerste goede antwoord op dit apparaat: de vlag wordt
+        // meteen gezet, dus een volgend goed antwoord toont de tip niet meer.
+        if (magEersteGoedeTipTonen()) {
+          onthoudEersteGoedeTipGetoond()
+          setToonDeelTip(true)
+        }
         return
       }
       onAnswered?.(question.id, false)
@@ -322,6 +331,24 @@ export function StudyCard({
               {t('retryButton')}
             </button>
           </div>
+          {toonDeelTip && (
+            <div className="mt-3 flex items-start justify-between gap-3 rounded-lg border border-accent/20 bg-white/70 p-3">
+              <div>
+                <p className="text-sm font-medium text-accent">{t('deelTipTitel')}</p>
+                <div className="mt-2">
+                  <DeelKnop dataMeet="eerste-goed-deel-klas" />
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setToonDeelTip(false)}
+                aria-label={t('deelTipSluiten')}
+                className="flex size-8 shrink-0 items-center justify-center rounded-full text-accent/70 hover:bg-white hover:text-accent"
+              >
+                <span aria-hidden>×</span>
+              </button>
+            </div>
+          )}
         </div>
       )}
 

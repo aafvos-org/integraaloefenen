@@ -5,7 +5,7 @@ import { useState } from 'react'
 import { deelAdres, openDeelmenu } from '@/lib/delen'
 
 /** Deelt de pagina met een klasgenoot. Op een telefoon het systeemmenu, anders een gekopieerde link. */
-export function DeelKnop({ pad }: { pad?: string }) {
+export function DeelKnop({ pad, dataMeet = 'deel-knop' }: { pad?: string; dataMeet?: string }) {
   const [melding, setMelding] = useState<string | null>(null)
 
   async function deel() {
@@ -32,7 +32,7 @@ export function DeelKnop({ pad }: { pad?: string }) {
     <span className="inline-flex flex-col items-start gap-1">
       <button
         type="button"
-        data-meet="deel-knop"
+        data-meet={dataMeet}
         onClick={() => void deel()}
         className="inline-flex min-h-11 items-center rounded-md border border-border bg-surface px-4 text-sm font-medium text-text"
       >
