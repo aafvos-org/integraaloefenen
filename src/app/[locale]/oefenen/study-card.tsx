@@ -343,7 +343,7 @@ export function StudyCard({
                 type="button"
                 onClick={() => setToonDeelTip(false)}
                 aria-label={t('deelTipSluiten')}
-                className="flex size-8 shrink-0 items-center justify-center rounded-full text-accent/70 hover:bg-white hover:text-accent"
+                className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-accent/70 hover:bg-white hover:text-accent"
               >
                 <span aria-hidden>×</span>
               </button>
