@@ -376,7 +376,9 @@
     "nextPlus": "Volgende",
     "retryButton": "Opnieuw proberen",
     "genericError": "Er ging iets mis.",
-    "hasVideo": "Uitlegvideo"
+    "hasVideo": "Uitlegvideo",
+    "deelTipTitel": "Dit ging je goed af! Ken je een klasgenoot die dit ook kan gebruiken?",
+    "deelTipSluiten": "Tip sluiten"
   },
   "Examentraining": {
     "title": "Examentraining",
