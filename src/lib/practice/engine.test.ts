@@ -103,6 +103,14 @@ describe('answersMatch', () => {
     expect(answersMatch('1/3x^3 + 2x + c', '1/3x^3 + c')).toBe(false)
   })
 
+  it('keurt bij een verhouding geen los getal of breuk goed (INT-816)', () => {
+    // '2/1' als alternatief zou '2' numeriek laten matchen via zelfdeFunctie —
+    // een verhouding is geen functie, dus dat mag niet.
+    expect(answersMatch('2', '2 : 1', ['2:1', '2/1'])).toBe(false)
+    expect(answersMatch('0.5', '1 : 2', ['1:2', '1/2'])).toBe(false)
+    expect(answersMatch('2:1', '2 : 1', ['2:1'])).toBe(true)
+  })
+
   it('geeft geen vrije constante weg zonder + c in het goede antwoord', () => {
     // Hier hoort geen integratieconstante bij, dus een getal ernaast is fout.
     expect(answersMatch('p=5', 'p=2')).toBe(false)
