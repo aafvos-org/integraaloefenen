@@ -68,22 +68,32 @@ export default async function HomePage({
         dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
       />
 
-      <div className="mx-auto max-w-3xl px-4 py-16">
-        <VakantieBalk />
-        <ChatgptStrip />
-        <YoutubeStrip />
-        <GoogleStrip />
-        <KlasStrip />
-
+      <div className="mx-auto max-w-3xl px-4 pb-16 pt-6 sm:pt-16">
         <section className="text-center">
-          <p className="mb-3 text-sm font-medium uppercase tracking-wider text-accent">
+          <p className="mb-2 text-xs font-medium uppercase tracking-wider text-accent sm:mb-3 sm:text-sm">
             {t('eyebrow')}
           </p>
-          <h1 className="font-serif text-4xl leading-tight text-text sm:text-5xl">
+          <h1 className="font-serif text-3xl leading-tight text-text sm:text-5xl">
             {t('h1Start')}{' '}
             <span className="whitespace-nowrap text-accent">{t('h1Accent')}</span>
           </h1>
-          <p className="mx-auto mt-6 max-w-xl text-lg text-text-muted">
+          <p className="mt-2">
+            <AfgeleideVerwijzing className="inline-flex min-h-11 items-center text-sm font-medium text-accent underline-offset-2 hover:underline" />
+          </p>
+        </section>
+
+        <div className="mt-6 sm:mt-10">
+          <VakantieBalk />
+          <ChatgptStrip />
+          <YoutubeStrip />
+          <GoogleStrip />
+          <KlasStrip />
+
+          <HomeDemo aanmelden={aanmelden} />
+        </div>
+
+        <section className="mt-14 text-center">
+          <p className="mx-auto max-w-xl text-lg text-text-muted">
             {t('lead')}
           </p>
           <p className="mx-auto mt-4 max-w-xl text-sm leading-relaxed text-text-muted">
@@ -112,37 +122,8 @@ export default async function HomePage({
               ),
             })}
           </p>
-
-          <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
-            <Link
-              href={'/proberen/primitieve' as '/proberen'}
-              data-meet="start-proefsom"
-              className="rounded-lg bg-accent px-5 py-3 text-white shadow-sm hover:bg-accent/90"
-            >
-              {t('ctaTry')}
-            </Link>
-            <Link
-              href={aanmelden}
-              data-meet="start-registreren"
-              className="rounded-lg border border-border bg-surface px-5 py-3 text-text hover:bg-surface-2"
-            >
-              {t('ctaRegister')}
-            </Link>
-            <Link
-              href="/inloggen"
-              data-meet="start-inloggen"
-              className="rounded-lg px-5 py-3 text-text-muted hover:bg-surface-2 hover:text-text"
-            >
-              {t('ctaLogin')}
-            </Link>
-          </div>
           <p className="mt-3 text-sm text-text-muted">{t('tagline')}</p>
-          <p className="mt-2">
-            <AfgeleideVerwijzing className="inline-flex min-h-11 items-center text-sm font-medium text-accent underline-offset-2 hover:underline" />
-          </p>
         </section>
-
-        <HomeDemo aanmelden={aanmelden} />
 
         <section className="mt-20 grid gap-6 sm:grid-cols-3">
           <Feature title={t('feature1Title')} body={t('feature1Body')} />

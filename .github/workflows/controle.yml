@@ -164,12 +164,27 @@ jobs:
           path: ~/.cache/ms-playwright
           key: playwright-${{ runner.os }}-${{ steps.playwright.outputs.versie }}
 
-      # De GitHub-runner draait zelf af en toe apt-get (onder meer voor
-      # automatische beveiligingsupdates). Komt dat tegelijk met de
-      # systeembibliotheken hieronder, dan faalt de installatie meteen met
-      # "Could not get lock /var/lib/dpkg/lock-frontend" in plaats van even
-      # te wachten. Deze wachttijd laat apt-get tot twee minuten op die lock
-      # wachten voordat hij opgeeft.
+      # De GitHub-runner start vlak na het opstarten zelf twee systemd-timers
+      # (apt-daily en apt-daily-upgrade) die op de achtergrond apt-get
+      # draaien. Komt dat tegelijk met de systeembibliotheken hieronder, dan
+      # faalt de installatie meteen met "Could not get lock
+      # /var/lib/apt/lists/lock" (INT-834) — binnen seconden, dus de
+      # wachttijd hieronder (die alleen voor de dpkg-lock-frontend geldt,
+      # zie INT-523) komt er niet eens aan te pas. Zet die achtergrondtaken
+      # daarom eerst stil en wacht tot de locks vrij zijn.
+      - name: Achtergrond-apt van de runner stilzetten
+        if: steps.nodig.outputs.draaien == 'ja'
+        run: |
+          sudo systemctl stop apt-daily.timer apt-daily-upgrade.timer 2>/dev/null || true
+          sudo systemctl kill --kill-who=all apt-daily.service 2>/dev/null || true
+          sudo systemctl kill --kill-who=all apt-daily-upgrade.service 2>/dev/null || true
+          for i in $(seq 1 60); do
+            sudo fuser /var/lib/dpkg/lock-frontend /var/lib/apt/lists/lock >/dev/null 2>&1 || break
+            sleep 1
+          done
+
+      # Blijft er daarna nog iets anders de dpkg-lock vasthouden, dan wacht
+      # apt-get tot twee minuten in plaats van meteen op te geven.
       - name: Wachttijd instellen voor de apt-lock
         if: steps.nodig.outputs.draaien == 'ja'
         run: echo 'DPkg::Lock::Timeout "120";' | sudo tee /etc/apt/apt.conf.d/99-lock-timeout

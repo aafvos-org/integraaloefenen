@@ -36,9 +36,7 @@
     "lead": "Je kiest zelf een hoofdstuk en een opgave. Is je antwoord fout, dan legt de site uit waar het misging.",
     "subLead": "Toets over integralen? Begin bij de <primitieve>primitieve</primitieve>, <substitutie>substitutie</substitutie> of <partieel>partieel integreren</partieel>. Je maakt opgaven per hoofdstuk, krijgt bij elke fout uitleg en ziet bij Voortgang precies waar je staat. Klaar voor de toets? Dan stel je bij Zelf-toets je eigen proeftoets samen. <howItWorks>Zo werkt het</howItWorks>.",
     "subLeadLink": "Zo werkt het",
-    "ctaTry": "Probeer drie sommen",
     "ctaRegister": "Gratis account aanmaken",
-    "ctaLogin": "Inloggen",
     "tagline": "Volledig gratis · Geen reclame · Volgt Getal & Ruimte",
     "feature1Title": "Zelf kiezen",
     "feature1Body": "Je kiest een hoofdstuk en een opgave. De uitlegvideo's komen er nog aan.",
@@ -317,29 +315,23 @@
     "hardStep3": "$\\int x \\cdot e^x\\,dx = x e^x - \\int e^x\\,dx = (x - 1)e^x + c$"
   },
   "ChatgptStrip": {
-    "title": "Klaar om te oefenen?",
-    "body": "Drie sommen, geen account.",
-    "cta": "Probeer drie sommen"
+    "title": "Klaar om te oefenen? Hieronder drie sommen, zonder account."
   },
   "VakantieBalk": {
-    "title": "Toetsweek? Drie sommen in een paar minuten — zonder account.",
-    "cta": "Probeer drie primitieven"
+    "title": "Toetsweek? Hieronder drie sommen, zonder account."
   },
   "EersteSomBalk": {
     "tekst": "Je hebt nog geen enkele som gemaakt.",
     "knop": "Maak je eerste som"
   },
   "YoutubeStrip": {
-    "title": "Kom je van YouTube? Drie sommen gratis, zonder account.",
-    "cta": "Probeer drie sommen"
+    "title": "Kom je van YouTube? Hieronder drie sommen, zonder account."
   },
   "GoogleStrip": {
-    "title": "Kom je uit Google? Probeer drie sommen gratis — geen account.",
-    "cta": "Probeer drie sommen"
+    "title": "Kom je uit Google? Hieronder drie sommen, zonder account."
   },
   "KlasStrip": {
-    "title": "Een klasgenoot stuurde je hierheen? Probeer drie sommen gratis — geen account.",
-    "cta": "Probeer drie sommen"
+    "title": "Een klasgenoot stuurde je hierheen? Hieronder drie sommen, zonder account."
   },
   "PracticeCard": {
     "difficulty": "Moeilijkheid {n}",

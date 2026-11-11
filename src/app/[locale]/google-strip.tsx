@@ -3,9 +3,7 @@
 import { useSyncExternalStore } from 'react'
 import { useTranslations } from 'next-intl'
 
-import { bronUitTabblad, padNaarAanmelden } from '@/lib/bron'
-
-import { HomepageStrip } from './homepage-strip'
+import { bronUitTabblad } from '@/lib/bron'
 
 /**
  * Geen abonnement nodig: de tabblad-opslag verandert niet terwijl de pagina
@@ -23,10 +21,11 @@ function useKomtVanGoogle(): boolean {
 }
 
 /**
- * Korte strip voor bezoekers die via een Google-zoekresultaat binnenkomen,
- * met of zonder `?van=google` (zie `src/lib/bron.ts`). Puur client-side, zodat
- * de openbare pagina's statisch blijven en er geen cookie of meting bij komt
- * (INT-583).
+ * Eén korte regel boven de proefsom voor bezoekers die via een
+ * Google-zoekresultaat binnenkomen, met of zonder `?van=google` (zie
+ * `src/lib/bron.ts`). Puur client-side, zodat de openbare pagina's statisch
+ * blijven en er geen cookie of meting bij komt (INT-583). Geen eigen knop
+ * (INT-830): de proefsom staat er vlak onder.
  */
 export function GoogleStrip() {
   const t = useTranslations('GoogleStrip')
@@ -34,12 +33,5 @@ export function GoogleStrip() {
 
   if (!zichtbaar) return null
 
-  return (
-    <HomepageStrip
-      titel={t('title')}
-      ctaTekst={t('cta')}
-      ctaHref={padNaarAanmelden('/proberen/primitieve', 'google') as '/proberen'}
-      dataMeet="google-strip-proefsom"
-    />
-  )
+  return <p className="mb-3 text-center text-sm font-medium text-accent">{t('title')}</p>
 }
