@@ -5,25 +5,27 @@ import { expect, test } from '@playwright/test'
  * en stappenplan, en daarna de knop naar registreren. /oefenen blijft dicht.
  */
 
-test('de startpagina begint met drie sommen zonder account @telefoon', async ({ page }) => {
+test('de startpagina begint meteen met een proefsom, zonder account @telefoon', async ({
+  page,
+}) => {
+  // INT-830: de proefsom (niveaukeuze, invoer, Nakijken) staat meteen op de
+  // startpagina zelf, niet achter een losse "Probeer"-knop naar een andere
+  // pagina. Registreren/Inloggen staan niet meer als knoppen in de kop.
   await page.goto('/nl')
   const kop = page.locator('section').first()
-  const proberen = kop.getByRole('link', { name: 'Probeer drie sommen', exact: true })
-  const aanmelden = kop.getByRole('link', { name: 'Gratis account aanmaken', exact: true })
-  const inloggen = kop.getByRole('link', { name: 'Inloggen', exact: true })
-  await expect(proberen).toHaveAttribute('href', /\/proberen\/primitieve$/)
-  const volgorde = await kop.evaluate((el) =>
-    [...el.querySelectorAll('a')].map((a) => a.textContent?.trim() ?? ''),
+  await expect(kop.getByRole('link', { name: 'Gratis account aanmaken' })).toHaveCount(0)
+  await expect(kop.getByRole('link', { name: 'Inloggen', exact: true })).toHaveCount(0)
+
+  await page.getByRole('button', { name: 'Makkelijk' }).click()
+  await page.getByPlaceholder('Bijv. x^3/3 + sin(x)').fill('3*x^2 + 5*x')
+  await page.getByRole('button', { name: 'Nakijken' }).click()
+  await expect(page.getByText('Goed gedaan!')).toBeVisible()
+
+  // Registreren staat er na het nakijken wel, als tekstlink bij het resultaat.
+  await expect(page.getByRole('link', { name: 'Verder oefenen, gratis →' })).toHaveAttribute(
+    'href',
+    /\/registreren/,
   )
-  expect(volgorde.indexOf('Probeer drie sommen')).toBeLessThan(
-    volgorde.indexOf('Gratis account aanmaken'),
-  )
-  expect(volgorde.indexOf('Gratis account aanmaken')).toBeLessThan(volgorde.indexOf('Inloggen'))
-  await expect(aanmelden).toBeVisible()
-  await expect(inloggen).toBeVisible()
-  await proberen.click()
-  await expect(page).toHaveURL(/\/proberen\/primitieve/)
-  await expect(page.getByRole('heading', { name: 'Som 1 van 3' })).toBeVisible()
 })
 
 test('drie proefopgaven zonder account, daarna aanmelden @telefoon', async ({ page }) => {

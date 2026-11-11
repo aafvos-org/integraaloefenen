@@ -20,8 +20,10 @@ test('tikken buiten het open mobiele hoofdmenu sluit het en navigeert niet @tele
   const sluitKnop = page.getByRole('button', { name: 'Menu sluiten' })
   await expect(sluitKnop).toBeVisible()
 
-  // Deze link staat altijd op de startpagina, los van het menu-paneel.
-  const heroKnop = page.getByRole('link', { name: /differentiëren oefenen/i })
+  // Deze link staat altijd op de startpagina, los van het menu-paneel. De
+  // footer heeft dezelfde link nog een keer, ver onder de vouw — vandaar
+  // `.first()` voor de versie direct onder de kop.
+  const heroKnop = page.getByRole('link', { name: /differentiëren oefenen/i }).first()
   const box = await heroKnop.boundingBox()
   if (!box) throw new Error('Link naar afgeleideoefenen.nl niet gevonden op de startpagina')
 
