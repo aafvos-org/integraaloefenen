@@ -214,7 +214,7 @@ export function HomeDemo({ aanmelden }: { aanmelden: string }) {
   ]
 
   return (
-    <section className="mt-14">
+    <section>
       <div className="mb-4 flex flex-wrap items-center justify-center gap-x-2 gap-y-1 text-center">
         <span className="text-xs font-medium uppercase tracking-wider text-accent">
           {t('eyebrow')}
