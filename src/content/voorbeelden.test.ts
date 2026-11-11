@@ -47,9 +47,9 @@ function problemenVan(voorbeeld: Voorbeeld): string[] {
 }
 
 describe('antwoordpagina’s', () => {
-  it('zijn er drieëndertig, elk met een eigen adres', () => {
-    expect(VOORBEELDEN).toHaveLength(33)
-    expect(new Set(VOORBEELDEN.map((v) => v.slug)).size).toBe(33)
+  it('zijn er vijfendertig, elk met een eigen adres', () => {
+    expect(VOORBEELDEN).toHaveLength(35)
+    expect(new Set(VOORBEELDEN.map((v) => v.slug)).size).toBe(35)
   })
 
   it('heeft per pagina vier stappen, twee verwante pagina’s en een oefenlink', () => {
@@ -79,7 +79,7 @@ describe('antwoordpagina’s', () => {
   })
 
   it('koppelt uitwerkingen aan het theoriehoofdstuk', () => {
-    expect(uitwerkingenVoor('primitieve')).toHaveLength(19)
+    expect(uitwerkingenVoor('primitieve')).toHaveLength(21)
     expect(uitwerkingenVoor('partieel-integreren')).toHaveLength(6)
     expect(uitwerkingenVoor('k3')).toHaveLength(3)
     expect(uitwerkingenVoor('substitutiemethode')).toHaveLength(2)
