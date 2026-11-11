@@ -26,6 +26,7 @@
   "Footer": {
     "brand": "__BRAND__",
     "videoAanvraag": "Vraag een video aan",
+    "over": "Over",
     "privacy": "Privacy"
   },
   "Home": {
@@ -677,6 +678,26 @@
     "who5": "Google (Gemini) krijgt alleen een foute opgave en het antwoord, zonder je naam.",
     "who6": "Cloudflare laat de site draaien en telt bezoeken zonder persoonsgegevens.",
     "updated": "Bijgewerkt op 29 oktober 2026."
+  },
+  "Over": {
+    "title": "Over Aaf — wiskunde B VWO",
+    "description": "Aaf geeft wiskunde B aan vwo-leerlingen en bouwt zelf __DOMAIN__, afgeleideoefenen.nl en wiskundemetaaf.nl. Alle opgaven, uitleg en video's komen van haar.",
+    "eyebrow": "Wiskunde met Aaf",
+    "h1": "Over Aaf",
+    "intro": "Aaf geeft wiskunde B aan vwo-leerlingen. Daarnaast bouwt en onderhoudt ze drie oefensites: elke opgave, elke uitlegtekst en elke video komt van Aaf zelf, niet van een uitgever.",
+    "sitesH2": "Drie sites, één account",
+    "sitesIntro": "Wiskunde met Aaf is de naam boven drie oefensites voor wiskunde B op het vwo. Je logt overal in met hetzelfde account.",
+    "siteMetaafTitle": "wiskundemetaaf.nl",
+    "siteMetaafBody": "Eindexamentraining met echte examenvragen.",
+    "siteAfgeleideTitle": "afgeleideoefenen.nl",
+    "siteAfgeleideBody": "Differentiëren oefenen.",
+    "siteIntegraalTitle": "__DOMAIN__",
+    "siteIntegraalBody": "Primitiveren en integreren oefenen — deze site.",
+    "youtubeH2": "Video's op YouTube",
+    "youtubeBody": "Op YouTube, bij @WiskundeMetAaf, legt Aaf wiskunde B uit in losse video's. Dezelfde uitleg vind je ook terug op deze site.",
+    "youtubeLink": "Bekijk het YouTube-kanaal",
+    "ctaTry": "Probeer een gratis proefsom",
+    "ctaBack": "← Terug naar home"
   },
   "Meting": {
     "uitMelding": "Dit apparaat telt niet meer mee in de meting.",

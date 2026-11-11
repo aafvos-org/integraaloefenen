@@ -23,6 +23,12 @@ export async function SiteFooter() {
               {t('videoAanvraag')}
             </Link>
             <Link
+              href="/over"
+              className="inline-flex min-h-11 items-center px-2 text-sm font-medium text-text-muted hover:text-text"
+            >
+              {t('over')}
+            </Link>
+            <Link
               href="/privacy"
               className="inline-flex min-h-11 items-center px-2 text-sm font-medium text-text-muted hover:text-text"
             >
