@@ -1,0 +1,31 @@
+# IntegraalOefenen
+
+> Gratis oefenen met primitiveren en integreren voor vwo wiskunde B: oefen zonder account, met uitleg bij elke stap.
+
+## Start
+
+- [Start met oefenen](https://www.integraaloefenen.nl/nl): kies een hoofdstuk en maak gratis sommen, zonder account
+
+## Theorie
+
+- [De primitieve en standaardintegralen](https://www.integraaloefenen.nl/nl/theorie/primitieve)
+- [De substitutiemethode](https://www.integraaloefenen.nl/nl/theorie/substitutiemethode)
+- [Partieel integreren](https://www.integraaloefenen.nl/nl/theorie/partieel-integreren)
+- [Oppervlakte](https://www.integraaloefenen.nl/nl/theorie/oppervlakte)
+- [Inhoud (omwentelingslichamen)](https://www.integraaloefenen.nl/nl/theorie/inhoud)
+
+## Veelgezochte voorbeelden
+
+- [De primitieve van ln(x)](https://www.integraaloefenen.nl/nl/voorbeeld/ln-x)
+- [De primitieve van 1/x](https://www.integraaloefenen.nl/nl/voorbeeld/1-over-x)
+- [De primitieve van sin(x)](https://www.integraaloefenen.nl/nl/voorbeeld/sin-x)
+- [De primitieve van cos(x)](https://www.integraaloefenen.nl/nl/voorbeeld/cos-x)
+- [De primitieve van e^x](https://www.integraaloefenen.nl/nl/voorbeeld/e-tot-x)
+- [De primitieve van e^(2x)](https://www.integraaloefenen.nl/nl/voorbeeld/e-tot-2x)
+- [De primitieve van √x](https://www.integraaloefenen.nl/nl/voorbeeld/wortel-x)
+
+## Meer oefenen
+
+- [Afgeleide oefenen](https://www.afgeleideoefenen.nl): gratis oefenen met differentiëren voor wiskunde B
+- [Wiskunde met Aaf](https://www.wiskundemetaaf.nl): eindexamentraining vwo wiskunde B met echte examenvragen
+- [Wiskunde met Aaf op YouTube](https://www.youtube.com/@WiskundeMetAaf): uitlegvideo's bij integreren en het eindexamen
