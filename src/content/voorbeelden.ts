@@ -10,6 +10,7 @@
  */
 
 import { THEORIE_SLUGS } from '@/lib/theorie-slugs'
+import { getUitlegVideos, type UitlegVideo } from '@/lib/videos'
 
 export type Voorbeeld = {
   /** Stuk achter /nl/voorbeeld/ */
@@ -74,6 +75,16 @@ export function proefPad(voorbeeld: Voorbeeld): string | null {
 
 export function vindVoorbeeld(slug: string): Voorbeeld | undefined {
   return VOORBEELDEN.find((voorbeeld) => voorbeeld.slug === slug)
+}
+
+/**
+ * De uitlegvideo bij deze pagina, of undefined. De videokaart toont dan zijn
+ * eigen "Oefen dit soort sommen"-knop, dus de knoppenrij onderaan
+ * (`voorbeeld-bodem-cta`) laat die knop dan weg (INT-825).
+ */
+export function vindVideoVoor(voorbeeld: Voorbeeld): UitlegVideo | undefined {
+  if (!voorbeeld.video) return undefined
+  return getUitlegVideos().find((video) => video.slug === voorbeeld.video)
 }
 
 /** Antwoordpagina's waarvan het theoriepad op dit hoofdstuk eindigt. */

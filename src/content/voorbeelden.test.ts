@@ -13,6 +13,7 @@ import {
   proefPad,
   uitwerkingenVoor,
   VOORBEELDEN,
+  vindVideoVoor,
   vindVoorbeeld,
   type Voorbeeld,
 } from './voorbeelden'
@@ -116,4 +117,18 @@ describe('de video’s bij de antwoordpagina’s', () => {
       expect(videoSlugs.has(voorbeeld.video)).toBe(true)
     })
   }
+})
+
+describe('de oefenknop onderaan een voorbeeldpagina (INT-825)', () => {
+  it('vindt de video van een pagina die er een heeft', () => {
+    const metVideo = VOORBEELDEN.find(
+      (voorbeeld): voorbeeld is Voorbeeld & { video: string } => voorbeeld.video !== undefined,
+    )!
+    expect(vindVideoVoor(metVideo)?.slug).toBe(metVideo.video)
+  })
+
+  it('geeft undefined voor een pagina zonder video, dus de knoppenrij blijft ongewijzigd', () => {
+    const zonderVideo = VOORBEELDEN.find((voorbeeld) => voorbeeld.video === undefined)!
+    expect(vindVideoVoor(zonderVideo)).toBeUndefined()
+  })
 })

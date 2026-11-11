@@ -7,13 +7,18 @@ import { Math, RichMath } from '@/components/math'
 import { VideoKaart } from '@/components/video-kaart'
 import { VoorbeeldStickyBalk } from '@/components/voorbeeld-sticky-balk'
 import { SITE_CONFIG } from '@/config/site'
-import { oefenPad, proefPad, vindVoorbeeld, VOORBEELDEN } from '@/content/voorbeelden'
+import {
+  oefenPad,
+  proefPad,
+  vindVideoVoor,
+  vindVoorbeeld,
+  VOORBEELDEN,
+} from '@/content/voorbeelden'
 import { Link } from '@/i18n/navigation'
 import { routing } from '@/i18n/routing'
 import { zetStatischeTaal } from '@/i18n/statisch'
 import { voorbeeldGegevens } from '@/lib/gestructureerde-gegevens'
 import { eigenPagina } from '@/lib/seo'
-import { getUitlegVideos } from '@/lib/videos'
 
 import { ChatgptStrip } from '../../chatgpt-strip'
 import { GoogleStrip } from '../../google-strip'
@@ -62,9 +67,7 @@ export default async function VoorbeeldPagina({ params }: { params: Params }) {
     stappen: stappenTekst,
   })
   const verwant = voorbeeld.verwant.map((ander) => vindVoorbeeld(ander)!)
-  const video = voorbeeld.video
-    ? getUitlegVideos().find((v) => v.slug === voorbeeld.video)
-    : undefined
+  const video = vindVideoVoor(voorbeeld)
 
   return (
     <article className="mx-auto max-w-3xl px-4 py-12">
@@ -167,14 +170,15 @@ export default async function VoorbeeldPagina({ params }: { params: Params }) {
         />
       )}
 
-      <div className="mt-10 flex flex-wrap items-center gap-2">
-        <Link
-          id="voorbeeld-bodem-cta"
-          href={oefenPad(voorbeeld) as '/oefenen'}
-          className="inline-flex min-h-11 items-center rounded-lg border border-border bg-surface px-5 py-3 text-text hover:bg-surface-2"
-        >
-          {t('oefenen')}
-        </Link>
+      <div id="voorbeeld-bodem-cta" className="mt-10 flex flex-wrap items-center gap-2">
+        {!video && (
+          <Link
+            href={oefenPad(voorbeeld) as '/oefenen'}
+            className="inline-flex min-h-11 items-center rounded-lg border border-border bg-surface px-5 py-3 text-text hover:bg-surface-2"
+          >
+            {t('oefenen')}
+          </Link>
+        )}
         <DeelKnop />
       </div>
 
