@@ -36,6 +36,43 @@ export function startpaginaGegevens(siteUrl: string, faq: VraagAntwoord[]) {
   }
 }
 
+/**
+ * Kaart voor /over: Aaf en de organisatie "Wiskunde met Aaf" erachter, met
+ * `@id` en `url` op dit domein (INT-832). Zo ziet een chatbot op elke site
+ * dezelfde afzender, met `sameAs` naar de andere twee sites en YouTube.
+ */
+export function overPaginaGegevens(siteUrl: string) {
+  return {
+    '@context': 'https://schema.org',
+    '@graph': [
+      {
+        '@type': 'Organization',
+        '@id': `${siteUrl}#wiskunde-met-aaf`,
+        name: 'Wiskunde met Aaf',
+        url: siteUrl,
+        sameAs: [
+          'https://www.wiskundemetaaf.nl/',
+          'https://www.afgeleideoefenen.nl/',
+          'https://www.youtube.com/@WiskundeMetAaf',
+        ],
+        founder: { '@id': `${siteUrl}#aaf` },
+      },
+      {
+        '@type': 'Person',
+        '@id': `${siteUrl}#aaf`,
+        name: 'Aaf',
+        jobTitle: 'Docent wiskunde B',
+        url: `${siteUrl}/nl/over`,
+        worksFor: { '@id': `${siteUrl}#wiskunde-met-aaf` },
+        sameAs: [
+          'https://www.wiskundemetaaf.nl/nl/over',
+          'https://www.youtube.com/@WiskundeMetAaf',
+        ],
+      },
+    ],
+  }
+}
+
 /** Kaart voor één theoriepagina: titel, adres en een korte beschrijving. */
 export function leermiddel({
   titel,

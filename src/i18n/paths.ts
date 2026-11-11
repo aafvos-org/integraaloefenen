@@ -17,6 +17,7 @@ export const MET_TAAL = [
   'inloggen',
   'instellingen',
   'oefenen',
+  'over',
   'privacy',
   'proberen',
   'registreren',
@@ -43,6 +44,7 @@ export const ZONDER_TAAL = ['admin', 'api', 'auth', 'uitloggen'] as const
 export const OPENBAAR = [
   'examen-integralen',
   'hoe-het-werkt',
+  'over',
   'privacy',
   'proberen',
   'theorie',

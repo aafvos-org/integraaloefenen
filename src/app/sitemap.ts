@@ -44,6 +44,7 @@ function openbarePaden(): Array<{
     { pad: '/uitleg-videos', changeFrequency: 'monthly', priority: 0.7 },
     { pad: '/video-aanvragen', changeFrequency: 'monthly', priority: 0.6 },
     { pad: '/hoe-het-werkt', changeFrequency: 'monthly', priority: 0.6 },
+    { pad: '/over', changeFrequency: 'monthly', priority: 0.5 },
     { pad: '/privacy', changeFrequency: 'monthly', priority: 0.4 },
     { pad: '/voorbeeld', changeFrequency: 'monthly', priority: 0.6 },
     ...VOORBEELDEN.map((voorbeeld) => ({
@@ -73,6 +74,7 @@ const LAATST_GEWIJZIGD: Record<string, string> = {
   '/uitleg-videos': '2026-10-13',
   '/video-aanvragen': '2026-10-29',
   '/hoe-het-werkt': '2026-10-10',
+  '/over': '2026-11-11',
   '/privacy': '2026-10-13',
   '/voorbeeld': '2026-10-16',
 }
