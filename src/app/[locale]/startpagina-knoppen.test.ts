@@ -3,44 +3,31 @@ import { join } from 'node:path'
 
 import { describe, expect, it } from 'vitest'
 
-describe('startpagina-knoppen', () => {
-  it('zet drie sommen zonder account als eerste knop en in de zoektekst', () => {
-    const pagina = readFileSync(join(process.cwd(), 'src/app/[locale]/page.tsx'), 'utf8')
-    const teksten = readFileSync(join(process.cwd(), 'messages/nl.json'), 'utf8')
+describe('startpagina-knoppen (INT-830)', () => {
+  const pagina = readFileSync(join(process.cwd(), 'src/app/[locale]/page.tsx'), 'utf8')
 
-    const knoppen = pagina.slice(
-      pagina.indexOf('mt-8 flex flex-wrap'),
-      pagina.indexOf('tagline'),
-    )
-    expect(knoppen.indexOf("'/proberen/primitieve'")).toBeLessThan(knoppen.indexOf('aanmelden'))
-    expect(knoppen.indexOf("t('ctaTry')")).toBeLessThan(knoppen.indexOf("t('ctaRegister')"))
-    expect(knoppen.indexOf("t('ctaRegister')")).toBeLessThan(knoppen.indexOf("t('ctaLogin')"))
-
-    expect(teksten).toContain('"ctaTry": "Probeer drie sommen"')
-    expect(teksten).toContain('Maak drie sommen zonder account. Integreren oefenen')
+  it('zet de proefsom (HomeDemo) vóór de lange uitleg, zodat hij op een telefoon in het eerste scherm staat', () => {
+    expect(pagina.indexOf('<HomeDemo')).toBeLessThan(pagina.indexOf("t('lead')"))
+    expect(pagina.indexOf('<HomeDemo')).toBeLessThan(pagina.indexOf("t.rich('subLead'"))
   })
 
-  it('heeft maar één hoofdknop, en account aanmaken weegt zwaarder dan inloggen', () => {
-    const pagina = readFileSync(join(process.cwd(), 'src/app/[locale]/page.tsx'), 'utf8')
+  it('heeft geen aparte "Probeer drie sommen"-knop meer die naar dezelfde proefsom gaat', () => {
+    // Vóór INT-830 stond hier een knop naar /proberen/primitieve, een losse
+    // pagina met dezelfde proefsom als HomeDemo hieronder al toont.
+    expect(pagina).not.toContain("'/proberen/primitieve'")
+    expect(pagina).not.toContain('data-meet="start-proefsom"')
+  })
 
-    const knoppen = pagina.slice(
-      pagina.indexOf('mt-8 flex flex-wrap'),
-      pagina.indexOf('tagline'),
-    )
+  it('heeft geen losse Registreren/Inloggen-knoppen in de kop, alleen in het menu of na het nakijken', () => {
+    expect(pagina).not.toContain('data-meet="start-registreren"')
+    expect(pagina).not.toContain('data-meet="start-inloggen"')
+    expect(pagina).not.toContain("t('ctaTry')")
+    expect(pagina).not.toContain("t('ctaLogin')")
+  })
 
-    const hoofdknoppen = knoppen.match(/(?<!hover:)bg-accent\b/g) ?? []
+  it('heeft nog precies één bg-accent-hoofdknop: die van de registratie-oproep onderaan', () => {
+    const hoofdknoppen = pagina.match(/(?<!hover:)bg-accent\b/g) ?? []
     expect(hoofdknoppen).toHaveLength(1)
-
-    const registrerenBlok = knoppen.slice(
-      knoppen.indexOf("t('ctaRegister')") - 200,
-      knoppen.indexOf("t('ctaRegister')"),
-    )
-    const inloggenBlok = knoppen.slice(
-      knoppen.indexOf("t('ctaLogin')") - 200,
-      knoppen.indexOf("t('ctaLogin')"),
-    )
-
-    expect(registrerenBlok).toContain('border border-border')
-    expect(inloggenBlok).not.toContain('border')
+    expect(pagina).toContain('data-meet="start-registreren-onder"')
   })
 })
