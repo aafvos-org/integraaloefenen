@@ -167,14 +167,15 @@ export default async function VoorbeeldPagina({ params }: { params: Params }) {
         />
       )}
 
-      <div className="mt-10 flex flex-wrap items-center gap-2">
-        <Link
-          id="voorbeeld-bodem-cta"
-          href={oefenPad(voorbeeld) as '/oefenen'}
-          className="inline-flex min-h-11 items-center rounded-lg border border-border bg-surface px-5 py-3 text-text hover:bg-surface-2"
-        >
-          {t('oefenen')}
-        </Link>
+      <div id="voorbeeld-bodem-cta" className="mt-10 flex flex-wrap items-center gap-2">
+        {!video && (
+          <Link
+            href={oefenPad(voorbeeld) as '/oefenen'}
+            className="inline-flex min-h-11 items-center rounded-lg border border-border bg-surface px-5 py-3 text-text hover:bg-surface-2"
+          >
+            {t('oefenen')}
+          </Link>
+        )}
         <DeelKnop />
       </div>
 
