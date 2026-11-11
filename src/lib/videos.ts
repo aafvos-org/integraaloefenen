@@ -124,6 +124,19 @@ const VIDEOS: UitlegVideo[] = [
     oefenHref: '/examen-integralen',
     clusterIds: [],
   },
+  {
+    slug: 'examen-2024-1-bewijs-primitieve',
+    title: 'Examen 2024-I, vraag 4: Bewijs dat F een primitieve is',
+    description:
+      'Een primitieve bewijs je niet door te primitiveren maar door te differentiëren: de integraalvraag over het bewijs uit het eindexamen van 2024, tijdvak I, helemaal uitgewerkt, goed voor alle drie de punten.',
+    soort: 'algemeen',
+    chapter: null,
+    duration: '3:18',
+    youtubeId: '1ZtEaAajs-M',
+    theorieHref: '/theorie/primitieve',
+    oefenHref: '/examen-integralen',
+    clusterIds: [],
+  },
 ]
 
 export function getUitlegVideos(): UitlegVideo[] {
