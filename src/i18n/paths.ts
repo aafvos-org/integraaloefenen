@@ -83,6 +83,5 @@ export const ACHTER_INLOG = [
   'feedback',
   'gebruikersnaam',
   'instellingen',
-  'oefenen',
   'zelf-toets',
 ] as const
