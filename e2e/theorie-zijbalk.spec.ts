@@ -12,7 +12,8 @@ test('de hoofdstukkenzijbalk staat open op computer @telefoon', async ({ page })
   await page.goto('/nl/theorie/k3')
 
   // De titel en de knop om te oefenen moeten meteen in beeld staan.
-  // "Probeer 3 sommen" staat twee keer op de pagina (ook onderaan bij de
+  // "Probeer 3 sommen" staat meerdere keren op de pagina (op telefoon ook
+  // als herhaalde knop bovenaan, zie de test hieronder, en onderaan bij de
   // voorbeeldopgaven), dus de eerste.
   await expect(page.getByRole('heading', { name: 'K.3 – Cyclometrische functies' })).toBeVisible()
   await expect(page.getByRole('link', { name: 'Probeer 3 sommen' }).first()).toBeVisible()
@@ -25,6 +26,28 @@ test('de hoofdstukkenzijbalk staat open op computer @telefoon', async ({ page })
   } else {
     await expect(page.getByRole('button', { name: /zijbalk/i })).toBeHidden()
   }
+})
+
+/**
+ * INT-867: op telefoon stuurden de bezoeken naar een theoriehoofdstuk niet
+ * door naar /proberen — de knop stond pas na de titel en een eventuele
+ * intro, en kon zo buiten het eerste scherm vallen. Er staat nu een
+ * herhaalde knop meteen bovenaan (vóór de titel), zodat hij altijd zonder
+ * scrollen bereikbaar is, ongeacht hoe lang de hoofdstuktitel of -intro is.
+ */
+test('de herhaalde "Probeer 3 sommen"-knop staat op telefoon al in het eerste scherm @telefoon', async ({
+  page,
+}) => {
+  test.skip((page.viewportSize()?.width ?? 1280) >= 1024, 'de herhaalde knop is lg:hidden')
+
+  await page.goto('/nl/theorie/k3')
+
+  const herhaaldeKnop = page.getByRole('link', { name: 'Probeer 3 sommen' }).first()
+  await expect(herhaaldeKnop).toBeInViewport()
+  await expect(herhaaldeKnop).toHaveAttribute('href', '/nl/proberen/k3?van=theorie')
+
+  await herhaaldeKnop.click()
+  await expect(page).toHaveURL(/\/proberen\/k3(\?|$)/)
 })
 
 /**
