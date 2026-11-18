@@ -92,8 +92,9 @@ test('een nieuwe leerling registreert zich, bevestigt zijn mail en maakt zijn ee
   await test.step('4. de link in de mail brengt hem ingelogd op de oefenpagina', async () => {
     await page.goto(linkUitMail(mail))
 
-    // /nl/oefenen zit achter de inlog (src/i18n/paths.ts): kom je daar uit,
-    // dan ben je ingelogd. Een mislukte bevestiging eindigt op /nl/inloggen.
+    // De pagina zelf stuurt niet-ingelogde bezoekers door (zie
+    // src/app/[locale]/oefenen/page.tsx): blijf je op /nl/oefenen staan, dan
+    // ben je ingelogd. Een mislukte bevestiging eindigt op /nl/inloggen.
     await expect(page).toHaveURL(/\/nl\/oefenen/)
     await expect(foutmelding(page)).toBeHidden()
   })

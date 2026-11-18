@@ -2,7 +2,9 @@ import { expect, test } from '@playwright/test'
 
 /**
  * Proberen zonder account: drie sommen van een theoriehoofdstuk, nakijken
- * en stappenplan, en daarna de knop naar registreren. /oefenen blijft dicht.
+ * en stappenplan, en daarna de knop naar registreren. /oefenen blijft dicht
+ * voor wie niet is ingelogd, maar stuurt sinds INT-866 naar een proefpagina
+ * in plaats van naar /inloggen.
  */
 
 test('de startpagina begint meteen met een proefsom, zonder account @telefoon', async ({
@@ -79,9 +81,20 @@ test('een fout antwoord toont het stappenplan @telefoon', async ({ page }) => {
   await expect(page.getByText('Stappenplan: zo hoort het stap voor stap')).toBeVisible()
 })
 
-test('oefenen blijft achter de inlog', async ({ page }) => {
+test('oefenen zonder account gaat naar een proefpagina, niet naar inloggen (INT-866)', async ({
+  page,
+}) => {
   await page.goto('/nl/oefenen')
-  await expect(page).toHaveURL(/\/nl\/inloggen$/)
+  await expect(page).toHaveURL(/\/nl\/proberen\/primitieve$/)
+})
+
+test('oefenen met blok/cluster en van=voorbeeld gaat naar de bijbehorende proefpagina', async ({
+  page,
+}) => {
+  // Dezelfde combinatie als de knop "Oefen dit soort sommen" op een
+  // voorbeeldpagina (zie oefenPad in content/voorbeelden.ts).
+  await page.goto('/nl/oefenen?blok=k2a&cluster=k2a_ln&van=voorbeeld')
+  await expect(page).toHaveURL(/\/nl\/proberen\/partieel-integreren\?van=voorbeeld$/)
 })
 
 test('een antwoordpagina heeft bovenaan een eigen proefknop', async ({ page }) => {

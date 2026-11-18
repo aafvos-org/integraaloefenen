@@ -24,6 +24,7 @@ import {
   oefenIndeling,
   type Adres,
 } from '@/lib/practice/oefenen-indeling'
+import { proberenAdres } from '@/lib/practice/proberen-redirect'
 import { getChapters, getIngelogdeLeerlingId } from '@/lib/supabase/request-cache'
 import { createClient } from '@/lib/supabase/server'
 import { metOpnieuw } from '@/lib/supabase/met-opnieuw'
@@ -78,6 +79,7 @@ type PageProps = {
     cluster?: string
     blok?: string
     q?: string
+    van?: string
   }>
 }
 
@@ -92,7 +94,6 @@ async function OnderwerpPagina({ searchParams }: PageProps) {
     getLocale(),
     getIngelogdeLeerlingId(),
   ])
-  if (!userId) redirect(`/${locale}/inloggen`)
 
   const params = (await searchParams) ?? {}
   const categoryParam = params.category?.trim() ?? null
@@ -100,6 +101,20 @@ async function OnderwerpPagina({ searchParams }: PageProps) {
   const topicParam = params.topic?.trim() ?? null
   const clusterParam = params.cluster?.trim() ?? null
   const qParam = params.q?.trim() ?? null
+
+  // Geen account: een leerling die hierop klikte via een voorbeeldpagina
+  // (`van=voorbeeld`) hoort een gratis proefsom te zien, niet meteen de
+  // inlogpagina (INT-866).
+  if (!userId) {
+    redirect(
+      proberenAdres(locale, {
+        chapter: chapterParam,
+        topic: topicParam,
+        cluster: clusterParam,
+        van: params.van,
+      }),
+    )
+  }
 
   const activeCategory: TopicCategory = isCategory(categoryParam)
     ? categoryParam
@@ -298,7 +313,6 @@ async function BlokPagina({ searchParams }: PageProps) {
     getLocale(),
     getIngelogdeLeerlingId(),
   ])
-  if (!userId) redirect(`/${locale}/inloggen`)
 
   const params = (await searchParams) ?? {}
   const ruwAdres = {
@@ -307,6 +321,12 @@ async function BlokPagina({ searchParams }: PageProps) {
     cluster: params.cluster?.trim() || null,
     chapter: params.chapter?.trim() || null,
   }
+
+  // Geen account: zie de toelichting in OnderwerpPagina hierboven (INT-866).
+  if (!userId) {
+    redirect(proberenAdres(locale, { ...ruwAdres, van: params.van }))
+  }
+
   const qParam = params.q?.trim() ?? null
 
   const { t, chapters, paragraphs, blocks, allTopics, allClusters, adres, allTiles, question, start } =

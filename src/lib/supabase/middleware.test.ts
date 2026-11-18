@@ -79,7 +79,7 @@ beforeEach(() => {
 describe('inlogpoort en herkomst', () => {
   it('houdt van=voorbeeld vast en laat de rest van het adres vallen', async () => {
     const antwoord = await updateSession(
-      verzoek('/nl/oefenen?blok=k0b&cluster=std&van=Voorbeeld&error=1'),
+      verzoek('/nl/dashboard?blok=k0b&cluster=std&van=Voorbeeld&error=1'),
     )
     const naar = bestemming(antwoord)
     expect(naar.pathname).toBe('/nl/inloggen')
@@ -90,17 +90,25 @@ describe('inlogpoort en herkomst', () => {
   })
 
   it('neemt een onbekende herkomst niet mee', async () => {
-    const antwoord = await updateSession(verzoek('/nl/oefenen?van=tiktok&error=1'))
+    const antwoord = await updateSession(verzoek('/nl/dashboard?van=tiktok&error=1'))
     const naar = bestemming(antwoord)
     expect(naar.pathname).toBe('/nl/inloggen')
     expect(naar.search).toBe('')
   })
 
-  it('stuurt oefenen zonder herkomst naar inloggen zonder zoekwoorden', async () => {
-    const antwoord = await updateSession(verzoek('/nl/oefenen'))
+  it('stuurt dashboard zonder herkomst naar inloggen zonder zoekwoorden', async () => {
+    const antwoord = await updateSession(verzoek('/nl/dashboard'))
     const naar = bestemming(antwoord)
     expect(naar.pathname).toBe('/nl/inloggen')
     expect(naar.search).toBe('')
+  })
+
+  it('laat oefenen zonder sessie met rust, op weg naar de proefpagina (INT-866)', async () => {
+    const antwoord = await updateSession(
+      verzoek('/nl/oefenen?blok=k0b&cluster=std&van=voorbeeld'),
+    )
+    expect(antwoord.status).toBe(200)
+    expect(antwoord.headers.get('location')).toBeNull()
   })
 
   it('neemt een meegestuurd leerling-id niet over op een openbare pagina', async () => {
@@ -143,7 +151,7 @@ describe('inlogpoort en herkomst', () => {
   it('wist een verlopen inlogcookie op het doorstuurantwoord naar inloggen', async () => {
     sessie.foutcode = 'refresh_token_not_found'
     const antwoord = await updateSession(
-      verzoekMetDodeSessie('/nl/oefenen?blok=k0b&van=voorbeeld'),
+      verzoekMetDodeSessie('/nl/dashboard?blok=k0b&van=voorbeeld'),
     )
     const naar = bestemming(antwoord)
     expect(naar.pathname).toBe('/nl/inloggen')
@@ -178,7 +186,7 @@ describe('inlogpoort en herkomst', () => {
 
   it('laat de inlogcookie staan als de sessie om een andere reden ontbreekt', async () => {
     sessie.foutcode = 'session_expired'
-    const antwoord = await updateSession(verzoekMetDodeSessie('/nl/oefenen'))
+    const antwoord = await updateSession(verzoekMetDodeSessie('/nl/dashboard'))
     expect(bestemming(antwoord).pathname).toBe('/nl/inloggen')
     expect(gewisteNamen(antwoord)).toEqual([])
   })
