@@ -13,10 +13,13 @@ import type { Oefenlink, OverviewCard, Stappenplan } from '@/lib/theory'
 import { getUitlegVideos } from '@/lib/videos'
 
 import { leesbareTekst, leesbareWiskunde } from './leesbare-tekst'
+import { stripChapterCode } from './theorie-shared'
 
 export type TheorieChapter = {
   slug: string
   title: string
+  /** Korte code in de navigatie, bijvoorbeeld "K.1" of "Opp". Zie OverviewChapter. */
+  code?: string
   intro?: string
   uitgelichtVoorbeeld?: { label: string; slug: string }
   /** Uitlegvideo-slug uit lib/videos.ts */
@@ -53,10 +56,14 @@ type Labels = {
   videoLabel: string
 }
 
-/** "H2 — De afgeleide functie" → { code: "H2", short: "De afgeleide functie" }; ook "K.3 — …" */
-function splitTitle(title: string): { code: string | null; short: string } {
-  const m = title.match(/^([A-Z]\.?\d+(?:\.\d+)?)\s*[—–-]\s*(.+)$/)
-  return m ? { code: m[1]!, short: m[2]! } : { code: null, short: title }
+/**
+ * De code komt uit het expliciete `code`-veld (bv. "K.1" of "Opp"), niet uit de
+ * titeltekst: Oppervlakte en Inhoud hebben wél een code maar geen "Opp — "
+ * voorvoegsel in hun titel. `stripChapterCode` haalt een eventueel voorvoegsel
+ * er alsnog af bij hoofdstukken die het (ook) in de titel herhalen.
+ */
+function splitTitle(ch: Pick<TheorieChapter, 'code' | 'title'>): { code: string | null; short: string } {
+  return { code: ch.code ?? null, short: stripChapterCode(ch.title) }
 }
 
 export function TheorieClient({
@@ -135,7 +142,7 @@ export function TheorieClient({
   }
 
   const activeChapter = chapters.find((ch) => ch.slug === activeSlug)
-  const activeChapterSplit = activeChapter ? splitTitle(activeChapter.title) : null
+  const activeChapterSplit = activeChapter ? splitTitle(activeChapter) : null
 
   return (
     <div className={sidebar ? 'flex min-h-[calc(100vh-3.5rem)] flex-col lg:h-[calc(100vh-3.5rem)] lg:flex-row lg:overflow-hidden' : undefined}>
@@ -181,7 +188,7 @@ export function TheorieClient({
           <ul className="mt-3 space-y-0.5">
             {chapters.map((ch) => {
               const active = ch.slug === activeSlug
-              const { code, short } = splitTitle(ch.title)
+              const { code, short } = splitTitle(ch)
               return (
                 <li key={ch.slug}>
                   <button
@@ -281,7 +288,7 @@ export function TheorieClient({
           {vaakGezocht && vaakGezocht.length > 0 && <VaakGezocht voorbeelden={vaakGezocht} />}
 
           {chapters.map((ch) => {
-            const { code, short } = splitTitle(ch.title)
+            const { code, short } = splitTitle(ch)
             const Kop = eigenKop ? 'h1' : 'h2'
             // Op een losse pagina is de hoofdstuktitel h1, dus de kaarten
             // daaronder zijn h2. Op het overzicht is de titel h2 en blijven
@@ -452,7 +459,7 @@ export function TheorieClient({
             <ul className="space-y-0.5">
               {chapters.map((ch) => {
                 const active = ch.slug === activeSlug
-                const { code, short } = splitTitle(ch.title)
+                const { code, short } = splitTitle(ch)
                 return (
                   <li key={ch.slug}>
                     <button

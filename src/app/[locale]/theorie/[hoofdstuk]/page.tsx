@@ -61,6 +61,7 @@ export default async function HoofdstukPage({ params }: { params: Params }) {
   const chapter: TheorieChapter = {
     slug: kaart.slug,
     title: kaart.title,
+    code: kaart.code,
     intro: kaart.intro,
     uitgelichtVoorbeeld: kaart.uitgelichtVoorbeeld,
     video: kaart.video,

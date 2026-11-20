@@ -57,6 +57,7 @@ export default async function TheoriePage({
   const chapters: TheorieChapter[] = THEORY_OVERVIEW.map((ch) => ({
     slug: ch.slug,
     title: ch.title,
+    code: ch.code,
     intro: ch.intro,
     uitgelichtVoorbeeld: ch.uitgelichtVoorbeeld,
     video: ch.video,

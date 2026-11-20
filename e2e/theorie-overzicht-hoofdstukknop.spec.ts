@@ -18,7 +18,7 @@ test('de hoofdstukkenlijst op /theorie blijft bereikbaar na scrollen: zijbalk op
 
   await page.goto('/nl/theorie')
 
-  const stickyKnop = page.getByRole('button', { name: /Kies een hoofdstuk: De primitieve en de standaardintegralen/ })
+  const stickyKnop = page.getByRole('button', { name: /Kies een hoofdstuk: Prim – De primitieve en de standaardintegralen/ })
 
   if (breed) {
     await expect(page.locator('aside')).toBeVisible()
