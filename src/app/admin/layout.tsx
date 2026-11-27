@@ -16,6 +16,7 @@ const NAV = [
   { href: '/admin/flags', label: 'Meldingen' },
   { href: '/admin/video-aanvragen', label: 'Video-aanvragen' },
   { href: '/admin/users', label: 'Gebruikers' },
+  { href: '/admin/klikgedrag', label: 'Klikgedrag' },
 ]
 
 export default async function AdminLayout({
@@ -38,8 +39,12 @@ export default async function AdminLayout({
 
   if (profile?.role !== 'admin') redirect('/')
 
+  // `w-full` is geen overbodige regel: `body` is een flexkolom en door
+  // `mx-auto` krimpt dit blok anders niet mee met een smal scherm, maar groeit
+  // het met zijn inhoud mee. De hele pagina schuift dan opzij in plaats van
+  // alleen een brede tabel. (Zelfde oplossing als op afgeleideoefenen.nl.)
   return (
-    <div className="mx-auto max-w-6xl px-4 py-8">
+    <div className="mx-auto w-full max-w-6xl px-4 py-8">
       <BeheerderMeetUit />
       <div className="mb-6 flex flex-wrap items-baseline justify-between gap-3">
         <div>
