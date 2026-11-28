@@ -12,7 +12,7 @@ import { VOORBEELDOPGAVEN } from '@/content/theory/voorbeeldopgaven'
 import { THEORY_OVERVIEW } from '@/lib/theory'
 
 import { hoofdstukOmschrijving } from '../hoofdstuk-omschrijving'
-import { TheorieClient, type TheorieChapter } from '../theorie-client'
+import { ProberenKnop, TheorieClient, type TheorieChapter } from '../theorie-client'
 import { TheorieLayout } from '../theorie-layout'
 import { kaartLabels, layoutLabels, stripChapterCode, theorieNavItems } from '../theorie-shared'
 import { ChatgptStrip } from '../../chatgpt-strip'
@@ -85,6 +85,14 @@ export default async function HoofdstukPage({ params }: { params: Params }) {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(gegevens) }}
       />
+      {/* Op telefoon staat deze knop hiermee altijd als eerste in beeld, vóór
+          de (meestal lege) strips en de hoofdstuktekst — ongeacht hoe lang de
+          titel of de intro is (INT-867, 0 bezoeken op /proberen ondanks
+          bezoeken op theorie). Vanaf lg staat de knop al ruim boven de vouw,
+          dus daar blijft dit verborgen. */}
+      <div className="border-b border-border bg-surface px-4 py-3 lg:hidden">
+        <ProberenKnop slug={kaart.slug} van="theorie" className="w-full justify-center" />
+      </div>
       <div className="mx-auto max-w-5xl px-4 pt-6">
         <ChatgptStrip />
         <YoutubeStrip />

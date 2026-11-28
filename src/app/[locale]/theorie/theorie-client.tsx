@@ -777,12 +777,25 @@ function Uitwerkingen({ hoofdstuk }: { hoofdstuk: string }) {
   )
 }
 
-function ProberenKnop({ slug }: { slug: string }) {
+export function ProberenKnop({
+  slug,
+  van,
+  className,
+}: {
+  slug: string
+  /** Zet `?van=` op de link, voor de anonieme klikmeting (bv. "theorie"). */
+  van?: string
+  className?: string
+}) {
+  const href = `/proberen/${slug}${van ? `?van=${encodeURIComponent(van)}` : ''}`
   return (
     <Link
-      href={`/proberen/${slug}` as '/proberen'}
+      href={href as '/proberen'}
       data-meet="theorie-proefsom"
-      className="inline-flex min-h-11 items-center rounded-md bg-accent px-4 text-sm font-medium text-white"
+      className={cn(
+        'inline-flex min-h-11 items-center rounded-md bg-accent px-4 text-sm font-medium text-white',
+        className,
+      )}
     >
       Probeer 3 sommen
     </Link>
